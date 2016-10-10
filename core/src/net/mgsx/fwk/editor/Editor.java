@@ -46,6 +46,11 @@ public class Editor extends ApplicationAdapter
 		return g;
 	}
 	
+	public void reset(){
+		toolDelegator.clear();
+		tools.clear();
+	}
+	
 	@Override
 	public void render() 
 	{

@@ -14,6 +14,7 @@ import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.Shape;
 
 import net.mgsx.box2d.editor.BodyItem;
+import net.mgsx.box2d.editor.FixtureItem;
 import net.mgsx.box2d.editor.WorldItem;
 import net.mgsx.fwk.editor.Tool;
 import net.mgsx.fwk.editor.tools.RectangleTool;
@@ -45,9 +46,9 @@ public class CreateCircleTool extends RectangleTool {
 		def.position.set(startPoint);
 		
 		Body body = worldItem.world.createBody(def);
-		body.createFixture(fix);
-
-		worldItem.items.bodies.add(new BodyItem("Circle", def, body));
+		BodyItem bodyItem = new BodyItem("Circle", def, body);
+		bodyItem.fixtures.add(new FixtureItem("Chain", fix, bodyItem.body.createFixture(fix)));
+		worldItem.items.bodies.add(bodyItem);
 	}
 	
 	@Override

@@ -10,6 +10,7 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 
 import net.mgsx.box2d.editor.BodyItem;
+import net.mgsx.box2d.editor.FixtureItem;
 import net.mgsx.box2d.editor.WorldItem;
 import net.mgsx.fwk.editor.Tool;
 import net.mgsx.fwk.editor.tools.RectangleTool;
@@ -45,9 +46,10 @@ public class CreateRectangleTool extends RectangleTool {
 		fix.shape = pshape;
 		
 		Body body = worldItem.world.createBody(def);
-		body.createFixture(fix);
 
-		worldItem.items.bodies.add(new BodyItem("Ball", def, body));
+		BodyItem bodyItem = new BodyItem("Polygon", def, body);
+		bodyItem.fixtures.add(new FixtureItem("Polygon", fix, bodyItem.body.createFixture(fix)));
+		worldItem.items.bodies.add(bodyItem);
 	}
 	
 	

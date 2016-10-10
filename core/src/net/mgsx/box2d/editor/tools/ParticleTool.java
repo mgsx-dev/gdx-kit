@@ -82,14 +82,14 @@ public class ParticleTool extends Tool
 				Particle p = pool.obtain();
 				p.life = life;
 				if(p.body == null){
-					BodyItem item = Box2DPresets.ball(ParticleTool.this.worldItem.world, 10, position.x, position.y);
+					BodyItem item = Box2DPresets.ball(ParticleTool.this.worldItem.world, 0.1f, position.x, position.y);
 					p.body = item.body;
 				}
 				particles.add(p);
 				p.body.setTransform(position, 0);
-				p.body.setLinearVelocity(new Vector2(direction).scl(1e6f));
+				p.body.setLinearVelocity(new Vector2(direction).scl(5f));
 				// p.body.
-				p.body.applyLinearImpulse(new Vector2(direction).scl(1e5f), position, true);
+				// p.body.applyLinearImpulse(new Vector2(direction).scl(1e5f), position, true);
 			}
 		}
 		for(int i=particles.size-1 ; i>=0 ; i--){

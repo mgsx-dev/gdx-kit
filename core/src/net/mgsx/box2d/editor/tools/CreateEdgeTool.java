@@ -1,6 +1,7 @@
 package net.mgsx.box2d.editor.tools;
 
 import net.mgsx.box2d.editor.BodyItem;
+import net.mgsx.box2d.editor.FixtureItem;
 import net.mgsx.box2d.editor.WorldItem;
 import net.mgsx.fwk.editor.tools.MultiClickTool;
 
@@ -34,7 +35,7 @@ public class CreateEdgeTool extends MultiClickTool
 	{
 		if(bodyItem == null){
 			BodyDef bodyDef = worldItem.settings.body();
-			bodyDef.position.set(dots.first());
+			bodyDef.position.set(dots.get(1));
 			Body body = worldItem.world.createBody(bodyDef);
 			bodyItem = new BodyItem("", bodyDef, body);
 			worldItem.items.bodies.add(bodyItem);
@@ -42,7 +43,7 @@ public class CreateEdgeTool extends MultiClickTool
 
 		
 		EdgeShape shape = new EdgeShape();
-		shape.set(dots.get(1), dots.get(2));
+		shape.set(new Vector2(), new Vector2(dots.get(2)).sub(dots.get(1)));
 		shape.setVertex0(dots.get(0));
 		shape.setVertex3(dots.get(3));
 		shape.setHasVertex0(true);
@@ -50,7 +51,7 @@ public class CreateEdgeTool extends MultiClickTool
 		FixtureDef def = worldItem.settings.fixture();
 		def.shape = shape;
 		
-		bodyItem.body.createFixture(def);
+		bodyItem.fixtures.add(new FixtureItem("Edge", def, bodyItem.body.createFixture(def)));
 		
 		bodyItem = null; // clear because of convex crash!
 	}

@@ -3,6 +3,7 @@ package net.mgsx.box2d.editor;
 import java.lang.reflect.Field;
 
 import net.mgsx.box2d.editor.Box2DPresets.Box2DPreset;
+import net.mgsx.box2d.editor.persistence.Repository;
 import net.mgsx.box2d.editor.tools.CreateChainTool;
 import net.mgsx.box2d.editor.tools.CreateCircleTool;
 import net.mgsx.box2d.editor.tools.CreateEdgeTool;
@@ -26,11 +27,14 @@ import net.mgsx.box2d.editor.tools.PresetTool;
 import net.mgsx.box2d.editor.tools.SelectTool;
 import net.mgsx.fwk.editor.Command;
 import net.mgsx.fwk.editor.Editor;
+import net.mgsx.fwk.editor.NativeService;
+import net.mgsx.fwk.editor.NativeService.DialogCallback;
 import net.mgsx.fwk.editor.ReflectionHelper;
 import net.mgsx.fwk.editor.Tool;
 import net.mgsx.fwk.editor.ToolGroup;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -47,6 +51,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.utils.Json;
 
 public class Box2DEditor extends Editor 
 {
@@ -59,6 +64,9 @@ public class Box2DEditor extends Editor
 	
 	EntityEditor entityEditor, worldEditor;
 	
+	private void save(){
+		new Json().toJson(worldItem.settings);
+	}
 	
 	
 	// NOTE keep it !
@@ -86,14 +94,30 @@ public class Box2DEditor extends Editor
 	{
 		super.create();
 		
+		// box 2D
+		worldItem = new WorldItem();
+		worldItem.world = new World(worldItem.settings.gravity, true);
+
+		rebuild();
+	}
+	
+	public void reset(){
+		super.reset();
+		worldItem.items.clear();
+		worldItem.selection.clear();
+		worldItem.world.dispose();
+		worldItem.world = new World(worldItem.settings.gravity, true);
+		rebuild();
+	}
+	
+	private void rebuild()
+	{
+		stage.clear();
+		
 		// rendering
 		batch = new SpriteBatch();
 		camera = new OrthographicCamera();
 		renderer = new Box2DDebugRenderer();
-		
-		// box 2D
-		worldItem = new WorldItem();
-		worldItem.world = new World(worldItem.settings.gravity, true);
 		
 		// tools
 		final ToolGroup mainTools = createToolGroup();
@@ -218,8 +242,7 @@ public class Box2DEditor extends Editor
 		btReset.addListener(new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
-				worldItem.world.dispose();
-				worldItem.world = new World(worldItem.settings.gravity, true);
+				reset();
 			}
 		});
 		
@@ -236,7 +259,7 @@ public class Box2DEditor extends Editor
 		bodySelector = new SelectBox<BodyItem>(skin);
 		
 		
-		worldItem.items.bodies.add(new BodyItem("", null, null));
+		// XXX worldItem.items.bodies.add(new BodyItem("", null, null));
 		
 		// convert to tools
 		ButtonGroup<TextButton> grpTools = new ButtonGroup<TextButton>();
@@ -266,8 +289,44 @@ public class Box2DEditor extends Editor
 		
 		bodySelector.setItems(worldItem.items.bodies);
 		
+		TextButton btSave = new TextButton("Save", skin);
+		TextButton btOpen = new TextButton("Open", skin);
+		
+		btSave.addListener(new ChangeListener() {
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				NativeService.instance.openSaveDialog(new DialogCallback() {
+					@Override
+					public void selected(FileHandle file) {
+						Repository.save(file, worldItem);
+					}
+					@Override
+					public void cancel() {
+					}
+				});
+			}
+		});
+		btOpen.addListener(new ChangeListener() {
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				NativeService.instance.openSaveDialog(new DialogCallback() {
+					@Override
+					public void selected(FileHandle file) {
+						Repository.load(file, worldItem);
+						rebuild();
+					}
+					@Override
+					public void cancel() {
+					}
+				});
+			}
+		});
+		
+		
 		Table hgMain = new Table();
 		hgMain.add(btReset);
+		hgMain.add(btSave);
+		hgMain.add(btOpen);
 		hgMain.add(playPauseButton);
 		
 		
@@ -317,6 +376,7 @@ public class Box2DEditor extends Editor
 		});
 		*/
 		
+		resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 	}
 	
 	@Override

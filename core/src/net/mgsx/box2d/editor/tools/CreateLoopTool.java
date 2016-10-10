@@ -1,6 +1,7 @@
 package net.mgsx.box2d.editor.tools;
 
 import net.mgsx.box2d.editor.BodyItem;
+import net.mgsx.box2d.editor.FixtureItem;
 import net.mgsx.box2d.editor.WorldItem;
 import net.mgsx.fwk.editor.tools.MultiClickTool;
 
@@ -51,7 +52,7 @@ public class CreateLoopTool extends MultiClickTool
 		FixtureDef def = worldItem.settings.fixture();
 		def.shape = shape;
 		
-		bodyItem.body.createFixture(def);
+		bodyItem.fixtures.add(new FixtureItem("Chain", def, bodyItem.body.createFixture(def)));
 		
 		bodyItem = null; // clear because of convex crash!
 	}

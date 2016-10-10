@@ -1,16 +1,14 @@
 package net.mgsx.box2d.editor;
 
-import net.mgsx.box2d.editor.Box2DPresets.Items;
-
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.Joint;
 import com.badlogic.gdx.physics.box2d.JointDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
-import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.joints.PulleyJointDef;
 import com.badlogic.gdx.physics.box2d.joints.RevoluteJointDef;
 import com.badlogic.gdx.physics.box2d.joints.RopeJoint;
@@ -30,6 +28,10 @@ public class Box2DPresets
 		public void addAll(Items items) {
 			joints.addAll(items.joints);
 			bodies.addAll(items.bodies);
+		}
+		public void clear() {
+			joints.clear();
+			bodies.clear();
 		}
 	}
 	public static class JointItem
@@ -72,9 +74,11 @@ public class Box2DPresets
 		fix.shape = circle;
 		
 		Body body = world.createBody(def);
-		body.createFixture(fix);
-		// body.getPosition().set(x, y);
-		return new BodyItem("Ball", def, body);
+
+		BodyItem item = new BodyItem("Ball", def, body);
+		item.fixtures.add(new FixtureItem("Circle", fix, body.createFixture(fix)));
+	
+		return item;
 	};
 
 	public static final Box2DPreset pulley = new Box2DPreset(){
@@ -144,9 +148,12 @@ public class Box2DPresets
 			fix.shape = pshape;
 			
 			Body body = world.createBody(def);
-			body.createFixture(fix);
+			
+			BodyItem bodyItem = new BodyItem("Ground", def, body);
+			bodyItem.fixtures.add(new FixtureItem("Polygon", fix, bodyItem.body.createFixture(fix)));
 
-			items.bodies.add(new BodyItem("Ground", def, body));
+
+			items.bodies.add(bodyItem);
 		}
 	};
 	
