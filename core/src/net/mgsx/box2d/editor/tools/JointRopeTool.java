@@ -1,0 +1,27 @@
+package net.mgsx.box2d.editor.tools;
+
+import net.mgsx.box2d.editor.BodyItem;
+import net.mgsx.box2d.editor.WorldItem;
+
+import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.joints.RopeJointDef;
+
+public class JointRopeTool extends JointTool<RopeJointDef> {
+	public JointRopeTool(Camera camera, WorldItem worldItem) 
+	{
+		super("Rope", camera, worldItem, 2);
+	}
+	@Override
+	protected RopeJointDef createJoint(BodyItem bodyA, BodyItem bodyB) {
+		
+		RopeJointDef def = new RopeJointDef();
+		def.bodyA = bodyA.body;
+		def.bodyB = bodyB.body;
+		def.collideConnected = true;
+		def.localAnchorA.set(new Vector2(dots.get(0)).sub(bodyA.body.getPosition()));
+		def.localAnchorB.set(new Vector2(dots.get(1)).sub(bodyB.body.getPosition()));
+		
+		return def;
+	}
+}

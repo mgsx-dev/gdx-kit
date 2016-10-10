@@ -1,0 +1,27 @@
+package net.mgsx.box2d.editor.tools;
+
+import net.mgsx.box2d.editor.BodyItem;
+import net.mgsx.box2d.editor.WorldItem;
+
+import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.physics.box2d.joints.PulleyJointDef;
+
+public class JointPulleyTool extends JointTool<PulleyJointDef> {
+	public JointPulleyTool(Camera camera, WorldItem worldItem) 
+	{
+		super("Pulley", camera, worldItem, 4);
+	}
+	@Override
+	protected PulleyJointDef createJoint(BodyItem bodyA, BodyItem bodyB) {
+		
+		PulleyJointDef def = new PulleyJointDef();
+		def.bodyA = bodyA.body;
+		def.bodyB = bodyB.body;
+		def.groundAnchorA.set(dots.get(1));
+		def.groundAnchorB.set(dots.get(2));
+		def.lengthA = dots.get(1).dst(dots.get(0));
+		def.lengthB = dots.get(2).dst(dots.get(3));
+		
+		return def;
+	}
+}
