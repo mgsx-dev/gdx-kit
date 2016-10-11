@@ -2,6 +2,8 @@ package net.mgsx.fwk.editor.tools;
 
 import net.mgsx.fwk.editor.Tool;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
@@ -13,25 +15,29 @@ abstract public class RectangleTool extends Tool
 		super(name, camera);
 	}
 	protected Vector2 startPoint, endPoint;
+	protected int buttonFilter = Input.Buttons.LEFT;
 	
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-		startPoint = unproject(screenX, screenY);
+		if(button == buttonFilter){
+			startPoint = unproject(screenX, screenY);
+			return true;
+		}
 		return super.touchDown(screenX, screenY, pointer, button);
 	}
 	@Override
 	public boolean touchDragged(int screenX, int screenY, int pointer) {
-		if(startPoint != null){
+		if(startPoint != null && Gdx.input.isButtonPressed(buttonFilter)){
 			endPoint = unproject(screenX, screenY);
 		}
 		return super.touchDragged(screenX, screenY, pointer);
 	}
 	@Override
 	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-		if(startPoint != null && endPoint != null){
+		if(button == buttonFilter && startPoint != null && endPoint != null){
 			create(startPoint, endPoint);
-			startPoint = endPoint = null;
 		}
+		startPoint = endPoint = null;
 		return super.touchUp(screenX, screenY, pointer, button);
 	}
 	protected abstract void create(Vector2 startPoint, Vector2 endPoint);

@@ -46,4 +46,19 @@ public class WorldItem
 		
 		return bodies.size > 0 ? bodies.get(0) : null;
 	}
+	public Body queryFirstBody(Vector2 pos) 
+	{
+		final Array<Body> bodies = new Array<Body>();
+		QueryCallback callback = new QueryCallback() {
+			@Override
+			public boolean reportFixture(Fixture fixture) {
+				Body body = fixture.getBody();
+				bodies.add(body);
+				return false;
+			}
+		};
+		world.QueryAABB(callback, pos.x, pos.y, pos.x, pos.y);
+		
+		return bodies.size > 0 ? bodies.get(0) : null;
+	}
 }

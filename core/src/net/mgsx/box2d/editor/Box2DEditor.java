@@ -29,15 +29,25 @@ import net.mgsx.fwk.editor.Command;
 import net.mgsx.fwk.editor.Editor;
 import net.mgsx.fwk.editor.NativeService;
 import net.mgsx.fwk.editor.NativeService.DialogCallback;
+import net.mgsx.fwk.editor.tools.PanTool;
 import net.mgsx.fwk.editor.ReflectionHelper;
 import net.mgsx.fwk.editor.Tool;
 import net.mgsx.fwk.editor.ToolGroup;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.assets.loaders.TextureLoader;
+import com.badlogic.gdx.assets.loaders.TextureLoader.TextureParameter;
+import com.badlogic.gdx.assets.loaders.resolvers.AbsoluteFileHandleResolver;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Texture.TextureFilter;
+import com.badlogic.gdx.graphics.Texture.TextureWrap;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
@@ -51,6 +61,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
 
 public class Box2DEditor extends Editor 
@@ -59,6 +70,9 @@ public class Box2DEditor extends Editor
 	Box2DDebugRenderer renderer;
 	OrthographicCamera camera;
 	SpriteBatch batch;
+	AssetManager assets;
+	
+	Array<Sprite> sprites = new Array<Sprite>();
 	
 	SelectBox<BodyItem> bodySelector;
 	
@@ -94,6 +108,9 @@ public class Box2DEditor extends Editor
 	{
 		super.create();
 		
+		assets = new AssetManager();
+		Texture.setAssetManager(assets);
+		
 		// box 2D
 		worldItem = new WorldItem();
 		worldItem.world = new World(worldItem.settings.gravity, true);
@@ -120,6 +137,10 @@ public class Box2DEditor extends Editor
 		renderer = new Box2DDebugRenderer();
 		
 		// tools
+		ToolGroup panToolGroup = createToolGroup();
+		panToolGroup.setActiveTool(new PanTool(camera));
+		
+		
 		final ToolGroup mainTools = createToolGroup();
 		
 		mainTools.tools.add(new SelectTool(camera, worldItem));
@@ -321,6 +342,27 @@ public class Box2DEditor extends Editor
 				});
 			}
 		});
+		TextButton btBg = new TextButton("Bg", skin);
+		btBg.addListener(new ChangeListener() {
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				NativeService.instance.openLoadDialog(new DialogCallback() {
+					@Override
+					public void selected(FileHandle file) {
+						Texture bg = new Texture(file, true);
+						bg.setFilter(TextureFilter.MipMapLinearLinear, TextureFilter.MipMapLinearLinear);
+						bg.setWrap(TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);
+						Sprite bgs = new Sprite(bg); // TODO scale !
+						bgs.setBounds(0, 0, 0.02f * bg.getWidth(), 0.02f * bg.getHeight());
+						// bgs.setScale(camera.combined.getScaleX(), camera.combined.getScaleY());
+						sprites.add(bgs);
+					}
+					@Override
+					public void cancel() {
+					}
+				});
+			}
+		});
 		
 		
 		Table hgMain = new Table();
@@ -328,6 +370,7 @@ public class Box2DEditor extends Editor
 		hgMain.add(btSave);
 		hgMain.add(btOpen);
 		hgMain.add(playPauseButton);
+		hgMain.add(btBg);
 		
 		
 		Table vg = new Table();
@@ -395,6 +438,12 @@ public class Box2DEditor extends Editor
 		Gdx.gl.glClearColor(.5f, .5f, .5f, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		
+		batch.setTransformMatrix(camera.view);
+		batch.setProjectionMatrix(camera.projection);
+		batch.begin();
+		for(Sprite sprite : sprites) sprite.draw(batch);
+		batch.end();
+		
 		renderer.render(worldItem.world, camera.combined);
 		
 		shapeRenderer.setProjectionMatrix(camera.combined);
@@ -412,8 +461,8 @@ public class Box2DEditor extends Editor
 	public void resize(int width, int height) {
 		super.resize(width, height);
 		camera.setToOrtho(false, 5 * (float)width/(float)height, 5);
-		float wscale = 0.01f;
-		//camera.setToOrtho(false, width * wscale, height * wscale);
+//		float wscale = 0.01f;
+//		camera.setToOrtho(false, width , height);
 		camera.update(true);
 
 	}

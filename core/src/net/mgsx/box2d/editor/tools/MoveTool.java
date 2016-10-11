@@ -12,6 +12,7 @@ public class MoveTool extends Tool
 {
 	private WorldItem worldItem;
 	private BodyItem bodyItem;
+	private Vector2 prev;
 	
 	public MoveTool(Camera camera, WorldItem worldItem) {
 		super("Move", camera);
@@ -33,13 +34,14 @@ public class MoveTool extends Tool
 	public boolean touchDragged(int screenX, int screenY, int pointer) {
 		if(bodyItem != null){
 			Vector2 worldPos = unproject(screenX, screenY);
-			bodyItem.body.getPosition().set(worldPos.x, worldPos.y);
-			bodyItem.body.getLinearVelocity().set(0, 0);
 			bodyItem.body.setAngularVelocity(0);
 			bodyItem.body.setGravityScale(0);
 			bodyItem.body.setLinearVelocity(0, 0);
-			bodyItem.body.setTransform(new Vector2(worldPos.x, worldPos.y), bodyItem.body.getAngle());
+			bodyItem.body.setTransform(
+					new Vector2(bodyItem.body.getPosition()).add(worldPos).sub(prev), 
+					bodyItem.body.getAngle());
 			bodyItem.body.applyForceToCenter(0, 0, true); // wakeup to allow collisions !
+			prev = worldPos;
 			return true;
 		}
 		return super.touchDragged(screenX, screenY, pointer);
@@ -47,11 +49,12 @@ public class MoveTool extends Tool
 	
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-		Body body = worldItem.queryFirstBody(unproject(screenX, screenY), pixelSize().scl(2));
+		Body body = worldItem.queryFirstBody(unproject(screenX, screenY));
 		if(body != null)
 		{
 			bodyItem = (BodyItem)body.getUserData();
 			bodyItem.body.setGravityScale(0);
+			prev = unproject(screenX, screenY);
 			return true;
 		}
 		return super.touchDown(screenX, screenY, pointer, button);

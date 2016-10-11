@@ -21,7 +21,8 @@ public class SelectTool extends Tool
 	
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-		Body body = worldItem.queryFirstBody(unproject(screenX, screenY), pixelSize().scl(2));
+		// Body body = worldItem.queryFirstBody(unproject(screenX, screenY), pixelSize().scl(2));
+		Body body = worldItem.queryFirstBody(unproject(screenX, screenY));
 		if(body != null)
 		{
 			BodyItem bodyItem = (BodyItem)body.getUserData();
