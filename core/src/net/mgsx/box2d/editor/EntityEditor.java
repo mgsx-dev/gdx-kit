@@ -3,10 +3,7 @@ package net.mgsx.box2d.editor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
-import net.mgsx.fwk.editor.ReflectionHelper;
-
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -18,6 +15,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
 import com.badlogic.gdx.utils.Array;
+
+import net.mgsx.fwk.editor.ReflectionHelper;
 
 public class EntityEditor extends Table
 {

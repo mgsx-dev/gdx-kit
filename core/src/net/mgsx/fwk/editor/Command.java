@@ -2,10 +2,6 @@ package net.mgsx.fwk.editor;
 
 import java.lang.reflect.Field;
 
-import net.mgsx.box2d.editor.BodyItem;
-
-import com.badlogic.gdx.math.Vector2;
-
 public class Command {
 	public void commit(){}
 	public void rollback(){}

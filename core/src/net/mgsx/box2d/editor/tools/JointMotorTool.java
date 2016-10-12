@@ -1,11 +1,10 @@
 package net.mgsx.box2d.editor.tools;
 
+import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.physics.box2d.joints.MotorJointDef;
+
 import net.mgsx.box2d.editor.BodyItem;
 import net.mgsx.box2d.editor.WorldItem;
-
-import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.joints.MotorJointDef;
 
 public class JointMotorTool extends JointTool<MotorJointDef> {
 	public JointMotorTool(Camera camera, WorldItem worldItem) {

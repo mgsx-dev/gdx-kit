@@ -1,19 +1,17 @@
 package net.mgsx.box2d.editor.tools;
 
-import net.mgsx.box2d.editor.BodyItem;
-import net.mgsx.box2d.editor.Box2DPresets;
-import net.mgsx.box2d.editor.WorldItem;
-import net.mgsx.fwk.editor.Tool;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.FlushablePool;
-import com.badlogic.gdx.utils.Pool;
+
+import net.mgsx.box2d.editor.BodyItem;
+import net.mgsx.box2d.editor.Box2DPresets;
+import net.mgsx.box2d.editor.WorldItem;
+import net.mgsx.fwk.editor.Tool;
 
 public class ParticleTool extends Tool
 {

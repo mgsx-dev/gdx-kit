@@ -3,7 +3,6 @@ package net.mgsx.box2d.editor.behavior;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.physics.box2d.Fixture;
 
 public class SimpleAI extends BodyBehavior

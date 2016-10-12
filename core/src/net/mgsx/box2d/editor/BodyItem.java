@@ -5,7 +5,6 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.utils.Array;
 
 import net.mgsx.box2d.editor.behavior.BodyBehavior;
-import net.mgsx.fwk.editor.Behavior;
 
 public class BodyItem
 {

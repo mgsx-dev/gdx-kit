@@ -1,10 +1,10 @@
 package net.mgsx.box2d.editor;
 
+import com.badlogic.gdx.math.Vector2;
+
 import net.mgsx.box2d.editor.Box2DPresets.Box2DPreset;
 import net.mgsx.box2d.editor.Box2DPresets.Items;
 import net.mgsx.fwk.editor.Command;
-
-import com.badlogic.gdx.math.Vector2;
 
 public class Box2DCommands {
 

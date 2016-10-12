@@ -1,12 +1,6 @@
 package net.mgsx.fwk.editor;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-
-import com.badlogic.gdx.physics.box2d.JointDef;
-
-import net.mgsx.box2d.editor.BodyItem;
-import net.mgsx.box2d.editor.WorldItem;
 
 public class ReflectionHelper {
 

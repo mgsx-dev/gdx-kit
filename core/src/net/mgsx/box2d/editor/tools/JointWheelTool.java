@@ -1,11 +1,11 @@
 package net.mgsx.box2d.editor.tools;
 
-import net.mgsx.box2d.editor.BodyItem;
-import net.mgsx.box2d.editor.WorldItem;
-
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.joints.WheelJointDef;
+
+import net.mgsx.box2d.editor.BodyItem;
+import net.mgsx.box2d.editor.WorldItem;
 
 public class JointWheelTool extends JointTool<WheelJointDef> {
 	public JointWheelTool(Camera camera, WorldItem worldItem) {

@@ -1,11 +1,11 @@
 package net.mgsx.fwk.editor.tools;
 
-import net.mgsx.fwk.editor.Tool;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.math.Vector2;
+
+import net.mgsx.fwk.editor.Tool;
 
 public class PanTool extends Tool
 {

@@ -1,18 +1,13 @@
 package net.mgsx.box2d.editor.tools;
 
 import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
-import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 
 import net.mgsx.box2d.editor.BodyItem;
 import net.mgsx.box2d.editor.FixtureItem;
 import net.mgsx.box2d.editor.WorldItem;
-import net.mgsx.fwk.editor.Tool;
 import net.mgsx.fwk.editor.tools.RectangleTool;
 
 public class CreateRectangleTool extends RectangleTool {

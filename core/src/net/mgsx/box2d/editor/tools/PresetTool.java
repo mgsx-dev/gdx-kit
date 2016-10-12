@@ -1,12 +1,12 @@
 package net.mgsx.box2d.editor.tools;
 
-import net.mgsx.box2d.editor.Box2DPresets.Box2DPreset;
-import net.mgsx.box2d.editor.WorldItem;
-import net.mgsx.fwk.editor.Tool;
-
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.math.Vector2;
+
+import net.mgsx.box2d.editor.Box2DPresets.Box2DPreset;
+import net.mgsx.box2d.editor.WorldItem;
+import net.mgsx.fwk.editor.Tool;
 
 public class PresetTool extends Tool
 {
