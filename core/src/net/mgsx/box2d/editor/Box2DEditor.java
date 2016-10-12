@@ -11,7 +11,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
@@ -28,6 +27,9 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
 
 import net.mgsx.box2d.editor.Box2DPresets.Box2DPreset;
+import net.mgsx.box2d.editor.behavior.BodyBehavior;
+import net.mgsx.box2d.editor.behavior.PlayerBehavior;
+import net.mgsx.box2d.editor.behavior.SimpleAI;
 import net.mgsx.box2d.editor.persistence.Repository;
 import net.mgsx.box2d.editor.tools.AddSpriteTool;
 import net.mgsx.box2d.editor.tools.CreateChainTool;
@@ -50,7 +52,6 @@ import net.mgsx.box2d.editor.tools.JointWheelTool;
 import net.mgsx.box2d.editor.tools.MoveShapeTool;
 import net.mgsx.box2d.editor.tools.MoveTool;
 import net.mgsx.box2d.editor.tools.ParticleTool;
-import net.mgsx.box2d.editor.tools.PlayerTool;
 import net.mgsx.box2d.editor.tools.PresetTool;
 import net.mgsx.box2d.editor.tools.SelectTool;
 import net.mgsx.fwk.editor.Command;
@@ -184,7 +185,8 @@ public class Box2DEditor extends Editor
 		final Array<Tool> testTools = new Array<Tool>();
 		
 		testTools.add(new ParticleTool(camera, worldItem));
-		testTools.add(new PlayerTool(camera, worldItem));
+		testTools.add(behaviorTool("Player", PlayerBehavior.class));
+		testTools.add(behaviorTool("Simple AI", SimpleAI.class));
 		
 		// ...
 		
@@ -393,6 +395,24 @@ public class Box2DEditor extends Editor
 		resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 	}
 	
+	private Tool behaviorTool(final String name, final Class<? extends BodyBehavior> type) 
+	{
+		return new Tool(name, camera){
+			@Override
+			protected void activate() {
+				BodyItem bodyItem = worldItem.selection.bodies.first();
+				BodyBehavior b = null;
+				if(type != null){
+					b = ReflectionHelper.newInstance(type);
+					b.worldItem = worldItem;
+					b.bodyItem = bodyItem;
+				}
+				bodyItem.behavior = b;
+				end();
+			}
+		};
+	}
+
 	private TextButton createToolButton(final ToolGroup group, final Tool tool) 
 	{
 		final TextButton btTool = new TextButton(tool.name, skin);
@@ -435,7 +455,11 @@ public class Box2DEditor extends Editor
 		Vector2 s = Tool.pixelSize(camera).scl(3);
 		for(BodyItem item : worldItem.selection.bodies){
 			shapeRenderer.rect(item.body.getPosition().x-s.x, item.body.getPosition().y-s.y, 2*s.x, 2*s.y);
+		}	
+		for(BodyItem item : worldItem.items.bodies){
+			if(item.behavior != null) item.behavior.renderDebug(shapeRenderer);
 		}
+		
 		shapeRenderer.end();
 		
 		super.render();

@@ -73,6 +73,10 @@ public class WorldItem
 		for(Actor actor : actors){
 			actor.act(Gdx.graphics.getDeltaTime());
 		}
+		for(BodyItem bodyItem : items.bodies)
+		{
+			if(bodyItem.behavior != null) bodyItem.behavior.act();
+		}
 		
 		// update physics
 		if(settings.runSimulation)
@@ -134,5 +138,31 @@ public class WorldItem
 		world.QueryAABB(callback, pos.x, pos.y, pos.x, pos.y);
 		
 		return objects.size > 0 ? objects.get(0) : null;
+	}
+	public Fixture rayCastFirst(final Vector2 start, Vector2 direction, final float length) {
+		final Fixture [] found = new Fixture[]{null};
+		RayCastCallback callback = new RayCastCallback() {
+			
+			@Override
+			public float reportRayFixture(Fixture fixture, Vector2 point, Vector2 normal, float fraction) {
+				found[0] = point.dst(start) < length ? fixture : null;
+				return 0;
+			}
+		};
+		world.rayCast(callback, start, new Vector2(direction).scl(length).add(start));
+		return found[0];
+	}
+	public Fixture rayCastFirst(Vector2 start, Vector2 end) {
+		final Fixture [] found = new Fixture[]{null};
+		RayCastCallback callback = new RayCastCallback() {
+			
+			@Override
+			public float reportRayFixture(Fixture fixture, Vector2 point, Vector2 normal, float fraction) {
+				found[0] = fixture;
+				return 0;
+			}
+		};
+		world.rayCast(callback, start, end);
+		return found[0];
 	}
 }
