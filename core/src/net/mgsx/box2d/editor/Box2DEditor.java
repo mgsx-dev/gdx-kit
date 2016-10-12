@@ -2,8 +2,34 @@ package net.mgsx.box2d.editor;
 
 import java.lang.reflect.Field;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Texture.TextureFilter;
+import com.badlogic.gdx.graphics.Texture.TextureWrap;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
+import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Event;
+import com.badlogic.gdx.scenes.scene2d.EventListener;
+import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Json;
+
 import net.mgsx.box2d.editor.Box2DPresets.Box2DPreset;
 import net.mgsx.box2d.editor.persistence.Repository;
+import net.mgsx.box2d.editor.tools.AddSpriteTool;
 import net.mgsx.box2d.editor.tools.CreateChainTool;
 import net.mgsx.box2d.editor.tools.CreateCircleTool;
 import net.mgsx.box2d.editor.tools.CreateEdgeTool;
@@ -21,55 +47,27 @@ import net.mgsx.box2d.editor.tools.JointRevoluteTool;
 import net.mgsx.box2d.editor.tools.JointRopeTool;
 import net.mgsx.box2d.editor.tools.JointWeldTool;
 import net.mgsx.box2d.editor.tools.JointWheelTool;
+import net.mgsx.box2d.editor.tools.MoveShapeTool;
 import net.mgsx.box2d.editor.tools.MoveTool;
 import net.mgsx.box2d.editor.tools.ParticleTool;
+import net.mgsx.box2d.editor.tools.PlayerTool;
 import net.mgsx.box2d.editor.tools.PresetTool;
 import net.mgsx.box2d.editor.tools.SelectTool;
 import net.mgsx.fwk.editor.Command;
 import net.mgsx.fwk.editor.Editor;
 import net.mgsx.fwk.editor.NativeService;
 import net.mgsx.fwk.editor.NativeService.DialogCallback;
-import net.mgsx.fwk.editor.tools.PanTool;
 import net.mgsx.fwk.editor.ReflectionHelper;
 import net.mgsx.fwk.editor.Tool;
 import net.mgsx.fwk.editor.ToolGroup;
-
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.assets.loaders.TextureLoader;
-import com.badlogic.gdx.assets.loaders.TextureLoader.TextureParameter;
-import com.badlogic.gdx.assets.loaders.resolvers.AbsoluteFileHandleResolver;
-import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.Texture.TextureFilter;
-import com.badlogic.gdx.graphics.Texture.TextureWrap;
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
-import com.badlogic.gdx.physics.box2d.World;
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Event;
-import com.badlogic.gdx.scenes.scene2d.EventListener;
-import com.badlogic.gdx.scenes.scene2d.ui.ButtonGroup;
-import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup;
-import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.Json;
+import net.mgsx.fwk.editor.tools.PanTool;
+import net.mgsx.fwk.editor.ui.TabPane;
 
 public class Box2DEditor extends Editor 
 {
 	// box2D scene rendering
 	Box2DDebugRenderer renderer;
 	OrthographicCamera camera;
-	SpriteBatch batch;
 	AssetManager assets;
 	
 	Array<Sprite> sprites = new Array<Sprite>();
@@ -132,7 +130,6 @@ public class Box2DEditor extends Editor
 		stage.clear();
 		
 		// rendering
-		batch = new SpriteBatch();
 		camera = new OrthographicCamera();
 		renderer = new Box2DDebugRenderer();
 		
@@ -143,36 +140,56 @@ public class Box2DEditor extends Editor
 		
 		final ToolGroup mainTools = createToolGroup();
 		
-		mainTools.tools.add(new SelectTool(camera, worldItem));
-		mainTools.tools.add(new MoveTool(camera, worldItem));
 		
-		mainTools.tools.add(new CreateRectangleTool(camera, worldItem, null));
-		mainTools.tools.add(new CreatePolygonTool(camera, worldItem, null));
-		mainTools.tools.add(new CreateCircleTool(camera, worldItem, null));
-		mainTools.tools.add(new CreateChainTool(camera, worldItem, null));
-		mainTools.tools.add(new CreateLoopTool(camera, worldItem, null));
-		mainTools.tools.add(new CreateEdgeTool(camera, worldItem, null));
+		// Edit tools
+		final Array<Tool> editTools = new Array<Tool>();
 		
-		
-//		WeldJointDef;
-//		WheelJointDef;
-		
-		mainTools.tools.add(new JointDistanceTool(camera, worldItem));
-		mainTools.tools.add(new JointFrictionTool(camera, worldItem));
-		mainTools.tools.add(new JointGearTool(camera, worldItem));
-		mainTools.tools.add(new JointMotorTool(camera, worldItem));
-		mainTools.tools.add(new JointMouseTool(camera, worldItem));
-		mainTools.tools.add(new JointPrismaticTool(camera, worldItem));
-		mainTools.tools.add(new JointPulleyTool(camera, worldItem));
-		mainTools.tools.add(new JointRevoluteTool(camera, worldItem));
-		mainTools.tools.add(new JointRopeTool(camera, worldItem));
-		mainTools.tools.add(new JointWeldTool(camera, worldItem));
-		mainTools.tools.add(new JointWheelTool(camera, worldItem));
+		editTools.add(new SelectTool(camera, worldItem));
+		editTools.add(new MoveTool(camera, worldItem));
+		editTools.add(new AddSpriteTool(camera, worldItem));
+		editTools.add(new MoveShapeTool(camera, worldItem));
 
-		mainTools.tools.add(new ParticleTool(camera, worldItem));
+		mainTools.tools.addAll(editTools);
+		
+		// Shape tools
+		final Array<Tool> shapeTools = new Array<Tool>();
+		
+		shapeTools.add(new CreateRectangleTool(camera, worldItem));
+		shapeTools.add(new CreatePolygonTool(camera, worldItem));
+		shapeTools.add(new CreateCircleTool(camera, worldItem));
+		shapeTools.add(new CreateChainTool(camera, worldItem));
+		shapeTools.add(new CreateLoopTool(camera, worldItem));
+		shapeTools.add(new CreateEdgeTool(camera, worldItem));
+		
+		mainTools.tools.addAll(shapeTools);
+		
+		// Joint tools
+		final Array<Tool> jointTools = new Array<Tool>();
+		
+		jointTools.add(new JointDistanceTool(camera, worldItem));
+		jointTools.add(new JointFrictionTool(camera, worldItem));
+		jointTools.add(new JointGearTool(camera, worldItem));
+		jointTools.add(new JointMotorTool(camera, worldItem));
+		jointTools.add(new JointMouseTool(camera, worldItem));
+		jointTools.add(new JointPrismaticTool(camera, worldItem));
+		jointTools.add(new JointPulleyTool(camera, worldItem));
+		jointTools.add(new JointRevoluteTool(camera, worldItem));
+		jointTools.add(new JointRopeTool(camera, worldItem));
+		jointTools.add(new JointWeldTool(camera, worldItem));
+		jointTools.add(new JointWheelTool(camera, worldItem));
+
+		mainTools.tools.addAll(jointTools);
+		
+		// Test tools
+		final Array<Tool> testTools = new Array<Tool>();
+		
+		testTools.add(new ParticleTool(camera, worldItem));
+		testTools.add(new PlayerTool(camera, worldItem));
+		
+		// ...
 		
 		mainTools.setDefaultTool(mainTools.tools.get(0));
-		mainTools.setActiveTool(mainTools.tools.get(1));
+		// mainTools.setActiveTool(mainTools.tools.get(1));
 		
 		// remaining...
 		worldEditor = new EntityEditor(skin);
@@ -205,57 +222,6 @@ public class Box2DEditor extends Editor
 						}
 					}
 				}
-			private int px, py;
-			@Override
-			public boolean touchDragged(int screenX, int screenY, int pointer) {
-				
-				if(Gdx.input.isButtonPressed(Input.Buttons.MIDDLE))
-				{
-					Vector3 a = camera.unproject(new Vector3(px, py, 0));
-					Vector3 b = camera.unproject(new Vector3(screenX, screenY, 0));
-					b.sub(a);
-					camera.translate(-b.x, -b.y);
-				}else{
-				}
-				px = screenX;
-				py = screenY;
-				return super.touchDragged(screenX, screenY, pointer);
-			}
-			@Override
-			public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-				
-				Vector3 worldPos = camera.unproject(new Vector3(screenX, screenY, 0));
-				
-				if(button == Input.Buttons.LEFT)
-				{
-					Body body = queryFirstBody(worldPos);
-					if(body != null)
-					{
-						BodyItem item = (BodyItem)body.getUserData();
-						if(ctrl || shift){
-							selection.add(item);
-							history.add(new BodySelectCommand(item));
-						}else{
-							selection.clear();
-							selection.add(item);
-							history.add(new BodySelectCommand(item));
-						}
-						
-						if(body != null) bodySelector.setSelected(item);
-					}
-					else
-					{
-						// TODO history : add selection command, ... etc
-						selection.clear();
-					}
-				}
-				px = screenX;
-				py = screenY;
-				return true;
-			}
-		};
-		
-		Gdx.input.setInputProcessor(new InputMultiplexer(stage, customInput));
 		*/
 		
 		
@@ -283,29 +249,15 @@ public class Box2DEditor extends Editor
 		// XXX worldItem.items.bodies.add(new BodyItem("", null, null));
 		
 		// convert to tools
-		ButtonGroup<TextButton> grpTools = new ButtonGroup<TextButton>();
-		HorizontalGroup presetTable = new HorizontalGroup();
-		presetTable.wrap(true);
+		VerticalGroup presetTable = new VerticalGroup();
+		presetTable.wrap(false);
 		for(Field field : Box2DPresets.class.getDeclaredFields()){
 			if(field.getType() == Box2DPreset.class){
 				final Box2DPreset preset = ReflectionHelper.get(null, field, Box2DPreset.class);
 				final Tool tool = new PresetTool(field.getName(), camera, worldItem, preset);
 				mainTools.tools.add(tool);
+				presetTable.addActor(createToolButton(mainTools, tool));
 			}
-		}
-		
-		// create tool bar
-		for(Tool tool : mainTools.tools){
-			final Tool finalTool = tool;
-			TextButton btTool = new TextButton(tool.name, skin);
-			btTool.addListener(new ChangeListener() {
-				@Override
-				public void changed(ChangeEvent event, Actor actor) {
-					mainTools.setActiveTool(finalTool);
-				}
-			});
-			grpTools.add(btTool);
-			presetTable.addActor(btTool);
 		}
 		
 		bodySelector.setItems(worldItem.items.bodies);
@@ -363,23 +315,42 @@ public class Box2DEditor extends Editor
 				});
 			}
 		});
+
 		
+		VerticalGroup worldPane = new VerticalGroup();
+		worldPane.addActor(btReset);
+		worldPane.addActor(btSave);
+		worldPane.addActor(btOpen);
+		worldPane.addActor(playPauseButton);
+		worldPane.addActor(btBg);
 		
-		Table hgMain = new Table();
-		hgMain.add(btReset);
-		hgMain.add(btSave);
-		hgMain.add(btOpen);
-		hgMain.add(playPauseButton);
-		hgMain.add(btBg);
+		VerticalGroup shapePane = new VerticalGroup();
+		for(Tool tool : shapeTools) shapePane.addActor(createToolButton(mainTools, tool));
 		
+		VerticalGroup jointPane = new VerticalGroup();
+		for(Tool tool : jointTools) jointPane.addActor(createToolButton(mainTools, tool));
+
+		VerticalGroup testPane = new VerticalGroup();
+		for(Tool tool : testTools) testPane.addActor(createToolButton(mainTools, tool));
+
+		VerticalGroup editPane = new VerticalGroup();
+		for(Tool tool : editTools) editPane.addActor(createToolButton(mainTools, tool));
 		
-		Table vg = new Table();
-		vg.add(hgMain).row();
-		vg.add(presetTable).expand().fill().row();
-		vg.add(worldEditor).row();
+		TabPane tabs = new TabPane(skin);
+		tabs.addTab("World", worldPane);
+		tabs.addTab("Shapes", shapePane);
+		tabs.addTab("Edit", editPane);
+		tabs.addTab("Joints", jointPane);
+		tabs.addTab("Test", testPane);
+		tabs.addTab("Presets", presetTable);
+		tabs.addTab("Test", testPane);
+
+		tabs.add(worldEditor);
+		
+		tabs.setTab(worldPane);
 		
 		Table main = new Table(skin);
-		main.add(vg).expand().top().left();
+		main.add(tabs).expand().top().left();
 		
 		main.setFillParent(true);
 		stage.addActor(main);
@@ -422,30 +393,43 @@ public class Box2DEditor extends Editor
 		resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 	}
 	
+	private TextButton createToolButton(final ToolGroup group, final Tool tool) 
+	{
+		final TextButton btTool = new TextButton(tool.name, skin);
+		btTool.addListener(new ChangeListener() {
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				if(btTool.isChecked()) group.setActiveTool(tool);
+			}
+		});
+		group.addButton(btTool);
+		return btTool;
+	}
+
 	@Override
-	public void render () {
-		
-		if(worldItem.settings.runSimulation)
-		{
-			worldItem.world.step(
-					worldItem.settings.timeStep, 
-					worldItem.settings.velocityIterations, 
-					worldItem.settings.positionIterations);
-		}
-		
+	public void render () 
+	{
+		// update logic
+		worldItem.update();
+
+		// draw
 		camera.update(true);
 		
 		Gdx.gl.glClearColor(.5f, .5f, .5f, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		
+		// draw sprites (background and then other sprites)
 		batch.setTransformMatrix(camera.view);
 		batch.setProjectionMatrix(camera.projection);
 		batch.begin();
 		for(Sprite sprite : sprites) sprite.draw(batch);
+		for(SpriteItem spriteItem : worldItem.sprites) spriteItem.sprite.draw(batch);
 		batch.end();
 		
+		// draw box2D debug
 		renderer.render(worldItem.world, camera.combined);
 		
+		// draw other shapes (tools)
 		shapeRenderer.setProjectionMatrix(camera.combined);
 		shapeRenderer.begin(ShapeType.Filled);
 		Vector2 s = Tool.pixelSize(camera).scl(3);

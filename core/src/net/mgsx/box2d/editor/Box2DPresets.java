@@ -44,6 +44,7 @@ public class Box2DPresets
 			this.id = id;
 			this.def = def;
 			this.joint = joint;
+			if(joint != null) joint.setUserData(this);
 		}
 		
 	}

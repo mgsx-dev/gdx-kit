@@ -10,6 +10,7 @@ public class BodyItem
 	public BodyDef def;
 	public Body body;
 	public Array<FixtureItem> fixtures;
+	public SpriteItem sprite;
 	
 	public BodyItem(String id, BodyDef def, Body body) {
 		super();

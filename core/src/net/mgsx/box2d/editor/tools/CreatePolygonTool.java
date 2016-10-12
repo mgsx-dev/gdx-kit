@@ -20,41 +20,31 @@ import com.badlogic.gdx.utils.Array;
 public class CreatePolygonTool extends MultiClickTool
 {
 	private WorldItem worldItem;
-	private BodyItem bodyItem;
 	
-	public CreatePolygonTool(Camera camera, WorldItem worldItem, BodyItem bodyItem) {
+	public CreatePolygonTool(Camera camera, WorldItem worldItem) {
 		super("Polygon", camera);
 		this.worldItem = worldItem;
-		this.bodyItem = bodyItem;
 	}
 
 
 	@Override
 	protected void complete() 
 	{
-		if(dots.size <= 0) return;
+		if(dots.size < 3) return;
 		
-		if(bodyItem == null){
-			BodyDef bodyDef = worldItem.settings.body();
-			bodyDef.position.set(dots.first());
-			Body body = worldItem.world.createBody(bodyDef);
-			bodyItem = new BodyItem("", bodyDef, body);
-			worldItem.items.bodies.add(bodyItem);
-		}
-
+		BodyItem bodyItem = worldItem.currentBody("Polygon", dots.get(0).x, dots.get(0).y);
+		
 		PolygonShape shape = new PolygonShape();
 		
 		// TODO find another way or create helper
 		Vector2 [] array = new Vector2[dots.size];
-		for(int i=0 ; i<dots.size; i++) array[i] = new Vector2(dots.get(i)).sub(dots.get(0));
+		for(int i=0 ; i<dots.size; i++) array[i] = new Vector2(dots.get(i)).sub(bodyItem.body.getPosition());
 		shape.set(array);
 		
 		FixtureDef def = worldItem.settings.fixture();
 		def.shape = shape;
 		
-		bodyItem.fixtures.add(new FixtureItem("Chain", def, bodyItem.body.createFixture(def)));
-
-		bodyItem = null; // clear because of convex crash!
+		bodyItem.fixtures.add(new FixtureItem("Polygon", def, bodyItem.body.createFixture(def)));
 	}
 
 }

@@ -7,6 +7,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -19,7 +20,8 @@ public class Editor extends ApplicationAdapter
 	protected Skin skin;
 	protected Stage stage;
 	protected ShapeRenderer shapeRenderer;
-
+	protected SpriteBatch batch;
+	
 	final private Array<ToolGroup> tools = new Array<ToolGroup>();
 	
 	private InputMultiplexer toolDelegator;
@@ -32,6 +34,7 @@ public class Editor extends ApplicationAdapter
 		stage = new Stage(new ScreenViewport());
 		history = new CommandHistory();
 		shapeRenderer = new ShapeRenderer();
+		batch = new SpriteBatch();
 		
 		toolDelegator = new InputMultiplexer();
 		
@@ -54,6 +57,11 @@ public class Editor extends ApplicationAdapter
 	@Override
 	public void render() 
 	{
+		batch.begin();
+		for(ToolGroup g : tools){
+			g.render(batch);
+		}
+		batch.end();
 		for(ToolGroup g : tools){
 			g.render(shapeRenderer);
 		}

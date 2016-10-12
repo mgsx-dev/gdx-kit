@@ -18,13 +18,10 @@ import net.mgsx.fwk.editor.tools.RectangleTool;
 public class CreateRectangleTool extends RectangleTool {
 
 	private WorldItem worldItem;
-	private BodyItem bodyItem;
 	
-	
-	public CreateRectangleTool(Camera camera, WorldItem worldItem, BodyItem bodyItem) {
+	public CreateRectangleTool(Camera camera, WorldItem worldItem) {
 		super("Rectangle", camera);
 		this.worldItem = worldItem;
-		this.bodyItem = bodyItem;
 	}
 
 	@Override
@@ -34,22 +31,16 @@ public class CreateRectangleTool extends RectangleTool {
 		float y = (startPoint.y + endPoint.y) / 2;
 		float w = Math.abs(startPoint.x - endPoint.x);
 		float h = Math.abs(startPoint.y - endPoint.y);
+
+		BodyItem bodyItem = worldItem.currentBody("Rectangle", x, y);
 		
 		PolygonShape pshape = new PolygonShape();
-		pshape.setAsBox(w/2, h/2); 
+		pshape.setAsBox(w/2, h/2, new Vector2(x, y).sub(bodyItem.body.getPosition()), 0); 
 		
-		BodyDef def = worldItem.settings.body();
-		def.position.set(x, y);
-		
-		// TODO fixture template from worldItem (from user edit)
 		FixtureDef fix = worldItem.settings.fixture();
 		fix.shape = pshape;
 		
-		Body body = worldItem.world.createBody(def);
-
-		BodyItem bodyItem = new BodyItem("Polygon", def, body);
 		bodyItem.fixtures.add(new FixtureItem("Polygon", fix, bodyItem.body.createFixture(fix)));
-		worldItem.items.bodies.add(bodyItem);
 	}
 	
 	

@@ -22,39 +22,28 @@ import com.badlogic.gdx.utils.Array;
 public class CreateLoopTool extends MultiClickTool
 {
 	private WorldItem worldItem;
-	private BodyItem bodyItem;
 	
-	public CreateLoopTool(Camera camera, WorldItem worldItem, BodyItem bodyItem) {
+	public CreateLoopTool(Camera camera, WorldItem worldItem) {
 		super("Loop", camera);
 		this.worldItem = worldItem;
-		this.bodyItem = bodyItem;
 	}
 
 
 	@Override
 	protected void complete() 
 	{
-		if(bodyItem == null){
-			BodyDef bodyDef = worldItem.settings.body();
-			bodyDef.position.set(dots.first());
-			Body body = worldItem.world.createBody(bodyDef);
-			bodyItem = new BodyItem("", bodyDef, body);
-			worldItem.items.bodies.add(bodyItem);
-		}
-
+		final BodyItem bodyItem = worldItem.currentBody("Chain Loop", dots.get(0).x, dots.get(0).y);
 		
 		ChainShape shape = new ChainShape();
 		// TODO find another way or create helper
 		Vector2 [] array = new Vector2[dots.size];
-		for(int i=0 ; i<dots.size; i++) array[i] = new Vector2(dots.get(i)).sub(dots.get(0));
+		for(int i=0 ; i<dots.size; i++) array[i] = new Vector2(dots.get(i)).sub(bodyItem.body.getPosition());
 		shape.createLoop(array);
 		
 		FixtureDef def = worldItem.settings.fixture();
 		def.shape = shape;
 		
-		bodyItem.fixtures.add(new FixtureItem("Chain", def, bodyItem.body.createFixture(def)));
-		
-		bodyItem = null; // clear because of convex crash!
+		bodyItem.fixtures.add(new FixtureItem("Chain Loop", def, bodyItem.body.createFixture(def)));
 	}
 
 }

@@ -4,7 +4,9 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.maps.tiled.renderers.BatchTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 
@@ -40,6 +42,9 @@ public class Tool extends InputAdapter
 	public void render(ShapeRenderer renderer){
 		
 	}
+	public void render(Batch batch){
+		
+	}
 	final protected void end(){
 		group.end(this);
 	}
@@ -58,6 +63,9 @@ public class Tool extends InputAdapter
 		
 	}
 	
+	protected void activate(){}
+	protected void desactivate(){}
+	
 	protected final boolean ctrl(){
 		return Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT) ||
 				Gdx.input.isKeyPressed(Input.Keys.CONTROL_RIGHT);
@@ -68,4 +76,5 @@ public class Tool extends InputAdapter
 				Gdx.input.isKeyPressed(Input.Keys.SHIFT_RIGHT);
 
 	}
+	
 }
