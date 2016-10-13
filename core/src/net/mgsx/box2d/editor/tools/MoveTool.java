@@ -5,6 +5,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 
 import net.mgsx.box2d.editor.model.BodyItem;
+import net.mgsx.box2d.editor.model.SpriteItem;
 import net.mgsx.box2d.editor.model.WorldItem;
 import net.mgsx.fwk.editor.tools.Tool;
 
@@ -13,6 +14,7 @@ public class MoveTool extends Tool
 	private WorldItem worldItem;
 	private BodyItem bodyItem;
 	private Vector2 prev;
+	private boolean moving = false;
 	
 	public MoveTool(Camera camera, WorldItem worldItem) {
 		super("Move", camera);
@@ -22,20 +24,26 @@ public class MoveTool extends Tool
 	@Override
 	public boolean touchUp(int screenX, int screenY, int pointer,
 			int button) {
-		if(bodyItem != null){
-			for(BodyItem bodyItem : worldItem.selection.bodies){
-				bodyItem.body.setGravityScale(1);
-				bodyItem.body.applyForceToCenter(0, 0, true);
+		if(moving){
+			moving = false;
+			
+			if(bodyItem != null){
+				for(BodyItem bodyItem : worldItem.selection.bodies){
+					bodyItem.body.setGravityScale(1);
+					bodyItem.body.applyForceToCenter(0, 0, true);
+				}
+				bodyItem = null;
 			}
-			bodyItem = null;
+			
 		}
 		return false;
 	}
 	
 	@Override
 	public boolean touchDragged(int screenX, int screenY, int pointer) {
-		if(bodyItem != null){
+		if(moving){
 			Vector2 worldPos = unproject(screenX, screenY);
+			Vector2 delta = new Vector2(worldPos).sub(prev);
 			for(BodyItem bodyItem : worldItem.selection.bodies){
 				bodyItem.body.setAngularVelocity(0);
 				bodyItem.body.setGravityScale(0);
@@ -45,6 +53,11 @@ public class MoveTool extends Tool
 						bodyItem.body.getAngle());
 				bodyItem.body.applyForceToCenter(0, 0, true); // wakeup to allow collisions !
 			}
+			for(SpriteItem spriteItem : worldItem.selection.sprites){
+				spriteItem.sprite.setPosition(spriteItem.sprite.getX() + delta.x, spriteItem.sprite.getY() + delta.y);
+			}
+			
+			
 			prev = worldPos;
 			return true; // catch event
 		}
@@ -53,15 +66,30 @@ public class MoveTool extends Tool
 	
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-		Body body = worldItem.queryFirstBody(unproject(screenX, screenY));
+		Vector2 worldPoint = unproject(screenX, screenY);
+		Body body = worldItem.queryFirstBody(worldPoint);
+		prev = unproject(screenX, screenY);
 		if(body != null)
 		{
+			moving = true;
 			bodyItem = (BodyItem)body.getUserData();
 			for(BodyItem bodyItem : worldItem.selection.bodies){
 				bodyItem.body.setGravityScale(0);
 			}
-			prev = unproject(screenX, screenY);
 			if(worldItem.selection.bodies.contains(bodyItem, true)){
+				return true; // catch event if target in selection (prevent selection tool to operate)
+			}
+		}
+		SpriteItem currentSprite = null;
+		for(SpriteItem spriteItem : worldItem.items.sprites){
+			if(spriteItem.sprite.getBoundingRectangle().contains(worldPoint)){
+				currentSprite = spriteItem;
+			}
+		}
+		if(currentSprite != null)
+		{
+			moving = true;
+			if(worldItem.selection.sprites.contains(currentSprite, true)){
 				return true; // catch event if target in selection (prevent selection tool to operate)
 			}
 		}

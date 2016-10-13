@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.BodyDef;
 
 import net.mgsx.box2d.editor.model.BodyItem;
 import net.mgsx.box2d.editor.model.SpriteItem;
@@ -67,9 +68,11 @@ public class AddSpriteTool extends RectangleTool
 	protected void create(Vector2 startPoint, Vector2 endPoint) {
 		
 		if(spriteItem != null){
-			worldItem.sprites.add(spriteItem);
-			BodyItem bodyItem = worldItem.selection.bodies.first();
-			bodyItem.sprite = spriteItem;
+			worldItem.items.sprites.add(spriteItem);
+			if(worldItem.selection.bodies.size == 1){
+				BodyItem bodyItem = worldItem.selection.bodies.first();
+				bodyItem.sprite = spriteItem;
+			}
 			spriteItem = null;
 		}
 	}

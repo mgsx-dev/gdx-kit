@@ -12,6 +12,7 @@ import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
@@ -68,6 +69,7 @@ import net.mgsx.fwk.editor.tools.ToolGroup;
 import net.mgsx.fwk.editor.tools.ZoomTool;
 import net.mgsx.fwk.editor.ui.TabPane;
 
+// TODO some shapes (chain) can'be used in dynamic objects ! use polygon instead but restrict to convex hull and 3 to 8 vertex !
 public class Box2DEditor extends Editor 
 {
 	// box2D scene rendering
@@ -422,9 +424,12 @@ public class Box2DEditor extends Editor
 		// draw sprites (background and then other sprites)
 		batch.setTransformMatrix(camera.view);
 		batch.setProjectionMatrix(camera.projection);
+		batch.enableBlending();
+		batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 		batch.begin();
 		for(Sprite sprite : sprites) sprite.draw(batch);
 		for(SpriteItem spriteItem : worldItem.sprites) spriteItem.sprite.draw(batch);
+		for(SpriteItem spriteItem : worldItem.items.sprites) spriteItem.sprite.draw(batch);
 		batch.end();
 		
 		// draw box2D debug
@@ -441,6 +446,14 @@ public class Box2DEditor extends Editor
 			if(item.behavior != null) item.behavior.renderDebug(shapeRenderer);
 		}
 		
+		shapeRenderer.end();
+		
+		shapeRenderer.begin(ShapeType.Line);
+		for(SpriteItem item : worldItem.selection.sprites){
+			Rectangle r = item.sprite.getBoundingRectangle();
+			shapeRenderer.rect(item.sprite.getX(), item.sprite.getY(), item.sprite.getWidth(), item.sprite.getHeight());
+			shapeRenderer.rect(r.x, r.y, r.width, r.height);
+		}
 		shapeRenderer.end();
 		
 		super.render();
