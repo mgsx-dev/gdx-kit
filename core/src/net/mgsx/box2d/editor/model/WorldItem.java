@@ -1,4 +1,4 @@
-package net.mgsx.box2d.editor;
+package net.mgsx.box2d.editor.model;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.MathUtils;

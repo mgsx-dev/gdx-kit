@@ -5,9 +5,9 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.ChainShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 
-import net.mgsx.box2d.editor.BodyItem;
-import net.mgsx.box2d.editor.FixtureItem;
-import net.mgsx.box2d.editor.WorldItem;
+import net.mgsx.box2d.editor.model.BodyItem;
+import net.mgsx.box2d.editor.model.FixtureItem;
+import net.mgsx.box2d.editor.model.WorldItem;
 import net.mgsx.fwk.editor.tools.MultiClickTool;
 
 public class CreateChainTool extends MultiClickTool

@@ -4,6 +4,8 @@ import com.badlogic.gdx.math.Vector2;
 
 import net.mgsx.box2d.editor.Box2DPresets.Box2DPreset;
 import net.mgsx.box2d.editor.Box2DPresets.Items;
+import net.mgsx.box2d.editor.model.BodyItem;
+import net.mgsx.box2d.editor.model.WorldItem;
 import net.mgsx.fwk.editor.Command;
 
 public class Box2DCommands {

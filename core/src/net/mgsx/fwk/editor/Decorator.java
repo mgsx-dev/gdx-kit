@@ -1,7 +1,8 @@
-package net.mgsx.box2d.editor;
+package net.mgsx.fwk.editor;
 
 import com.badlogic.gdx.utils.Array;
 
+// TODO is it usefull ?
 class Decorator<T>
 {
 	public static interface Mapper<T>{

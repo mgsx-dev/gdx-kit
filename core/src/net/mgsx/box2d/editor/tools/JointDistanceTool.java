@@ -4,8 +4,8 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.joints.DistanceJointDef;
 
-import net.mgsx.box2d.editor.BodyItem;
-import net.mgsx.box2d.editor.WorldItem;
+import net.mgsx.box2d.editor.model.BodyItem;
+import net.mgsx.box2d.editor.model.WorldItem;
 
 public class JointDistanceTool extends JointTool<DistanceJointDef> {
 	public JointDistanceTool(Camera camera, WorldItem worldItem) {

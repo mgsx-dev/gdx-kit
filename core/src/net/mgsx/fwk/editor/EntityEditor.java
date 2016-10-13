@@ -1,4 +1,4 @@
-package net.mgsx.box2d.editor;
+package net.mgsx.fwk.editor;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -15,8 +15,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
 import com.badlogic.gdx.utils.Array;
-
-import net.mgsx.fwk.editor.ReflectionHelper;
 
 public class EntityEditor extends Table
 {

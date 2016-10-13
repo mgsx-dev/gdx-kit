@@ -14,6 +14,9 @@ import com.badlogic.gdx.physics.box2d.joints.RevoluteJointDef;
 import com.badlogic.gdx.physics.box2d.joints.RopeJointDef;
 import com.badlogic.gdx.utils.Array;
 
+import net.mgsx.box2d.editor.model.BodyItem;
+import net.mgsx.box2d.editor.model.FixtureItem;
+
 public class Box2DPresets 
 {
 	public static interface Box2DPreset{

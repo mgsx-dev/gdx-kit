@@ -10,9 +10,9 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 
-import net.mgsx.box2d.editor.BodyItem;
-import net.mgsx.box2d.editor.SpriteItem;
-import net.mgsx.box2d.editor.WorldItem;
+import net.mgsx.box2d.editor.model.BodyItem;
+import net.mgsx.box2d.editor.model.SpriteItem;
+import net.mgsx.box2d.editor.model.WorldItem;
 import net.mgsx.fwk.editor.NativeService;
 import net.mgsx.fwk.editor.NativeService.DialogCallback;
 import net.mgsx.fwk.editor.tools.RectangleTool;

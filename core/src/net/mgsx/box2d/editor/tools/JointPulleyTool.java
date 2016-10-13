@@ -4,8 +4,8 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.joints.PulleyJointDef;
 
-import net.mgsx.box2d.editor.BodyItem;
-import net.mgsx.box2d.editor.WorldItem;
+import net.mgsx.box2d.editor.model.BodyItem;
+import net.mgsx.box2d.editor.model.WorldItem;
 
 public class JointPulleyTool extends JointTool<PulleyJointDef> {
 	public JointPulleyTool(Camera camera, WorldItem worldItem) 
