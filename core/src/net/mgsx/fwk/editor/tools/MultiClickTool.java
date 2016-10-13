@@ -33,6 +33,10 @@ abstract public class MultiClickTool extends Tool
 		this.maxPoints = maxPoints;
 	}
 	
+	protected boolean isRunning() {
+		return running;
+	}
+	
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
 		if(button == Input.Buttons.LEFT){

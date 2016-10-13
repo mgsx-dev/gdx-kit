@@ -11,7 +11,6 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.physics.box2d.joints.PulleyJointDef;
 import com.badlogic.gdx.physics.box2d.joints.RevoluteJointDef;
-import com.badlogic.gdx.physics.box2d.joints.RopeJoint;
 import com.badlogic.gdx.physics.box2d.joints.RopeJointDef;
 import com.badlogic.gdx.utils.Array;
 
@@ -177,8 +176,6 @@ public class Box2DPresets
 //					def.localAnchorB.set(x, y-i*10);
 					def.maxLength = 1;
 					Joint joint = world.createJoint(def);
-					RopeJoint rj = (RopeJoint)joint;
-					// rj.
 					items.joints.add(new JointItem("rope node", def, joint));
 				}
 				

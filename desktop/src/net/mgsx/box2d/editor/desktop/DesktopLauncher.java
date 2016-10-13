@@ -17,6 +17,7 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 public class DesktopLauncher {
 	public static void main (String[] arg) {
 		
+		// TODO replace this native interface either by attaching to LibGDX applet or pure LibGDX browser ...
 		NativeService.instance = new NativeServiceInterface() {
 			
 			@Override
@@ -24,14 +25,15 @@ public class DesktopLauncher {
 				JApplet applet = new JApplet();
 				final JFileChooser fc = new JFileChooser();
 				int r = fc.showSaveDialog(applet);
-				final File file = fc.getSelectedFile();
-				Gdx.app.postRunnable(new Runnable() {
-					
-					@Override
-					public void run() {
-						callback.selected(Gdx.files.absolute(file.getAbsolutePath()));
-					}
-				});
+				if(r == JFileChooser.APPROVE_OPTION){
+					final File file = fc.getSelectedFile();
+					Gdx.app.postRunnable(new Runnable() {
+						@Override
+						public void run() {
+							callback.selected(Gdx.files.absolute(file.getAbsolutePath()));
+						}
+					});
+				}
 				applet.destroy();
 			}
 			
@@ -40,23 +42,20 @@ public class DesktopLauncher {
 				JApplet applet = new JApplet();
 				final JFileChooser fc = new JFileChooser();
 				int r = fc.showOpenDialog(applet);
-				final File file = fc.getSelectedFile();
-				Gdx.app.postRunnable(new Runnable() {
-					
-					@Override
-					public void run() {
-						callback.selected(Gdx.files.absolute(file.getAbsolutePath()));
-					}
-				});
+				if(r == JFileChooser.APPROVE_OPTION){
+					final File file = fc.getSelectedFile();
+					Gdx.app.postRunnable(new Runnable() {
+						@Override
+						public void run() {
+							callback.selected(Gdx.files.absolute(file.getAbsolutePath()));
+						}
+					});
+				}
 				applet.destroy();
 			}
 		};
 		
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		new LwjglApplication(new Box2DEditor(), config);
-		
-		
-		
-		
 	}
 }

@@ -30,7 +30,7 @@ public class SkinFactory {
 		NinePatch patch = grid(region);
 		renderer.translate(s+1, 0, 0);
 		int s2 = drawSquare(renderer, Color.RED, Color.LIGHT_GRAY, 2);
-		TextureRegion region2 = new TextureRegion(fbo.getColorBufferTexture(), 0 + s + 1, 0, s, s);
+		TextureRegion region2 = new TextureRegion(fbo.getColorBufferTexture(), 0 + s + 1, 0, s2, s2);
 		NinePatch patch2 = grid(region2);
 		
 		fbo.end();

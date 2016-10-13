@@ -30,13 +30,11 @@ public class ParticleTool extends Tool
 	}
 	
 	private Array<Particle> particles = new Array<ParticleTool.Particle>();
-	private Array<Body> bodies = new Array<Body>();
 	private FlushablePool<Particle> pool;
 	
 	public ParticleTool(Camera camera, WorldItem worldItem) {
 		super("Particle", camera);
 		this.worldItem = worldItem;
-		bodies = new Array<Body>();
 		pool = new FlushablePool<ParticleTool.Particle>(){
 			@Override
 			protected Particle newObject() {

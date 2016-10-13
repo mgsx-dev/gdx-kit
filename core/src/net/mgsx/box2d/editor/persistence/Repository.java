@@ -197,11 +197,13 @@ public class Repository
 		}
 		Json json = new Json();
 		json.setSerializer(Body.class, new Json.Serializer<Body>() {
+			@SuppressWarnings("rawtypes")
 			@Override
 			public void write(Json json, Body object, Class knownType) 
 			{
 				json.writeValue(null);
 			}
+			@SuppressWarnings("rawtypes")
 			@Override
 			public Body read(Json json, JsonValue jsonData, Class type) {
 				return null;

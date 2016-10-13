@@ -24,7 +24,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.Json;
 
 import net.mgsx.box2d.editor.Box2DPresets.Box2DPreset;
 import net.mgsx.box2d.editor.behavior.BodyBehavior;
@@ -54,7 +53,6 @@ import net.mgsx.box2d.editor.tools.MoveTool;
 import net.mgsx.box2d.editor.tools.ParticleTool;
 import net.mgsx.box2d.editor.tools.PresetTool;
 import net.mgsx.box2d.editor.tools.SelectTool;
-import net.mgsx.fwk.editor.Command;
 import net.mgsx.fwk.editor.Editor;
 import net.mgsx.fwk.editor.NativeService;
 import net.mgsx.fwk.editor.NativeService.DialogCallback;
@@ -76,29 +74,6 @@ public class Box2DEditor extends Editor
 	SelectBox<BodyItem> bodySelector;
 	
 	EntityEditor entityEditor, worldEditor;
-	
-	private void save(){
-		new Json().toJson(worldItem.settings);
-	}
-	
-	
-	// NOTE keep it !
-	private class BodySelectCommand extends Command
-	{
-		private BodyItem item, previous;
-		public BodySelectCommand(BodyItem item){
-			this.item = item;
-		}
-		@Override
-		public void commit() {
-			previous = bodySelector.getSelected();
-			bodySelector.setSelected(item);
-		}
-		@Override
-		public void rollback() {
-			bodySelector.setSelected(previous);
-		}
-	}
 	
 	private WorldItem worldItem;
 
