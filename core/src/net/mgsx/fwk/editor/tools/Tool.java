@@ -1,4 +1,4 @@
-package net.mgsx.fwk.editor;
+package net.mgsx.fwk.editor.tools;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -24,7 +24,7 @@ import com.badlogic.gdx.math.Vector3;
  * 
  * See ToolGroup : exclusive tool (eg select + draw)
  */
-public class Tool extends InputAdapter
+public class Tool extends ToolBase
 {
 	protected Vector2 unproject(int screenX, int screenY) {
 		Vector3 v = camera.unproject(new Vector3(screenX, screenY, 0));
@@ -32,7 +32,7 @@ public class Tool extends InputAdapter
 	}
 	
 	protected Camera camera;
-	ToolGroup group;
+	
 	final public String name;
 	public Tool(String name, Camera camera) {
 		this.name = name;
@@ -43,9 +43,6 @@ public class Tool extends InputAdapter
 	}
 	public void render(Batch batch){
 		
-	}
-	final protected void end(){
-		group.end(this);
 	}
 	/**
 	 * return size of 1 pixel in camera space
@@ -62,18 +59,5 @@ public class Tool extends InputAdapter
 		
 	}
 	
-	protected void activate(){}
-	protected void desactivate(){}
-	
-	protected final boolean ctrl(){
-		return Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT) ||
-				Gdx.input.isKeyPressed(Input.Keys.CONTROL_RIGHT);
-
-	}
-	protected final boolean shift(){
-		return Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT) ||
-				Gdx.input.isKeyPressed(Input.Keys.SHIFT_RIGHT);
-
-	}
 	
 }

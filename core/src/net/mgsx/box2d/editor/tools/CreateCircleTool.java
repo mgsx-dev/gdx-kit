@@ -7,6 +7,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 
+import net.mgsx.box2d.editor.commands.Box2DCommands;
 import net.mgsx.box2d.editor.model.BodyItem;
 import net.mgsx.box2d.editor.model.FixtureItem;
 import net.mgsx.box2d.editor.model.WorldItem;
@@ -36,7 +37,7 @@ public class CreateCircleTool extends RectangleTool {
 		FixtureDef fix = worldItem.settings.fixture();
 		fix.shape = shape;
 		
-		bodyItem.fixtures.add(new FixtureItem("Circle", fix, bodyItem.body.createFixture(fix)));
+		worldItem.performCommand(Box2DCommands.addShape(worldItem, bodyItem, fix));
 	}
 	
 	@Override

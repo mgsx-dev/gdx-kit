@@ -6,7 +6,7 @@ import com.badlogic.gdx.math.Vector2;
 
 import net.mgsx.box2d.editor.Box2DPresets.Box2DPreset;
 import net.mgsx.box2d.editor.model.WorldItem;
-import net.mgsx.fwk.editor.Tool;
+import net.mgsx.fwk.editor.tools.Tool;
 
 public class PresetTool extends Tool
 {

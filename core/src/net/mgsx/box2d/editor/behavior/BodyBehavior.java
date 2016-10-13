@@ -11,8 +11,6 @@ abstract public class BodyBehavior implements Behavior
 	public WorldItem worldItem;
 	public BodyItem bodyItem;
 	
-	public void renderDebug(ShapeRenderer renderer){
-		
-	}
+	public void renderDebug(ShapeRenderer renderer){}
 
 }

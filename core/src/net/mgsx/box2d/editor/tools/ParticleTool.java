@@ -11,7 +11,7 @@ import com.badlogic.gdx.utils.FlushablePool;
 import net.mgsx.box2d.editor.Box2DPresets;
 import net.mgsx.box2d.editor.model.BodyItem;
 import net.mgsx.box2d.editor.model.WorldItem;
-import net.mgsx.fwk.editor.Tool;
+import net.mgsx.fwk.editor.tools.Tool;
 
 public class ParticleTool extends Tool
 {

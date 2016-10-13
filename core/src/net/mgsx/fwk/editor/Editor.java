@@ -11,6 +11,8 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 import net.mgsx.box2d.editor.SkinFactory;
+import net.mgsx.fwk.editor.tools.ToolGroup;
+import net.mgsx.fwk.editor.tools.UndoTool;
 
 public class Editor extends ApplicationAdapter
 {
@@ -37,6 +39,8 @@ public class Editor extends ApplicationAdapter
 		toolDelegator = new InputMultiplexer();
 		
 		Gdx.input.setInputProcessor(new InputMultiplexer(stage, toolDelegator));
+		
+		createToolGroup().addProcessor(new UndoTool(history));
 	}
 
 	public ToolGroup createToolGroup() 

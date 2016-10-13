@@ -61,9 +61,9 @@ import net.mgsx.fwk.editor.EntityEditor;
 import net.mgsx.fwk.editor.NativeService;
 import net.mgsx.fwk.editor.NativeService.DialogCallback;
 import net.mgsx.fwk.editor.ReflectionHelper;
-import net.mgsx.fwk.editor.Tool;
-import net.mgsx.fwk.editor.ToolGroup;
 import net.mgsx.fwk.editor.tools.PanTool;
+import net.mgsx.fwk.editor.tools.Tool;
+import net.mgsx.fwk.editor.tools.ToolGroup;
 import net.mgsx.fwk.editor.ui.TabPane;
 
 public class Box2DEditor extends Editor 
@@ -90,7 +90,7 @@ public class Box2DEditor extends Editor
 		Texture.setAssetManager(assets);
 		
 		// box 2D
-		worldItem = new WorldItem();
+		worldItem = new WorldItem(history);
 		worldItem.world = new World(worldItem.settings.gravity, true);
 
 		rebuild();
@@ -190,22 +190,6 @@ public class Box2DEditor extends Editor
 			}
 		});
 		
-		// TODO transform to tools
-		/*
-				if(keycode == Input.Keys.Z)
-				{
-					if(ctrl)
-					{
-						if(shift){
-							history.redo();
-						}else{
-							history.undo();
-						}
-					}
-				}
-		*/
-		
-		
 		TextButton btReset = new TextButton("Reset", skin);
 		btReset.addListener(new ChangeListener() {
 			@Override
@@ -226,8 +210,6 @@ public class Box2DEditor extends Editor
 		
 		bodySelector = new SelectBox<BodyItem>(skin);
 		
-		
-		// XXX worldItem.items.bodies.add(new BodyItem("", null, null));
 		
 		// convert to tools
 		VerticalGroup presetTable = new VerticalGroup();

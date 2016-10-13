@@ -4,9 +4,11 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.physics.box2d.Joint;
 import com.badlogic.gdx.physics.box2d.JointDef;
 
-import net.mgsx.box2d.editor.Box2DPresets.JointItem;
+import net.mgsx.box2d.editor.commands.Box2DCommands;
 import net.mgsx.box2d.editor.model.BodyItem;
+import net.mgsx.box2d.editor.model.JointItem;
 import net.mgsx.box2d.editor.model.WorldItem;
+import net.mgsx.fwk.editor.Command;
 import net.mgsx.fwk.editor.tools.MultiClickTool;
 
 abstract public class JointTool<T extends JointDef> extends MultiClickTool 
@@ -30,13 +32,11 @@ abstract public class JointTool<T extends JointDef> extends MultiClickTool
 		BodyItem bodyA = worldItem.selection.bodies.get(worldItem.selection.bodies.size-2);
 		BodyItem bodyB = worldItem.selection.bodies.get(worldItem.selection.bodies.size-1);
 		
-		T def = createJoint(bodyA, bodyB);
+		final T def = createJoint(bodyA, bodyB);
 		
 		def.bodyA = bodyA.body;
 		def.bodyB = bodyB.body;
 		
-		Joint joint = worldItem.world.createJoint(def);
-		
-		worldItem.items.joints.add(new JointItem(name, def, joint));
+		worldItem.performCommand(Box2DCommands.addJoint(worldItem, name, def));
 	}
 }

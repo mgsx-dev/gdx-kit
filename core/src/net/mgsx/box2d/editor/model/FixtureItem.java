@@ -20,6 +20,7 @@ public class FixtureItem {
 
 	public void recreateAt(Vector2 offset) 
 	{
+		// TODO maybe another way ...
 		Repository.importShape(Repository.exportShape(this), offset);
 		
 	}

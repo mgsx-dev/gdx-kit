@@ -7,8 +7,6 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 
-import net.mgsx.fwk.editor.Tool;
-
 abstract public class RectangleTool extends Tool
 {
 	public RectangleTool(String name, Camera camera) {

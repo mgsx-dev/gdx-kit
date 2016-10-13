@@ -74,7 +74,6 @@ public class SkinFactory {
 	
 	private static int drawSquare(ShapeRenderer renderer, Color fill, Color stroke, int strokeSize)
 	{
-		// TODO
 		// draw stroke as full rect
 		// then draw fill as smaller rect
 		

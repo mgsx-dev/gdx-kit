@@ -5,6 +5,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.EdgeShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 
+import net.mgsx.box2d.editor.commands.Box2DCommands;
 import net.mgsx.box2d.editor.model.BodyItem;
 import net.mgsx.box2d.editor.model.FixtureItem;
 import net.mgsx.box2d.editor.model.WorldItem;
@@ -35,7 +36,7 @@ public class CreateEdgeTool extends MultiClickTool
 		FixtureDef def = worldItem.settings.fixture();
 		def.shape = shape;
 		
-		bodyItem.fixtures.add(new FixtureItem("Edge", def, bodyItem.body.createFixture(def)));
+		worldItem.performCommand(Box2DCommands.addShape(worldItem, bodyItem, def));
 	}
 
 }

@@ -8,8 +8,6 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 
-import net.mgsx.fwk.editor.Tool;
-
 /**
  * This tool is used as follow :
  * - user left click multiple times

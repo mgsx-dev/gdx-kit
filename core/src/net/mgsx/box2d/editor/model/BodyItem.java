@@ -8,11 +8,11 @@ import net.mgsx.box2d.editor.behavior.BodyBehavior;
 
 public class BodyItem
 {
-	public String id;
+	public String id; // TODO confusion with id/name in persistence model and ui model
 	public BodyDef def;
 	public Body body;
 	public Array<FixtureItem> fixtures;
-	public SpriteItem sprite;
+	public SpriteItem sprite; // TODO is sprite attached to body or introduce link body <=> sprite ?
 	public BodyBehavior behavior;
 	
 	public BodyItem(String id, BodyDef def, Body body) {

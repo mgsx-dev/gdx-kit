@@ -18,6 +18,7 @@ public class EditorSettings
 		fixtureDef.density = 1.0f;
 	}
 	
+	// TODO copy utils for box 2D ?
 	public BodyDef body() {
 		BodyDef d = new BodyDef();
 		d.active = bodyDef.active;

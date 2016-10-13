@@ -5,6 +5,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 
+import net.mgsx.box2d.editor.commands.Box2DCommands;
 import net.mgsx.box2d.editor.model.BodyItem;
 import net.mgsx.box2d.editor.model.FixtureItem;
 import net.mgsx.box2d.editor.model.WorldItem;
@@ -35,7 +36,7 @@ public class CreateRectangleTool extends RectangleTool {
 		FixtureDef fix = worldItem.settings.fixture();
 		fix.shape = pshape;
 		
-		bodyItem.fixtures.add(new FixtureItem("Polygon", fix, bodyItem.body.createFixture(fix)));
+		worldItem.performCommand(Box2DCommands.addShape(worldItem, bodyItem, fix));
 	}
 	
 	

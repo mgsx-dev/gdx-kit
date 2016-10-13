@@ -8,7 +8,7 @@ import com.badlogic.gdx.physics.box2d.Fixture;
 import net.mgsx.box2d.editor.model.BodyItem;
 import net.mgsx.box2d.editor.model.FixtureItem;
 import net.mgsx.box2d.editor.model.WorldItem;
-import net.mgsx.fwk.editor.Tool;
+import net.mgsx.fwk.editor.tools.Tool;
 
 public class MoveShapeTool extends Tool
 {

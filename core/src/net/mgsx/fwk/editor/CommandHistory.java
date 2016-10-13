@@ -16,13 +16,13 @@ public class CommandHistory
 		if(head < history.size-1)
 			history.removeRange(head+1, history.size-1);
 		history.add(cmd);
-		cmd.commit();
+		cmd.commit(); // TODO error handling
 		head++;
 	}
 	
 	public boolean undo(){
 		if(head >= 0){
-			history.get(head--).rollback();
+			history.get(head--).rollback(); // TODO error handling
 			return true;
 		}else{
 			return false;
@@ -31,7 +31,7 @@ public class CommandHistory
 	
 	public boolean redo(){
 		if(head < history.size-1){
-			history.get(++head).commit();
+			history.get(++head).commit(); // TODO error handling
 			return true;
 		}else{
 			return false;

@@ -12,9 +12,10 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.Array;
 
-import net.mgsx.box2d.editor.Box2DPresets.Items;
-import net.mgsx.box2d.editor.Box2DPresets.JointItem;
+import net.mgsx.fwk.editor.Command;
+import net.mgsx.fwk.editor.CommandHistory;
 
+// TODO it is more an EditorContext (ctx) ...
 public class WorldItem 
 {
 	public EditorSettings settings = new EditorSettings();
@@ -24,6 +25,15 @@ public class WorldItem
 	public Items selection = new Items();
 	public Array<Actor> actors = new Array<Actor>();
 	public Array<SpriteItem> sprites = new Array<SpriteItem>();
+	
+	private final CommandHistory commandHistory;
+	
+	
+	
+	public WorldItem(CommandHistory commandHistory) {
+		super();
+		this.commandHistory = commandHistory;
+	}
 	public void addAll(Items items) {
 		this.items.addAll(items);
 	}
@@ -163,5 +173,11 @@ public class WorldItem
 		};
 		world.rayCast(callback, start, end);
 		return found[0];
+	}
+	public void performCommand(Command command) 
+	{
+		// TODO add to history ... 
+		commandHistory.add(command);
+		
 	}
 }

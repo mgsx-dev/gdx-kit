@@ -1,4 +1,4 @@
-package net.mgsx.fwk.editor;
+package net.mgsx.fwk.editor.tools;
 
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -42,7 +42,7 @@ public class ToolGroup extends InputMultiplexer
 		if(activeTool != null) activeTool.render(renderer);
 	}
 
-	final void end(Tool tool) {
+	final void end(ToolBase tool) {
 		if(defaultTool != null) setActiveTool(defaultTool);
 	}
 

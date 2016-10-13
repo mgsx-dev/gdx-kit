@@ -6,49 +6,21 @@ import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.Joint;
-import com.badlogic.gdx.physics.box2d.JointDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.physics.box2d.joints.PulleyJointDef;
 import com.badlogic.gdx.physics.box2d.joints.RevoluteJointDef;
 import com.badlogic.gdx.physics.box2d.joints.RopeJointDef;
-import com.badlogic.gdx.utils.Array;
 
 import net.mgsx.box2d.editor.model.BodyItem;
 import net.mgsx.box2d.editor.model.FixtureItem;
+import net.mgsx.box2d.editor.model.Items;
+import net.mgsx.box2d.editor.model.JointItem;
 
 public class Box2DPresets 
 {
 	public static interface Box2DPreset{
 		public void create(Items items, World world, float x, float y);
-	}
-	
-	public static class Items
-	{
-		public Array<JointItem> joints = new Array<JointItem>();
-		public Array<BodyItem> bodies = new Array<BodyItem>();
-		public void addAll(Items items) {
-			joints.addAll(items.joints);
-			bodies.addAll(items.bodies);
-		}
-		public void clear() {
-			joints.clear();
-			bodies.clear();
-		}
-	}
-	public static class JointItem
-	{
-		public String id;
-		public JointDef def;
-		public Joint joint;
-		public JointItem(String id, JointDef def, Joint joint) {
-			super();
-			this.id = id;
-			this.def = def;
-			this.joint = joint;
-			if(joint != null) joint.setUserData(this);
-		}
-		
 	}
 	
 	public static final Box2DPreset ball = new Box2DPreset() {

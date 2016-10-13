@@ -21,10 +21,10 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
 
-import net.mgsx.box2d.editor.Box2DPresets.JointItem;
 import net.mgsx.box2d.editor.model.BodyItem;
 import net.mgsx.box2d.editor.model.EditorSettings;
 import net.mgsx.box2d.editor.model.FixtureItem;
+import net.mgsx.box2d.editor.model.JointItem;
 import net.mgsx.box2d.editor.model.WorldItem;
 
 public class Repository 
