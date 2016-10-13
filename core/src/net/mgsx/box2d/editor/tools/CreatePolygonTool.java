@@ -7,7 +7,6 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 
 import net.mgsx.box2d.editor.commands.Box2DCommands;
 import net.mgsx.box2d.editor.model.BodyItem;
-import net.mgsx.box2d.editor.model.FixtureItem;
 import net.mgsx.box2d.editor.model.WorldItem;
 import net.mgsx.fwk.editor.tools.MultiClickTool;
 

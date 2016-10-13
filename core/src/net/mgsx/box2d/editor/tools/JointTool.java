@@ -1,14 +1,11 @@
 package net.mgsx.box2d.editor.tools;
 
 import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.physics.box2d.Joint;
 import com.badlogic.gdx.physics.box2d.JointDef;
 
 import net.mgsx.box2d.editor.commands.Box2DCommands;
 import net.mgsx.box2d.editor.model.BodyItem;
-import net.mgsx.box2d.editor.model.JointItem;
 import net.mgsx.box2d.editor.model.WorldItem;
-import net.mgsx.fwk.editor.Command;
 import net.mgsx.fwk.editor.tools.MultiClickTool;
 
 abstract public class JointTool<T extends JointDef> extends MultiClickTool 

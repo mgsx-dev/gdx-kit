@@ -6,7 +6,6 @@ import com.badlogic.gdx.physics.box2d.joints.PulleyJointDef;
 
 import net.mgsx.box2d.editor.model.BodyItem;
 import net.mgsx.box2d.editor.model.WorldItem;
-import net.mgsx.fwk.editor.Command;
 
 public class JointPulleyTool extends JointTool<PulleyJointDef> {
 	public JointPulleyTool(Camera camera, WorldItem worldItem) 
