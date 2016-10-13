@@ -53,6 +53,7 @@ import net.mgsx.box2d.editor.tools.JointWeldTool;
 import net.mgsx.box2d.editor.tools.JointWheelTool;
 import net.mgsx.box2d.editor.tools.MoveShapeTool;
 import net.mgsx.box2d.editor.tools.MoveTool;
+import net.mgsx.box2d.editor.tools.NoTool;
 import net.mgsx.box2d.editor.tools.ParticleTool;
 import net.mgsx.box2d.editor.tools.PresetTool;
 import net.mgsx.box2d.editor.tools.SelectTool;
@@ -64,6 +65,7 @@ import net.mgsx.fwk.editor.ReflectionHelper;
 import net.mgsx.fwk.editor.tools.PanTool;
 import net.mgsx.fwk.editor.tools.Tool;
 import net.mgsx.fwk.editor.tools.ToolGroup;
+import net.mgsx.fwk.editor.tools.ZoomTool;
 import net.mgsx.fwk.editor.ui.TabPane;
 
 public class Box2DEditor extends Editor 
@@ -81,6 +83,12 @@ public class Box2DEditor extends Editor
 	
 	private WorldItem worldItem;
 
+	private String lastLoadedAbsolutePath;
+	public Box2DEditor(String absolutePath) 
+	{
+		lastLoadedAbsolutePath = absolutePath;
+	}
+	
 	@Override
 	public void create () 
 	{
@@ -91,7 +99,14 @@ public class Box2DEditor extends Editor
 		
 		// box 2D
 		worldItem = new WorldItem(history);
-		worldItem.world = new World(worldItem.settings.gravity, true);
+		if(lastLoadedAbsolutePath != null){
+			FileHandle file = Gdx.files.absolute(lastLoadedAbsolutePath);
+			if(file.exists())
+			{
+				Repository.load(file, worldItem);
+			}
+		}
+		worldItem.initialize();
 
 		rebuild();
 	}
@@ -107,25 +122,26 @@ public class Box2DEditor extends Editor
 	
 	private void rebuild()
 	{
+		super.reset();
+		
 		stage.clear();
 		
 		// rendering
 		camera = new OrthographicCamera();
 		renderer = new Box2DDebugRenderer();
 		
-		// tools
-		ToolGroup panToolGroup = createToolGroup();
-		panToolGroup.setActiveTool(new PanTool(camera));
-		
-		
-		final ToolGroup mainTools = createToolGroup();
-		
+		// Tools stack (order is important !)
+		//
+		final ToolGroup mainTools = createToolGroup(); // TODO mainTools are contectual tools ....
+		createToolGroup().addProcessor(new ZoomTool(camera));
+		createToolGroup().addProcessor(new PanTool(camera));
+		createToolGroup().addProcessor(new MoveTool(camera, worldItem));
+		createToolGroup().addProcessor(new SelectTool(camera, worldItem));
+
 		
 		// Edit tools
 		final Array<Tool> editTools = new Array<Tool>();
 		
-		editTools.add(new SelectTool(camera, worldItem));
-		editTools.add(new MoveTool(camera, worldItem));
 		editTools.add(new AddSpriteTool(camera, worldItem));
 		editTools.add(new MoveShapeTool(camera, worldItem));
 
@@ -169,8 +185,11 @@ public class Box2DEditor extends Editor
 		
 		// ...
 		
-		mainTools.setDefaultTool(mainTools.tools.get(0));
-		// mainTools.setActiveTool(mainTools.tools.get(1));
+
+
+		
+		mainTools.setDefaultTool(null);
+		mainTools.setActiveTool(null);
 		
 		// remaining...
 		worldEditor = new EntityEditor(skin);
@@ -308,6 +327,7 @@ public class Box2DEditor extends Editor
 		tabs.addTab("Presets", presetTable);
 		tabs.addTab("Test", testPane);
 
+		tabs.add(createToolButton(mainTools, new NoTool(camera))).row();
 		tabs.add(worldEditor);
 		
 		tabs.setTab(worldPane);

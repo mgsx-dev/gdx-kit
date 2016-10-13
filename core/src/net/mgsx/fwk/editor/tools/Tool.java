@@ -26,8 +26,15 @@ import com.badlogic.gdx.math.Vector3;
  */
 public class Tool extends ToolBase
 {
-	protected Vector2 unproject(int screenX, int screenY) {
+	protected Vector2 unproject(float screenX, float screenY) {
 		Vector3 v = camera.unproject(new Vector3(screenX, screenY, 0));
+		return new Vector2(v.x, v.y);
+	}
+	protected Vector2 unproject(Vector2 screenPosition) {
+		return unproject(screenPosition.x, screenPosition.y);
+	}
+	protected Vector2 project(Vector2 worldPosition) {
+		Vector3 v = camera.project(new Vector3(worldPosition.x, worldPosition.y, 0));
 		return new Vector2(v.x, v.y);
 	}
 	

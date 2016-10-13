@@ -23,26 +23,30 @@ public class MoveTool extends Tool
 	public boolean touchUp(int screenX, int screenY, int pointer,
 			int button) {
 		if(bodyItem != null){
-			bodyItem.body.setGravityScale(1);
-			bodyItem.body.applyForceToCenter(0, 0, true);
+			for(BodyItem bodyItem : worldItem.selection.bodies){
+				bodyItem.body.setGravityScale(1);
+				bodyItem.body.applyForceToCenter(0, 0, true);
+			}
 			bodyItem = null;
 		}
-		return super.touchUp(screenX, screenY, pointer, button);
+		return false;
 	}
 	
 	@Override
 	public boolean touchDragged(int screenX, int screenY, int pointer) {
 		if(bodyItem != null){
 			Vector2 worldPos = unproject(screenX, screenY);
-			bodyItem.body.setAngularVelocity(0);
-			bodyItem.body.setGravityScale(0);
-			bodyItem.body.setLinearVelocity(0, 0);
-			bodyItem.body.setTransform(
-					new Vector2(bodyItem.body.getPosition()).add(worldPos).sub(prev), 
-					bodyItem.body.getAngle());
-			bodyItem.body.applyForceToCenter(0, 0, true); // wakeup to allow collisions !
+			for(BodyItem bodyItem : worldItem.selection.bodies){
+				bodyItem.body.setAngularVelocity(0);
+				bodyItem.body.setGravityScale(0);
+				bodyItem.body.setLinearVelocity(0, 0);
+				bodyItem.body.setTransform(
+						new Vector2(bodyItem.body.getPosition()).add(worldPos).sub(prev), 
+						bodyItem.body.getAngle());
+				bodyItem.body.applyForceToCenter(0, 0, true); // wakeup to allow collisions !
+			}
 			prev = worldPos;
-			return true;
+			return true; // catch event
 		}
 		return super.touchDragged(screenX, screenY, pointer);
 	}
@@ -53,10 +57,14 @@ public class MoveTool extends Tool
 		if(body != null)
 		{
 			bodyItem = (BodyItem)body.getUserData();
-			bodyItem.body.setGravityScale(0);
+			for(BodyItem bodyItem : worldItem.selection.bodies){
+				bodyItem.body.setGravityScale(0);
+			}
 			prev = unproject(screenX, screenY);
-			return true;
+			if(worldItem.selection.bodies.contains(bodyItem, true)){
+				return true; // catch event if target in selection (prevent selection tool to operate)
+			}
 		}
-		return super.touchDown(screenX, screenY, pointer, button);
+		return false;
 	}
 }

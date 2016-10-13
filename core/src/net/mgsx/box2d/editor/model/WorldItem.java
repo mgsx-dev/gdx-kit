@@ -34,6 +34,21 @@ public class WorldItem
 		super();
 		this.commandHistory = commandHistory;
 	}
+	
+	public void initialize() {
+		if(world == null){
+			world = new World(settings.gravity, true); // TODO settings for doSleep 
+		}
+	}
+	
+	public void dispose() {
+		items.clear();
+		selection.clear();
+		if(world != null) world.dispose();
+	}
+
+	
+	
 	public void addAll(Items items) {
 		this.items.addAll(items);
 	}
@@ -180,4 +195,6 @@ public class WorldItem
 		commandHistory.add(command);
 		
 	}
+
+	
 }

@@ -24,6 +24,8 @@ public class CreateChainTool extends MultiClickTool
 	@Override
 	protected void complete() 
 	{
+		if(dots.size < 2) return;
+		
 		final BodyItem bodyItem = worldItem.currentBody("Chain", dots.get(0).x, dots.get(0).y);
 
 		ChainShape shape = new ChainShape();

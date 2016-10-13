@@ -195,34 +195,46 @@ public class Repository
 			jd.bodyB = bodiesID.get((BodyItem)jointItem.joint.getBodyB().getUserData());
 			data.joints.add(jd);
 		}
+		
+		createMapper().toJson(data, file);
+	}
+	private static class IgnoreSerializer<T> implements Json.Serializer<T>{
+		@SuppressWarnings("rawtypes")
+		@Override
+		public void write(Json json, T object, Class knownType) 
+		{
+			json.writeValue(null);
+		}
+		@SuppressWarnings("rawtypes")
+		@Override
+		public T read(Json json, JsonValue jsonData, Class type) {
+			return null;
+		}
+	}
+	private static Json createMapper(){
 		Json json = new Json();
-		json.setSerializer(Body.class, new Json.Serializer<Body>() {
-			@SuppressWarnings("rawtypes")
-			@Override
-			public void write(Json json, Body object, Class knownType) 
-			{
-				json.writeValue(null);
-			}
-			@SuppressWarnings("rawtypes")
-			@Override
-			public Body read(Json json, JsonValue jsonData, Class type) {
-				return null;
-			}
-		}); 
-		json.toJson(data, file);
+		
+		// ignore all Box2D body (native binding) included in JointDef
+		json.setSerializer(Body.class, new IgnoreSerializer<Body>()); 
+		
+		// ignore all Box2D shapes (native binding) included in FixtureDef
+		json.setSerializer(Shape.class, new IgnoreSerializer<Shape>()); 
+		json.setSerializer(ChainShape.class, new IgnoreSerializer<ChainShape>()); 
+		json.setSerializer(CircleShape.class, new IgnoreSerializer<CircleShape>()); 
+		json.setSerializer(EdgeShape.class, new IgnoreSerializer<EdgeShape>()); 
+		json.setSerializer(PolygonShape.class, new IgnoreSerializer<PolygonShape>());
+		
+		return json;
 	}
 	public static void load(FileHandle file, WorldItem worldItem)
 	{
 		// need to recreate world here ...
 		
-		worldItem.items.clear();
-		worldItem.selection.clear();
-		worldItem.world.dispose();
+		worldItem.dispose();
 		
 		final Map<String, BodyItem> bodies = new HashMap<String, BodyItem>();
 		
-		Json json = new Json();
-		Data data = json.fromJson(Data.class, file);
+		Data data = createMapper().fromJson(Data.class, file);
 		worldItem.settings = data.settings;
 		worldItem.world = new World(worldItem.settings.gravity, true); // TODO doSleep is option ?
 		
