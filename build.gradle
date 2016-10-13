@@ -17,6 +17,7 @@ allprojects {
     ext {
         appName = "box2d-editor"
         gdxVersion = '1.9.4'
+        gdxAiVersion = '1.7.0'
         roboVMVersion = '2.2.0'
         box2DLightsVersion = '1.4'
         ashleyVersion = '1.7.0'
@@ -50,6 +51,7 @@ project(":core") {
     dependencies {
         compile "com.badlogicgames.gdx:gdx:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
+        compile "com.badlogicgames.gdx:gdx-ai:$gdxAiVersion"
     }
 }
 
