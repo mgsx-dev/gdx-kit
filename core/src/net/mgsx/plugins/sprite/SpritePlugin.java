@@ -34,6 +34,7 @@ public class SpritePlugin extends Plugin
 			}
 		});
 		
+		editor.addTool("Add Sprite", new AddSpriteTool(editor.orthographicCamera, editor));
 		editor.addGlobalTool(new SelectSpriteTool(editor));
 	}
 /*

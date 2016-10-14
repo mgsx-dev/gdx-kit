@@ -14,10 +14,8 @@ import com.badlogic.gdx.math.Vector2;
 import net.mgsx.core.Editor;
 import net.mgsx.core.NativeService;
 import net.mgsx.core.NativeService.DialogCallback;
+import net.mgsx.core.plugins.Movable;
 import net.mgsx.core.tools.RectangleTool;
-import net.mgsx.plugins.box2d.model.BodyItem;
-import net.mgsx.plugins.box2d.model.SpriteItem;
-import net.mgsx.plugins.box2d.model.WorldItem;
 
 public class AddSpriteTool extends RectangleTool 
 {
@@ -61,9 +59,9 @@ public class AddSpriteTool extends RectangleTool
 	@Override
 	public void render(ShapeRenderer renderer) 
 	{
-		if(sprite == null){
+		//if(sprite == null){
 			super.render(renderer);
-		}
+		//}
 	}
 
 	@Override
@@ -72,6 +70,7 @@ public class AddSpriteTool extends RectangleTool
 		if(sprite != null){
 			Entity entity = editor.currentEntity();
 			entity.add(sprite);
+			entity.add(new Movable(new SpriteMove(sprite.sprite)));
 			sprite = null;
 		}
 	}

@@ -19,7 +19,7 @@ public class PanTool extends Tool
 		{
 			
 			Vector2 worldPos = new Vector2(screenX, screenY);
-			Vector2 delta = new Vector2(worldPos).sub(prev).scl(pixelSize()).scl(2);  // TODO why 2 ?
+			Vector2 delta = new Vector2(worldPos).sub(prev).scl(pixelSize());
 			camera.translate(-delta.x, delta.y, 0);
 			camera.update(true);
 			prev = worldPos;

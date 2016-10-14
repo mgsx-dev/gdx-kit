@@ -28,9 +28,8 @@ import com.badlogic.gdx.utils.Array;
 import net.mgsx.core.Editor;
 import net.mgsx.core.EntityEditor;
 import net.mgsx.core.NativeService;
-import net.mgsx.core.ReflectionHelper;
-import net.mgsx.core.plugins.Plugin;
 import net.mgsx.core.NativeService.DialogCallback;
+import net.mgsx.core.ReflectionHelper;
 import net.mgsx.core.tools.PanTool;
 import net.mgsx.core.tools.Tool;
 import net.mgsx.core.tools.ToolGroup;
@@ -68,7 +67,6 @@ import net.mgsx.plugins.box2d.tools.ParticleTool;
 import net.mgsx.plugins.box2d.tools.PresetTool;
 import net.mgsx.plugins.box2d.tools.SelectTool;
 import net.mgsx.plugins.sprite.AddSpriteTool;
-import net.mgsx.plugins.sprite.SpritePlugin;
 
 // TODO some shapes (chain) can'be used in dynamic objects ! use polygon instead but restrict to convex hull and 3 to 8 vertex !
 public class Box2DEditor extends Editor 
@@ -140,7 +138,7 @@ public class Box2DEditor extends Editor
 		createToolGroup().addProcessor(new ZoomTool(orthographicCamera));
 		createToolGroup().addProcessor(new PanTool(orthographicCamera));
 		createToolGroup().addProcessor(new MoveTool(orthographicCamera, worldItem));
-		createToolGroup().addProcessor(new SelectTool(orthographicCamera, worldItem));
+		createToolGroup().addProcessor(new SelectTool(this, worldItem));
 
 		
 		// Edit tools
@@ -398,19 +396,6 @@ public class Box2DEditor extends Editor
 		};
 	}
 
-	private TextButton createToolButton(final ToolGroup group, final Tool tool) 
-	{
-		final TextButton btTool = new TextButton(tool.name, skin);
-		btTool.addListener(new ChangeListener() {
-			@Override
-			public void changed(ChangeEvent event, Actor actor) {
-				if(btTool.isChecked()) group.setActiveTool(tool);
-			}
-		});
-		group.addButton(btTool);
-		return btTool;
-	}
-
 	@Override
 	public void render () 
 	{
@@ -424,10 +409,7 @@ public class Box2DEditor extends Editor
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		
 		// draw sprites (background and then other sprites)
-		batch.setTransformMatrix(orthographicCamera.view);
-		batch.setProjectionMatrix(orthographicCamera.projection);
-		batch.enableBlending();
-		batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+		
 		batch.begin();
 		for(Sprite sprite : sprites) sprite.draw(batch);
 		for(SpriteItem spriteItem : worldItem.sprites) spriteItem.sprite.draw(batch);
@@ -439,7 +421,7 @@ public class Box2DEditor extends Editor
 		renderer.render(worldItem.world, orthographicCamera.combined);
 		
 		// draw other shapes (tools)
-		shapeRenderer.setProjectionMatrix(orthographicCamera.combined);
+		
 		shapeRenderer.begin(ShapeType.Filled);
 		Vector2 s = Tool.pixelSize(orthographicCamera).scl(3);
 		for(BodyItem item : worldItem.selection.bodies){
@@ -463,15 +445,5 @@ public class Box2DEditor extends Editor
 		super.render();
 	}
 	
-	@Override
-	public void resize(int width, int height) {
-		super.resize(width, height);
-		orthographicCamera.setToOrtho(false, 5 * (float)width/(float)height, 5);
-//		float wscale = 0.01f;
-//		camera.setToOrtho(false, width , height);
-		orthographicCamera.update(true);
-
-	}
-
 	
 }

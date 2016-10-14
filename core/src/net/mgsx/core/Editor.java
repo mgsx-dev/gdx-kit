@@ -10,13 +10,17 @@ import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
@@ -24,11 +28,13 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import net.mgsx.core.plugins.EditablePlugin;
 import net.mgsx.core.plugins.Plugin;
 import net.mgsx.core.plugins.StorablePlugin;
+import net.mgsx.core.tools.MoveToolBase;
+import net.mgsx.core.tools.PanTool;
 import net.mgsx.core.tools.Tool;
 import net.mgsx.core.tools.ToolGroup;
 import net.mgsx.core.tools.UndoTool;
 import net.mgsx.plugins.box2d.SkinFactory;
-import net.mgsx.plugins.sprite.SpriteModel;
+import net.mgsx.plugins.box2d.tools.NoTool;
 
 public class Editor extends ApplicationAdapter
 {
@@ -39,6 +45,7 @@ public class Editor extends ApplicationAdapter
 	protected SpriteBatch batch;
 	
 	protected Table panel;
+	protected Table buttons;
 	protected Table outline;
 	
 	private Array<Plugin> plugins = new Array<Plugin>();
@@ -51,6 +58,8 @@ public class Editor extends ApplicationAdapter
 	
 	public OrthographicCamera orthographicCamera;
 	public PerspectiveCamera perspectiveCamera;
+	
+	private ToolGroup mainToolGroup;
 	
 	public void registerPlugin(Plugin plugin) {
 		plugins.add(plugin);
@@ -92,6 +101,8 @@ public class Editor extends ApplicationAdapter
 		
 		panel = new Table(skin);
 		// TODO add menu
+		buttons = new Table(skin);
+		panel.add(buttons);
 		panel.add(outline);
 		
 		Table main = new Table();
@@ -102,12 +113,17 @@ public class Editor extends ApplicationAdapter
 		
 		createToolGroup().addProcessor(new UndoTool(history));
 		
+		mainToolGroup = createToolGroup();
+		addTool("Select", new NoTool(orthographicCamera));;
+		
+		addGlobalTool(new MoveToolBase(this));
+		addGlobalTool(new PanTool(orthographicCamera));
+		
 		// finally initiate plugins.
 		for(Plugin plugin : plugins){
 			plugin.initialize(this);
 		}
 		
-
 	}
 
 	public ToolGroup createToolGroup() 
@@ -131,6 +147,25 @@ public class Editor extends ApplicationAdapter
 	@Override
 	public void render() 
 	{
+		if(selectionDirty){
+			selectionDirty = false;
+			if(selection.size > 0) setSelection(selection.get(selection.size-1)); else setSelection(null);
+		}
+		
+		orthographicCamera.update(true);
+		
+		shapeRenderer.setProjectionMatrix(orthographicCamera.combined);
+		
+		batch.setTransformMatrix(orthographicCamera.view);
+		batch.setProjectionMatrix(orthographicCamera.projection);
+		batch.enableBlending();
+		batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+		
+		Gdx.gl.glClearColor(.5f, .5f, .5f, 1);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+		entityEngine.update(Gdx.graphics.getDeltaTime());
+		
 		// TODO maybe legacy
 		batch.begin();
 		for(ToolGroup g : tools){
@@ -141,8 +176,6 @@ public class Editor extends ApplicationAdapter
 			g.render(shapeRenderer);
 		}
 		
-		entityEngine.update(Gdx.graphics.getDeltaTime());
-		
 		stage.act();
 		stage.draw();
 		
@@ -151,8 +184,12 @@ public class Editor extends ApplicationAdapter
 	
 	@Override
 	public void resize(int width, int height) {
+		super.resize(width, height);
+		orthographicCamera.setToOrtho(false, 5 * (float)width/(float)height, 5);
+		orthographicCamera.update(true);
 		stage.getViewport().update(width, height, true);
 	}
+	
 	
 	@Override
 	public void dispose () {
@@ -164,28 +201,30 @@ public class Editor extends ApplicationAdapter
 	{
 		json.setSerializer(type, plugin);
 	}
-	private Entity selected = null;
 	private static class EditorEntity implements Component
 	{
 	}
 	public void setSelection(Entity entity) 
 	{
 		outline.clear();
-		selected = entity;
-		// EditorEntity config = entity.getComponent(EditorEntity.class);
-		for(Object aspect : entity.getComponents()){
-			Array<EditablePlugin> editors = editablePlugins.get(aspect.getClass());
-			if(editors != null)
-				for(EditablePlugin editor : editors){
-					
-					outline.add(editor.createEditor(entity, skin)).fill().row();
-				}
+		selection.clear();
+		if(entity != null){
+			selection.add(entity);
+			// EditorEntity config = entity.getComponent(EditorEntity.class);
+			for(Object aspect : entity.getComponents()){
+				Array<EditablePlugin> editors = editablePlugins.get(aspect.getClass());
+				if(editors != null)
+					for(EditablePlugin editor : editors){
+						
+						outline.add(editor.createEditor(entity, skin)).fill().row();
+					}
+			}
 		}
-		
 	}
 	
 	private Map<Class, Array<EditablePlugin>> editablePlugins = new HashMap<Class, Array<EditablePlugin>>();
 	public Array<Entity> selection = new Array<Entity>();
+	private boolean selectionDirty;
 	public <T> void registerPlugin(Class<T> type, EditablePlugin plugin) 
 	{
 		Array<EditablePlugin> plugins = editablePlugins.get(type);
@@ -195,11 +234,34 @@ public class Editor extends ApplicationAdapter
 
 	public Entity currentEntity() 
 	{
-		if(selected == null){
-			selected = entityEngine.createEntity();
-			entityEngine.addEntity(selected);
+		if(selection.size <= 0){
+			Entity entity = entityEngine.createEntity();
+			entityEngine.addEntity(entity);
+			selection.add(entity);
 		}
-		return selected;
+		return selection.get(selection.size-1);
 	}
+
+	public void addTool(String name, Tool tool) {
+		buttons.add(createToolButton(mainToolGroup, tool));
+	}
+	
+	protected TextButton createToolButton(final ToolGroup group, final Tool tool) 
+	{
+		final TextButton btTool = new TextButton(tool.name, skin);
+		btTool.addListener(new ChangeListener() {
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				if(btTool.isChecked()) group.setActiveTool(tool);
+			}
+		});
+		group.addButton(btTool);
+		return btTool;
+	}
+
+	public void invalidateSelection() {
+		selectionDirty = true;
+	}
+
 
 }

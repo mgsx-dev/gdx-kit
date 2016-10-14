@@ -11,7 +11,7 @@ public class SelectSpriteTool extends SelectToolBase
 {
 	private Editor editor;
 	public SelectSpriteTool(Editor editor) {
-		super("", editor.orthographicCamera);
+		super(editor);
 		this.editor = editor;
 	}
 
@@ -30,6 +30,12 @@ public class SelectSpriteTool extends SelectToolBase
 		{
 			handleSelection(found, editor.selection);
 			return true;
+		}
+		else{
+			for(Entity entity : editor.entityEngine.getEntitiesFor(Family.one(SpriteModel.class).get())){
+				editor.selection.removeValue(entity, true);
+				editor.invalidateSelection();
+			}
 		}
 		return super.touchDown(screenX, screenY, pointer, button);
 	}

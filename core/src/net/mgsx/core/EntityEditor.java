@@ -3,6 +3,8 @@ package net.mgsx.core;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Event;
@@ -84,7 +86,7 @@ public class EntityEditor extends Table
 				
 			}else if(field.getType() == float.class){
 				
-				createSlider(entity, fField, entity, fField);
+				createSlider(this, entity, fField, entity, fField);
 				
 				
 			}else if(field.getType() == boolean.class){
@@ -104,9 +106,9 @@ public class EntityEditor extends Table
 			}else if(field.getType() == Vector2.class){
 				Vector2 v = ReflectionHelper.get(entity, fField, Vector2.class);
 				add("(");
-				createSlider(entity, fField, v, ReflectionHelper.field(v, "x"));
+				createSlider(this, entity, fField, v, ReflectionHelper.field(v, "x"));
 				add(",");
-				createSlider(entity, fField, v, ReflectionHelper.field(v, "y"));
+				createSlider(this, entity, fField, v, ReflectionHelper.field(v, "y"));
 				add(")");
 			}else if(field.getType().isEnum()){
 				final SelectBox<Object> selector = new SelectBox<Object>(getSkin());
@@ -130,10 +132,13 @@ public class EntityEditor extends Table
 		}
 	}
 	
-	private void createSlider(final Object rootEntity, final Field rootField, final Object entity, final Field fField){
-		final Label label = new Label("", getSkin());
+	static public void createSlider(final Table table, final Object entity, final Field fField){
+		createSlider(table, entity, fField, entity, fField);
+	}	
+	static public void createSlider(final Table table, final Object rootEntity, final Field rootField, final Object entity, final Field fField){
+		final Label label = new Label("", table.getSkin());
 		label.setText(String.valueOf(ReflectionHelper.get(entity, fField)));
-		add(label);
+		table.add(label);
 		label.addListener(new DragListener(){
 			@Override
 			public void drag(InputEvent event, float x, float y,
@@ -143,7 +148,21 @@ public class EntityEditor extends Table
 				ReflectionHelper.set(entity, fField, value);
 				label.setText(String.valueOf(value));
 				
-				fire(new EntityEvent(rootEntity, rootField, ReflectionHelper.get(rootEntity, rootField)));
+				table.fire(new EntityEvent(rootEntity, rootField, ReflectionHelper.get(rootEntity, rootField)));
+			}
+			@Override
+			public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+				if(button == Input.Buttons.RIGHT){
+					float value = (Float)ReflectionHelper.get(entity, fField);
+					value = -value;
+					ReflectionHelper.set(entity, fField, value);
+					label.setText(String.valueOf(value));
+					
+					table.fire(new EntityEvent(rootEntity, rootField, ReflectionHelper.get(rootEntity, rootField)));
+
+					return true;
+				}
+				return super.touchDown(event, x, y, pointer, button);
 			}
 		});
 	}

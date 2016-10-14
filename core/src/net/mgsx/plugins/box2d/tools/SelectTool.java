@@ -1,12 +1,10 @@
 package net.mgsx.plugins.box2d.tools;
 
-import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.utils.Array;
 
+import net.mgsx.core.Editor;
 import net.mgsx.core.tools.SelectToolBase;
-import net.mgsx.core.tools.Tool;
 import net.mgsx.plugins.box2d.model.BodyItem;
 import net.mgsx.plugins.box2d.model.SpriteItem;
 import net.mgsx.plugins.box2d.model.WorldItem;
@@ -15,8 +13,8 @@ public class SelectTool extends SelectToolBase
 {
 	private WorldItem worldItem;
 	
-	public SelectTool(Camera camera, WorldItem worldItem) {
-		super("Select", camera);
+	public SelectTool(Editor editor, WorldItem worldItem) {
+		super(editor);
 		this.worldItem = worldItem;
 	}
 	
