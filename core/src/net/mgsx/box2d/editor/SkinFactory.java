@@ -41,6 +41,8 @@ public class SkinFactory {
 		
 		Skin skin = new Skin();
 		
+		skin.add("default", patch);
+		
 		LabelStyle lbs = new LabelStyle();
 		lbs.font = font;
 		skin.add("default", lbs);

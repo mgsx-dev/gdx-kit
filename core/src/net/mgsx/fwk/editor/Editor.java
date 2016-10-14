@@ -1,16 +1,27 @@
 package net.mgsx.fwk.editor;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
+import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 import net.mgsx.box2d.editor.SkinFactory;
+import net.mgsx.fwk.editor.plugins.EditablePlugin;
+import net.mgsx.fwk.editor.plugins.FactoryPlugin;
+import net.mgsx.fwk.editor.plugins.RenderablePlugin;
+import net.mgsx.fwk.editor.plugins.StorablePlugin;
 import net.mgsx.fwk.editor.tools.ToolGroup;
 import net.mgsx.fwk.editor.tools.UndoTool;
 
@@ -22,14 +33,30 @@ public class Editor extends ApplicationAdapter
 	protected ShapeRenderer shapeRenderer;
 	protected SpriteBatch batch;
 	
+	protected Table panel;
+	protected Table outline;
+	
 	final private Array<ToolGroup> tools = new Array<ToolGroup>();
 	
 	private InputMultiplexer toolDelegator;
+	
+	public OrthographicCamera orthographicCamera;
+	public PerspectiveCamera perspectiveCamera;
 	
 	@Override
 	public void create() {
 		super.create();
 		
+		Entity.registerFactory(new FactoryPlugin() {
+			@Override
+			public void create(Entity entity) {
+				EditorEntity config = new EditorEntity();
+				config.editors = editablePlugins.get(entity);
+				entity.set(config);
+			}
+		});
+		
+		orthographicCamera = new OrthographicCamera();
 		skin = SkinFactory.createSkin();
 		stage = new Stage(new ScreenViewport());
 		history = new CommandHistory();
@@ -39,6 +66,19 @@ public class Editor extends ApplicationAdapter
 		toolDelegator = new InputMultiplexer();
 		
 		Gdx.input.setInputProcessor(new InputMultiplexer(stage, toolDelegator));
+
+		outline = new Table(skin);
+		
+		
+		panel = new Table(skin);
+		// TODO add menu
+		panel.add(outline);
+		
+		Table main = new Table();
+		main.add(panel).expand().left().top();
+		
+		main.setFillParent(true);
+		stage.addActor(main);
 		
 		createToolGroup().addProcessor(new UndoTool(history));
 	}
@@ -82,4 +122,41 @@ public class Editor extends ApplicationAdapter
 	@Override
 	public void dispose () {
 	}
+
+	private Json json;
+	
+	public <T> void registerPlugin(Class<T> type, StorablePlugin<T> plugin) 
+	{
+		json.setSerializer(type, plugin);
+	}
+	private Entity selected = null;
+	private static class EditorEntity
+	{
+		Array<EditablePlugin> editors;
+		Array<RenderablePlugin> renderers;
+	}
+	public void setSelection(Entity entity) 
+	{
+		outline.clear();
+		selected = entity;
+		EditorEntity config = entity.as(EditorEntity.class);
+		for(Object aspect : entity.aspects()){
+			Array<EditablePlugin> editors = editablePlugins.get(aspect.getClass());
+			if(editors != null)
+				for(EditablePlugin editor : editors){
+					
+					outline.add(editor.createEditor(aspect, skin)).fill().row();
+				}
+		}
+		
+	}
+	
+	private Map<Class, Array<EditablePlugin>> editablePlugins = new HashMap<Class, Array<EditablePlugin>>();
+	public <T> void registerPlugin(Class<T> type, EditablePlugin<T> plugin) 
+	{
+		Array<EditablePlugin> plugins = editablePlugins.get(type);
+		if(plugins == null) editablePlugins.put(type, plugins = new Array<EditablePlugin>());
+		plugins.add(plugin);
+	}
+
 }

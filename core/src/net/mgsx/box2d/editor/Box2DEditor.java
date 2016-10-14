@@ -6,7 +6,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
@@ -74,7 +73,6 @@ public class Box2DEditor extends Editor
 {
 	// box2D scene rendering
 	Box2DDebugRenderer renderer;
-	OrthographicCamera camera;
 	AssetManager assets;
 	
 	Array<Sprite> sprites = new Array<Sprite>();
@@ -129,59 +127,60 @@ public class Box2DEditor extends Editor
 		stage.clear();
 		
 		// rendering
-		camera = new OrthographicCamera();
+		orthographicCamera.position.set(0, 0, 0);
+		orthographicCamera.update();
 		renderer = new Box2DDebugRenderer();
 		
 		// Tools stack (order is important !)
 		//
 		final ToolGroup mainTools = createToolGroup(); // TODO mainTools are contectual tools ....
-		createToolGroup().addProcessor(new ZoomTool(camera));
-		createToolGroup().addProcessor(new PanTool(camera));
-		createToolGroup().addProcessor(new MoveTool(camera, worldItem));
-		createToolGroup().addProcessor(new SelectTool(camera, worldItem));
+		createToolGroup().addProcessor(new ZoomTool(orthographicCamera));
+		createToolGroup().addProcessor(new PanTool(orthographicCamera));
+		createToolGroup().addProcessor(new MoveTool(orthographicCamera, worldItem));
+		createToolGroup().addProcessor(new SelectTool(orthographicCamera, worldItem));
 
 		
 		// Edit tools
 		final Array<Tool> editTools = new Array<Tool>();
 		
-		editTools.add(new AddSpriteTool(camera, worldItem));
-		editTools.add(new MoveShapeTool(camera, worldItem));
+		editTools.add(new AddSpriteTool(orthographicCamera, worldItem));
+		editTools.add(new MoveShapeTool(orthographicCamera, worldItem));
 
 		mainTools.tools.addAll(editTools);
 		
 		// Shape tools
 		final Array<Tool> shapeTools = new Array<Tool>();
 		
-		shapeTools.add(new CreateRectangleTool(camera, worldItem));
-		shapeTools.add(new CreatePolygonTool(camera, worldItem));
-		shapeTools.add(new CreateCircleTool(camera, worldItem));
-		shapeTools.add(new CreateChainTool(camera, worldItem));
-		shapeTools.add(new CreateLoopTool(camera, worldItem));
-		shapeTools.add(new CreateEdgeTool(camera, worldItem));
+		shapeTools.add(new CreateRectangleTool(orthographicCamera, worldItem));
+		shapeTools.add(new CreatePolygonTool(orthographicCamera, worldItem));
+		shapeTools.add(new CreateCircleTool(orthographicCamera, worldItem));
+		shapeTools.add(new CreateChainTool(orthographicCamera, worldItem));
+		shapeTools.add(new CreateLoopTool(orthographicCamera, worldItem));
+		shapeTools.add(new CreateEdgeTool(orthographicCamera, worldItem));
 		
 		mainTools.tools.addAll(shapeTools);
 		
 		// Joint tools
 		final Array<Tool> jointTools = new Array<Tool>();
 		
-		jointTools.add(new JointDistanceTool(camera, worldItem));
-		jointTools.add(new JointFrictionTool(camera, worldItem));
-		jointTools.add(new JointGearTool(camera, worldItem));
-		jointTools.add(new JointMotorTool(camera, worldItem));
-		jointTools.add(new JointMouseTool(camera, worldItem));
-		jointTools.add(new JointPrismaticTool(camera, worldItem));
-		jointTools.add(new JointPulleyTool(camera, worldItem));
-		jointTools.add(new JointRevoluteTool(camera, worldItem));
-		jointTools.add(new JointRopeTool(camera, worldItem));
-		jointTools.add(new JointWeldTool(camera, worldItem));
-		jointTools.add(new JointWheelTool(camera, worldItem));
+		jointTools.add(new JointDistanceTool(orthographicCamera, worldItem));
+		jointTools.add(new JointFrictionTool(orthographicCamera, worldItem));
+		jointTools.add(new JointGearTool(orthographicCamera, worldItem));
+		jointTools.add(new JointMotorTool(orthographicCamera, worldItem));
+		jointTools.add(new JointMouseTool(orthographicCamera, worldItem));
+		jointTools.add(new JointPrismaticTool(orthographicCamera, worldItem));
+		jointTools.add(new JointPulleyTool(orthographicCamera, worldItem));
+		jointTools.add(new JointRevoluteTool(orthographicCamera, worldItem));
+		jointTools.add(new JointRopeTool(orthographicCamera, worldItem));
+		jointTools.add(new JointWeldTool(orthographicCamera, worldItem));
+		jointTools.add(new JointWheelTool(orthographicCamera, worldItem));
 
 		mainTools.tools.addAll(jointTools);
 		
 		// Test tools
 		final Array<Tool> testTools = new Array<Tool>();
 		
-		testTools.add(new ParticleTool(camera, worldItem));
+		testTools.add(new ParticleTool(orthographicCamera, worldItem));
 		testTools.add(behaviorTool("Player", PlayerBehavior.class));
 		testTools.add(behaviorTool("Simple AI", SimpleAI.class));
 		
@@ -238,7 +237,7 @@ public class Box2DEditor extends Editor
 		for(Field field : Box2DPresets.class.getDeclaredFields()){
 			if(field.getType() == Box2DPreset.class){
 				final Box2DPreset preset = ReflectionHelper.get(null, field, Box2DPreset.class);
-				final Tool tool = new PresetTool(field.getName(), camera, worldItem, preset);
+				final Tool tool = new PresetTool(field.getName(), orthographicCamera, worldItem, preset);
 				mainTools.tools.add(tool);
 				presetTable.addActor(createToolButton(mainTools, tool));
 			}
@@ -289,7 +288,7 @@ public class Box2DEditor extends Editor
 						bg.setFilter(TextureFilter.MipMapLinearLinear, TextureFilter.MipMapLinearLinear);
 						bg.setWrap(TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);
 						Sprite bgs = new Sprite(bg); // TODO scale !
-						bgs.setBounds(0, 0, 0.02f * bg.getWidth(), 0.02f * bg.getHeight());
+						bgs.setBounds(0, 0, 0.005f * bg.getWidth() , 0.005f * bg.getHeight());
 						// bgs.setScale(camera.combined.getScaleX(), camera.combined.getScaleY());
 						sprites.add(bgs);
 					}
@@ -329,7 +328,7 @@ public class Box2DEditor extends Editor
 		tabs.addTab("Presets", presetTable);
 		tabs.addTab("Test", testPane);
 
-		tabs.add(createToolButton(mainTools, new NoTool(camera))).row();
+		tabs.add(createToolButton(mainTools, new NoTool(orthographicCamera))).row();
 		tabs.add(worldEditor);
 		
 		tabs.setTab(worldPane);
@@ -380,7 +379,7 @@ public class Box2DEditor extends Editor
 	
 	private Tool behaviorTool(final String name, final Class<? extends BodyBehavior> type) 
 	{
-		return new Tool(name, camera){
+		return new Tool(name, orthographicCamera){
 			@Override
 			protected void activate() {
 				BodyItem bodyItem = worldItem.selection.bodies.first();
@@ -416,14 +415,14 @@ public class Box2DEditor extends Editor
 		worldItem.update();
 
 		// draw
-		camera.update(true);
+		orthographicCamera.update(true);
 		
 		Gdx.gl.glClearColor(.5f, .5f, .5f, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		
 		// draw sprites (background and then other sprites)
-		batch.setTransformMatrix(camera.view);
-		batch.setProjectionMatrix(camera.projection);
+		batch.setTransformMatrix(orthographicCamera.view);
+		batch.setProjectionMatrix(orthographicCamera.projection);
 		batch.enableBlending();
 		batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 		batch.begin();
@@ -432,13 +431,14 @@ public class Box2DEditor extends Editor
 		for(SpriteItem spriteItem : worldItem.items.sprites) spriteItem.sprite.draw(batch);
 		batch.end();
 		
+		if(true){
 		// draw box2D debug
-		renderer.render(worldItem.world, camera.combined);
+		renderer.render(worldItem.world, orthographicCamera.combined);
 		
 		// draw other shapes (tools)
-		shapeRenderer.setProjectionMatrix(camera.combined);
+		shapeRenderer.setProjectionMatrix(orthographicCamera.combined);
 		shapeRenderer.begin(ShapeType.Filled);
-		Vector2 s = Tool.pixelSize(camera).scl(3);
+		Vector2 s = Tool.pixelSize(orthographicCamera).scl(3);
 		for(BodyItem item : worldItem.selection.bodies){
 			shapeRenderer.rect(item.body.getPosition().x-s.x, item.body.getPosition().y-s.y, 2*s.x, 2*s.y);
 		}	
@@ -455,17 +455,18 @@ public class Box2DEditor extends Editor
 			shapeRenderer.rect(r.x, r.y, r.width, r.height);
 		}
 		shapeRenderer.end();
-		
+		}
+		//System.out.println(1.f / Gdx.graphics.getDeltaTime());
 		super.render();
 	}
 	
 	@Override
 	public void resize(int width, int height) {
 		super.resize(width, height);
-		camera.setToOrtho(false, 5 * (float)width/(float)height, 5);
+		orthographicCamera.setToOrtho(false, 5 * (float)width/(float)height, 5);
 //		float wscale = 0.01f;
 //		camera.setToOrtho(false, width , height);
-		camera.update(true);
+		orthographicCamera.update(true);
 
 	}
 }

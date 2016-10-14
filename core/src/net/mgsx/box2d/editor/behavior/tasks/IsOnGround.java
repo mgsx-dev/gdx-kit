@@ -10,7 +10,7 @@ public class IsOnGround extends LeafTask<Body>
 	@Override
 	public Status execute() 
 	{
-		Body body = getObject();
+		// Body body = getObject();
 		
 		// TODO test if ray cast is ok (need to be stored once to avoid perf issues ...)
 		
