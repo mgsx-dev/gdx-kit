@@ -1,15 +1,15 @@
 package net.mgsx.plugins.btree;
 
+import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.ai.btree.BehaviorTree;
+import com.badlogic.gdx.ai.btree.BehaviorTree.Listener;
 import com.badlogic.gdx.ai.btree.BranchTask;
 import com.badlogic.gdx.ai.btree.Decorator;
 import com.badlogic.gdx.ai.btree.LeafTask;
 import com.badlogic.gdx.ai.btree.Task;
-import com.badlogic.gdx.ai.btree.BehaviorTree.Listener;
 import com.badlogic.gdx.ai.btree.Task.Status;
 import com.badlogic.gdx.ai.btree.branch.Sequence;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
@@ -18,7 +18,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 
-import net.mgsx.fwk.editor.Entity;
 import net.mgsx.fwk.editor.plugins.EditablePlugin;
 
 public class BTreeEditor implements EditablePlugin<BTreeModel> {

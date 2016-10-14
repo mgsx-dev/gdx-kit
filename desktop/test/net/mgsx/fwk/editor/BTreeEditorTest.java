@@ -1,5 +1,6 @@
 package net.mgsx.fwk.editor;
 
+import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.ai.btree.BehaviorTree;
 import com.badlogic.gdx.ai.btree.utils.BehaviorTreeLibrary;
 import com.badlogic.gdx.ai.btree.utils.BehaviorTreeLibraryManager;
@@ -10,12 +11,11 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 
 import net.mgsx.plugins.btree.BTreeEditor;
 import net.mgsx.plugins.btree.BTreeModel;
 
-public class AspectEditorTest 
+public class BTreeEditorTest 
 {
 
 	public static void main(String[] args) 
@@ -29,7 +29,10 @@ public class AspectEditorTest
 				
 				registerPlugin(BTreeModel.class, new BTreeEditor());
 				
-				Entity entity = Entity.create();
+				
+				
+				Entity entity = entityEngine.createEntity();
+				entityEngine.addEntity(entity);
 				
 				final BTreeModel model = new BTreeModel();
 				BehaviorTreeLibrary library = new BehaviorTreeLibrary();
@@ -40,11 +43,11 @@ public class AspectEditorTest
 				dog.name = "Dog 1";
 				dog.brainLog = "Dog 1 brain";
 				
-				entity.set(dog);
+				entity.add(dog);
 				
 				
 				BehaviorTree<Entity> tree = new BehaviorTreeParser<Entity>(BehaviorTreeParser.DEBUG_LOW)
-					.parse(AspectEditorTest.class.getClassLoader().getResourceAsStream(AspectEditorTest.class.getPackage().getName().replaceAll("\\.", "/") + "/btree-official-example.btree"), null);
+					.parse(BTreeEditorTest.class.getClassLoader().getResourceAsStream(BTreeEditorTest.class.getPackage().getName().replaceAll("\\.", "/") + "/btree-official-example.btree"), null);
 				
 				
 				// tree.addChild(new Success<Entity>());
@@ -56,7 +59,7 @@ public class AspectEditorTest
 				BehaviorTreeLibraryManager.getInstance().setLibrary(library);
 				model.tree = BehaviorTreeLibraryManager.getInstance().createBehaviorTree("toto", entity);
 				
-				entity.set(model);
+				entity.add(model);
 				setSelection(entity);
 				
 				TextButton btStep = new TextButton("Step", skin);

@@ -1,9 +1,10 @@
 package com.badlogic.gdx.ai.tests.btree.dog;
 
+import com.badlogic.ashley.core.Component;
 import com.badlogic.gdx.ai.GdxAI;
 import com.badlogic.gdx.math.MathUtils;
 
-public class Dog 
+public class Dog implements Component
 {
 	public String name;
 	public String brainLog;

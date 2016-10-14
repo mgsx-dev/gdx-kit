@@ -1,6 +1,6 @@
 package net.mgsx.fwk.editor.plugins;
 
-import net.mgsx.fwk.editor.Entity;
+import com.badlogic.ashley.core.Entity;
 
 public interface FactoryPlugin 
 {

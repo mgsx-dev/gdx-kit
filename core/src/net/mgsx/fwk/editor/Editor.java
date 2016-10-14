@@ -3,6 +3,11 @@ package net.mgsx.fwk.editor;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.badlogic.ashley.core.Component;
+import com.badlogic.ashley.core.Engine;
+import com.badlogic.ashley.core.Entity;
+import com.badlogic.ashley.core.EntityListener;
+import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
@@ -19,7 +24,6 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 import net.mgsx.box2d.editor.SkinFactory;
 import net.mgsx.fwk.editor.plugins.EditablePlugin;
-import net.mgsx.fwk.editor.plugins.FactoryPlugin;
 import net.mgsx.fwk.editor.plugins.RenderablePlugin;
 import net.mgsx.fwk.editor.plugins.StorablePlugin;
 import net.mgsx.fwk.editor.tools.ToolGroup;
@@ -38,6 +42,8 @@ public class Editor extends ApplicationAdapter
 	
 	final private Array<ToolGroup> tools = new Array<ToolGroup>();
 	
+	protected PooledEngine entityEngine;
+	
 	private InputMultiplexer toolDelegator;
 	
 	public OrthographicCamera orthographicCamera;
@@ -47,14 +53,22 @@ public class Editor extends ApplicationAdapter
 	public void create() {
 		super.create();
 		
-		Entity.registerFactory(new FactoryPlugin() {
+		entityEngine = new PooledEngine();
+		
+		entityEngine.addEntityListener(new EntityListener() {
 			@Override
-			public void create(Entity entity) {
+			public void entityRemoved(Entity entity) {
+				// TODO Auto-generated method stub
+				
+			}
+			@Override
+			public void entityAdded(Entity entity) {
 				EditorEntity config = new EditorEntity();
 				config.editors = editablePlugins.get(entity);
-				entity.set(config);
+				entity.add(config);
 			}
 		});
+		
 		
 		orthographicCamera = new OrthographicCamera();
 		skin = SkinFactory.createSkin();
@@ -130,7 +144,7 @@ public class Editor extends ApplicationAdapter
 		json.setSerializer(type, plugin);
 	}
 	private Entity selected = null;
-	private static class EditorEntity
+	private static class EditorEntity implements Component
 	{
 		Array<EditablePlugin> editors;
 		Array<RenderablePlugin> renderers;
@@ -139,8 +153,8 @@ public class Editor extends ApplicationAdapter
 	{
 		outline.clear();
 		selected = entity;
-		EditorEntity config = entity.as(EditorEntity.class);
-		for(Object aspect : entity.aspects()){
+		EditorEntity config = entity.getComponent(EditorEntity.class);
+		for(Object aspect : entity.getComponents()){
 			Array<EditablePlugin> editors = editablePlugins.get(aspect.getClass());
 			if(editors != null)
 				for(EditablePlugin editor : editors){
