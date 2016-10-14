@@ -1,49 +1,42 @@
 package net.mgsx.plugins.sprite;
 
+import com.badlogic.ashley.core.Entity;
+import com.badlogic.ashley.core.Family;
+import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
-import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.Json;
-import com.badlogic.gdx.utils.JsonValue;
 
-import net.mgsx.fwk.editor.Editor;
-import net.mgsx.fwk.editor.plugins.Plugin;
-import net.mgsx.fwk.editor.plugins.RenderablePlugin;
-import net.mgsx.fwk.editor.plugins.StorablePlugin;
+import net.mgsx.core.Editor;
+import net.mgsx.core.plugins.Plugin;
 
-public class SpritePlugin extends Plugin implements RenderablePlugin, StorablePlugin<SpriteAspect>
+public class SpritePlugin extends Plugin
 {
-	private Array<Sprite> sprites;
-	
 	private SpriteBatch batch;
 	private ShapeRenderer debug;
 	
-	public SpritePlugin(Editor editor) {
-		super(editor);
-	}
-
-	@Override
-	public void initialize() 
+	public void initialize(final Editor editor) 
 	{
 		batch = new SpriteBatch();
-		sprites = new Array<Sprite>();
+		editor.entityEngine.addSystem(new IteratingSystem(Family.one(SpriteModel.class).get()) { // TODO use sorted instead
+			
+			@Override
+			public void update(float deltaTime) {
+				batch.setProjectionMatrix(editor.orthographicCamera.combined);
+				batch.begin();
+				super.update(deltaTime);
+				batch.end();
+			}
+			@Override
+			protected void processEntity(Entity entity, float deltaTime) {
+				Sprite sprite = entity.getComponent(SpriteModel.class).sprite;
+				sprite.draw(batch);
+			}
+		});
 		
-		editor.registerPlugin(SpriteAspect.class, this);
+		editor.addGlobalTool(new SelectSpriteTool(editor));
 	}
-
-	@Override
-	public void render() {
-		batch.setProjectionMatrix(editor.orthographicCamera.combined);
-		batch.begin();
-		for(Sprite sprite : sprites)
-		{
-			sprite.draw(batch);
-		}
-		batch.end();
-	}
-
+/*
 	@Override
 	public void drawDebug() {
 		// TODO Auto-generated method stub
@@ -80,7 +73,7 @@ public class SpritePlugin extends Plugin implements RenderablePlugin, StorablePl
 		// object.sprite = new Sprite();
 		// object.sprite.setX(dto.x)
 	}
-
+*/
 
 	
 }

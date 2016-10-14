@@ -18,7 +18,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 
-import net.mgsx.fwk.editor.plugins.EditablePlugin;
+import net.mgsx.core.plugins.EditablePlugin;
 
 public class BTreeEditor implements EditablePlugin {
 

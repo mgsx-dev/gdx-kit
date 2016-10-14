@@ -5,10 +5,11 @@ import java.io.File;
 import javax.swing.JApplet;
 import javax.swing.JFileChooser;
 
-import net.mgsx.box2d.editor.Box2DEditor;
-import net.mgsx.fwk.editor.NativeService;
-import net.mgsx.fwk.editor.NativeService.DialogCallback;
-import net.mgsx.fwk.editor.NativeService.NativeServiceInterface;
+import net.mgsx.core.NativeService;
+import net.mgsx.core.NativeService.DialogCallback;
+import net.mgsx.core.NativeService.NativeServiceInterface;
+import net.mgsx.plugins.box2d.Box2DEditor;
+import net.mgsx.plugins.sprite.SpritePlugin;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
@@ -70,6 +71,8 @@ public class DesktopLauncher
 		}
 		
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-		new LwjglApplication(new Box2DEditor(file.getAbsolutePath()), config);
+		Box2DEditor editor = new Box2DEditor(file.getAbsolutePath());
+		editor.registerPlugin(new SpritePlugin());
+		new LwjglApplication(editor, config);
 	}
 }
