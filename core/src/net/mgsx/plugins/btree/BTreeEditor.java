@@ -20,10 +20,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 
 import net.mgsx.fwk.editor.plugins.EditablePlugin;
 
-public class BTreeEditor implements EditablePlugin<BTreeModel> {
+public class BTreeEditor implements EditablePlugin {
 
-	public Actor createEditor(BTreeModel object, Skin skin) {
-		BehaviorTree<Entity> bTree = object.tree;
+	public Actor createEditor(Entity entity, Skin skin) {
+		BTreeModel model = entity.getComponent(BTreeModel.class);
+		BehaviorTree<Entity> bTree = model.tree;
 		Table table = new Table(skin);
 		createEditor(table, bTree, bTree, skin, 0);
 		return table;

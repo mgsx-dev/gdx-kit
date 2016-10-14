@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.badlogic.ashley.core.Component;
-import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntityListener;
 import com.badlogic.ashley.core.PooledEngine;
@@ -24,7 +23,6 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 import net.mgsx.box2d.editor.SkinFactory;
 import net.mgsx.fwk.editor.plugins.EditablePlugin;
-import net.mgsx.fwk.editor.plugins.RenderablePlugin;
 import net.mgsx.fwk.editor.plugins.StorablePlugin;
 import net.mgsx.fwk.editor.tools.ToolGroup;
 import net.mgsx.fwk.editor.tools.UndoTool;
@@ -64,7 +62,6 @@ public class Editor extends ApplicationAdapter
 			@Override
 			public void entityAdded(Entity entity) {
 				EditorEntity config = new EditorEntity();
-				config.editors = editablePlugins.get(entity);
 				entity.add(config);
 			}
 		});
@@ -146,27 +143,25 @@ public class Editor extends ApplicationAdapter
 	private Entity selected = null;
 	private static class EditorEntity implements Component
 	{
-		Array<EditablePlugin> editors;
-		Array<RenderablePlugin> renderers;
 	}
 	public void setSelection(Entity entity) 
 	{
 		outline.clear();
 		selected = entity;
-		EditorEntity config = entity.getComponent(EditorEntity.class);
+		// EditorEntity config = entity.getComponent(EditorEntity.class);
 		for(Object aspect : entity.getComponents()){
 			Array<EditablePlugin> editors = editablePlugins.get(aspect.getClass());
 			if(editors != null)
 				for(EditablePlugin editor : editors){
 					
-					outline.add(editor.createEditor(aspect, skin)).fill().row();
+					outline.add(editor.createEditor(entity, skin)).fill().row();
 				}
 		}
 		
 	}
 	
 	private Map<Class, Array<EditablePlugin>> editablePlugins = new HashMap<Class, Array<EditablePlugin>>();
-	public <T> void registerPlugin(Class<T> type, EditablePlugin<T> plugin) 
+	public <T> void registerPlugin(Class<T> type, EditablePlugin plugin) 
 	{
 		Array<EditablePlugin> plugins = editablePlugins.get(type);
 		if(plugins == null) editablePlugins.put(type, plugins = new Array<EditablePlugin>());

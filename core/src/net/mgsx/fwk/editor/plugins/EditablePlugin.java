@@ -1,9 +1,10 @@
 package net.mgsx.fwk.editor.plugins;
 
+import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
-public interface EditablePlugin<T> {
+public interface EditablePlugin {
 
-	public Actor createEditor(T object, Skin skin);
+	public Actor createEditor(Entity entity, Skin skin);
 }
