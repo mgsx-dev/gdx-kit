@@ -263,12 +263,17 @@ public class Editor extends ApplicationAdapter
 	}
 
 	public void addTool(String name, Tool tool) {
-		buttons.add(createToolButton(mainToolGroup, tool));
+		buttons.add(createToolButton(name, mainToolGroup, tool));
 	}
 	
+	@Deprecated
 	protected TextButton createToolButton(final ToolGroup group, final Tool tool) 
 	{
-		final TextButton btTool = new TextButton(tool.name, skin);
+		return createToolButton(tool.name, group, tool);
+	}
+	protected TextButton createToolButton(String name, final ToolGroup group, final Tool tool) 
+	{
+		final TextButton btTool = new TextButton(name, skin);
 		btTool.addListener(new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
@@ -281,6 +286,12 @@ public class Editor extends ApplicationAdapter
 
 	public void invalidateSelection() {
 		selectionDirty = true;
+	}
+
+	public Entity getSelected() 
+	{
+		// returns the last selected.
+		return selection.size > 0 ? selection.get(selection.size-1) : null;
 	}
 
 

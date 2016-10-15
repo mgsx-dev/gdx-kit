@@ -59,7 +59,7 @@ public class Tool extends ToolBase
 	}
 	public static Vector2 pixelSize(Camera camera)
 	{
-		Vector3 scale = camera.combined.getScale(new Vector3());
+		Vector3 scale = camera.combined.getScale(new Vector3()).scl(0.5f); // TODO why 2 ?
 		return new Vector2(1.f / (scale.x * Gdx.graphics.getWidth()), 1.f/(scale.y * Gdx.graphics.getHeight()));
 		
 	}

@@ -1,5 +1,6 @@
 package net.mgsx.plugins.parallax;
 
+import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntityListener;
 import com.badlogic.ashley.core.Family;
@@ -11,6 +12,7 @@ import com.badlogic.gdx.math.Vector3;
 import net.mgsx.core.Editor;
 import net.mgsx.core.plugins.Movable;
 import net.mgsx.core.plugins.Plugin;
+import net.mgsx.core.tools.ComponentTool;
 
 public class ParallaxPlugin extends Plugin {
 
@@ -20,26 +22,34 @@ public class ParallaxPlugin extends Plugin {
 	@Override
 	public void initialize(final Editor editor) 
 	{
-		editor.entityEngine.addEntityListener(Family.one(Movable.class).get(), new EntityListener() {
-			
+//		editor.entityEngine.addEntityListener(Family.one(Movable.class).get(), new EntityListener() {
+//			
+//			@Override
+//			public void entityRemoved(Entity entity) {
+//				// TODO Auto-generated method stub
+//				
+//			}
+//			
+//			@Override
+//			public void entityAdded(Entity entity) {
+//				ParallaxModel parallax = new ParallaxModel();
+////				parallax.rateX = MathUtils.random(-3, 3);
+////				parallax.rateY = MathUtils.random(-3, 3);
+//				entity.getComponent(Movable.class).getPosition(entity, parallax.objectOrigin);
+//				parallax.cameraOrigin.set(editor.orthographicCamera.position);
+//				entity.add(parallax);
+//			}
+//		});
+		
+		editor.addTool("Parallax", new ComponentTool(editor, ParallaxModel.class) {
 			@Override
-			public void entityRemoved(Entity entity) {
-				// TODO Auto-generated method stub
-				
-			}
-			
-			@Override
-			public void entityAdded(Entity entity) {
-				ParallaxModel parallax = new ParallaxModel();
-//				parallax.rateX = MathUtils.random(-3, 3);
-//				parallax.rateY = MathUtils.random(-3, 3);
-				entity.getComponent(Movable.class).getPosition(entity, parallax.objectOrigin);
-				parallax.cameraOrigin.set(editor.orthographicCamera.position);
-				entity.add(parallax);
+			protected Component createComponent(Entity entity) {
+				return new ParallaxModel();
 			}
 		});
 		
-		editor.entityEngine.addSystem(new IteratingSystem(Family.one(Movable.class).get()) {
+		// TODO simplify
+		editor.entityEngine.addSystem(new IteratingSystem(Family.one(ParallaxModel.class).get()) {
 			
 			@Override
 			protected void processEntity(Entity entity, float deltaTime) 
@@ -49,7 +59,7 @@ public class ParallaxPlugin extends Plugin {
 				pos
 					.set(model.cameraOrigin.x, model.cameraOrigin.y)
 					.sub(camPos.x, camPos.y)
-					.scl(model.rateX, model.rateY)
+					.scl(model.rateX-1, model.rateY-1) // .scl(0.05f) // TODO due to Tool pixelSize * 0.5f
 					.add(model.objectOrigin.x, model.objectOrigin.y);
 				entity.getComponent(Movable.class).moveTo(entity, pos);
 			}
