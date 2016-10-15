@@ -242,7 +242,7 @@ public class Repository
 		
 		for(BodyData bodyData : data.bodies){
 			Body body = worldItem.world.createBody(bodyData.def);
-			BodyItem bodyItem = new BodyItem(bodyData.name, bodyData.def, body);
+			BodyItem bodyItem = new BodyItem(null, bodyData.name, bodyData.def, body);
 			worldItem.items.bodies.add(bodyItem);
 			bodies.put(bodyData.id, bodyItem);
 			

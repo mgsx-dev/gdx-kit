@@ -14,13 +14,14 @@ import com.badlogic.gdx.utils.Array;
 
 import net.mgsx.core.Command;
 import net.mgsx.core.CommandHistory;
+import net.mgsx.core.Editor;
 
 // TODO it is more an EditorContext (ctx) ...
 public class WorldItem 
 {
 	public EditorSettings settings = new EditorSettings();
 	public World world;
-	
+	public Editor editor;
 	public Items items = new Items();
 	public Items selection = new Items();
 	public Array<Actor> actors = new Array<Actor>();
@@ -139,16 +140,18 @@ public class WorldItem
 	}
 	public BodyItem currentBody(String defaultName, float x, float y) 
 	{
-		if(selection.bodies.size == 1){
-			return selection.bodies.first();
-		}else{
-			BodyDef def = settings.body();
-			def.position.set(x, y);
-			Body body = world.createBody(def);
-			BodyItem bodyItem = new BodyItem(defaultName, def, body);
-			items.bodies.add(bodyItem);
-			return bodyItem;
-		}
+		return editor.getSelected().getComponent(BodyItem.class);
+		// XXX
+//		if(selection.bodies.size == 1){
+//			return selection.bodies.first();
+//		}else{
+//			BodyDef def = settings.body();
+//			def.position.set(x, y);
+//			Body body = world.createBody(def);
+//			BodyItem bodyItem = new BodyItem(editor.getSelected(), defaultName, def, body);
+//			items.bodies.add(bodyItem);
+//			return bodyItem;
+//		}
 	}
 	public Fixture queryFirstFixture(Vector2 pos) {
 		final Array<Fixture> objects = new Array<Fixture>();

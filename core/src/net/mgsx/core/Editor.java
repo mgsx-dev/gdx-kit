@@ -60,7 +60,8 @@ public class Editor extends GameEngine
 	
 	private InputMultiplexer toolDelegator;
 	
-	private ToolGroup mainToolGroup;
+	private ToolGroup mainToolGroup; // XXX temporarily public ...
+	public ToolGroup subToolGroup;
 	
 	@Override
 	public void create() {
@@ -91,18 +92,21 @@ public class Editor extends GameEngine
 		
 		createToolGroup().addProcessor(new UndoTool(history));
 		
+		subToolGroup = createToolGroup();
 		mainToolGroup = createToolGroup();
-		addTool(new NoTool("Select", orthographicCamera));;
+		
+		addTool(new NoTool("Select", this));;
 		
 		addGlobalTool(new MoveToolBase(this));
 		addGlobalTool(new PanTool(orthographicCamera));
-		
+
 		// register listener after plugins creation to create filters on all possible components
 		// finally initiate plugins.
 		// TODO separate runtme plugin part (model, serialization, update, render) from editor part
 		for(Plugin plugin : plugins){
 			plugin.initialize(this);
 		}
+
 
 		// TODO  maybe generalize as auto attach (Family) with a backed pool : pool.obtain, pool.release
 		entityEngine.addEntityListener(new EntityListener() {
@@ -221,14 +225,14 @@ public class Editor extends GameEngine
 		
 		// rebuild menus as well :
 		buttons.clear();
-		for(ToolGroup toolGroup : tools)
-		{
-			for(Tool tool : toolGroup.tools){
+//		for(ToolGroup toolGroup : tools)
+//		{
+			for(Tool tool : mainToolGroup.tools){
 				if(tool.activator == null || (entity != null && tool.activator.matches(entity))){
 					buttons.add(createToolButton(tool.name, mainToolGroup, tool));
 				}
 			}
-		}
+//		}
 
 		
 		if(entity != null){
@@ -283,7 +287,7 @@ public class Editor extends GameEngine
 	}
 	
 	
-	protected TextButton createToolButton(final ToolGroup group, final Tool tool) 
+	public TextButton createToolButton(final ToolGroup group, final Tool tool) 
 	{
 		return createToolButton(tool.name, group, tool);
 	}

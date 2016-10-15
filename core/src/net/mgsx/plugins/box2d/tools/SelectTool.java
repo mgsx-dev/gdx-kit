@@ -39,8 +39,8 @@ public class SelectTool extends SelectToolBase
 			handleSelection(currentSprite, worldItem.selection.sprites);
 			return true;
 		}
-			
-			
+		
+		
 		worldItem.selection.clear();
 		
 		return super.touchDown(screenX, screenY, pointer, button);

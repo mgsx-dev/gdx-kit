@@ -50,7 +50,7 @@ public class Box2DPresets
 		
 		Body body = world.createBody(def);
 
-		BodyItem item = new BodyItem("Ball", def, body);
+		BodyItem item = new BodyItem(null, "Ball", def, body); // XXX
 		item.fixtures.add(new FixtureItem("Circle", fix, body.createFixture(fix)));
 	
 		return item;
@@ -124,7 +124,7 @@ public class Box2DPresets
 			
 			Body body = world.createBody(def);
 			
-			BodyItem bodyItem = new BodyItem("Ground", def, body);
+			BodyItem bodyItem = new BodyItem(null, "Ground", def, body);
 			bodyItem.fixtures.add(new FixtureItem("Polygon", fix, bodyItem.body.createFixture(fix)));
 
 
