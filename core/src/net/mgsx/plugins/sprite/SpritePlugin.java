@@ -26,9 +26,6 @@ public class SpritePlugin extends Plugin
 				batch.end();
 			}
 			@Override
-			protected void processEntity(Entity entity, float deltaTime) {
-			}
-			@Override
 			protected void processEntity(Entity entity, SpriteModel model, float deltaTime) {
 				model.sprite.draw(batch);
 			}

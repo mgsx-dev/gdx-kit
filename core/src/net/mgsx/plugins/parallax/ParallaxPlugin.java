@@ -14,7 +14,7 @@ import net.mgsx.core.tools.ComponentTool;
 public class ParallaxPlugin extends Plugin {
 
 	private Vector3 camPos = new Vector3();
-	private Vector2 pos = new Vector2();
+	private Vector3 pos = new Vector3();
 	
 	@Override
 	public void initialize(final Editor editor) 
@@ -36,10 +36,10 @@ public class ParallaxPlugin extends Plugin {
 			{
 				camPos.set(editor.orthographicCamera.position);
 				pos
-				.set(model.cameraOrigin.x, model.cameraOrigin.y)
-				.sub(camPos.x, camPos.y)
-				.scl(model.rateX-1, model.rateY-1) // .scl(0.05f) // TODO due to Tool pixelSize * 0.5f
-				.add(model.objectOrigin.x, model.objectOrigin.y);
+				.set(model.cameraOrigin)
+				.sub(camPos)
+				.scl(model.rateX-1, model.rateY-1, 1) // .scl(0.05f) // TODO due to Tool pixelSize * 0.5f
+				.add(model.objectOrigin);
 				entity.getComponent(Movable.class).moveTo(entity, pos);
 			}
 		});

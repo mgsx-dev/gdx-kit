@@ -14,8 +14,8 @@ public class Movable implements Component
 		this.delegate = delegate;
 	}
 	public void moveBegin(Entity entity){if(delegate != null) delegate.moveBegin(entity);}
-	public void move(Entity entity, Vector2 deltaWorld){if(delegate != null) delegate.move(entity, deltaWorld);}
+	public void move(Entity entity, Vector3 deltaWorld){if(delegate != null) delegate.move(entity, deltaWorld);}
 	public void moveEnd(Entity entity){if(delegate != null) delegate.moveEnd(entity);}
-	public void moveTo(Entity entity, Vector2 pos) {if(delegate != null) delegate.moveTo(entity, pos);}
+	public void moveTo(Entity entity, Vector3 pos) {if(delegate != null) delegate.moveTo(entity, pos);}
 	public void getPosition(Entity entity, Vector3 pos) {if(delegate != null) delegate.getPosition(entity, pos);}
 }

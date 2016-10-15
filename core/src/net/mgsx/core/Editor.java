@@ -10,6 +10,7 @@ import com.badlogic.ashley.core.Family;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -158,6 +159,8 @@ public class Editor extends GameEngine
 	@Override
 	public void render() 
 	{
+		super.render();
+		
 		if(selectionDirty){
 			selectionDirty = false;
 			if(selection.size > 0) setSelection(selection.get(selection.size-1)); else setSelection(null);
@@ -173,7 +176,7 @@ public class Editor extends GameEngine
 		batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 		
 		Gdx.gl.glClearColor(.5f, .5f, .5f, 1);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
 		entityEngine.update(Gdx.graphics.getDeltaTime());
 		
@@ -190,13 +193,15 @@ public class Editor extends GameEngine
 		stage.act();
 		stage.draw();
 		
-		super.render();
 	}
 	
 	@Override
 	public void resize(int width, int height) {
 		super.resize(width, height);
+		Vector3 oldPos = new Vector3();
+		oldPos.set(orthographicCamera.position);
 		orthographicCamera.setToOrtho(false, 5 * (float)width/(float)height, 5);
+		orthographicCamera.position.set(oldPos); // XXX workaround to restore translation hich is reset in ortho ...
 		orthographicCamera.update(true);
 		stage.getViewport().update(width, height, true);
 	}
@@ -303,6 +308,12 @@ public class Editor extends GameEngine
 	{
 		// returns the last selected.
 		return selection.size > 0 ? selection.get(selection.size-1) : null;
+	}
+
+	public <T> T loadAssetNow(String fileName, Class<T> type) {
+		assets.load(fileName, type);
+		assets.finishLoadingAsset(fileName);
+		return assets.get(fileName, type);
 	}
 
 

@@ -6,6 +6,7 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import net.mgsx.core.Editor;
 import net.mgsx.core.GameEngine;
 import net.mgsx.core.NativeService;
+import net.mgsx.plugins.g3d.ModelPlugin;
 import net.mgsx.plugins.parallax.ParallaxPlugin;
 import net.mgsx.plugins.sprite.SpritePlugin;
 
@@ -22,6 +23,7 @@ public class EditorLauncher
 		//
 		editor.registerPlugin(new SpritePlugin());
 		editor.registerPlugin(new ParallaxPlugin());
+		editor.registerPlugin(new ModelPlugin());
 		
 		new LwjglApplication(editor, config);
 	}

@@ -19,14 +19,14 @@ public class SpriteMove extends Movable
 
 
 	@Override
-	public void move(Entity entity, Vector2 deltaWorld) 
+	public void move(Entity entity, Vector3 deltaWorld) 
 	{
 		sprite.setX(sprite.getX() + deltaWorld.x);
 		sprite.setY(sprite.getY() + deltaWorld.y);
 	}
 	
 	@Override
-	public void moveTo(Entity entity, Vector2 pos) {
+	public void moveTo(Entity entity, Vector3 pos) {
 		sprite.setPosition(pos.x, pos.y);
 	}
 	
