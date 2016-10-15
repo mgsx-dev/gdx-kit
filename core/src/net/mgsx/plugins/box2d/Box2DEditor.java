@@ -329,7 +329,7 @@ public class Box2DEditor extends Editor
 		tabs.addTab("Presets", presetTable);
 		tabs.addTab("Test", testPane);
 
-		tabs.add(createToolButton(mainTools, new NoTool(orthographicCamera))).row();
+		tabs.add(createToolButton(mainTools, new NoTool("no tool", orthographicCamera))).row();
 		tabs.add(worldEditor);
 		
 		tabs.setTab(worldPane);

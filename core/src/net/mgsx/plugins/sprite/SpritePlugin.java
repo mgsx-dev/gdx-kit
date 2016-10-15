@@ -5,19 +5,19 @@ import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
 import net.mgsx.core.Editor;
 import net.mgsx.core.plugins.Plugin;
 
 public class SpritePlugin extends Plugin
 {
+	// TODO use batch processor in editor ...
 	private SpriteBatch batch;
-	private ShapeRenderer debug;
 	
 	public void initialize(final Editor editor) 
 	{
 		batch = new SpriteBatch();
+		
 		editor.entityEngine.addSystem(new IteratingSystem(Family.one(SpriteModel.class).get()) { // TODO use sorted instead
 			
 			@Override
@@ -34,7 +34,7 @@ public class SpritePlugin extends Plugin
 			}
 		});
 		
-		editor.addTool("Add Sprite", new AddSpriteTool(editor.orthographicCamera, editor));
+		editor.addTool(new AddSpriteTool(editor.orthographicCamera, editor));
 		editor.addGlobalTool(new SelectSpriteTool(editor));
 	}
 /*

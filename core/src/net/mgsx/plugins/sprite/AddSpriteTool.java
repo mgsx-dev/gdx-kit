@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 
@@ -21,6 +22,8 @@ public class AddSpriteTool extends RectangleTool
 {
 	private SpriteModel sprite;
 	private Editor editor;
+	private TextureRegion region;
+	
 	public AddSpriteTool(Camera camera, Editor editor) {
 		super("Sprite", camera);
 		this.editor = editor;
@@ -28,17 +31,20 @@ public class AddSpriteTool extends RectangleTool
 	
 	@Override
 	protected void activate() {
+		
+		// TODO open texture region selector if any registered
+		
+		// else auto open import window
+		
 		NativeService.instance.openLoadDialog(new DialogCallback() {
 			@Override
 			public void selected(FileHandle file) {
 				Texture tex = new Texture(file, true);
 				tex.setFilter(TextureFilter.MipMapLinearLinear, TextureFilter.MipMapLinearLinear);
 				tex.setWrap(TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);
-				sprite = new SpriteModel();
-				sprite.sprite = new Sprite(tex);
-				sprite.assetPath = file.path();
-				sprite.sprite.setBounds(0, 0, 0, 0);
-				sprite.sprite.setOrigin(0,0);
+				// TODO register texture !
+				// TODO store path or something ?
+				region = new TextureRegion(tex);
 			}
 			@Override
 			public void cancel() {
@@ -62,6 +68,14 @@ public class AddSpriteTool extends RectangleTool
 		//if(sprite == null){
 			super.render(renderer);
 		//}
+	}
+	
+	@Override
+	protected void begin(Vector2 startPoint) {
+		sprite = new SpriteModel();
+		sprite.sprite = new Sprite(region);
+		sprite.sprite.setBounds(0, 0, 0, 0);
+		sprite.sprite.setOrigin(0,0);
 	}
 
 	@Override

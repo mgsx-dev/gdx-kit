@@ -49,6 +49,10 @@ public class ToolGroup extends InputMultiplexer
 	public void addButton(TextButton btTool) {
 		group.add(btTool);
 	}
+	
+	public void clearButtons(){
+		group.clear();
+	}
 
 	public void render(SpriteBatch batch) {
 		if(activeTool != null) activeTool.render(batch);

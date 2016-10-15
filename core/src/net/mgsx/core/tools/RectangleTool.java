@@ -19,6 +19,7 @@ abstract public class RectangleTool extends Tool
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
 		if(button == buttonFilter){
 			startPoint = unproject(screenX, screenY);
+			begin(startPoint);
 			return true;
 		}
 		return super.touchDown(screenX, screenY, pointer, button);
@@ -39,6 +40,7 @@ abstract public class RectangleTool extends Tool
 		return super.touchUp(screenX, screenY, pointer, button);
 	}
 	protected abstract void create(Vector2 startPoint, Vector2 endPoint);
+	protected void begin(Vector2 startPoint){}
 	
 	@Override
 	public void render(ShapeRenderer renderer) {

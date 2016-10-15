@@ -1,15 +1,11 @@
 package net.mgsx.core.tools;
 
 import com.badlogic.ashley.core.Entity;
-import com.badlogic.ashley.core.Family;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.math.Vector2;
 
 import net.mgsx.core.Editor;
 import net.mgsx.core.plugins.Movable;
-import net.mgsx.plugins.box2d.model.BodyItem;
-import net.mgsx.plugins.box2d.model.SpriteItem;
 
 public class MoveToolBase extends Tool
 {

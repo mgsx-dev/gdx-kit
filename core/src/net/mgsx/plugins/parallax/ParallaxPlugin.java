@@ -2,10 +2,8 @@ package net.mgsx.plugins.parallax;
 
 import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.Entity;
-import com.badlogic.ashley.core.EntityListener;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 
@@ -22,29 +20,14 @@ public class ParallaxPlugin extends Plugin {
 	@Override
 	public void initialize(final Editor editor) 
 	{
-//		editor.entityEngine.addEntityListener(Family.one(Movable.class).get(), new EntityListener() {
-//			
-//			@Override
-//			public void entityRemoved(Entity entity) {
-//				// TODO Auto-generated method stub
-//				
-//			}
-//			
-//			@Override
-//			public void entityAdded(Entity entity) {
-//				ParallaxModel parallax = new ParallaxModel();
-////				parallax.rateX = MathUtils.random(-3, 3);
-////				parallax.rateY = MathUtils.random(-3, 3);
-//				entity.getComponent(Movable.class).getPosition(entity, parallax.objectOrigin);
-//				parallax.cameraOrigin.set(editor.orthographicCamera.position);
-//				entity.add(parallax);
-//			}
-//		});
-		
-		editor.addTool("Parallax", new ComponentTool(editor, ParallaxModel.class) {
+		editor.addTool(new ComponentTool("Parallax", editor, Movable.class) {
 			@Override
 			protected Component createComponent(Entity entity) {
-				return new ParallaxModel();
+				
+				ParallaxModel model = new ParallaxModel();
+				model.cameraOrigin.set(editor.orthographicCamera.position);
+				entity.getComponent(Movable.class).getPosition(entity, model.objectOrigin);
+				return model;
 			}
 		});
 		

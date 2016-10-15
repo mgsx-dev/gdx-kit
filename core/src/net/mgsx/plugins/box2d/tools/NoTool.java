@@ -7,8 +7,8 @@ import net.mgsx.core.tools.Tool;
 public class NoTool extends Tool
 {
 	
-	public NoTool(Camera camera) {
-		super("Hand", camera);
+	public NoTool(String name, Camera camera) {
+		super(name, camera);
 	}
 
 }

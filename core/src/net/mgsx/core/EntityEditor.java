@@ -3,7 +3,6 @@ package net.mgsx.core;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;

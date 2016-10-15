@@ -6,15 +6,10 @@ import java.util.Map;
 import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntityListener;
-import com.badlogic.ashley.core.PooledEngine;
-import com.badlogic.gdx.ApplicationAdapter;
+import com.badlogic.ashley.core.Family;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.PerspectiveCamera;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -22,12 +17,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 import net.mgsx.core.plugins.EditablePlugin;
 import net.mgsx.core.plugins.Plugin;
-import net.mgsx.core.plugins.StorablePlugin;
 import net.mgsx.core.tools.MoveToolBase;
 import net.mgsx.core.tools.PanTool;
 import net.mgsx.core.tools.Tool;
@@ -53,64 +46,28 @@ import net.mgsx.plugins.box2d.tools.NoTool;
 // TODO concept of import/save/load/export : load/save is handled directly, import/export is throw plugins,
 // example : import a png, work on it and export it as png
 //
-public class Editor extends ApplicationAdapter
+public class Editor extends GameEngine
 {
 	protected CommandHistory history;
 	protected Skin skin;
 	protected Stage stage;
-	protected ShapeRenderer shapeRenderer;
-	protected SpriteBatch batch;
-	
 	protected Table panel;
 	protected Table buttons;
 	protected Table outline;
 	
-	private Array<Plugin> plugins = new Array<Plugin>();
-	
 	final private Array<ToolGroup> tools = new Array<ToolGroup>();
-	
-	public PooledEngine entityEngine;
 	
 	private InputMultiplexer toolDelegator;
 	
-	public OrthographicCamera orthographicCamera;
-	public PerspectiveCamera perspectiveCamera;
-	
 	private ToolGroup mainToolGroup;
-	
-	public void registerPlugin(Plugin plugin) {
-		plugins.add(plugin);
-	}
 	
 	@Override
 	public void create() {
 		super.create();
 		
-		entityEngine = new PooledEngine();
-		
-		// TODO keep it ? store some info about editor ? yes : isSelected, ...etc
-		// maybe generalize as auto attach (Family) with a backed pool :
-		// pool.obtain, pool.release
-		entityEngine.addEntityListener(new EntityListener() {
-			@Override
-			public void entityRemoved(Entity entity) {
-				// TODO Auto-generated method stub
-				
-			}
-			@Override
-			public void entityAdded(Entity entity) {
-				EditorEntity config = new EditorEntity();
-				entity.add(config);
-			}
-		});
-		
-		
-		orthographicCamera = new OrthographicCamera();
 		skin = SkinFactory.createSkin();
 		stage = new Stage(new ScreenViewport());
 		history = new CommandHistory();
-		shapeRenderer = new ShapeRenderer();
-		batch = new SpriteBatch();
 		
 		toolDelegator = new InputMultiplexer();
 		
@@ -122,8 +79,8 @@ public class Editor extends ApplicationAdapter
 		panel = new Table(skin);
 		// TODO add menu
 		buttons = new Table(skin);
-		panel.add(buttons);
-		panel.add(outline);
+		panel.add(buttons).row();
+		panel.add(outline).row();
 		
 		Table main = new Table();
 		main.add(panel).expand().left().top();
@@ -134,16 +91,50 @@ public class Editor extends ApplicationAdapter
 		createToolGroup().addProcessor(new UndoTool(history));
 		
 		mainToolGroup = createToolGroup();
-		addTool("Select", new NoTool(orthographicCamera));;
+		addTool(new NoTool("Select", orthographicCamera));;
 		
 		addGlobalTool(new MoveToolBase(this));
 		addGlobalTool(new PanTool(orthographicCamera));
 		
+		// register listener after plugins creation to create filters on all possible components
 		// finally initiate plugins.
+		// TODO separate runtme plugin part (model, serialization, update, render) from editor part
 		for(Plugin plugin : plugins){
 			plugin.initialize(this);
 		}
+
+		// TODO  maybe generalize as auto attach (Family) with a backed pool : pool.obtain, pool.release
+		entityEngine.addEntityListener(new EntityListener() {
+			@Override
+			public void entityRemoved(Entity entity) {
+				// TODO Auto-generated method stub
+				
+			}
+			@Override
+			public void entityAdded(Entity entity) {
+				EditorEntity config = new EditorEntity();
+				// could be used to store things about editor ...
+				entity.add(config);
+			}
+		});
+		for(Class<? extends Component> type : editablePlugins.keySet()){
+			entityEngine.addEntityListener(Family.one(type).get(), new EntityListener() {
+				
+				@Override
+				public void entityRemoved(Entity entity) {
+					if(entity == getSelected()) invalidateSelection();
+				}
+				
+				@Override
+				public void entityAdded(Entity entity) {
+					if(entity == getSelected()) invalidateSelection();
+				}
+			});
+		}
+
 		
+		// build GUI
+		setSelection(null);
 	}
 
 	public ToolGroup createToolGroup() 
@@ -215,12 +206,6 @@ public class Editor extends ApplicationAdapter
 	public void dispose () {
 	}
 
-	private Json json;
-	
-	public <T> void registerPlugin(Class<T> type, StorablePlugin<T> plugin) 
-	{
-		json.setSerializer(type, plugin);
-	}
 	private static class EditorEntity implements Component
 	{
 	}
@@ -228,18 +213,44 @@ public class Editor extends ApplicationAdapter
 	{
 		outline.clear();
 		selection.clear();
+		
+		// rebuild menus as well :
+		buttons.clear();
+		for(ToolGroup toolGroup : tools)
+		{
+			for(Tool tool : toolGroup.tools){
+				if(tool.activator == null || (entity != null && tool.activator.matches(entity))){
+					buttons.add(createToolButton(tool.name, mainToolGroup, tool));
+				}
+			}
+		}
+
+		
 		if(entity != null){
 			selection.add(entity);
 			// EditorEntity config = entity.getComponent(EditorEntity.class);
-			for(Object aspect : entity.getComponents()){
+			
+			for(Component aspect : entity.getComponents()){
 				Array<EditablePlugin> editors = editablePlugins.get(aspect.getClass());
 				if(editors != null)
 					for(EditablePlugin editor : editors){
-						
+						outline.add(createOutlineHeader(editor, entity, aspect)).fill().row();
 						outline.add(editor.createEditor(entity, skin)).fill().row();
 					}
 			}
 		}
+	}
+	
+	private Actor createOutlineHeader(EditablePlugin plugin, final Entity entity, final Component component)
+	{
+		TextButton btRemove = new TextButton("Remove " + plugin.getClass().getSimpleName(), skin);
+		btRemove.addListener(new ChangeListener() {
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				entity.remove(component.getClass());
+			}
+		});
+		return btRemove;
 	}
 	
 	private Map<Class, Array<EditablePlugin>> editablePlugins = new HashMap<Class, Array<EditablePlugin>>();
@@ -257,16 +268,16 @@ public class Editor extends ApplicationAdapter
 		if(selection.size <= 0){
 			Entity entity = entityEngine.createEntity();
 			entityEngine.addEntity(entity);
-			selection.add(entity);
+			return entity;
 		}
 		return selection.get(selection.size-1);
 	}
 
-	public void addTool(String name, Tool tool) {
-		buttons.add(createToolButton(name, mainToolGroup, tool));
+	public void addTool(Tool tool) {
+		mainToolGroup.tools.add(tool);
 	}
 	
-	@Deprecated
+	
 	protected TextButton createToolButton(final ToolGroup group, final Tool tool) 
 	{
 		return createToolButton(tool.name, group, tool);
