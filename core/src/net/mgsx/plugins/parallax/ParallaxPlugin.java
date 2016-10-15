@@ -2,12 +2,11 @@ package net.mgsx.plugins.parallax;
 
 import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.Entity;
-import com.badlogic.ashley.core.Family;
-import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 
 import net.mgsx.core.Editor;
+import net.mgsx.core.helpers.EntityHelper.SingleComponentIteratingSystem;
 import net.mgsx.core.plugins.Movable;
 import net.mgsx.core.plugins.Plugin;
 import net.mgsx.core.tools.ComponentTool;
@@ -31,19 +30,16 @@ public class ParallaxPlugin extends Plugin {
 			}
 		});
 		
-		// TODO simplify
-		editor.entityEngine.addSystem(new IteratingSystem(Family.one(ParallaxModel.class).get()) {
-			
+		editor.entityEngine.addSystem(new SingleComponentIteratingSystem<ParallaxModel>(ParallaxModel.class) {
 			@Override
-			protected void processEntity(Entity entity, float deltaTime) 
+			protected void processEntity(Entity entity, ParallaxModel model, float deltaTime) 
 			{
-				ParallaxModel model = entity.getComponent(ParallaxModel.class);
 				camPos.set(editor.orthographicCamera.position);
 				pos
-					.set(model.cameraOrigin.x, model.cameraOrigin.y)
-					.sub(camPos.x, camPos.y)
-					.scl(model.rateX-1, model.rateY-1) // .scl(0.05f) // TODO due to Tool pixelSize * 0.5f
-					.add(model.objectOrigin.x, model.objectOrigin.y);
+				.set(model.cameraOrigin.x, model.cameraOrigin.y)
+				.sub(camPos.x, camPos.y)
+				.scl(model.rateX-1, model.rateY-1) // .scl(0.05f) // TODO due to Tool pixelSize * 0.5f
+				.add(model.objectOrigin.x, model.objectOrigin.y);
 				entity.getComponent(Movable.class).moveTo(entity, pos);
 			}
 		});

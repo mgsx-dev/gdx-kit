@@ -1,12 +1,10 @@
 package net.mgsx.plugins.sprite;
 
 import com.badlogic.ashley.core.Entity;
-import com.badlogic.ashley.core.Family;
-import com.badlogic.ashley.systems.IteratingSystem;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import net.mgsx.core.Editor;
+import net.mgsx.core.helpers.EntityHelper.SingleComponentIteratingSystem;
 import net.mgsx.core.plugins.Plugin;
 
 public class SpritePlugin extends Plugin
@@ -18,7 +16,7 @@ public class SpritePlugin extends Plugin
 	{
 		batch = new SpriteBatch();
 		
-		editor.entityEngine.addSystem(new IteratingSystem(Family.one(SpriteModel.class).get()) { // TODO use sorted instead
+		editor.entityEngine.addSystem(new SingleComponentIteratingSystem<SpriteModel>(SpriteModel.class) { // TODO use sorted instead
 			
 			@Override
 			public void update(float deltaTime) {
@@ -29,8 +27,10 @@ public class SpritePlugin extends Plugin
 			}
 			@Override
 			protected void processEntity(Entity entity, float deltaTime) {
-				Sprite sprite = entity.getComponent(SpriteModel.class).sprite;
-				sprite.draw(batch);
+			}
+			@Override
+			protected void processEntity(Entity entity, SpriteModel model, float deltaTime) {
+				model.sprite.draw(batch);
 			}
 		});
 		
