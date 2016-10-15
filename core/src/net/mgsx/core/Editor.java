@@ -36,6 +36,23 @@ import net.mgsx.core.tools.UndoTool;
 import net.mgsx.plugins.box2d.SkinFactory;
 import net.mgsx.plugins.box2d.tools.NoTool;
 
+// TODO avoid complexity here : 
+// panel could be separated
+// editor could be a screen (to be used within a game or why not stacked on other screen !)
+// TODO default switch to toggle debug display and simple display (aka blender : show only render)
+// maybe move things to factory/plugin registry ...
+// just keep GUI and rendering inside
+//
+//
+// TODO rendering pipeline could be a SystemProcessor :
+// it has a predifiend and order stack
+// where plugins can attach things ...
+//
+// TODO storage considerations :
+// by default, a component is not saved, plugins have to register a serializer for it.
+// TODO concept of import/save/load/export : load/save is handled directly, import/export is throw plugins,
+// example : import a png, work on it and export it as png
+//
 public class Editor extends ApplicationAdapter
 {
 	protected CommandHistory history;
@@ -71,6 +88,9 @@ public class Editor extends ApplicationAdapter
 		
 		entityEngine = new PooledEngine();
 		
+		// TODO keep it ? store some info about editor ? yes : isSelected, ...etc
+		// maybe generalize as auto attach (Family) with a backed pool :
+		// pool.obtain, pool.release
 		entityEngine.addEntityListener(new EntityListener() {
 			@Override
 			public void entityRemoved(Entity entity) {
