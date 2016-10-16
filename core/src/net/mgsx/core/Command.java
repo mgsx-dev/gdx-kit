@@ -2,6 +2,8 @@ package net.mgsx.core;
 
 import java.lang.reflect.Field;
 
+import net.mgsx.core.helpers.ReflectionHelper;
+
 public class Command {
 	public void commit(){}
 	public void rollback(){}

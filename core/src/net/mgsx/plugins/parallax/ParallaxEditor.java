@@ -6,7 +6,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 
 import net.mgsx.core.EntityEditor;
-import net.mgsx.core.ReflectionHelper;
+import net.mgsx.core.helpers.ReflectionHelper;
 import net.mgsx.core.plugins.EditablePlugin;
 
 public class ParallaxEditor implements EditablePlugin {

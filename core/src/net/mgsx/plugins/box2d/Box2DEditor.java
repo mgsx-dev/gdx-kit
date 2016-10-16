@@ -29,7 +29,7 @@ import net.mgsx.core.Editor;
 import net.mgsx.core.EntityEditor;
 import net.mgsx.core.NativeService;
 import net.mgsx.core.NativeService.DialogCallback;
-import net.mgsx.core.ReflectionHelper;
+import net.mgsx.core.helpers.ReflectionHelper;
 import net.mgsx.core.tools.PanTool;
 import net.mgsx.core.tools.Tool;
 import net.mgsx.core.tools.ToolGroup;
@@ -61,8 +61,6 @@ import net.mgsx.plugins.box2d.tools.JointRopeTool;
 import net.mgsx.plugins.box2d.tools.JointWeldTool;
 import net.mgsx.plugins.box2d.tools.JointWheelTool;
 import net.mgsx.plugins.box2d.tools.MoveShapeTool;
-import net.mgsx.plugins.box2d.tools.MoveTool;
-import net.mgsx.plugins.box2d.tools.NoTool;
 import net.mgsx.plugins.box2d.tools.ParticleTool;
 import net.mgsx.plugins.box2d.tools.PresetTool;
 import net.mgsx.plugins.box2d.tools.SelectTool;
@@ -137,7 +135,6 @@ public class Box2DEditor extends Editor
 		final ToolGroup mainTools = createToolGroup(); // TODO mainTools are contectual tools ....
 		createToolGroup().addProcessor(new ZoomTool(orthographicCamera));
 		createToolGroup().addProcessor(new PanTool(orthographicCamera));
-		createToolGroup().addProcessor(new MoveTool(orthographicCamera, worldItem));
 		createToolGroup().addProcessor(new SelectTool(this, worldItem));
 
 		

@@ -17,7 +17,7 @@ import net.mgsx.core.Editor;
 import net.mgsx.core.EntityEditor;
 import net.mgsx.core.NativeService;
 import net.mgsx.core.NativeService.DialogCallback;
-import net.mgsx.core.ReflectionHelper;
+import net.mgsx.core.helpers.ReflectionHelper;
 import net.mgsx.core.plugins.EditorPlugin;
 import net.mgsx.core.tools.Tool;
 import net.mgsx.core.tools.ToolGroup;

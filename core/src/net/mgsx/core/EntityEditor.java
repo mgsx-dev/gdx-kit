@@ -17,6 +17,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
 import com.badlogic.gdx.utils.Array;
 
+import net.mgsx.core.helpers.ReflectionHelper;
+
 public class EntityEditor extends Table
 {
 	public static class EntityEvent extends Event
