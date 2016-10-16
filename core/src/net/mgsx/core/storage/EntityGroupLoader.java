@@ -6,7 +6,6 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.AsynchronousAssetLoader;
 import com.badlogic.gdx.assets.loaders.FileHandleResolver;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.g3d.utils.TextureProvider;
 import com.badlogic.gdx.utils.Array;
 
 public class EntityGroupLoader extends AsynchronousAssetLoader<EntityGroup, AssetLoaderParameters<EntityGroup>>

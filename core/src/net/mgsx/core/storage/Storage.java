@@ -20,7 +20,11 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.Shape;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
+import com.badlogic.gdx.utils.Json.Serializer;
 import com.badlogic.gdx.utils.JsonValue;
+import com.badlogic.gdx.utils.ObjectMap;
+import com.badlogic.gdx.utils.ObjectMap.Entries;
+import com.badlogic.gdx.utils.ObjectMap.Entry;
 
 public class Storage 
 {
@@ -104,7 +108,7 @@ public class Storage
 		
 	}
 	
-	private static Json setup(AssetManager assets)
+	private static Json setup(AssetManager assets, ObjectMap<Class, Serializer> serializers)
 	{
 		Json json = new Json();
 		json.setSerializer(EntityGroup.class, new EntityGroupSerializer(assets));
@@ -119,27 +123,31 @@ public class Storage
 		json.setSerializer(EdgeShape.class, new IgnoreSerializer<EdgeShape>()); 
 		json.setSerializer(PolygonShape.class, new IgnoreSerializer<PolygonShape>());
 		
+		for(Entries<Class, Serializer> entries = serializers.iterator() ; entries.hasNext() ; ){
+			Entry<Class, Serializer> entry = entries.next();
+			json.setSerializer(entry.key, entry.value);
+		}
 		
 		return json;
 	}
 	
-	public static void save(Engine engine, AssetManager assets, FileHandle file, boolean pretty) 
+	public static void save(Engine engine, AssetManager assets, FileHandle file, boolean pretty, ObjectMap<Class, Serializer> serializers) 
 	{
 		Writer writer = file.writer(false);
-		save(engine, assets, writer, pretty);
+		save(engine, assets, writer, pretty, serializers);
 		try {
 			writer.close();
 		} catch (IOException e) {
 			throw new Error(e);
 		};
 	}
-	public static void save(Engine engine, AssetManager assets, Writer writer, boolean pretty) 
+	public static void save(Engine engine, AssetManager assets, Writer writer, boolean pretty, ObjectMap<Class, Serializer> serializers) 
 	{
 		EntityGroup group = new EntityGroup();
 		group.entities = new Array<Entity>();
 		for(Entity entity : engine.getEntities()) group.entities.add(entity);
 		
-		Json json = setup(assets);
+		Json json = setup(assets, serializers);
 		if(pretty){
 			try {
 				writer.append(json.prettyPrint(group));
@@ -150,13 +158,13 @@ public class Storage
 			json.toJson(group, writer);
 	}
 
-	public static void load(Engine engine, FileHandle file, AssetManager assets) 
+	public static void load(Engine engine, FileHandle file, AssetManager assets, ObjectMap<Class, Serializer> serializers) 
 	{
-		load(engine, file.reader(), assets);
+		load(engine, file.reader(), assets, serializers);
 	}
-	public static void load(Engine engine, Reader reader, AssetManager assets) 
+	public static void load(Engine engine, Reader reader, AssetManager assets, ObjectMap<Class, Serializer> serializers) 
 	{
-		Json json = setup(assets);
+		Json json = setup(assets, serializers);
 		EntityGroup group = json.fromJson(EntityGroup.class, reader);
 		for(Entity entity : group.entities) engine.addEntity(entity);
 	}

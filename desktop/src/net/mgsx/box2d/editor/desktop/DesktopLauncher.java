@@ -6,7 +6,7 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 
 import net.mgsx.core.NativeService;
-import net.mgsx.plugins.box2d.Box2DEditor;
+import net.mgsx.plugins.box2dold.Box2DEditor;
 import net.mgsx.plugins.sprite.SpritePlugin;
 
 public class DesktopLauncher 

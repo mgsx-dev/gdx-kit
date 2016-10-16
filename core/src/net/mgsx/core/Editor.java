@@ -26,6 +26,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Json.Serializer;
+import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 import net.mgsx.core.NativeService.DialogCallback;
@@ -43,7 +45,7 @@ import net.mgsx.core.tools.Tool;
 import net.mgsx.core.tools.ToolGroup;
 import net.mgsx.core.tools.UndoTool;
 import net.mgsx.core.ui.TabPane;
-import net.mgsx.plugins.box2d.SkinFactory;
+import net.mgsx.plugins.box2dold.SkinFactory;
 
 // TODO avoid complexity here : 
 // panel could be separated
@@ -117,7 +119,7 @@ public class Editor extends GameEngine
 				NativeService.instance.openSaveDialog(new DialogCallback() {
 					@Override
 					public void selected(FileHandle file) {
-						Storage.save(entityEngine, assets, file, true); // TODO pretty configurable
+						Storage.save(entityEngine, assets, file, true, serializers); // TODO pretty configurable
 					}
 					@Override
 					public void cancel() {
@@ -131,7 +133,7 @@ public class Editor extends GameEngine
 				NativeService.instance.openSaveDialog(new DialogCallback() {
 					@Override
 					public void selected(FileHandle file) {
-						Storage.load(entityEngine, file, assets);
+						Storage.load(entityEngine, file, assets, serializers);
 						// TODO ? rebuild();
 					}
 					@Override
@@ -448,6 +450,11 @@ public class Editor extends GameEngine
 	public void addGlobalEditor(String name, EditorPlugin plugin) 
 	{
 		globalEditors.put(name, plugin);
+	}
+
+	private ObjectMap<Class, Serializer> serializers = new ObjectMap<Class, Serializer>();
+	public <T> void addSerializer(Class<T> type, Serializer<T> serializer) {
+		serializers.put(type, serializer);
 	}
 
 

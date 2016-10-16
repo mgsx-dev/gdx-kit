@@ -22,32 +22,33 @@ import net.mgsx.core.tools.NoTool;
 import net.mgsx.core.tools.Tool;
 import net.mgsx.core.tools.ToolGroup;
 import net.mgsx.core.ui.TabPane;
-import net.mgsx.plugins.box2d.Box2DPresets.Box2DPreset;
-import net.mgsx.plugins.box2d.behavior.BodyBehavior;
-import net.mgsx.plugins.box2d.behavior.PlayerBehavior;
-import net.mgsx.plugins.box2d.behavior.SimpleAI;
-import net.mgsx.plugins.box2d.model.BodyItem;
-import net.mgsx.plugins.box2d.model.WorldItem;
-import net.mgsx.plugins.box2d.persistence.Repository;
-import net.mgsx.plugins.box2d.tools.CreateChainTool;
-import net.mgsx.plugins.box2d.tools.CreateCircleTool;
-import net.mgsx.plugins.box2d.tools.CreateEdgeTool;
-import net.mgsx.plugins.box2d.tools.CreateLoopTool;
-import net.mgsx.plugins.box2d.tools.CreatePolygonTool;
-import net.mgsx.plugins.box2d.tools.CreateRectangleTool;
-import net.mgsx.plugins.box2d.tools.JointDistanceTool;
-import net.mgsx.plugins.box2d.tools.JointFrictionTool;
-import net.mgsx.plugins.box2d.tools.JointGearTool;
-import net.mgsx.plugins.box2d.tools.JointMotorTool;
-import net.mgsx.plugins.box2d.tools.JointMouseTool;
-import net.mgsx.plugins.box2d.tools.JointPrismaticTool;
-import net.mgsx.plugins.box2d.tools.JointPulleyTool;
-import net.mgsx.plugins.box2d.tools.JointRevoluteTool;
-import net.mgsx.plugins.box2d.tools.JointRopeTool;
-import net.mgsx.plugins.box2d.tools.JointWeldTool;
-import net.mgsx.plugins.box2d.tools.JointWheelTool;
-import net.mgsx.plugins.box2d.tools.ParticleTool;
-import net.mgsx.plugins.box2d.tools.PresetTool;
+import net.mgsx.plugins.box2d.model.Box2DBodyModel;
+import net.mgsx.plugins.box2dold.Box2DPresets;
+import net.mgsx.plugins.box2dold.Box2DPresets.Box2DPreset;
+import net.mgsx.plugins.box2dold.behavior.BodyBehavior;
+import net.mgsx.plugins.box2dold.behavior.PlayerBehavior;
+import net.mgsx.plugins.box2dold.behavior.SimpleAI;
+import net.mgsx.plugins.box2dold.model.WorldItem;
+import net.mgsx.plugins.box2dold.persistence.Repository;
+import net.mgsx.plugins.box2dold.tools.CreateChainTool;
+import net.mgsx.plugins.box2dold.tools.CreateCircleTool;
+import net.mgsx.plugins.box2dold.tools.CreateEdgeTool;
+import net.mgsx.plugins.box2dold.tools.CreateLoopTool;
+import net.mgsx.plugins.box2dold.tools.CreatePolygonTool;
+import net.mgsx.plugins.box2dold.tools.CreateRectangleTool;
+import net.mgsx.plugins.box2dold.tools.JointDistanceTool;
+import net.mgsx.plugins.box2dold.tools.JointFrictionTool;
+import net.mgsx.plugins.box2dold.tools.JointGearTool;
+import net.mgsx.plugins.box2dold.tools.JointMotorTool;
+import net.mgsx.plugins.box2dold.tools.JointMouseTool;
+import net.mgsx.plugins.box2dold.tools.JointPrismaticTool;
+import net.mgsx.plugins.box2dold.tools.JointPulleyTool;
+import net.mgsx.plugins.box2dold.tools.JointRevoluteTool;
+import net.mgsx.plugins.box2dold.tools.JointRopeTool;
+import net.mgsx.plugins.box2dold.tools.JointWeldTool;
+import net.mgsx.plugins.box2dold.tools.JointWheelTool;
+import net.mgsx.plugins.box2dold.tools.ParticleTool;
+import net.mgsx.plugins.box2dold.tools.PresetTool;
 
 public class Box2DEditorPlugin implements EditorPlugin {
 
@@ -228,7 +229,7 @@ public class Box2DEditorPlugin implements EditorPlugin {
 		return new Tool(name, editor){
 			@Override
 			protected void activate() {
-				BodyItem bodyItem = editor.getSelected().getComponent(BodyItem.class);
+				Box2DBodyModel bodyItem = editor.getSelected().getComponent(Box2DBodyModel.class);
 				BodyBehavior b = null;
 				if(type != null){
 					b = ReflectionHelper.newInstance(type);

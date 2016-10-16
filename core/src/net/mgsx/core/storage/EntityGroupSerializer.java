@@ -7,11 +7,8 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.JsonValue.JsonIterator;
-import com.badlogic.gdx.utils.ObjectMap;
 
-import jdk.nashorn.internal.ir.annotations.Ignore;
 import net.mgsx.core.helpers.ReflectionHelper;
-import net.mgsx.core.plugins.Movable;
 
 public class EntityGroupSerializer implements Json.Serializer<EntityGroup>
 {
@@ -83,11 +80,8 @@ public class EntityGroupSerializer implements Json.Serializer<EntityGroup>
 			for(JsonIterator i = value.iterator() ; i.hasNext() ; ){
 				JsonValue cvalue = i.next();
 				String className = cvalue.name;
-				Component component = ReflectionHelper.newInstance(className);
-				if(component != null){
-					json.readFields(component, cvalue);
-					entity.add(component);
-				}
+				Component component = json.readValue(ReflectionHelper.forName(className), cvalue);
+				entity.add(component);
 				
 			}
 		}

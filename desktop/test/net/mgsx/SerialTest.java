@@ -12,6 +12,8 @@ import com.badlogic.gdx.backends.lwjgl.LwjglNativesLoader;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.glutils.FileTextureData;
+import com.badlogic.gdx.utils.Json;
+import com.badlogic.gdx.utils.ObjectMap;
 
 import net.mgsx.core.storage.Storage;
 import net.mgsx.plugins.sprite.SpriteModel;
@@ -44,13 +46,13 @@ public class SerialTest {
 		entity.add(sm);
 		
 		StringWriter writer = new StringWriter();
-		Storage.save(engine, assets, writer, true);
+		Storage.save(engine, assets, writer, true, new ObjectMap<Class, Json.Serializer>());
 		engine.removeAllEntities();
 		
-		Storage.load(engine, new StringReader(writer.toString()), assets);
+		Storage.load(engine, new StringReader(writer.toString()), assets, new ObjectMap<Class, Json.Serializer>());
 		
 		writer.append("\n\n");
-		Storage.save(engine, assets, writer, true);
+		Storage.save(engine, assets, writer, true, new ObjectMap<Class, Json.Serializer>());
 		
 		
 		System.out.println(writer.toString());
