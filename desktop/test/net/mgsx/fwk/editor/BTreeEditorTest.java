@@ -61,7 +61,7 @@ public class BTreeEditorTest
 				model.tree = BehaviorTreeLibraryManager.getInstance().createBehaviorTree("toto", entity);
 				
 				entity.add(model);
-				setSelection(entity);
+				// setSelection(entity);
 				
 				TextButton btStep = new TextButton("Step", skin);
 				btStep.addListener(new ChangeListener() {

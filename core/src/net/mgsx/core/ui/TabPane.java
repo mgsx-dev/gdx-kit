@@ -8,6 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Stack;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.utils.Array;
 
 public class TabPane extends Table
 {
@@ -15,6 +16,7 @@ public class TabPane extends Table
 	private ButtonGroup<Button> buttons;
 	private Stack stack;
 	private Actor visible;
+	private Array<Actor> pages = new Array<Actor>();
 	public TabPane(Skin skin) 
 	{
 		super(skin);
@@ -36,23 +38,25 @@ public class TabPane extends Table
 			}
 		});
 		buttons.add(button);
-		stack.add(page);
-		page.setVisible(false);
+		// page.setVisible(stack.getChildren().size > 0 ? false : true);
+		pages.add(page);
 		tabs.add(button);
+		if(pages.size == 1) changePage(button, page);
 		return button;
 	}
 	
 	public void setTab(int index){
-		changePage(buttons.getButtons().get(index), stack.getChildren().get(index));
+		changePage(buttons.getButtons().get(index), pages.get(index));
 	}
 	public void setTab(Actor page){
-		setTab(stack.getChildren().indexOf(page, true));
+		setTab(pages.indexOf(page, true));
 	}
 
 	private void changePage(Button button, Actor page) 
 	{
-		if(visible != null) visible.setVisible(false);
+		stack.clear();
+		stack.add(page);
 		visible = page;
-		page.setVisible(true);
+		// button.setChecked(true);
 	}
 }

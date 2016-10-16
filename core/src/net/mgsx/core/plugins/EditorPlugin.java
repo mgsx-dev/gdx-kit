@@ -4,8 +4,9 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
-// TODO rename EntityEditorPlugin
-public interface EditablePlugin {
+import net.mgsx.core.Editor;
 
-	public Actor createEditor(Entity entity, Skin skin);
+public interface EditorPlugin {
+
+	public Actor createEditor(Editor editor, Skin skin);
 }

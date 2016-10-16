@@ -21,7 +21,7 @@ import net.mgsx.core.plugins.StorablePlugin;
 public class GameEngine extends ApplicationAdapter
 {
 	public AssetManager assets;
-	protected ShapeRenderer shapeRenderer;
+	public ShapeRenderer shapeRenderer;
 	protected SpriteBatch batch;
 	protected Array<Plugin> plugins = new Array<Plugin>();
 	public PooledEngine entityEngine;

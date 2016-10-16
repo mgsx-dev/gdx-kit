@@ -9,6 +9,8 @@ import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.utils.Array;
 
 import net.mgsx.core.Editor;
@@ -70,6 +72,21 @@ public class ModelPlugin extends Plugin
 			}
 		});
 		
+		editor.entityEngine.addSystem(new EntitySystem() {
+			
+			@Override
+			public void update(float deltaTime) {
+				BoundingBox box = new BoundingBox();
+				editor.shapeRenderer.setProjectionMatrix(editor.perspectiveCamera.combined);
+				editor.shapeRenderer.begin(ShapeType.Line);
+				for(ModelInstance modelInstance : modelInstances){
+					modelInstance.calculateBoundingBox(box);
+					box.mul(modelInstance.transform);
+					editor.shapeRenderer.box(box.min.x, box.min.y, box.min.z, box.max.x - box.min.x, box.max.y - box.min.y, box.max.z - box.min.z);
+				}
+				editor.shapeRenderer.end();
+			}
+		});
 		
 		// TODO global editor to synchronize perspective and orthographic camera
 		// need a perspective camera

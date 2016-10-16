@@ -7,7 +7,6 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
-import com.sun.java.swing.plaf.gtk.GTKConstants.ShadowType;
 
 import net.mgsx.core.CommandHistory;
 import net.mgsx.core.Editor;
@@ -46,7 +45,11 @@ public class Box2DPlugin extends Plugin
 		worldItem.initialize();
 		
 		// TODO activation create a body
-		editor.addTool(new AddBox2DTool(editor, worldItem));
+		//editor.addTool(new AddBox2DTool(editor, worldItem));
+		
+		editor.addGlobalEditor("Box2D", new Box2DEditorPlugin(worldItem));
+		
+		
 		editor.addGlobalTool(new SelectBodyTool(editor, worldItem));
 		// TODO entity with model Box2D (at least a body) open all the tools ...
 		
@@ -80,7 +83,7 @@ public class Box2DPlugin extends Plugin
 			}
 		});
 
-		editor.registerPlugin(BodyItem.class, new Box2DEditorPlugin(editor, worldItem));
+		editor.registerPlugin(BodyItem.class, new Box2DBodyEditorPlugin());
 		
 	}
 }

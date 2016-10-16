@@ -1,5 +1,6 @@
 package net.mgsx.plugins.box2d.model;
 
+import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
@@ -15,6 +16,8 @@ import com.badlogic.gdx.utils.Array;
 import net.mgsx.core.Command;
 import net.mgsx.core.CommandHistory;
 import net.mgsx.core.Editor;
+import net.mgsx.core.plugins.Movable;
+import net.mgsx.plugins.box2d.BodyMove;
 
 // TODO it is more an EditorContext (ctx) ...
 public class WorldItem 
@@ -140,18 +143,18 @@ public class WorldItem
 	}
 	public BodyItem currentBody(String defaultName, float x, float y) 
 	{
-		return editor.getSelected().getComponent(BodyItem.class);
-		// XXX
-//		if(selection.bodies.size == 1){
-//			return selection.bodies.first();
-//		}else{
-//			BodyDef def = settings.body();
-//			def.position.set(x, y);
-//			Body body = world.createBody(def);
-//			BodyItem bodyItem = new BodyItem(editor.getSelected(), defaultName, def, body);
-//			items.bodies.add(bodyItem);
-//			return bodyItem;
-//		}
+		Entity entity = editor.currentEntity();
+		BodyItem item = entity == null ? null : entity.getComponent(BodyItem.class);
+		if(item == null){
+			
+			BodyDef def = settings.body();
+			def.position.set(x, y);
+			Body body = world.createBody(def);
+			item = new BodyItem(entity, defaultName, def, body);
+			entity.add(item);
+			entity.add(new Movable(new BodyMove(body)));
+		}
+		return item;
 	}
 	public Fixture queryFirstFixture(Vector2 pos) {
 		final Array<Fixture> objects = new Array<Fixture>();

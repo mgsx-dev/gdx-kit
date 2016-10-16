@@ -2,17 +2,11 @@ package net.mgsx.plugins.box2d;
 
 import java.lang.reflect.Field;
 
-import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.Texture.TextureFilter;
-import com.badlogic.gdx.graphics.Texture.TextureWrap;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
-import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
@@ -24,7 +18,7 @@ import net.mgsx.core.EntityEditor;
 import net.mgsx.core.NativeService;
 import net.mgsx.core.NativeService.DialogCallback;
 import net.mgsx.core.ReflectionHelper;
-import net.mgsx.core.plugins.EditablePlugin;
+import net.mgsx.core.plugins.EditorPlugin;
 import net.mgsx.core.tools.Tool;
 import net.mgsx.core.tools.ToolGroup;
 import net.mgsx.core.ui.TabPane;
@@ -52,33 +46,32 @@ import net.mgsx.plugins.box2d.tools.JointRevoluteTool;
 import net.mgsx.plugins.box2d.tools.JointRopeTool;
 import net.mgsx.plugins.box2d.tools.JointWeldTool;
 import net.mgsx.plugins.box2d.tools.JointWheelTool;
-import net.mgsx.plugins.box2d.tools.MoveShapeTool;
 import net.mgsx.plugins.box2d.tools.NoTool;
 import net.mgsx.plugins.box2d.tools.ParticleTool;
 import net.mgsx.plugins.box2d.tools.PresetTool;
 
-public class Box2DEditorPlugin implements EditablePlugin {
+public class Box2DEditorPlugin implements EditorPlugin {
 
-	private Editor editor;
 	private WorldItem worldItem; // TODO worldItem should be set in entity aspect (BodyItem)
 	
-	public Box2DEditorPlugin(Editor editor, WorldItem worldItem) {
+	public Box2DEditorPlugin(WorldItem worldItem) {
 		super();
-		this.editor = editor;
 		this.worldItem = worldItem;
 	}
 
 
 	@Override
-	public Actor createEditor(Entity entity, Skin skin) {
+	public Actor createEditor(Editor editor, Skin skin) {
 		
 		final OrthographicCamera orthographicCamera = editor.orthographicCamera;
 		ToolGroup mainTools = editor.subToolGroup; // mainToolGroup;
 		mainTools.clear();
 		
+		
 		// Shape tools
 		final Array<Tool> shapeTools = new Array<Tool>();
 		
+		shapeTools.add(new NoTool("no tool", editor));
 		shapeTools.add(new CreateRectangleTool(orthographicCamera, worldItem));
 		shapeTools.add(new CreatePolygonTool(orthographicCamera, worldItem));
 		shapeTools.add(new CreateCircleTool(orthographicCamera, worldItem));
@@ -109,8 +102,8 @@ public class Box2DEditorPlugin implements EditablePlugin {
 		final Array<Tool> testTools = new Array<Tool>();
 		
 		testTools.add(new ParticleTool(orthographicCamera, worldItem));
-		testTools.add(behaviorTool("Player", PlayerBehavior.class));
-		testTools.add(behaviorTool("Simple AI", SimpleAI.class));
+		testTools.add(behaviorTool(editor, "Player", PlayerBehavior.class));
+		testTools.add(behaviorTool(editor, "Simple AI", SimpleAI.class));
 		
 		// ...
 		
@@ -232,7 +225,7 @@ public class Box2DEditorPlugin implements EditablePlugin {
 		return tabs;
 	}
 	
-	private Tool behaviorTool(final String name, final Class<? extends BodyBehavior> type) 
+	private Tool behaviorTool(final Editor editor, final String name, final Class<? extends BodyBehavior> type) 
 	{
 		return new Tool(name, editor.orthographicCamera){
 			@Override

@@ -1,18 +1,24 @@
 package net.mgsx.core;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntityListener;
+import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -21,13 +27,18 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 import net.mgsx.core.plugins.EditablePlugin;
+import net.mgsx.core.plugins.EditorPlugin;
+import net.mgsx.core.plugins.Movable;
 import net.mgsx.core.plugins.Plugin;
 import net.mgsx.core.tools.MoveToolBase;
 import net.mgsx.core.tools.PanTool;
+import net.mgsx.core.tools.SelectToolBase;
 import net.mgsx.core.tools.Tool;
 import net.mgsx.core.tools.ToolGroup;
 import net.mgsx.core.tools.UndoTool;
+import net.mgsx.core.ui.TabPane;
 import net.mgsx.plugins.box2d.SkinFactory;
+import net.mgsx.plugins.box2d.model.BodyItem;
 import net.mgsx.plugins.box2d.tools.NoTool;
 
 // TODO avoid complexity here : 
@@ -55,6 +66,7 @@ public class Editor extends GameEngine
 	protected Table panel;
 	protected Table buttons;
 	protected Table outline;
+	protected TabPane global;
 	
 	final private Array<ToolGroup> tools = new Array<ToolGroup>();
 	
@@ -62,6 +74,8 @@ public class Editor extends GameEngine
 	
 	private ToolGroup mainToolGroup; // XXX temporarily public ...
 	public ToolGroup subToolGroup;
+	
+	private Map<String, EditorPlugin> globalEditors = new LinkedHashMap<String, EditorPlugin>();
 	
 	@Override
 	public void create() {
@@ -80,7 +94,9 @@ public class Editor extends GameEngine
 		
 		panel = new Table(skin);
 		// TODO add menu
+		global = new TabPane(skin);
 		buttons = new Table(skin);
+		panel.add(global).row();
 		panel.add(buttons).row();
 		panel.add(outline).row();
 		
@@ -99,6 +115,13 @@ public class Editor extends GameEngine
 		
 		addGlobalTool(new MoveToolBase(this));
 		addGlobalTool(new PanTool(orthographicCamera));
+//		addGlobalTool(new SelectToolBase(this){
+//			@Override
+//			public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+//				setSelection(null);
+//				return super.touchDown(screenX, screenY, pointer, button);
+//			}
+//		});
 
 		// register listener after plugins creation to create filters on all possible components
 		// finally initiate plugins.
@@ -107,6 +130,11 @@ public class Editor extends GameEngine
 			plugin.initialize(this);
 		}
 
+		global.addTab("Off", new Label("", skin));
+		for(Entry<String, EditorPlugin> entry : globalEditors.entrySet()){
+			global.addTab(entry.getKey(), entry.getValue().createEditor(this, skin));
+		}
+		// global.sett
 
 		// TODO  maybe generalize as auto attach (Family) with a backed pool : pool.obtain, pool.release
 		entityEngine.addEntityListener(new EntityListener() {
@@ -136,10 +164,31 @@ public class Editor extends GameEngine
 				}
 			});
 		}
+		
+		entityEngine.addSystem(new EntitySystem() {
+			
+			@Override
+			public void update(float deltaTime) {
+				Vector3 pos = new Vector3();
+				Vector2 s = Tool.pixelSize(orthographicCamera).scl(5);
+				shapeRenderer.setProjectionMatrix(orthographicCamera.combined);
+				shapeRenderer.begin(ShapeType.Line);
+				for(Entity e : entityEngine.getEntitiesFor(Family.one(Movable.class).get())){
+					if(selection.contains(e, true)){
+						Movable movable = e.getComponent(Movable.class);
+						if(movable != null){
+							movable.getPosition(e, pos);
+							shapeRenderer.rect(pos.x-s.x, pos.y-s.y, 2*s.x, 2*s.y);
+						}
+					}
+				}
+				shapeRenderer.end();
+			}
+		});
 
 		
 		// build GUI
-		setSelection(null);
+		updateSelection();
 	}
 
 	public ToolGroup createToolGroup() 
@@ -167,7 +216,7 @@ public class Editor extends GameEngine
 		
 		if(selectionDirty){
 			selectionDirty = false;
-			if(selection.size > 0) setSelection(selection.get(selection.size-1)); else setSelection(null);
+			updateSelection();
 		}
 		
 		orthographicCamera.update(true);
@@ -218,10 +267,13 @@ public class Editor extends GameEngine
 	private static class EditorEntity implements Component
 	{
 	}
-	public void setSelection(Entity entity) 
+	
+	
+	public void updateSelection() 
 	{
+		Entity entity = selection.size == 1 ? selection.first() : null;
 		outline.clear();
-		selection.clear();
+		
 		
 		// rebuild menus as well :
 		buttons.clear();
@@ -236,7 +288,6 @@ public class Editor extends GameEngine
 
 		
 		if(entity != null){
-			selection.add(entity);
 			// EditorEntity config = entity.getComponent(EditorEntity.class);
 			
 			for(Component aspect : entity.getComponents()){
@@ -318,6 +369,11 @@ public class Editor extends GameEngine
 		assets.load(fileName, type);
 		assets.finishLoadingAsset(fileName);
 		return assets.get(fileName, type);
+	}
+
+	public void addGlobalEditor(String name, EditorPlugin plugin) 
+	{
+		globalEditors.put(name, plugin);
 	}
 
 
