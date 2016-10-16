@@ -7,19 +7,18 @@ import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.math.collision.Ray;
+import com.badlogic.gdx.utils.Array;
 
 import net.mgsx.core.Editor;
-import net.mgsx.core.tools.SelectToolBase;
+import net.mgsx.core.plugins.SelectorPlugin;
 
-public class SelectModelTool extends SelectToolBase
+public class ModelSelector  extends SelectorPlugin
 {
-	private Editor editor;
 	private BoundingBox box;
 	private Vector3 intersection = new Vector3();
 	
-	public SelectModelTool(Editor editor) {
+	public ModelSelector(Editor editor) {
 		super(editor);
-		this.editor = editor;
 	}
 
 	private boolean intersectRay(Node node, Ray ray)
@@ -42,11 +41,9 @@ public class SelectModelTool extends SelectToolBase
 	}
 	
 	@Override
-	public boolean touchDown(int screenX, int screenY, int pointer, int button) 
-	{
-		
+	public int getSelection(Array<Entity> entities, float screenX, float screenY) {
 		Ray ray = editor.perspectiveCamera.getPickRay(screenX, screenY);
-		Entity found = null;
+		int count = 0;
 		for(Entity entity : editor.entityEngine.getEntitiesFor(Family.one(G3DModel.class).get())){
 			G3DModel model = entity.getComponent(G3DModel.class);
 			box = new BoundingBox();
@@ -55,22 +52,12 @@ public class SelectModelTool extends SelectToolBase
 			if(Intersector.intersectRayBounds(ray, box, intersection)){
 				for(Node node : model.modelInstance.nodes){
 					if(intersectRay(node, ray)){
-						found = entity;
+						entities.add(entity);
+						count++;
 					}
 				}
 			}
 		}
-		if(found != null)
-		{
-			handleSelection(found, editor.selection);
-			return true;
-		}
-		else{
-			for(Entity entity : editor.entityEngine.getEntitiesFor(Family.one(G3DModel.class).get())){
-				editor.selection.removeValue(entity, true);
-				editor.invalidateSelection();
-			}
-		}
-		return super.touchDown(screenX, screenY, pointer, button);
+		return count;
 	}
 }

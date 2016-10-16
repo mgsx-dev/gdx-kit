@@ -37,10 +37,11 @@ import net.mgsx.core.plugins.EditablePlugin;
 import net.mgsx.core.plugins.EditorPlugin;
 import net.mgsx.core.plugins.Movable;
 import net.mgsx.core.plugins.Plugin;
+import net.mgsx.core.plugins.SelectorPlugin;
 import net.mgsx.core.storage.Storage;
-import net.mgsx.core.tools.MoveToolBase;
 import net.mgsx.core.tools.NoTool;
 import net.mgsx.core.tools.PanTool;
+import net.mgsx.core.tools.SelectTool;
 import net.mgsx.core.tools.Tool;
 import net.mgsx.core.tools.ToolGroup;
 import net.mgsx.core.tools.UndoTool;
@@ -73,6 +74,8 @@ public class Editor extends GameEngine
 	protected Table buttons;
 	protected Table outline;
 	protected TabPane global;
+	
+	public Array<SelectorPlugin> selectors = new Array<SelectorPlugin>();
 	
 	final private Array<ToolGroup> tools = new Array<ToolGroup>();
 	
@@ -180,7 +183,8 @@ public class Editor extends GameEngine
 //			}
 //		});
 
-		addGlobalTool(new MoveToolBase(this));
+		// order is very important !
+		addGlobalTool(new SelectTool(this));
 		addGlobalTool(new PanTool(this));
 
 		// register listener after plugins creation to create filters on all possible components
@@ -385,7 +389,7 @@ public class Editor extends GameEngine
 	
 	private Map<Class, Array<EditablePlugin>> editablePlugins = new HashMap<Class, Array<EditablePlugin>>();
 	public Array<Entity> selection = new Array<Entity>();
-	private boolean selectionDirty;
+	public boolean selectionDirty;
 	public <T> void registerPlugin(Class<T> type, EditablePlugin plugin) 
 	{
 		Array<EditablePlugin> plugins = editablePlugins.get(type);
@@ -455,6 +459,15 @@ public class Editor extends GameEngine
 	private ObjectMap<Class, Serializer> serializers = new ObjectMap<Class, Serializer>();
 	public <T> void addSerializer(Class<T> type, Serializer<T> serializer) {
 		serializers.put(type, serializer);
+	}
+
+	public Vector2 unproject(float screenX, float screenY) {
+		Vector3 v = orthographicCamera.unproject(new Vector3(screenX, screenY, 0));
+		return new Vector2(v.x, v.y);
+	}
+
+	public void addSelector(SelectorPlugin selector) {
+		selectors.add(selector);
 	}
 
 

@@ -64,7 +64,7 @@ public class Box2DPlugin extends Plugin
 		editor.addGlobalEditor("Box2D", new Box2DEditorPlugin(worldItem));
 		
 		
-		editor.addGlobalTool(new Box2DSelectBodyTool(editor, worldItem));
+		editor.addSelector(new Box2DBodySelector(editor, worldItem));
 		// TODO entity with model Box2D (at least a body) open all the tools ...
 		
 		

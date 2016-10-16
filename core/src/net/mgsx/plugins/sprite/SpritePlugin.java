@@ -51,7 +51,7 @@ public class SpritePlugin extends Plugin
 		});
 		
 		editor.addTool(new AddSpriteTool(editor));
-		editor.addGlobalTool(new SelectSpriteTool(editor));
+		editor.addSelector(new SpriteSelector(editor));
 	}
 /*
 	@Override

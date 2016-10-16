@@ -37,7 +37,7 @@ public class ModelPlugin extends Plugin
 		// TODO editor for model
 		
 		// TODO select processor
-		editor.addGlobalTool(new SelectModelTool(editor));
+		editor.addSelector(new ModelSelector(editor));
 		
 		// TODO render processor
 		
