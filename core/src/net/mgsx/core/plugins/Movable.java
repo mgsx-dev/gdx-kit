@@ -17,5 +17,8 @@ public class Movable implements Component
 	public void move(Entity entity, Vector3 deltaWorld){if(delegate != null) delegate.move(entity, deltaWorld);}
 	public void moveEnd(Entity entity){if(delegate != null) delegate.moveEnd(entity);}
 	public void moveTo(Entity entity, Vector3 pos) {if(delegate != null) delegate.moveTo(entity, pos);}
+	public void rotateTo(Entity entity, float angle) {if(delegate != null) delegate.rotateTo(entity, angle);}
+	
 	public void getPosition(Entity entity, Vector3 pos) {if(delegate != null) delegate.getPosition(entity, pos);}
+	public float getRotation(Entity entity) { if(delegate != null) return delegate.getRotation(entity); else return 0;}
 }

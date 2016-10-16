@@ -26,19 +26,19 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
+import net.mgsx.core.components.Attach;
+import net.mgsx.core.helpers.EntityHelper.SingleComponentIteratingSystem;
 import net.mgsx.core.plugins.EditablePlugin;
 import net.mgsx.core.plugins.EditorPlugin;
 import net.mgsx.core.plugins.Movable;
 import net.mgsx.core.plugins.Plugin;
 import net.mgsx.core.tools.MoveToolBase;
 import net.mgsx.core.tools.PanTool;
-import net.mgsx.core.tools.SelectToolBase;
 import net.mgsx.core.tools.Tool;
 import net.mgsx.core.tools.ToolGroup;
 import net.mgsx.core.tools.UndoTool;
 import net.mgsx.core.ui.TabPane;
 import net.mgsx.plugins.box2d.SkinFactory;
-import net.mgsx.plugins.box2d.model.BodyItem;
 import net.mgsx.plugins.box2d.tools.NoTool;
 
 // TODO avoid complexity here : 
@@ -113,8 +113,6 @@ public class Editor extends GameEngine
 		
 		addTool(new NoTool("Select", this));;
 		
-		addGlobalTool(new MoveToolBase(this));
-		addGlobalTool(new PanTool(orthographicCamera));
 //		addGlobalTool(new SelectToolBase(this){
 //			@Override
 //			public boolean touchDown(int screenX, int screenY, int pointer, int button) {
@@ -123,12 +121,17 @@ public class Editor extends GameEngine
 //			}
 //		});
 
+		addGlobalTool(new MoveToolBase(this));
+		addGlobalTool(new PanTool(orthographicCamera));
+
 		// register listener after plugins creation to create filters on all possible components
 		// finally initiate plugins.
 		// TODO separate runtme plugin part (model, serialization, update, render) from editor part
 		for(Plugin plugin : plugins){
 			plugin.initialize(this);
 		}
+		
+
 
 		global.addTab("Off", new Label("", skin));
 		for(Entry<String, EditorPlugin> entry : globalEditors.entrySet()){
@@ -183,6 +186,14 @@ public class Editor extends GameEngine
 					}
 				}
 				shapeRenderer.end();
+			}
+		});
+		
+		entityEngine.addSystem(new SingleComponentIteratingSystem<Attach>(Attach.class) {
+
+			@Override
+			protected void processEntity(Entity entity, Attach component, float deltaTime) {
+				component.update();
 			}
 		});
 

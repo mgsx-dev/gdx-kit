@@ -16,6 +16,7 @@ import com.badlogic.gdx.utils.Array;
 import net.mgsx.core.Command;
 import net.mgsx.core.CommandHistory;
 import net.mgsx.core.Editor;
+import net.mgsx.core.components.Attach;
 import net.mgsx.core.plugins.Movable;
 import net.mgsx.plugins.box2d.BodyMove;
 
@@ -152,7 +153,14 @@ public class WorldItem
 			Body body = world.createBody(def);
 			item = new BodyItem(entity, defaultName, def, body);
 			entity.add(item);
-			entity.add(new Movable(new BodyMove(body)));
+			Movable oldMovable = entity.getComponent(Movable.class);
+			Movable newMovable = new Movable(new BodyMove(body));
+			if(oldMovable != null){
+				entity.add(new Attach(entity, newMovable, entity, oldMovable));
+			}
+			entity.add(newMovable);
+			
+			
 		}
 		return item;
 	}

@@ -35,5 +35,9 @@ public class SpriteMove extends Movable
 		pos.set(sprite.getX(), sprite.getY(), 0);
 	}
 
+	@Override
+	public void rotateTo(Entity entity, float angle) {
+		sprite.setRotation(angle);
+	}
 
 }

@@ -31,5 +31,9 @@ public class ModelMove  extends Movable
 		modelInstance.transform.getTranslation(pos);
 	}
 
+	@Override
+	public void rotateTo(Entity entity, float angle) {
+		modelInstance.transform.setToRotation(0, 0, 1, angle);
+	}
 
 }

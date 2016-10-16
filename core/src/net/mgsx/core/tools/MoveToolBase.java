@@ -4,6 +4,7 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.Array;
 
 import net.mgsx.core.Editor;
 import net.mgsx.core.plugins.Movable;
@@ -13,6 +14,8 @@ public class MoveToolBase extends Tool
 	private Vector2 prev;
 	private boolean moving = false;
 	private Editor editor;
+	private Array<Entity> selection = new Array<Entity>(); // TODO no, replace these tools by a selector concept ...
+	
 	public MoveToolBase(Editor editor) {
 		super("Move", editor.orthographicCamera);
 		this.editor = editor;
@@ -24,10 +27,11 @@ public class MoveToolBase extends Tool
 		if(moving){
 			moving = false;
 			
-			for(Entity entity : editor.selection){
+			for(Entity entity : selection){
 				Movable movable = entity.getComponent(Movable.class);
 				if(movable != null) movable.moveEnd(entity);
 			}
+			selection.clear();
 			
 		}
 		return false;
@@ -43,7 +47,7 @@ public class MoveToolBase extends Tool
 			}else if(shift()){
 				delta.set(0, 0, delta.y);
 			}
-			for(Entity entity : editor.selection){
+			for(Entity entity : selection){
 				Movable movable = entity.getComponent(Movable.class);
 				if(movable != null) movable.move(entity, delta);
 			}
@@ -58,9 +62,11 @@ public class MoveToolBase extends Tool
 		if(button == Input.Buttons.LEFT){
 			moving = true;
 			prev = unproject(screenX, screenY);
+			selection.clear();
 			for(Entity entity : editor.selection){
 				Movable movable = entity.getComponent(Movable.class);
 				if(movable != null) movable.moveBegin(entity);
+				selection.add(entity);
 			}
 		}
 		return false;
