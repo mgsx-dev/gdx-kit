@@ -1,14 +1,14 @@
 package net.mgsx.plugins.box2d.tools;
 
-import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.physics.box2d.joints.GearJointDef;
 
+import net.mgsx.core.Editor;
 import net.mgsx.plugins.box2d.model.BodyItem;
 import net.mgsx.plugins.box2d.model.WorldItem;
 
 public class JointGearTool extends JointTool<GearJointDef> {
-	public JointGearTool(Camera camera, WorldItem worldItem) {
-		super("Gear", camera, worldItem, 2);
+	public JointGearTool(Editor editor, WorldItem worldItem) {
+		super("Gear", editor, worldItem, 2);
 	}
 
 	@Override

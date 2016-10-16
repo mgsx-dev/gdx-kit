@@ -12,7 +12,7 @@ abstract public class ComponentTool extends Tool
 	private Editor editor;
 
 	public ComponentTool(String name, Editor editor, Class<? extends Component> assignableFor) {
-		super(name, editor.orthographicCamera);
+		super(name, editor);
 		this.editor = editor;
 		this.activator = Family.one(assignableFor).get();
 	}

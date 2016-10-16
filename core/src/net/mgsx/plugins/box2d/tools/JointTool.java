@@ -1,8 +1,8 @@
 package net.mgsx.plugins.box2d.tools;
 
-import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.physics.box2d.JointDef;
 
+import net.mgsx.core.Editor;
 import net.mgsx.core.tools.MultiClickTool;
 import net.mgsx.plugins.box2d.commands.Box2DCommands;
 import net.mgsx.plugins.box2d.model.BodyItem;
@@ -12,9 +12,9 @@ abstract public class JointTool<T extends JointDef> extends MultiClickTool
 {
 	protected WorldItem worldItem;
 	
-	public JointTool(String name, Camera camera, WorldItem worldItem, int maxPoints) 
+	public JointTool(String name, Editor editor, WorldItem worldItem, int maxPoints) 
 	{
-		super("Create " + name, camera, maxPoints);
+		super("Create " + name, editor, maxPoints);
 		this.worldItem = worldItem;
 	}
 	
@@ -23,6 +23,7 @@ abstract public class JointTool<T extends JointDef> extends MultiClickTool
 	@Override
 	protected void complete() 
 	{
+		// TODO based on editor !
 		if(worldItem.selection.bodies.size < 2){
 			return;
 		}

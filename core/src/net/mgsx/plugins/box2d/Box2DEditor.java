@@ -1,7 +1,5 @@
 package net.mgsx.plugins.box2d;
 
-import java.lang.reflect.Field;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.files.FileHandle;
@@ -30,41 +28,13 @@ import net.mgsx.core.EntityEditor;
 import net.mgsx.core.NativeService;
 import net.mgsx.core.NativeService.DialogCallback;
 import net.mgsx.core.helpers.ReflectionHelper;
-import net.mgsx.core.tools.PanTool;
 import net.mgsx.core.tools.Tool;
 import net.mgsx.core.tools.ToolGroup;
-import net.mgsx.core.tools.ZoomTool;
 import net.mgsx.core.ui.TabPane;
-import net.mgsx.plugins.box2d.Box2DPresets.Box2DPreset;
-import net.mgsx.plugins.box2d.behavior.BodyBehavior;
-import net.mgsx.plugins.box2d.behavior.PlayerBehavior;
-import net.mgsx.plugins.box2d.behavior.SimpleAI;
 import net.mgsx.plugins.box2d.model.BodyItem;
 import net.mgsx.plugins.box2d.model.SpriteItem;
 import net.mgsx.plugins.box2d.model.WorldItem;
 import net.mgsx.plugins.box2d.persistence.Repository;
-import net.mgsx.plugins.box2d.tools.CreateChainTool;
-import net.mgsx.plugins.box2d.tools.CreateCircleTool;
-import net.mgsx.plugins.box2d.tools.CreateEdgeTool;
-import net.mgsx.plugins.box2d.tools.CreateLoopTool;
-import net.mgsx.plugins.box2d.tools.CreatePolygonTool;
-import net.mgsx.plugins.box2d.tools.CreateRectangleTool;
-import net.mgsx.plugins.box2d.tools.JointDistanceTool;
-import net.mgsx.plugins.box2d.tools.JointFrictionTool;
-import net.mgsx.plugins.box2d.tools.JointGearTool;
-import net.mgsx.plugins.box2d.tools.JointMotorTool;
-import net.mgsx.plugins.box2d.tools.JointMouseTool;
-import net.mgsx.plugins.box2d.tools.JointPrismaticTool;
-import net.mgsx.plugins.box2d.tools.JointPulleyTool;
-import net.mgsx.plugins.box2d.tools.JointRevoluteTool;
-import net.mgsx.plugins.box2d.tools.JointRopeTool;
-import net.mgsx.plugins.box2d.tools.JointWeldTool;
-import net.mgsx.plugins.box2d.tools.JointWheelTool;
-import net.mgsx.plugins.box2d.tools.MoveShapeTool;
-import net.mgsx.plugins.box2d.tools.ParticleTool;
-import net.mgsx.plugins.box2d.tools.PresetTool;
-import net.mgsx.plugins.box2d.tools.SelectTool;
-import net.mgsx.plugins.sprite.AddSpriteTool;
 
 // TODO some shapes (chain) can'be used in dynamic objects ! use polygon instead but restrict to convex hull and 3 to 8 vertex !
 public class Box2DEditor extends Editor 
@@ -133,54 +103,29 @@ public class Box2DEditor extends Editor
 		// Tools stack (order is important !)
 		//
 		final ToolGroup mainTools = createToolGroup(); // TODO mainTools are contectual tools ....
-		createToolGroup().addProcessor(new ZoomTool(orthographicCamera));
-		createToolGroup().addProcessor(new PanTool(orthographicCamera));
-		createToolGroup().addProcessor(new SelectTool(this, worldItem));
 
 		
 		// Edit tools
 		final Array<Tool> editTools = new Array<Tool>();
 		
-		editTools.add(new AddSpriteTool(orthographicCamera, this));
-		editTools.add(new MoveShapeTool(orthographicCamera, worldItem));
 
 		mainTools.tools.addAll(editTools);
 		
 		// Shape tools
 		final Array<Tool> shapeTools = new Array<Tool>();
 		
-		shapeTools.add(new CreateRectangleTool(orthographicCamera, worldItem));
-		shapeTools.add(new CreatePolygonTool(orthographicCamera, worldItem));
-		shapeTools.add(new CreateCircleTool(orthographicCamera, worldItem));
-		shapeTools.add(new CreateChainTool(orthographicCamera, worldItem));
-		shapeTools.add(new CreateLoopTool(orthographicCamera, worldItem));
-		shapeTools.add(new CreateEdgeTool(orthographicCamera, worldItem));
 		
 		mainTools.tools.addAll(shapeTools);
 		
 		// Joint tools
 		final Array<Tool> jointTools = new Array<Tool>();
 		
-		jointTools.add(new JointDistanceTool(orthographicCamera, worldItem));
-		jointTools.add(new JointFrictionTool(orthographicCamera, worldItem));
-		jointTools.add(new JointGearTool(orthographicCamera, worldItem));
-		jointTools.add(new JointMotorTool(orthographicCamera, worldItem));
-		jointTools.add(new JointMouseTool(orthographicCamera, worldItem));
-		jointTools.add(new JointPrismaticTool(orthographicCamera, worldItem));
-		jointTools.add(new JointPulleyTool(orthographicCamera, worldItem));
-		jointTools.add(new JointRevoluteTool(orthographicCamera, worldItem));
-		jointTools.add(new JointRopeTool(orthographicCamera, worldItem));
-		jointTools.add(new JointWeldTool(orthographicCamera, worldItem));
-		jointTools.add(new JointWheelTool(orthographicCamera, worldItem));
 
 		mainTools.tools.addAll(jointTools);
 		
 		// Test tools
 		final Array<Tool> testTools = new Array<Tool>();
 		
-		testTools.add(new ParticleTool(orthographicCamera, worldItem));
-		testTools.add(behaviorTool("Player", PlayerBehavior.class));
-		testTools.add(behaviorTool("Simple AI", SimpleAI.class));
 		
 		// ...
 		
@@ -232,14 +177,6 @@ public class Box2DEditor extends Editor
 		// convert to tools
 		VerticalGroup presetTable = new VerticalGroup();
 		presetTable.wrap(false);
-		for(Field field : Box2DPresets.class.getDeclaredFields()){
-			if(field.getType() == Box2DPreset.class){
-				final Box2DPreset preset = ReflectionHelper.get(null, field, Box2DPreset.class);
-				final Tool tool = new PresetTool(field.getName(), orthographicCamera, worldItem, preset);
-				mainTools.tools.add(tool);
-				presetTable.addActor(createToolButton(mainTools, tool));
-			}
-		}
 		
 		bodySelector.setItems(worldItem.items.bodies);
 		
@@ -375,23 +312,6 @@ public class Box2DEditor extends Editor
 		resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 	}
 	
-	private Tool behaviorTool(final String name, final Class<? extends BodyBehavior> type) 
-	{
-		return new Tool(name, orthographicCamera){
-			@Override
-			protected void activate() {
-				BodyItem bodyItem = worldItem.selection.bodies.first();
-				BodyBehavior b = null;
-				if(type != null){
-					b = ReflectionHelper.newInstance(type);
-					b.worldItem = worldItem;
-					b.bodyItem = bodyItem;
-				}
-				bodyItem.behavior = b;
-				end();
-			}
-		};
-	}
 
 	@Override
 	public void render () 

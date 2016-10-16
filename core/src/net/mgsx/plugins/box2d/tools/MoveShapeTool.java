@@ -1,10 +1,10 @@
 package net.mgsx.plugins.box2d.tools;
 
-import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Fixture;
 
+import net.mgsx.core.Editor;
 import net.mgsx.core.tools.Tool;
 import net.mgsx.plugins.box2d.model.BodyItem;
 import net.mgsx.plugins.box2d.model.FixtureItem;
@@ -18,8 +18,8 @@ public class MoveShapeTool extends Tool
 	private Vector2 prev;
 	private BodyItem originalBody;
 	
-	public MoveShapeTool(Camera camera, WorldItem worldItem) {
-		super("Move", camera);
+	public MoveShapeTool(Editor editor, WorldItem worldItem) {
+		super("Move", editor);
 		this.worldItem = worldItem;
 	}
 	

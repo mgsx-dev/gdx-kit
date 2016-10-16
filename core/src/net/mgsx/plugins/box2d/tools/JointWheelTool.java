@@ -1,15 +1,15 @@
 package net.mgsx.plugins.box2d.tools;
 
-import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.joints.WheelJointDef;
 
+import net.mgsx.core.Editor;
 import net.mgsx.plugins.box2d.model.BodyItem;
 import net.mgsx.plugins.box2d.model.WorldItem;
 
 public class JointWheelTool extends JointTool<WheelJointDef> {
-	public JointWheelTool(Camera camera, WorldItem worldItem) {
-		super("Wheel", camera, worldItem, 2);
+	public JointWheelTool(Editor editor, WorldItem worldItem) {
+		super("Wheel", editor, worldItem, 2);
 	}
 
 	@Override

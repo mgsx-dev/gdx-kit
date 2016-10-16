@@ -1,16 +1,16 @@
 package net.mgsx.plugins.box2d.tools;
 
-import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.joints.PrismaticJointDef;
 
+import net.mgsx.core.Editor;
 import net.mgsx.plugins.box2d.model.BodyItem;
 import net.mgsx.plugins.box2d.model.WorldItem;
 
 public class JointPrismaticTool extends JointTool<PrismaticJointDef> {
-	public JointPrismaticTool(Camera camera, WorldItem worldItem) 
+	public JointPrismaticTool(Editor editor, WorldItem worldItem) 
 	{
-		super("Prismatic", camera, worldItem, 2);
+		super("Prismatic", editor, worldItem, 2);
 	}
 	@Override
 	protected PrismaticJointDef createJoint(BodyItem bodyA, BodyItem bodyB) {

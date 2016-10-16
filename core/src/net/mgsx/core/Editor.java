@@ -33,13 +33,13 @@ import net.mgsx.core.plugins.EditorPlugin;
 import net.mgsx.core.plugins.Movable;
 import net.mgsx.core.plugins.Plugin;
 import net.mgsx.core.tools.MoveToolBase;
+import net.mgsx.core.tools.NoTool;
 import net.mgsx.core.tools.PanTool;
 import net.mgsx.core.tools.Tool;
 import net.mgsx.core.tools.ToolGroup;
 import net.mgsx.core.tools.UndoTool;
 import net.mgsx.core.ui.TabPane;
 import net.mgsx.plugins.box2d.SkinFactory;
-import net.mgsx.plugins.box2d.tools.NoTool;
 
 // TODO avoid complexity here : 
 // panel could be separated
@@ -60,7 +60,7 @@ import net.mgsx.plugins.box2d.tools.NoTool;
 //
 public class Editor extends GameEngine
 {
-	protected CommandHistory history;
+	public CommandHistory history;
 	protected Skin skin;
 	protected Stage stage;
 	protected Table panel;
@@ -106,7 +106,7 @@ public class Editor extends GameEngine
 		main.setFillParent(true);
 		stage.addActor(main);
 		
-		createToolGroup().addProcessor(new UndoTool(history));
+		createToolGroup().addProcessor(new UndoTool(this));
 		
 		subToolGroup = createToolGroup();
 		mainToolGroup = createToolGroup();
@@ -122,7 +122,7 @@ public class Editor extends GameEngine
 //		});
 
 		addGlobalTool(new MoveToolBase(this));
-		addGlobalTool(new PanTool(orthographicCamera));
+		addGlobalTool(new PanTool(this));
 
 		// register listener after plugins creation to create filters on all possible components
 		// finally initiate plugins.

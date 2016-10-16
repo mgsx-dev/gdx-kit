@@ -1,10 +1,10 @@
 package net.mgsx.plugins.box2d.tools;
 
-import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.EdgeShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 
+import net.mgsx.core.Editor;
 import net.mgsx.core.tools.MultiClickTool;
 import net.mgsx.plugins.box2d.commands.Box2DCommands;
 import net.mgsx.plugins.box2d.model.BodyItem;
@@ -14,8 +14,8 @@ public class CreateEdgeTool extends MultiClickTool
 {
 	private WorldItem worldItem;
 	
-	public CreateEdgeTool(Camera camera, WorldItem worldItem) {
-		super("Edge", camera, 4);
+	public CreateEdgeTool(Editor editor, WorldItem worldItem) {
+		super("Edge", editor, 4);
 		this.worldItem = worldItem;
 	}
 

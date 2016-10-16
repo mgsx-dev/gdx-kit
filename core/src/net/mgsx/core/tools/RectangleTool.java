@@ -2,15 +2,16 @@ package net.mgsx.core.tools;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 
+import net.mgsx.core.Editor;
+
 abstract public class RectangleTool extends Tool
 {
-	public RectangleTool(String name, Camera camera) {
-		super(name, camera);
+	public RectangleTool(String name, Editor editor) {
+		super(name, editor);
 	}
 	protected Vector2 startPoint, endPoint;
 	protected int buttonFilter = Input.Buttons.LEFT;

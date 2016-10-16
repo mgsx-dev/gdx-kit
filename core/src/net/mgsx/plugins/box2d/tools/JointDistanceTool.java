@@ -1,15 +1,15 @@
 package net.mgsx.plugins.box2d.tools;
 
-import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.joints.DistanceJointDef;
 
+import net.mgsx.core.Editor;
 import net.mgsx.plugins.box2d.model.BodyItem;
 import net.mgsx.plugins.box2d.model.WorldItem;
 
 public class JointDistanceTool extends JointTool<DistanceJointDef> {
-	public JointDistanceTool(Camera camera, WorldItem worldItem) {
-		super("Distance", camera, worldItem, 2);
+	public JointDistanceTool(Editor editor, WorldItem worldItem) {
+		super("Distance", editor, worldItem, 2);
 	}
 
 	@Override

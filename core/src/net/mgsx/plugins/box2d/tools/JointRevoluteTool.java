@@ -1,16 +1,16 @@
 package net.mgsx.plugins.box2d.tools;
 
-import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.joints.RevoluteJointDef;
 
+import net.mgsx.core.Editor;
 import net.mgsx.plugins.box2d.model.BodyItem;
 import net.mgsx.plugins.box2d.model.WorldItem;
 
 public class JointRevoluteTool extends JointTool<RevoluteJointDef> {
-	public JointRevoluteTool(Camera camera, WorldItem worldItem) 
+	public JointRevoluteTool(Editor editor, WorldItem worldItem) 
 	{
-		super("Revolute", camera, worldItem, 2);
+		super("Revolute", editor, worldItem, 2);
 	}
 	@Override
 	protected RevoluteJointDef createJoint(BodyItem bodyA, BodyItem bodyB) {

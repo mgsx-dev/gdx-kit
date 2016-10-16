@@ -1,12 +1,13 @@
 package net.mgsx.core.tools;
 
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
+
+import net.mgsx.core.Editor;
 
 /**
  * This tool is used as follow :
@@ -23,11 +24,11 @@ abstract public class MultiClickTool extends Tool
 	protected abstract void complete();
 	protected void abort(){}
 	
-	public MultiClickTool(String name, Camera camera) {
-		this(name, camera, -1);
+	public MultiClickTool(String name, Editor editor) {
+		this(name, editor, -1);
 	}
-	public MultiClickTool(String name, Camera camera, int maxPoints) {
-		super(name, camera);
+	public MultiClickTool(String name, Editor editor, int maxPoints) {
+		super(name, editor);
 		this.maxPoints = maxPoints;
 	}
 	

@@ -2,7 +2,6 @@ package net.mgsx.plugins.sprite;
 
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
@@ -21,12 +20,10 @@ import net.mgsx.core.tools.RectangleTool;
 public class AddSpriteTool extends RectangleTool 
 {
 	private SpriteModel sprite;
-	private Editor editor;
 	private TextureRegion region;
 	
-	public AddSpriteTool(Camera camera, Editor editor) {
-		super("Sprite", camera);
-		this.editor = editor;
+	public AddSpriteTool(Editor editor) {
+		super("Sprite", editor);
 	}
 	
 	@Override

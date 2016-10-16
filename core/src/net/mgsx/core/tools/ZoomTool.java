@@ -2,16 +2,17 @@ package net.mgsx.core.tools;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector2;
+
+import net.mgsx.core.Editor;
 
 public class ZoomTool extends Tool
 {
 	private Vector2 prev, originScreen, originWorld;
 	
-	public ZoomTool(Camera camera) {
-		super("Pan", camera);
+	public ZoomTool(Editor editor) {
+		super("Pan", editor);
 	}
 	
 	@Override

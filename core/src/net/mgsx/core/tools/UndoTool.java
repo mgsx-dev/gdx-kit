@@ -2,14 +2,12 @@ package net.mgsx.core.tools;
 
 import com.badlogic.gdx.Input;
 
-import net.mgsx.core.CommandHistory;
+import net.mgsx.core.Editor;
 
-public class UndoTool extends ToolBase
+public class UndoTool extends Tool
 {
-	private CommandHistory history;
-	
-	public UndoTool(CommandHistory history) {
-		this.history = history;
+	public UndoTool(Editor editor) {
+		super("undo redo", editor);
 	}
 
 	@Override
@@ -19,9 +17,9 @@ public class UndoTool extends ToolBase
 			if(ctrl())
 			{
 				if(shift()){
-					history.redo();
+					editor.history.redo();
 				}else{
-					history.undo();
+					editor.history.undo();
 				}
 				return true;
 			}

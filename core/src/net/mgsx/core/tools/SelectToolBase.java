@@ -6,10 +6,8 @@ import net.mgsx.core.Editor;
 
 abstract public class SelectToolBase extends Tool
 {
-	protected Editor editor;
 	public SelectToolBase(Editor editor) {
-		super("Select", editor.orthographicCamera);
-		this.editor = editor;
+		super("Select", editor);
 	}
 	
 	protected <T> void handleSelection(T itemSelected, Array<T> selection)

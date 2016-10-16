@@ -1,15 +1,15 @@
 package net.mgsx.plugins.box2d.tools;
 
-import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.joints.WeldJointDef;
 
+import net.mgsx.core.Editor;
 import net.mgsx.plugins.box2d.model.BodyItem;
 import net.mgsx.plugins.box2d.model.WorldItem;
 
 public class JointWeldTool extends JointTool<WeldJointDef> {
-	public JointWeldTool(Camera camera, WorldItem worldItem) {
-		super("Weld", camera, worldItem, 2);
+	public JointWeldTool(Editor editor, WorldItem worldItem) {
+		super("Weld", editor, worldItem, 2);
 	}
 
 	@Override

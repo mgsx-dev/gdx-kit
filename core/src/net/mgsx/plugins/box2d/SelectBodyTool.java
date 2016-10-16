@@ -2,7 +2,6 @@ package net.mgsx.plugins.box2d;
 
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 
@@ -10,7 +9,6 @@ import net.mgsx.core.Editor;
 import net.mgsx.core.tools.SelectToolBase;
 import net.mgsx.plugins.box2d.model.BodyItem;
 import net.mgsx.plugins.box2d.model.WorldItem;
-import net.mgsx.plugins.g3d.G3DModel;
 
 public class SelectBodyTool extends SelectToolBase
 {

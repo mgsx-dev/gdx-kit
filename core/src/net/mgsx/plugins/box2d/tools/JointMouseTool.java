@@ -1,14 +1,14 @@
 package net.mgsx.plugins.box2d.tools;
 
-import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.physics.box2d.joints.MouseJointDef;
 
+import net.mgsx.core.Editor;
 import net.mgsx.plugins.box2d.model.BodyItem;
 import net.mgsx.plugins.box2d.model.WorldItem;
 
 public class JointMouseTool extends JointTool<MouseJointDef> {
-	public JointMouseTool(Camera camera, WorldItem worldItem) {
-		super("Mouse", camera, worldItem, 2);
+	public JointMouseTool(Editor editor, WorldItem worldItem) {
+		super("Mouse", editor, worldItem, 2);
 	}
 
 	@Override

@@ -1,12 +1,12 @@
 package net.mgsx.plugins.box2d.tools;
 
-import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 
+import net.mgsx.core.Editor;
 import net.mgsx.core.tools.RectangleTool;
 import net.mgsx.plugins.box2d.commands.Box2DCommands;
 import net.mgsx.plugins.box2d.model.BodyItem;
@@ -17,8 +17,8 @@ public class CreateCircleTool extends RectangleTool {
 	private WorldItem worldItem;
 	
 	
-	public CreateCircleTool(Camera camera, WorldItem worldItem) {
-		super("Circle", camera);
+	public CreateCircleTool(Editor editor, WorldItem worldItem) {
+		super("Circle", editor);
 		this.worldItem = worldItem;
 	}
 

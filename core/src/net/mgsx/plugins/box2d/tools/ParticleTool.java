@@ -1,13 +1,13 @@
 package net.mgsx.plugins.box2d.tools;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.FlushablePool;
 
+import net.mgsx.core.Editor;
 import net.mgsx.core.tools.Tool;
 import net.mgsx.plugins.box2d.Box2DPresets;
 import net.mgsx.plugins.box2d.model.BodyItem;
@@ -32,8 +32,8 @@ public class ParticleTool extends Tool
 	private Array<Particle> particles = new Array<ParticleTool.Particle>();
 	private FlushablePool<Particle> pool;
 	
-	public ParticleTool(Camera camera, WorldItem worldItem) {
-		super("Particle", camera);
+	public ParticleTool(Editor editor, WorldItem worldItem) {
+		super("Particle", editor);
 		this.worldItem = worldItem;
 		pool = new FlushablePool<ParticleTool.Particle>(){
 			@Override

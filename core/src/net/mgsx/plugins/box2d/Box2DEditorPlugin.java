@@ -3,7 +3,6 @@ package net.mgsx.plugins.box2d;
 import java.lang.reflect.Field;
 
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
@@ -19,6 +18,7 @@ import net.mgsx.core.NativeService;
 import net.mgsx.core.NativeService.DialogCallback;
 import net.mgsx.core.helpers.ReflectionHelper;
 import net.mgsx.core.plugins.EditorPlugin;
+import net.mgsx.core.tools.NoTool;
 import net.mgsx.core.tools.Tool;
 import net.mgsx.core.tools.ToolGroup;
 import net.mgsx.core.ui.TabPane;
@@ -46,7 +46,6 @@ import net.mgsx.plugins.box2d.tools.JointRevoluteTool;
 import net.mgsx.plugins.box2d.tools.JointRopeTool;
 import net.mgsx.plugins.box2d.tools.JointWeldTool;
 import net.mgsx.plugins.box2d.tools.JointWheelTool;
-import net.mgsx.plugins.box2d.tools.NoTool;
 import net.mgsx.plugins.box2d.tools.ParticleTool;
 import net.mgsx.plugins.box2d.tools.PresetTool;
 
@@ -63,7 +62,6 @@ public class Box2DEditorPlugin implements EditorPlugin {
 	@Override
 	public Actor createEditor(Editor editor, Skin skin) {
 		
-		final OrthographicCamera orthographicCamera = editor.orthographicCamera;
 		ToolGroup mainTools = editor.subToolGroup; // mainToolGroup;
 		mainTools.clear();
 		
@@ -72,36 +70,36 @@ public class Box2DEditorPlugin implements EditorPlugin {
 		final Array<Tool> shapeTools = new Array<Tool>();
 		
 		shapeTools.add(new NoTool("no tool", editor));
-		shapeTools.add(new CreateRectangleTool(orthographicCamera, worldItem));
-		shapeTools.add(new CreatePolygonTool(orthographicCamera, worldItem));
-		shapeTools.add(new CreateCircleTool(orthographicCamera, worldItem));
-		shapeTools.add(new CreateChainTool(orthographicCamera, worldItem));
-		shapeTools.add(new CreateLoopTool(orthographicCamera, worldItem));
-		shapeTools.add(new CreateEdgeTool(orthographicCamera, worldItem));
+		shapeTools.add(new CreateRectangleTool(editor, worldItem));
+		shapeTools.add(new CreatePolygonTool(editor, worldItem));
+		shapeTools.add(new CreateCircleTool(editor, worldItem));
+		shapeTools.add(new CreateChainTool(editor, worldItem));
+		shapeTools.add(new CreateLoopTool(editor, worldItem));
+		shapeTools.add(new CreateEdgeTool(editor, worldItem));
 		
 		mainTools.tools.addAll(shapeTools);
 		
 		// Joint tools
 		final Array<Tool> jointTools = new Array<Tool>();
 		
-		jointTools.add(new JointDistanceTool(orthographicCamera, worldItem));
-		jointTools.add(new JointFrictionTool(orthographicCamera, worldItem));
-		jointTools.add(new JointGearTool(orthographicCamera, worldItem));
-		jointTools.add(new JointMotorTool(orthographicCamera, worldItem));
-		jointTools.add(new JointMouseTool(orthographicCamera, worldItem));
-		jointTools.add(new JointPrismaticTool(orthographicCamera, worldItem));
-		jointTools.add(new JointPulleyTool(orthographicCamera, worldItem));
-		jointTools.add(new JointRevoluteTool(orthographicCamera, worldItem));
-		jointTools.add(new JointRopeTool(orthographicCamera, worldItem));
-		jointTools.add(new JointWeldTool(orthographicCamera, worldItem));
-		jointTools.add(new JointWheelTool(orthographicCamera, worldItem));
+		jointTools.add(new JointDistanceTool(editor, worldItem));
+		jointTools.add(new JointFrictionTool(editor, worldItem));
+		jointTools.add(new JointGearTool(editor, worldItem));
+		jointTools.add(new JointMotorTool(editor, worldItem));
+		jointTools.add(new JointMouseTool(editor, worldItem));
+		jointTools.add(new JointPrismaticTool(editor, worldItem));
+		jointTools.add(new JointPulleyTool(editor, worldItem));
+		jointTools.add(new JointRevoluteTool(editor, worldItem));
+		jointTools.add(new JointRopeTool(editor, worldItem));
+		jointTools.add(new JointWeldTool(editor, worldItem));
+		jointTools.add(new JointWheelTool(editor, worldItem));
 
 		mainTools.tools.addAll(jointTools);
 		
 		// Test tools
 		final Array<Tool> testTools = new Array<Tool>();
 		
-		testTools.add(new ParticleTool(orthographicCamera, worldItem));
+		testTools.add(new ParticleTool(editor, worldItem));
 		testTools.add(behaviorTool(editor, "Player", PlayerBehavior.class));
 		testTools.add(behaviorTool(editor, "Simple AI", SimpleAI.class));
 		
@@ -155,7 +153,7 @@ public class Box2DEditorPlugin implements EditorPlugin {
 		for(Field field : Box2DPresets.class.getDeclaredFields()){
 			if(field.getType() == Box2DPreset.class){
 				final Box2DPreset preset = ReflectionHelper.get(null, field, Box2DPreset.class);
-				final Tool tool = new PresetTool(field.getName(), orthographicCamera, worldItem, preset);
+				final Tool tool = new PresetTool(field.getName(), editor, worldItem, preset);
 				mainTools.tools.add(tool);
 				presetTable.addActor(editor.createToolButton(mainTools, tool));
 			}
@@ -227,7 +225,7 @@ public class Box2DEditorPlugin implements EditorPlugin {
 	
 	private Tool behaviorTool(final Editor editor, final String name, final Class<? extends BodyBehavior> type) 
 	{
-		return new Tool(name, editor.orthographicCamera){
+		return new Tool(name, editor){
 			@Override
 			protected void activate() {
 				BodyItem bodyItem = editor.getSelected().getComponent(BodyItem.class);

@@ -1,15 +1,15 @@
 package net.mgsx.plugins.box2d.tools;
 
-import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.joints.FrictionJointDef;
 
+import net.mgsx.core.Editor;
 import net.mgsx.plugins.box2d.model.BodyItem;
 import net.mgsx.plugins.box2d.model.WorldItem;
 
 public class JointFrictionTool extends JointTool<FrictionJointDef> {
-	public JointFrictionTool(Camera camera, WorldItem worldItem) {
-		super("Friction", camera, worldItem, 2);
+	public JointFrictionTool(Editor editor, WorldItem worldItem) {
+		super("Friction", editor, worldItem, 2);
 	}
 
 	@Override

@@ -2,15 +2,16 @@ package net.mgsx.core.tools;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.math.Vector2;
+
+import net.mgsx.core.Editor;
 
 public class PanTool extends Tool
 {
 	private Vector2 prev;
 	
-	public PanTool(Camera camera) {
-		super("Pan", camera);
+	public PanTool(Editor editor) {
+		super("Pan", editor);
 	}
 	
 	@Override

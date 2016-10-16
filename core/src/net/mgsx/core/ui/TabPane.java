@@ -15,7 +15,6 @@ public class TabPane extends Table
 	private Table tabs;
 	private ButtonGroup<Button> buttons;
 	private Stack stack;
-	private Actor visible;
 	private Array<Actor> pages = new Array<Actor>();
 	public TabPane(Skin skin) 
 	{
@@ -38,7 +37,6 @@ public class TabPane extends Table
 			}
 		});
 		buttons.add(button);
-		// page.setVisible(stack.getChildren().size > 0 ? false : true);
 		pages.add(page);
 		tabs.add(button);
 		if(pages.size == 1) changePage(button, page);
@@ -56,7 +54,5 @@ public class TabPane extends Table
 	{
 		stack.clear();
 		stack.add(page);
-		visible = page;
-		// button.setChecked(true);
 	}
 }

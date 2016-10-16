@@ -13,12 +13,10 @@ public class MoveToolBase extends Tool
 {
 	private Vector2 prev;
 	private boolean moving = false;
-	private Editor editor;
 	private Array<Entity> selection = new Array<Entity>(); // TODO no, replace these tools by a selector concept ...
 	
 	public MoveToolBase(Editor editor) {
-		super("Move", editor.orthographicCamera);
-		this.editor = editor;
+		super("Move", editor);
 	}
 	
 	@Override

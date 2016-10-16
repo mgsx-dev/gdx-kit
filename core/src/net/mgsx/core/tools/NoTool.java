@@ -1,10 +1,8 @@
-package net.mgsx.plugins.box2d.tools;
+package net.mgsx.core.tools;
 
 import net.mgsx.core.Editor;
-import net.mgsx.core.tools.EditorTool;
-import net.mgsx.core.tools.Tool;
 
-public class NoTool extends EditorTool
+public class NoTool extends Tool
 {
 	
 	public NoTool(String name, Editor editor) {

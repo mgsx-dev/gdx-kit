@@ -1,11 +1,16 @@
 package net.mgsx.core.tools;
 
+import com.badlogic.ashley.core.Family;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+
+import net.mgsx.core.Editor;
 
 /**
  * A tool may be active in an editor.
@@ -22,8 +27,49 @@ import com.badlogic.gdx.math.Vector3;
  * 
  * See ToolGroup : exclusive tool (eg select + draw)
  */
-public class Tool extends ToolBase
+public class Tool extends InputAdapter
 {
+	final protected Editor editor;
+	ToolGroup group;
+	
+	public Family activator;
+	
+	public Tool(Editor editor) {
+		this("no name", editor);
+	}
+	public Tool(String name, Editor editor) {
+		super();
+		this.editor = editor;
+		this.name = name;
+		camera = editor.orthographicCamera;
+	}
+
+	final protected void end(){
+		group.end(this);
+	}
+
+	protected void activate(){}
+	protected void desactivate(){}
+	
+	/**
+	 * helper
+	 * @return
+	 */
+	protected static final boolean ctrl(){
+		return Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT) ||
+				Gdx.input.isKeyPressed(Input.Keys.CONTROL_RIGHT);
+
+	}
+	/**
+	 * helper
+	 * @return
+	 */
+	protected static final boolean shift(){
+		return Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT) ||
+				Gdx.input.isKeyPressed(Input.Keys.SHIFT_RIGHT);
+
+	}
+
 	protected Vector2 unproject(float screenX, float screenY) {
 		Vector3 v = camera.unproject(new Vector3(screenX, screenY, 0));
 		return new Vector2(v.x, v.y);
@@ -39,10 +85,7 @@ public class Tool extends ToolBase
 	protected Camera camera;
 	
 	final public String name;
-	public Tool(String name, Camera camera) {
-		this.name = name;
-		this.camera = camera;
-	}
+
 	public void render(ShapeRenderer renderer){
 		
 	}

@@ -11,9 +11,9 @@ import net.mgsx.core.Editor;
 import net.mgsx.core.NativeService;
 import net.mgsx.core.NativeService.DialogCallback;
 import net.mgsx.core.plugins.Movable;
-import net.mgsx.core.tools.EditorTool;
+import net.mgsx.core.tools.Tool;
 
-public class AddModelTool extends EditorTool
+public class AddModelTool extends Tool
 {
 	private ModelInstance modelInstance;
 	

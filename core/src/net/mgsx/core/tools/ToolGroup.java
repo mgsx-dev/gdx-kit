@@ -42,7 +42,7 @@ public class ToolGroup extends InputMultiplexer
 		if(activeTool != null) activeTool.render(renderer);
 	}
 
-	final void end(ToolBase tool) {
+	final void end(Tool tool) {
 		if(defaultTool != null) setActiveTool(defaultTool);
 	}
 
