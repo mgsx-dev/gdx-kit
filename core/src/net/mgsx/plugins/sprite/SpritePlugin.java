@@ -1,10 +1,14 @@
 package net.mgsx.plugins.sprite;
 
 import com.badlogic.ashley.core.Entity;
+import com.badlogic.ashley.core.EntityListener;
+import com.badlogic.ashley.core.Family;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import net.mgsx.core.Editor;
 import net.mgsx.core.helpers.EntityHelper.SingleComponentIteratingSystem;
+import net.mgsx.core.plugins.Movable;
 import net.mgsx.core.plugins.Plugin;
 
 public class SpritePlugin extends Plugin
@@ -15,6 +19,21 @@ public class SpritePlugin extends Plugin
 	public void initialize(final Editor editor) 
 	{
 		batch = new SpriteBatch();
+		
+		// plugin for editor only (movable)
+		editor.entityEngine.addEntityListener(Family.one(SpriteModel.class).get(), new EntityListener() {
+			@Override
+			public void entityRemoved(Entity entity) {
+				
+			}
+			@Override
+			public void entityAdded(Entity entity) {
+				if(entity.getComponent(Movable.class) == null){
+					Sprite sprite = entity.getComponent(SpriteModel.class).sprite;
+					entity.add(new Movable(new SpriteMove(sprite)));
+				}
+			}
+		});
 		
 		editor.entityEngine.addSystem(new SingleComponentIteratingSystem<SpriteModel>(SpriteModel.class) { // TODO use sorted instead
 			

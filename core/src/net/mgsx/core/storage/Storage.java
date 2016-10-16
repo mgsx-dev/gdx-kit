@@ -10,15 +10,23 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g3d.Model;
+import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.glutils.FileTextureData;
+import com.badlogic.gdx.physics.box2d.ChainShape;
+import com.badlogic.gdx.physics.box2d.CircleShape;
+import com.badlogic.gdx.physics.box2d.EdgeShape;
+import com.badlogic.gdx.physics.box2d.PolygonShape;
+import com.badlogic.gdx.physics.box2d.Shape;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
 
-public class Storage {
-
+public class Storage 
+{
 	// TODO implement all required serializer here !
 	
+	// TODO handle by texture plugin (core plugin)
 	static class TextureRef implements Json.Serializer<Texture>{
 		private AssetManager assets;
 		
@@ -46,23 +54,51 @@ public class Storage {
 		}
 		
 	}
+	
+	// TODO it's a model serializer not model instance !
+	static class ModelRef implements Json.Serializer<ModelInstance>{
+		private AssetManager assets;
+		
+		public ModelRef(AssetManager assets) {
+			super();
+			this.assets = assets;
+		}
+
+		@Override
+		public void write(Json json, ModelInstance object, Class knownType) {
+			String ref = assets.getAssetFileName(object.model);
+			if(ref != null){
+				json.writeValue(ref);
+			}
+		}
+
+		@Override
+		public ModelInstance read(Json json, JsonValue jsonData, Class type) {
+			String ref = jsonData.asString();
+			if(ref != null){
+				Model model = assets.get(ref, Model.class);
+				ModelInstance i = new ModelInstance(model);
+				// TODO more properties ....
+				return i;
+			}
+			return null;
+		}
+		
+	}
 	static class SpriteSerializer implements Json.Serializer<Sprite>{
 
 		@Override
 		public void write(Json json, Sprite object, Class knownType) {
 			json.writeObjectStart();
-			json.writeValue("x", object.getX());
-			json.writeValue("y", object.getY());
-			json.writeField(object, "texture");
+			json.writeFields(object);
 			json.writeObjectEnd();
 		}
 
 		@Override
 		public Sprite read(Json json, JsonValue jsonData, Class type) {
 			Sprite sprite = new Sprite();
-			sprite.setX(jsonData.getFloat("x"));
-			sprite.setY(jsonData.getFloat("y"));
-			json.readField(sprite, "texture", jsonData);
+			json.readFields(sprite, jsonData);
+			sprite.setRotation(sprite.getRotation()); // hack to clear dirty
 			return sprite;
 		}
 		
@@ -71,29 +107,39 @@ public class Storage {
 	private static Json setup(AssetManager assets)
 	{
 		Json json = new Json();
-		json.setSerializer(EntityGroup.class, new EntityGroupSerializer());
+		json.setSerializer(EntityGroup.class, new EntityGroupSerializer(assets));
 		json.setSerializer(Sprite.class, new SpriteSerializer());
 		json.setSerializer(Texture.class, new TextureRef(assets));
+		json.setSerializer(ModelInstance.class, new ModelRef(assets));
+		
+		// XXX temporarily box 2D
+		json.setSerializer(Shape.class, new IgnoreSerializer<Shape>()); 
+		json.setSerializer(ChainShape.class, new IgnoreSerializer<ChainShape>()); 
+		json.setSerializer(CircleShape.class, new IgnoreSerializer<CircleShape>()); 
+		json.setSerializer(EdgeShape.class, new IgnoreSerializer<EdgeShape>()); 
+		json.setSerializer(PolygonShape.class, new IgnoreSerializer<PolygonShape>());
+		
+		
 		return json;
 	}
 	
-	public static void save(Engine engine, FileHandle file, boolean pretty) 
+	public static void save(Engine engine, AssetManager assets, FileHandle file, boolean pretty) 
 	{
 		Writer writer = file.writer(false);
-		save(engine, writer, pretty);
+		save(engine, assets, writer, pretty);
 		try {
 			writer.close();
 		} catch (IOException e) {
 			throw new Error(e);
 		};
 	}
-	public static void save(Engine engine, Writer writer, boolean pretty) 
+	public static void save(Engine engine, AssetManager assets, Writer writer, boolean pretty) 
 	{
 		EntityGroup group = new EntityGroup();
 		group.entities = new Array<Entity>();
 		for(Entity entity : engine.getEntities()) group.entities.add(entity);
 		
-		Json json = setup(null);
+		Json json = setup(assets);
 		if(pretty){
 			try {
 				writer.append(json.prettyPrint(group));

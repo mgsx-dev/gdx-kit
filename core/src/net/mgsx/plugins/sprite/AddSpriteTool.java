@@ -1,6 +1,7 @@
 package net.mgsx.plugins.sprite;
 
 import com.badlogic.ashley.core.Entity;
+import com.badlogic.gdx.assets.loaders.TextureLoader.TextureParameter;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
@@ -35,12 +36,13 @@ public class AddSpriteTool extends RectangleTool
 		
 		NativeService.instance.openLoadDialog(new DialogCallback() {
 			@Override
-			public void selected(FileHandle file) {
-				Texture tex = new Texture(file, true);
+			public void selected(FileHandle file) 
+			{
+				TextureParameter parameters = new TextureParameter();
+				parameters.genMipMaps = true;
+				Texture tex = editor.loadAssetNow(file.path(), Texture.class, parameters);
 				tex.setFilter(TextureFilter.MipMapLinearLinear, TextureFilter.MipMapLinearLinear);
 				tex.setWrap(TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);
-				// TODO register texture !
-				// TODO store path or something ?
 				region = new TextureRegion(tex);
 			}
 			@Override

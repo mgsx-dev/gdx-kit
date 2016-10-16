@@ -19,8 +19,8 @@ import com.badlogic.gdx.physics.box2d.Shape.Type;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
-import com.badlogic.gdx.utils.JsonValue;
 
+import net.mgsx.core.storage.IgnoreSerializer;
 import net.mgsx.plugins.box2d.model.BodyItem;
 import net.mgsx.plugins.box2d.model.EditorSettings;
 import net.mgsx.plugins.box2d.model.FixtureItem;
@@ -198,19 +198,6 @@ public class Repository
 		
 		createMapper().toJson(data, file);
 	}
-	private static class IgnoreSerializer<T> implements Json.Serializer<T>{
-		@SuppressWarnings("rawtypes")
-		@Override
-		public void write(Json json, T object, Class knownType) 
-		{
-			json.writeValue(null);
-		}
-		@SuppressWarnings("rawtypes")
-		@Override
-		public T read(Json json, JsonValue jsonData, Class type) {
-			return null;
-		}
-	}
 	private static Json createMapper(){
 		Json json = new Json();
 		
@@ -228,10 +215,6 @@ public class Repository
 	}
 	public static void load(FileHandle file, WorldItem worldItem)
 	{
-		// need to recreate world here ...
-		
-		worldItem.dispose();
-		
 		final Map<String, BodyItem> bodies = new HashMap<String, BodyItem>();
 		
 		Data data = createMapper().fromJson(Data.class, file);

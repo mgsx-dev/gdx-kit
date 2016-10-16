@@ -44,13 +44,13 @@ public class SerialTest {
 		entity.add(sm);
 		
 		StringWriter writer = new StringWriter();
-		Storage.save(engine, writer, true);
+		Storage.save(engine, assets, writer, true);
 		engine.removeAllEntities();
 		
 		Storage.load(engine, new StringReader(writer.toString()), assets);
 		
 		writer.append("\n\n");
-		Storage.save(engine, writer, true);
+		Storage.save(engine, assets, writer, true);
 		
 		
 		System.out.println(writer.toString());

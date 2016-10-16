@@ -12,6 +12,7 @@ import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
+import com.badlogic.gdx.assets.AssetLoaderParameters;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
@@ -103,9 +104,11 @@ public class Editor extends GameEngine
 		
 		TextButton btSave = new TextButton("Save", skin);
 		TextButton btOpen = new TextButton("Open", skin);
+		TextButton btReset = new TextButton("Reset", skin);
 		
 		superGlobal.add(btSave);
 		superGlobal.add(btOpen);
+		superGlobal.add(btReset);
 		
 		
 		btSave.addListener(new ChangeListener() {
@@ -114,7 +117,7 @@ public class Editor extends GameEngine
 				NativeService.instance.openSaveDialog(new DialogCallback() {
 					@Override
 					public void selected(FileHandle file) {
-						Storage.save(entityEngine, file, true); // tODO pretty configurable
+						Storage.save(entityEngine, assets, file, true); // TODO pretty configurable
 					}
 					@Override
 					public void cancel() {
@@ -135,6 +138,14 @@ public class Editor extends GameEngine
 					public void cancel() {
 					}
 				});
+			}
+		});
+		btReset.addListener(new ChangeListener() {
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				entityEngine.removeAllEntities();
+				selection.clear();
+				invalidateSelection();
 			}
 		});
 		
@@ -424,6 +435,12 @@ public class Editor extends GameEngine
 
 	public <T> T loadAssetNow(String fileName, Class<T> type) {
 		assets.load(fileName, type);
+		assets.finishLoadingAsset(fileName);
+		return assets.get(fileName, type);
+	}
+
+	public <T> T loadAssetNow(String fileName, Class<T> type, AssetLoaderParameters<T> parameters) {
+		assets.load(fileName, type, parameters);
 		assets.finishLoadingAsset(fileName);
 		return assets.get(fileName, type);
 	}
