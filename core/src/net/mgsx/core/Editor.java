@@ -12,6 +12,7 @@ import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
@@ -26,12 +27,14 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
+import net.mgsx.core.NativeService.DialogCallback;
 import net.mgsx.core.components.Attach;
 import net.mgsx.core.helpers.EntityHelper.SingleComponentIteratingSystem;
 import net.mgsx.core.plugins.EditablePlugin;
 import net.mgsx.core.plugins.EditorPlugin;
 import net.mgsx.core.plugins.Movable;
 import net.mgsx.core.plugins.Plugin;
+import net.mgsx.core.storage.Storage;
 import net.mgsx.core.tools.MoveToolBase;
 import net.mgsx.core.tools.NoTool;
 import net.mgsx.core.tools.PanTool;
@@ -96,6 +99,49 @@ public class Editor extends GameEngine
 		// TODO add menu
 		global = new TabPane(skin);
 		buttons = new Table(skin);
+		Table superGlobal = new Table(skin);
+		
+		TextButton btSave = new TextButton("Save", skin);
+		TextButton btOpen = new TextButton("Open", skin);
+		
+		superGlobal.add(btSave);
+		superGlobal.add(btOpen);
+		
+		
+		btSave.addListener(new ChangeListener() {
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				NativeService.instance.openSaveDialog(new DialogCallback() {
+					@Override
+					public void selected(FileHandle file) {
+						Storage.save(entityEngine, file, true); // tODO pretty configurable
+					}
+					@Override
+					public void cancel() {
+					}
+				});
+			}
+		});
+		btOpen.addListener(new ChangeListener() {
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				NativeService.instance.openSaveDialog(new DialogCallback() {
+					@Override
+					public void selected(FileHandle file) {
+						Storage.load(entityEngine, file, assets);
+						// TODO ? rebuild();
+					}
+					@Override
+					public void cancel() {
+					}
+				});
+			}
+		});
+		
+		
+		
+		
+		panel.add(superGlobal).row();
 		panel.add(global).row();
 		panel.add(buttons).row();
 		panel.add(outline).row();

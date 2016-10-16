@@ -55,4 +55,43 @@ public class ReflectionHelper {
 			throw new ReflectionError(e);
 		}
 	}
+	public static <T> T newInstance(String className) {
+		try {
+			return (T)Class.forName(className).newInstance();
+		} catch (InstantiationException e) {
+			throw new ReflectionError(e);
+		} catch (IllegalAccessException e) {
+			throw new ReflectionError(e);
+		} catch (ClassNotFoundException e) {
+			throw new ReflectionError(e);
+		}
+	}
+	/**
+	 * Type check version
+	 * @param className
+	 * @param type
+	 * @return null if instance doesn't match type
+	 */
+	public static <T> T newInstance(String className, Class<T> type) {
+		try {
+			Object object = Class.forName(className).newInstance();
+			if(type.isInstance(object)){
+				return (T)object;
+			}
+			return null;
+		} catch (InstantiationException e) {
+			throw new ReflectionError(e);
+		} catch (IllegalAccessException e) {
+			throw new ReflectionError(e);
+		} catch (ClassNotFoundException e) {
+			throw new ReflectionError(e);
+		}
+	}
+	public static Class forName(String className) {
+		try {
+			return Class.forName(className);
+		} catch (ClassNotFoundException e) {
+			throw new ReflectionError(e);
+		}
+	}
 }
