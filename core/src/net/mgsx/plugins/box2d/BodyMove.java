@@ -51,7 +51,7 @@ public class BodyMove  extends Movable
 	@Override
 	public void getPosition(Entity entity, Vector3 pos) 
 	{
-		pos.set(body.getPosition().x, body.getPosition().y, 0);
+		pos.set(body.getPosition().x, body.getPosition().y, -1); // XXX -1 for 3D model to be in sprite plan
 	}
 	
 	@Override

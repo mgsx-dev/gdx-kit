@@ -33,7 +33,11 @@ public class ModelMove  extends Movable
 
 	@Override
 	public void rotateTo(Entity entity, float angle) {
+		Vector3 position = new Vector3();
+		
+		modelInstance.transform.getTranslation(position);
 		modelInstance.transform.setToRotation(0, 0, 1, angle);
+		modelInstance.transform.setTranslation(position);
 	}
 
 }

@@ -81,7 +81,7 @@ public class ModelPlugin extends Plugin
 				editor.shapeRenderer.begin(ShapeType.Line);
 				for(ModelInstance modelInstance : modelInstances){
 					modelInstance.calculateBoundingBox(box);
-					box.mul(modelInstance.transform);
+					box.mul(modelInstance.transform); // .mul(modelInstance.nodes.get(0).globalTransform)
 					editor.shapeRenderer.box(box.min.x, box.min.y, box.min.z, box.max.x - box.min.x, box.max.y - box.min.y, box.max.z - box.min.z);
 				}
 				editor.shapeRenderer.end();
