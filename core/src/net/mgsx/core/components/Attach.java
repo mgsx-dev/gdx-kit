@@ -13,7 +13,7 @@ public class Attach implements Component
 
 	private Vector3 position = new Vector3();
 	
-	
+	private Vector3 offset = new Vector3();
 
 
 	public Attach(Entity masterEntity, Movable master, Entity slaveEntity, Movable slave) {
@@ -22,6 +22,13 @@ public class Attach implements Component
 		this.master = master;
 		this.slaveEntity = slaveEntity;
 		this.slave = slave;
+		
+		Vector3 masterPosition = new Vector3();
+		Vector3 slavePosition = new Vector3();
+		master.getPosition(masterEntity, masterPosition);
+		slave.getPosition(slaveEntity, slavePosition);
+		
+		offset.set(slavePosition).sub(masterPosition);
 	}
 
 
@@ -29,7 +36,9 @@ public class Attach implements Component
 
 	public void update()
 	{
+		offset.z = 0;
 		master.getPosition(masterEntity, position);
+		position.add(offset);
 		slave.moveTo(slaveEntity, position);
 		slave.rotateTo(slaveEntity, master.getRotation(masterEntity));
 	}

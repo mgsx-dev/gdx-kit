@@ -10,10 +10,12 @@ import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.utils.Array;
 
 import net.mgsx.core.Editor;
+import net.mgsx.core.plugins.Movable;
 import net.mgsx.core.plugins.Plugin;
 
 public class ModelPlugin extends Plugin
@@ -45,16 +47,20 @@ public class ModelPlugin extends Plugin
 		
 		modelBatch = new ModelBatch();
 		
+		// synchronize modelInstances with entities
 		editor.entityEngine.addEntityListener(Family.one(G3DModel.class).get(), new EntityListener() {
 			
 			@Override
 			public void entityRemoved(Entity entity) {
 				modelInstances.removeValue(entity.getComponent(G3DModel.class).modelInstance, true);
+				entity.remove(Movable.class);
 			}
 			
 			@Override
 			public void entityAdded(Entity entity) {
-				modelInstances.add(entity.getComponent(G3DModel.class).modelInstance);
+				G3DModel model = entity.getComponent(G3DModel.class);
+				modelInstances.add(model.modelInstance);
+				entity.add(new Movable(new ModelMove(model.modelInstance)));
 			}
 		});
 		
@@ -80,6 +86,9 @@ public class ModelPlugin extends Plugin
 				editor.shapeRenderer.setProjectionMatrix(editor.perspectiveCamera.combined);
 				editor.shapeRenderer.begin(ShapeType.Line);
 				for(ModelInstance modelInstance : modelInstances){
+					Vector3 vector = new Vector3();
+					modelInstance.transform.getTranslation(vector);
+					modelInstance.transform.setTranslation(vector.x, vector.y, -1); // XXX
 					modelInstance.calculateBoundingBox(box);
 					box.mul(modelInstance.transform); // .mul(modelInstance.nodes.get(0).globalTransform)
 					editor.shapeRenderer.box(box.min.x, box.min.y, box.min.z, box.max.x - box.min.x, box.max.y - box.min.y, box.max.z - box.min.z);

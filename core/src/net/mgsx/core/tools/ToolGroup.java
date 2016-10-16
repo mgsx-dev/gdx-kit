@@ -65,19 +65,20 @@ public class ToolGroup extends InputMultiplexer
 		if(activeTool != null) activeTool.render(batch);
 	}
 	
-	@Override
-	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-		boolean result = super.touchDown(screenX, screenY, pointer, button);
-		if(result == true) System.out.println(this.activeTool);
-		return result;
-	}
-	
-	@Override
-	public boolean touchDragged(int screenX, int screenY, int pointer) {
-		// TODO Auto-generated method stub
-		
-		boolean result = super.touchDragged(screenX, screenY, pointer);
-		if(result == true) System.out.println(this.activeTool);
-		return result;
-	}
+	// TODO use logger instead
+//	@Override
+//	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+//		boolean result = super.touchDown(screenX, screenY, pointer, button);
+//		if(result == true) System.out.println(this.activeTool);
+//		return result;
+//	}
+//	
+//	@Override
+//	public boolean touchDragged(int screenX, int screenY, int pointer) {
+//		// TODO Auto-generated method stub
+//		
+//		boolean result = super.touchDragged(screenX, screenY, pointer);
+//		if(result == true) System.out.println(this.activeTool);
+//		return result;
+//	}
 }

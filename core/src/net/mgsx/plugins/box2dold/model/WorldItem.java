@@ -154,14 +154,6 @@ public class WorldItem
 			Body body = world.createBody(def);
 			item = new Box2DBodyModel(entity, defaultName, def, body);
 			entity.add(item);
-			Movable oldMovable = entity.getComponent(Movable.class);
-			Movable newMovable = new Movable(new BodyMove(body));
-			if(oldMovable != null){
-				entity.add(new Attach(entity, newMovable, entity, oldMovable));
-			}
-			entity.add(newMovable);
-			
-			
 		}
 		return item;
 	}

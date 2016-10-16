@@ -16,6 +16,7 @@ import com.badlogic.gdx.physics.box2d.Shape;
 
 import net.mgsx.core.CommandHistory;
 import net.mgsx.core.Editor;
+import net.mgsx.core.components.Attach;
 import net.mgsx.core.plugins.Movable;
 import net.mgsx.core.plugins.Plugin;
 import net.mgsx.core.tools.Tool;
@@ -81,7 +82,13 @@ public class Box2DPlugin extends Plugin
 			public void entityAdded(Entity entity) {
 				Box2DBodyModel object = entity.getComponent(Box2DBodyModel.class);
 				object.body.setUserData(entity);
-				entity.add(new Movable(new BodyMove(object.body)));
+				
+				Movable oldMovable = entity.getComponent(Movable.class);
+				Movable newMovable = new Movable(new BodyMove(object.body));
+				if(oldMovable != null){
+					entity.add(new Attach(entity, newMovable, entity, oldMovable));
+				}
+				entity.add(newMovable);
 			}
 		});
 		
