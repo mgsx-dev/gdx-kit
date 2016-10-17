@@ -97,6 +97,7 @@ public class Storage
 			json.writeObjectStart();
 			json.writeFields(object);
 			json.writeObjectEnd();
+			// TODO dont export dirty
 		}
 
 		@Override
@@ -104,6 +105,7 @@ public class Storage
 			Sprite sprite = new Sprite();
 			json.readFields(sprite, jsonData);
 			sprite.setRotation(sprite.getRotation()); // hack to clear dirty
+			// TODO set dirty properly ?
 			return sprite;
 		}
 		
@@ -113,16 +115,11 @@ public class Storage
 	{
 		Json json = new Json();
 		json.setSerializer(EntityGroup.class, new EntityGroupSerializer(assets));
+		
+		// TODO configure in plugins
 		json.setSerializer(Sprite.class, new SpriteSerializer());
 		json.setSerializer(Texture.class, new TextureRef(assets));
 		json.setSerializer(ModelInstance.class, new ModelRef(assets));
-		
-		// XXX temporarily box 2D
-		json.setSerializer(Shape.class, new IgnoreSerializer<Shape>()); 
-		json.setSerializer(ChainShape.class, new IgnoreSerializer<ChainShape>()); 
-		json.setSerializer(CircleShape.class, new IgnoreSerializer<CircleShape>()); 
-		json.setSerializer(EdgeShape.class, new IgnoreSerializer<EdgeShape>()); 
-		json.setSerializer(PolygonShape.class, new IgnoreSerializer<PolygonShape>());
 		
 		for(Entries<Class, Serializer> entries = serializers.iterator() ; entries.hasNext() ; ){
 			Entry<Class, Serializer> entry = entries.next();

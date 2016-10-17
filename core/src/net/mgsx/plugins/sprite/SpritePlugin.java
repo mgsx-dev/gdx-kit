@@ -7,9 +7,9 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import net.mgsx.core.Editor;
+import net.mgsx.core.components.Movable;
 import net.mgsx.core.helpers.EntityHelper.SingleComponentIteratingSystem;
 import net.mgsx.core.plugins.EditorPlugin;
-import net.mgsx.core.plugins.Movable;
 import net.mgsx.core.storage.Storage;
 
 public class SpritePlugin extends EditorPlugin

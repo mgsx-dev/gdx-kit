@@ -1,9 +1,13 @@
-package net.mgsx.core.plugins;
+package net.mgsx.core.components;
 
 import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.math.Vector3;
 
+// TODO is it the right way to do it ?
+// in term of entity/component concept, a movable
+// is data (x,y,z) and could have a behavior for this data (track, player, btree ... and so on ...)
+//
 public class Movable implements Component
 {
 	private Movable delegate;

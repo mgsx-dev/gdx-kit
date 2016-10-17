@@ -15,8 +15,8 @@ import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.utils.Array;
 
 import net.mgsx.core.Editor;
+import net.mgsx.core.components.Movable;
 import net.mgsx.core.plugins.EditorPlugin;
-import net.mgsx.core.plugins.Movable;
 import net.mgsx.core.storage.Storage;
 
 public class ModelPlugin extends EditorPlugin

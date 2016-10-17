@@ -32,11 +32,11 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 import net.mgsx.core.NativeService.DialogCallback;
 import net.mgsx.core.components.Attach;
+import net.mgsx.core.components.Movable;
 import net.mgsx.core.helpers.EntityHelper.SingleComponentIteratingSystem;
 import net.mgsx.core.plugins.EditorPlugin;
 import net.mgsx.core.plugins.EntityEditorPlugin;
 import net.mgsx.core.plugins.GlobalEditorPlugin;
-import net.mgsx.core.plugins.Movable;
 import net.mgsx.core.plugins.SelectorPlugin;
 import net.mgsx.core.storage.Storage;
 import net.mgsx.core.tools.NoTool;

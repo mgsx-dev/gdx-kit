@@ -4,8 +4,6 @@ import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.math.Vector3;
 
-import net.mgsx.core.plugins.Movable;
-
 public class Attach implements Component
 {
 	private Entity masterEntity, slaveEntity;

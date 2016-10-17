@@ -4,7 +4,7 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector3;
 
-import net.mgsx.core.plugins.Movable;
+import net.mgsx.core.components.Movable;
 
 public class SpriteMove extends Movable
 {

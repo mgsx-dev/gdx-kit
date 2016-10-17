@@ -10,7 +10,7 @@ import com.badlogic.gdx.math.Vector2;
 import net.mgsx.core.Editor;
 import net.mgsx.core.NativeService;
 import net.mgsx.core.NativeService.DialogCallback;
-import net.mgsx.core.plugins.Movable;
+import net.mgsx.core.components.Movable;
 import net.mgsx.core.tools.Tool;
 
 public class AddModelTool extends Tool

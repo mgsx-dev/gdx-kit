@@ -7,7 +7,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 
 import net.mgsx.core.Editor;
-import net.mgsx.core.plugins.Movable;
+import net.mgsx.core.components.Movable;
 import net.mgsx.core.plugins.SelectorPlugin;
 
 public class SelectTool extends Tool

@@ -6,7 +6,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
 
-import net.mgsx.core.plugins.Movable;
+import net.mgsx.core.components.Movable;
 
 public class BodyMove  extends Movable
 {

@@ -24,8 +24,6 @@ public class EntityGroupSerializer implements Json.Serializer<EntityGroup>
 	@Override
 	public void write(Json json, EntityGroup object, Class knownType) 
 	{
-		// TODO ? export class name mapping ?
-		
 		json.writeObjectStart();
 		
 		json.writeArrayStart("assets");
