@@ -54,6 +54,7 @@ import net.mgsx.core.tools.SelectTool;
 import net.mgsx.core.tools.Tool;
 import net.mgsx.core.tools.ToolGroup;
 import net.mgsx.core.tools.UndoTool;
+import net.mgsx.core.tools.ZoomTool;
 import net.mgsx.core.ui.TabPane;
 import net.mgsx.plugins.box2dold.SkinFactory;
 
@@ -195,6 +196,7 @@ public class Editor extends GameEngine
 
 		// order is very important !
 		addGlobalTool(new SelectTool(this));
+		addGlobalTool(new ZoomTool(this));
 		addGlobalTool(new PanTool(this));
 		addGlobalTool(new DuplicateTool(this));
 		addGlobalTool(new FollowSelectionTool(this));

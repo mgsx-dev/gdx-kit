@@ -55,7 +55,7 @@ public class GameEngine extends ApplicationAdapter
 	@Override
 	public void render() {
 		
-		perspectiveCamera.position.set(orthographicCamera.position.x, orthographicCamera.position.y, 3.8f); // TODO ortho factor ?
+		perspectiveCamera.position.set(orthographicCamera.position.x, orthographicCamera.position.y, orthographicCamera.position.z); // XXX 3.8f); // TODO ortho factor ?
 //		perspectiveCamera.lookAt(0,0,0);
 		perspectiveCamera.update();
 		super.render();

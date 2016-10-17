@@ -53,7 +53,7 @@ public class AddModelTool extends Tool
 		return super.touchDown(screenX, screenY, pointer, button);
 	}
 	protected void create(Vector2 position) {
-		
+		modelInstance.transform.translate(position.x, position.y, 0);
 		// nothing ...
 		modelInstance = null;
 	}

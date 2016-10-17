@@ -20,16 +20,29 @@ public class ZoomTool extends Tool
 		if(Gdx.input.isButtonPressed(Input.Buttons.MIDDLE) && ctrl())
 		{
 			Vector2 pos = new Vector2(screenX, screenY);
-			if(camera instanceof OrthographicCamera){
-				float rate = (pos.x - prev.x) - (pos.y - prev.y) + (pos.x - prev.x) * (pos.y - prev.y);
-				float ratio = 1 - rate * 0.01f;
-				((OrthographicCamera) camera).zoom *= ratio;
-				camera.update();
-				Vector2 newWorldOrigin = unproject(originScreen);
-				Vector2 deltaWorld = new Vector2(newWorldOrigin).sub(originWorld);
-				camera.translate(-deltaWorld.x, -deltaWorld.y, 0);
-				camera.update();
-			}
+//			camera = editor.orthographicCamera;
+//			if(camera instanceof OrthographicCamera){
+//				float rate = (pos.x - prev.x) - (pos.y - prev.y) + (pos.x - prev.x) * (pos.y - prev.y);
+//				float ratio = 1 - rate * 0.01f;
+//				((OrthographicCamera) camera).zoom *= ratio;
+//				camera.update();
+//				Vector2 newWorldOrigin = unproject(originScreen);
+//				Vector2 deltaWorld = new Vector2(newWorldOrigin).sub(originWorld);
+//				camera.translate(-deltaWorld.x, -deltaWorld.y, 0);
+//				camera.update();
+//			}
+			
+			float rate = (pos.x - prev.x) - (pos.y - prev.y) + (pos.x - prev.x) * (pos.y - prev.y);
+			Vector2 worldPos = new Vector2(screenX, screenY);
+			Vector2 delta = new Vector2(worldPos).sub(prev).scl(pixelSize());
+			camera.translate(0, 0, -rate * 0.01f);
+			camera.update(true);
+			prev = worldPos;
+			
+//			float rate = (pos.x - prev.x) - (pos.y - prev.y) + (pos.x - prev.x) * (pos.y - prev.y);
+//			float ratio = 1 - rate * 100;
+//			editor.perspectiveCamera.position.x += ratio; // translate(0, 0, ratio);
+//			editor.perspectiveCamera.update(true);
 			prev = pos;
 			return true;
 		}
