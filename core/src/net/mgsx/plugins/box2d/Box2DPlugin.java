@@ -72,7 +72,7 @@ public class Box2DPlugin extends EditorPlugin
 		editor.addSelector(new Box2DBodySelector(editor, worldItem));
 		// TODO entity with model Box2D (at least a body) open all the tools ...
 		
-		
+		// TODO abstraction for auto/add component !
 		editor.entityEngine.addEntityListener(Family.one(Box2DBodyModel.class).get(), new EntityListener() {
 			
 			@Override
@@ -80,6 +80,7 @@ public class Box2DPlugin extends EditorPlugin
 				Box2DBodyModel model = entity.getComponent(Box2DBodyModel.class);
 				model.body.setUserData(null);
 				worldItem.world.destroyBody(model.body);
+				entity.remove(Box2DBodyModel.class);
 			}
 			
 			@Override
