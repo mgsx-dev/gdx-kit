@@ -13,11 +13,15 @@ import net.mgsx.core.plugins.SelectorPlugin;
 public class SelectTool extends Tool
 {
 	private Array<Entity> selection = new Array<Entity>();
-	private Vector2 prev;
-	private boolean moving = false;
+	protected Vector2 prev;
+	protected boolean moving = false;
 	
 	public SelectTool(Editor editor) {
 		super("Select", editor);
+	}
+	
+	protected SelectTool(String name, Editor editor) {
+		super(name, editor);
 	}
 	
 	@Override
@@ -36,6 +40,10 @@ public class SelectTool extends Tool
 				editor.invalidateSelection();
 			}
 			moving = true;
+			for(Entity entity : editor.selection){
+				Movable movable = entity.getComponent(Movable.class);
+				if(movable != null) movable.moveBegin(entity);
+			}
 			prev = unproject(screenX, screenY);
 			return true;
 		}

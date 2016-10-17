@@ -2,7 +2,6 @@ package net.mgsx.plugins.box2dold.model;
 
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -114,15 +113,6 @@ public class WorldItem
 					settings.positionIterations);
 		}
 		
-		// update displayed objects
-		for(Box2DBodyModel bodyItem : items.bodies)
-		{
-			if(bodyItem.sprite != null){
-				Vector2 p = bodyItem.body.getPosition();
-				bodyItem.sprite.sprite.setPosition(p.x, p.y);
-				bodyItem.sprite.sprite.setRotation(MathUtils.radiansToDegrees * bodyItem.body.getAngle());
-			}
-		}
 		
 	}
 	public boolean queryIsGroundTouch(final Body body, Vector2 direction, final float radius) 

@@ -17,7 +17,6 @@ import com.badlogic.gdx.utils.Array;
 import net.mgsx.core.Editor;
 import net.mgsx.core.GamePipeline;
 import net.mgsx.core.components.Movable;
-import net.mgsx.core.helpers.EntityHelper.SingleComponentIteratingSystem;
 import net.mgsx.core.plugins.EditorPlugin;
 import net.mgsx.core.storage.Storage;
 

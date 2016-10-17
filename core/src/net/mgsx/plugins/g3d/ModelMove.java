@@ -1,7 +1,6 @@
 package net.mgsx.plugins.g3d;
 
 import com.badlogic.ashley.core.Entity;
-import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.math.Vector3;
 
 import net.mgsx.core.components.Movable;

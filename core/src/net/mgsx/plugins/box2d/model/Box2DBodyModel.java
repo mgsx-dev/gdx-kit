@@ -6,16 +6,15 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.utils.Array;
 
+import net.mgsx.core.components.Duplicable;
 import net.mgsx.plugins.box2dold.behavior.BodyBehavior;
-import net.mgsx.plugins.box2dold.model.SpriteItem;
 
-public class Box2DBodyModel implements Component
+public class Box2DBodyModel implements Component, Duplicable
 {
 	public String id; // TODO confusion with id/name in persistence model and ui model
 	public BodyDef def;
 	public Body body;
 	public Array<Box2DFixtureModel> fixtures;
-	public SpriteItem sprite; // TODO is sprite attached to body or introduce link body <=> sprite ?
 	public BodyBehavior behavior;
 	public Entity entity;
 	public Box2DBodyModel(){}
@@ -31,6 +30,24 @@ public class Box2DBodyModel implements Component
 	@Override
 	public String toString() {
 		return id;
+	}
+	
+	@Override
+	public Component duplicate() {
+		Box2DBodyModel model = new Box2DBodyModel();
+		model.id = id; // TODO ? + " (clone)";
+		model.def = def;
+		model.fixtures = new Array<Box2DFixtureModel>();
+		model.body = body.getWorld().createBody(def);
+		model.body.setTransform(body.getPosition(), body.getAngle());
+		for(Box2DFixtureModel fixture : fixtures){
+			Box2DFixtureModel newFixture = new Box2DFixtureModel();
+			newFixture.def = fixture.def;
+			newFixture.id = fixture.id;
+			newFixture.fixture = model.body.createFixture(newFixture.def);
+			model.fixtures.add(newFixture);
+		}
+		return model;
 	}
 
 
