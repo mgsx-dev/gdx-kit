@@ -26,6 +26,8 @@ public class GameEngine extends ApplicationAdapter
 	public OrthographicCamera orthographicCamera;
 	public PerspectiveCamera perspectiveCamera;
 	
+	
+	
 	public void registerPlugin(EditorPlugin plugin) {
 		plugins.add(plugin);
 	}

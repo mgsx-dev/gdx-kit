@@ -15,6 +15,7 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.Shape;
 
 import net.mgsx.core.Editor;
+import net.mgsx.core.GamePipeline;
 import net.mgsx.core.commands.CommandHistory;
 import net.mgsx.core.components.Attach;
 import net.mgsx.core.components.Movable;
@@ -86,6 +87,7 @@ public class Box2DPlugin extends EditorPlugin
 				Box2DBodyModel object = entity.getComponent(Box2DBodyModel.class);
 				object.body.setUserData(entity);
 				
+				// TODO why auto attach ? conceptually OK but ...
 				Movable oldMovable = entity.getComponent(Movable.class);
 				Movable newMovable = new Movable(new BodyMove(object.body));
 				if(oldMovable != null){
@@ -95,7 +97,15 @@ public class Box2DPlugin extends EditorPlugin
 			}
 		});
 		
-		editor.entityEngine.addSystem(new EntitySystem() {
+		// TODO it's not the right place, we should have a behavior component
+		editor.entityEngine.addSystem(new EntitySystem(GamePipeline.PHYSICS) {
+			
+			@Override
+			public void update(float deltaTime) {
+				worldItem.update(); // TODO move box 2D code here ?
+			}
+		});
+		editor.entityEngine.addSystem(new EntitySystem(GamePipeline.LOGIC) {
 			
 			@Override
 			public void update(float deltaTime) {
@@ -103,11 +113,10 @@ public class Box2DPlugin extends EditorPlugin
 					Box2DBodyModel bodyItem = e.getComponent(Box2DBodyModel.class);
 					if(bodyItem.behavior != null) bodyItem.behavior.act();
 				}
-				worldItem.update();
 			}
 		});
 	
-		editor.entityEngine.addSystem(new EntitySystem() {
+		editor.entityEngine.addSystem(new EntitySystem(GamePipeline.RENDER_OVER) {
 			
 			@Override
 			public void update(float deltaTime) {

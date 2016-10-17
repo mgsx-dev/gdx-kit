@@ -18,6 +18,11 @@ public class EntityHelper
 			this.type = type;
 		}
 
+		public SingleComponentIteratingSystem(Class<T> type, int priority) {
+			super(Family.one(type).get(), priority);
+			this.type = type;
+		}
+
 		@Override
 		protected void processEntity(Entity entity, float deltaTime) {
 			T c = entity.getComponent(type);

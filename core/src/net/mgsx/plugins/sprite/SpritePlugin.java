@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import net.mgsx.core.Editor;
+import net.mgsx.core.GamePipeline;
 import net.mgsx.core.components.Movable;
 import net.mgsx.core.helpers.EntityHelper.SingleComponentIteratingSystem;
 import net.mgsx.core.plugins.EditorPlugin;
@@ -39,7 +40,7 @@ public class SpritePlugin extends EditorPlugin
 			}
 		});
 		
-		editor.entityEngine.addSystem(new SingleComponentIteratingSystem<SpriteModel>(SpriteModel.class) { // TODO use sorted instead
+		editor.entityEngine.addSystem(new SingleComponentIteratingSystem<SpriteModel>(SpriteModel.class, GamePipeline.RENDER) { // TODO use sorted instead
 			
 			@Override
 			public void update(float deltaTime) {
