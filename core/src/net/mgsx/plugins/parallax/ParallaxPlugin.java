@@ -11,6 +11,9 @@ import net.mgsx.core.plugins.EditorPlugin;
 import net.mgsx.core.storage.Storage;
 import net.mgsx.core.tools.ComponentTool;
 
+/**
+ * TODO change parallax to sprite group / layers ...
+ */
 public class ParallaxPlugin extends EditorPlugin {
 
 	private Vector3 camPos = new Vector3();

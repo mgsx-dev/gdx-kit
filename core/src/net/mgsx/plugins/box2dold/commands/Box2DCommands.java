@@ -8,7 +8,7 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.Joint;
 import com.badlogic.gdx.physics.box2d.JointDef;
 
-import net.mgsx.core.Command;
+import net.mgsx.core.commands.Command;
 import net.mgsx.plugins.box2d.model.Box2DBodyModel;
 import net.mgsx.plugins.box2d.model.Box2DFixtureModel;
 import net.mgsx.plugins.box2dold.Box2DPresets.Box2DPreset;

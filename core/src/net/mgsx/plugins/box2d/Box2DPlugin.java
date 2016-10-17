@@ -14,8 +14,8 @@ import com.badlogic.gdx.physics.box2d.EdgeShape;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.Shape;
 
-import net.mgsx.core.CommandHistory;
 import net.mgsx.core.Editor;
+import net.mgsx.core.commands.CommandHistory;
 import net.mgsx.core.components.Attach;
 import net.mgsx.core.components.Movable;
 import net.mgsx.core.plugins.EditorPlugin;

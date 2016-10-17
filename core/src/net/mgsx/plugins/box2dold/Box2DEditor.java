@@ -24,12 +24,12 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Array;
 
 import net.mgsx.core.Editor;
-import net.mgsx.core.EntityEditor;
 import net.mgsx.core.NativeService;
 import net.mgsx.core.NativeService.DialogCallback;
 import net.mgsx.core.helpers.ReflectionHelper;
 import net.mgsx.core.tools.Tool;
 import net.mgsx.core.tools.ToolGroup;
+import net.mgsx.core.ui.EntityEditor;
 import net.mgsx.core.ui.TabPane;
 import net.mgsx.plugins.box2d.model.Box2DBodyModel;
 import net.mgsx.plugins.box2dold.model.SpriteItem;

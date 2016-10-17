@@ -13,8 +13,12 @@ import com.badlogic.ashley.core.Family;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.assets.AssetLoaderParameters;
+import com.badlogic.gdx.assets.loaders.TextureLoader.TextureParameter;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Texture.TextureFilter;
+import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -31,6 +35,7 @@ import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 import net.mgsx.core.NativeService.DialogCallback;
+import net.mgsx.core.commands.CommandHistory;
 import net.mgsx.core.components.Attach;
 import net.mgsx.core.components.Movable;
 import net.mgsx.core.helpers.EntityHelper.SingleComponentIteratingSystem;
@@ -468,6 +473,26 @@ public class Editor extends GameEngine
 
 	public void addSelector(SelectorPlugin selector) {
 		selectors.add(selector);
+	}
+	public void assetLookup(Class<Texture> type, final AssetLookupCallback<Texture> callback) 
+	{
+		// TODO open texture region selector if any registered
+		// else auto open import window
+		NativeService.instance.openLoadDialog(new DialogCallback() {
+			@Override
+			public void selected(FileHandle file) 
+			{
+				TextureParameter parameters = new TextureParameter();
+				parameters.genMipMaps = true;
+				Texture tex = loadAssetNow(file.path(), Texture.class, parameters);
+				tex.setFilter(TextureFilter.MipMapLinearLinear, TextureFilter.MipMapLinearLinear);
+				tex.setWrap(TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);
+				callback.selected(tex);
+			}
+			@Override
+			public void cancel() {
+			}
+		});
 	}
 
 

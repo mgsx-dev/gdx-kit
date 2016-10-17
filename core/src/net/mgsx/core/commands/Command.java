@@ -1,4 +1,4 @@
-package net.mgsx.core;
+package net.mgsx.core.commands;
 
 import java.lang.reflect.Field;
 

@@ -13,9 +13,9 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.Array;
 
-import net.mgsx.core.Command;
-import net.mgsx.core.CommandHistory;
 import net.mgsx.core.Editor;
+import net.mgsx.core.commands.Command;
+import net.mgsx.core.commands.CommandHistory;
 import net.mgsx.plugins.box2d.model.Box2DBodyModel;
 
 // TODO it is more an EditorContext (ctx) ...

@@ -1,20 +1,14 @@
 package net.mgsx.plugins.sprite;
 
 import com.badlogic.ashley.core.Entity;
-import com.badlogic.gdx.assets.loaders.TextureLoader.TextureParameter;
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.Texture.TextureFilter;
-import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 
+import net.mgsx.core.AssetLookupCallback;
 import net.mgsx.core.Editor;
-import net.mgsx.core.NativeService;
-import net.mgsx.core.NativeService.DialogCallback;
 import net.mgsx.core.components.Movable;
 import net.mgsx.core.tools.RectangleTool;
 
@@ -30,25 +24,11 @@ public class AddSpriteTool extends RectangleTool
 	@Override
 	protected void activate() {
 		
-		// TODO open texture region selector if any registered
-		
-		// else auto open import window
-		
-		NativeService.instance.openLoadDialog(new DialogCallback() {
+		editor.assetLookup(Texture.class, new AssetLookupCallback<Texture>(){
 			@Override
-			public void selected(FileHandle file) 
-			{
-				TextureParameter parameters = new TextureParameter();
-				parameters.genMipMaps = true;
-				Texture tex = editor.loadAssetNow(file.path(), Texture.class, parameters);
-				tex.setFilter(TextureFilter.MipMapLinearLinear, TextureFilter.MipMapLinearLinear);
-				tex.setWrap(TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);
-				region = new TextureRegion(tex);
-			}
-			@Override
-			public void cancel() {
-			}
-		});
+			public void selected(Texture asset) {
+				region = new TextureRegion(asset);
+			}});
 	}
 	
 	@Override
@@ -59,14 +39,6 @@ public class AddSpriteTool extends RectangleTool
 			sprite.sprite.setBounds(startPoint.x, startPoint.y, size.x, size.y);
 			sprite.sprite.draw(batch);
 		}
-	}
-	
-	@Override
-	public void render(ShapeRenderer renderer) 
-	{
-		//if(sprite == null){
-			super.render(renderer);
-		//}
 	}
 	
 	@Override
