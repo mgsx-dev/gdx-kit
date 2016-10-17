@@ -8,7 +8,10 @@ import com.badlogic.ashley.core.EntitySystem;
 final public class GamePipeline 
 {
 	// never used this is the default value.
-	public static final int FIRST = 0;
+	public static final int FIRST = -1;
+	
+	public static final int DEFAULT = 0;
+	
 	
 	// first analyse input and interact with game (physics/logic)
 	public static final int INPUT = 1;
@@ -28,5 +31,8 @@ final public class GamePipeline
 	public static final int RENDER = BEFORE_RENDER + 1;
 	public static final int RENDER_OVER = RENDER + 1;
 	public static final int AFTER_RENDER = RENDER_OVER + 1;
+	
+	// 
+	public static final int LAST = AFTER_RENDER + 1;
 	
 }

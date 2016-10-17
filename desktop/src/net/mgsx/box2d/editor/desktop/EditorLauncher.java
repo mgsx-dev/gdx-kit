@@ -10,6 +10,7 @@ import net.mgsx.plugins.box2d.Box2DPlugin;
 import net.mgsx.plugins.btree.BTreePlugin;
 import net.mgsx.plugins.g3d.ModelPlugin;
 import net.mgsx.plugins.parallax.ParallaxPlugin;
+import net.mgsx.plugins.profiling.ProfilerPlugin;
 import net.mgsx.plugins.sprite.SpritePlugin;
 
 public class EditorLauncher 
@@ -23,6 +24,7 @@ public class EditorLauncher
 
 		// plugins configuration (order is important)
 		//
+		editor.registerPlugin(new ProfilerPlugin());
 		editor.registerPlugin(new SpritePlugin());
 		editor.registerPlugin(new ParallaxPlugin());
 		editor.registerPlugin(new ModelPlugin());
