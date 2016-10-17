@@ -96,7 +96,7 @@ public class ModelPlugin extends EditorPlugin
 			@Override
 			public void update(float deltaTime) {
 				BoundingBox box = new BoundingBox();
-				editor.shapeRenderer.setProjectionMatrix(editor.perspectiveCamera.combined);
+				editor.shapeRenderer.setProjectionMatrix(editor.orthographicCamera.combined);
 				editor.shapeRenderer.begin(ShapeType.Line);
 				for(ModelInstance modelInstance : modelInstances){
 					Vector3 vector = new Vector3();

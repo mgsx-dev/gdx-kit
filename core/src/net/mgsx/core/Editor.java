@@ -47,6 +47,7 @@ import net.mgsx.core.plugins.SelectorPlugin;
 import net.mgsx.core.storage.Storage;
 import net.mgsx.core.tools.DeleteTool;
 import net.mgsx.core.tools.DuplicateTool;
+import net.mgsx.core.tools.FollowSelectionTool;
 import net.mgsx.core.tools.NoTool;
 import net.mgsx.core.tools.PanTool;
 import net.mgsx.core.tools.SelectTool;
@@ -196,6 +197,7 @@ public class Editor extends GameEngine
 		addGlobalTool(new SelectTool(this));
 		addGlobalTool(new PanTool(this));
 		addGlobalTool(new DuplicateTool(this));
+		addGlobalTool(new FollowSelectionTool(this));
 
 		// register listener after plugins creation to create filters on all possible components
 		// finally initiate plugins.

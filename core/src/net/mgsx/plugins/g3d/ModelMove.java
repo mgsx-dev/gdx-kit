@@ -38,7 +38,7 @@ public class ModelMove  extends Movable
 		model.modelInstance.transform.idt();
 		model.modelInstance.transform.translate(position);
 		model.modelInstance.transform.rotate(0, 0, 1, angle);
-		model.modelInstance.transform.translate(-model.origin.x, -model.origin.y, -model.origin.z);
+		model.modelInstance.transform.translate(-model.origin.x, -model.origin.y, -model.origin.z - 1);
 //		model.modelInstance.transform.translate(-model.origin.x, -model.origin.y, -model.origin.z);
 	}
 

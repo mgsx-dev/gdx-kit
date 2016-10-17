@@ -16,7 +16,7 @@ public class G3DModel implements Component, Duplicable
 		G3DModel model = new G3DModel();
 		model.modelInstance = new ModelInstance(modelInstance);
 		model.origin.set(origin);
-		return null;
+		return model;
 	}
 	
 }
