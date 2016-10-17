@@ -37,7 +37,7 @@ public class AddModelTool extends Tool
 				data.modelInstance = modelInstance;
 				entity.add(data);
 				
-				entity.add(new Movable(new ModelMove(modelInstance)));
+				entity.add(new Movable(new ModelMove(data)));
 			}
 			@Override
 			public void cancel() {

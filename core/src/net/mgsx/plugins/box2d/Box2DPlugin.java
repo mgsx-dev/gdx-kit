@@ -120,7 +120,7 @@ public class Box2DPlugin extends EditorPlugin
 			
 			@Override
 			public void update(float deltaTime) {
-				box2dRenderer.render(worldItem.world, editor.orthographicCamera.combined);
+				box2dRenderer.render(worldItem.world, editor.perspectiveCamera.combined);
 				Vector2 s = Tool.pixelSize(editor.orthographicCamera).scl(3);
 				renderer.setProjectionMatrix(editor.orthographicCamera.combined);
 				renderer.begin(ShapeType.Line);

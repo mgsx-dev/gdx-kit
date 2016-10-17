@@ -15,7 +15,9 @@ import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.utils.Array;
 
 import net.mgsx.core.Editor;
+import net.mgsx.core.GamePipeline;
 import net.mgsx.core.components.Movable;
+import net.mgsx.core.helpers.EntityHelper.SingleComponentIteratingSystem;
 import net.mgsx.core.plugins.EditorPlugin;
 import net.mgsx.core.storage.Storage;
 
@@ -62,7 +64,7 @@ public class ModelPlugin extends EditorPlugin
 			public void entityAdded(Entity entity) {
 				G3DModel model = entity.getComponent(G3DModel.class);
 				modelInstances.add(model.modelInstance);
-				entity.add(new Movable(new ModelMove(model.modelInstance)));
+				entity.add(new Movable(new ModelMove(model)));
 			}
 		});
 		
@@ -70,10 +72,20 @@ public class ModelPlugin extends EditorPlugin
         environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1f));
         environment.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -1f, -0.8f, -0.2f));
 
-		editor.entityEngine.addSystem(new EntitySystem() {
+//        editor.entityEngine.addSystem(new SingleComponentIteratingSystem<G3DModel>(G3DModel.class, GamePipeline.BEFORE_RENDER) {
+//			@Override
+//			protected void processEntity(Entity entity, G3DModel model, float deltaTime) {
+//				model.modelInstance.transform.translate(model.origin);
+//				model.modelInstance.transform.translate(model.origin);
+//				model.modelInstance.transform.translate(model.origin);
+//			}
+//		});
+  
+		editor.entityEngine.addSystem(new EntitySystem(GamePipeline.RENDER) {
 			
 			@Override
 			public void update(float deltaTime) {
+				
 				modelBatch.begin(editor.perspectiveCamera);
 				modelBatch.render(modelInstances, environment);
 			    modelBatch.end();
@@ -90,7 +102,7 @@ public class ModelPlugin extends EditorPlugin
 				for(ModelInstance modelInstance : modelInstances){
 					Vector3 vector = new Vector3();
 					modelInstance.transform.getTranslation(vector);
-					modelInstance.transform.setTranslation(vector.x, vector.y, -1); // XXX
+					modelInstance.transform.setTranslation(vector.x, vector.y, 0); // XXX
 					modelInstance.calculateBoundingBox(box);
 					box.mul(modelInstance.transform); // .mul(modelInstance.nodes.get(0).globalTransform)
 					editor.shapeRenderer.box(box.min.x, box.min.y, box.min.z, box.max.x - box.min.x, box.max.y - box.min.y, box.max.z - box.min.z);
