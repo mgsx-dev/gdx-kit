@@ -20,7 +20,8 @@ public class EntityHelper
 
 		@Override
 		protected void processEntity(Entity entity, float deltaTime) {
-			processEntity(entity, entity.getComponent(type), deltaTime);
+			T c = entity.getComponent(type);
+			if(c != null) processEntity(entity, c, deltaTime);
 		}
 		
 		abstract protected void processEntity(Entity entity, T component, float deltaTime);

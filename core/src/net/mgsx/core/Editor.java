@@ -35,6 +35,7 @@ import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 import net.mgsx.core.NativeService.DialogCallback;
+import net.mgsx.core.commands.Command;
 import net.mgsx.core.commands.CommandHistory;
 import net.mgsx.core.components.Attach;
 import net.mgsx.core.components.Movable;
@@ -44,6 +45,7 @@ import net.mgsx.core.plugins.EntityEditorPlugin;
 import net.mgsx.core.plugins.GlobalEditorPlugin;
 import net.mgsx.core.plugins.SelectorPlugin;
 import net.mgsx.core.storage.Storage;
+import net.mgsx.core.tools.DeleteTool;
 import net.mgsx.core.tools.NoTool;
 import net.mgsx.core.tools.PanTool;
 import net.mgsx.core.tools.SelectTool;
@@ -179,6 +181,7 @@ public class Editor extends GameEngine
 		mainToolGroup = createToolGroup();
 		
 		addTool(new NoTool("Select", this));;
+		addTool(new DeleteTool("Delete", this));;
 		
 //		addGlobalTool(new SelectToolBase(this){
 //			@Override
@@ -206,21 +209,25 @@ public class Editor extends GameEngine
 			global.addTab(entry.getKey(), entry.getValue().createEditor(this, skin));
 		}
 		// global.sett
-
+		
 		// TODO  maybe generalize as auto attach (Family) with a backed pool : pool.obtain, pool.release
+		
+		// listener added after : all entity add/remove can be rollback/restore
+		// TODO it mess with pool and is over complicated !
+		// should be done manual way (tools create commands !) :
+		// add component command, add entity command ...
 		entityEngine.addEntityListener(new EntityListener() {
 			@Override
-			public void entityRemoved(Entity entity) {
-				// TODO Auto-generated method stub
-				
+			public void entityRemoved(final Entity entity) {
+				entity.remove(EditorEntity.class);
 			}
 			@Override
-			public void entityAdded(Entity entity) {
-				EditorEntity config = new EditorEntity();
-				// could be used to store things about editor ...
+			public void entityAdded(final Entity entity) {
+				EditorEntity config = new EditorEntity(); // TODO maybe if not already have a component, TODO create an auto component listener which handle these cases ....
 				entity.add(config);
 			}
 		});
+		
 		for(Class<? extends Component> type : editablePlugins.keySet()){
 			entityEngine.addEntityListener(Family.one(type).get(), new EntityListener() {
 				
@@ -343,8 +350,9 @@ public class Editor extends GameEngine
 	public void dispose () {
 	}
 
-	private static class EditorEntity implements Component
+	public static class EditorEntity implements Component
 	{
+		public Array<ComponentFactory> factories = new Array<ComponentFactory>();
 	}
 	
 	
@@ -405,7 +413,7 @@ public class Editor extends GameEngine
 	public Entity currentEntity() 
 	{
 		if(selection.size <= 0){
-			Entity entity = entityEngine.createEntity();
+			Entity entity = createEntity();
 			entityEngine.addEntity(entity);
 			return entity;
 		}
@@ -493,6 +501,34 @@ public class Editor extends GameEngine
 			public void cancel() {
 			}
 		});
+	}
+
+	
+	public void addComponent(final ComponentFactory factory) 
+	{
+		final Entity entity = currentEntity();
+		entity.getComponent(EditorEntity.class).factories.add(factory);
+		
+		history.add(new Command(){
+			// TODO maybe it overrides a component so need to store it but
+			// dont mess with pool, component object may be reused
+			private Class<? extends Component> type;
+			@Override
+			public void commit() {
+				Component component = factory.create(entity);
+				type = component.getClass();
+				entity.add(component);
+			}
+			@Override
+			public void rollback() {
+				entity.remove(type);
+			}
+		});
+		
+	}
+
+	public Entity createEntity() {
+		return entityEngine.createEntity(); // new Entity(); // TODO use pool
 	}
 
 

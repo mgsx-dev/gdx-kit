@@ -27,7 +27,8 @@ public class SpritePlugin extends EditorPlugin
 		editor.entityEngine.addEntityListener(Family.one(SpriteModel.class).get(), new EntityListener() {
 			@Override
 			public void entityRemoved(Entity entity) {
-				
+				entity.remove(SpriteModel.class);
+				entity.remove(Movable.class);
 			}
 			@Override
 			public void entityAdded(Entity entity) {

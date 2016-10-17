@@ -32,7 +32,7 @@ public class BTreeEditorTest
 				
 				
 				
-				Entity entity = entityEngine.createEntity();
+				Entity entity = createEntity();
 				entityEngine.addEntity(entity);
 				
 				final BTreeModel model = new BTreeModel();
