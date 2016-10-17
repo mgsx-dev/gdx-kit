@@ -46,7 +46,10 @@ public class EntityGroupSerializer implements Json.Serializer<EntityGroup>
 			json.writeObjectStart();
 			for(Component component : entity.getComponents())
 			{
-				if(component instanceof Storable) json.writeValue(component.getClass().getName(), component);
+				String typeName = Storage.nameMap.get(component.getClass());
+				if(typeName != null){
+					json.writeValue(typeName, component);
+				}
 			}
 			json.writeObjectEnd();
 		}
@@ -79,9 +82,17 @@ public class EntityGroupSerializer implements Json.Serializer<EntityGroup>
 			object.entities.add(entity);
 			for(JsonIterator i = value.iterator() ; i.hasNext() ; ){
 				JsonValue cvalue = i.next();
-				String className = cvalue.name;
-				Component component = json.readValue(ReflectionHelper.forName(className), cvalue);
-				entity.add(component);
+				String typeName = cvalue.name;
+				Class<? extends Component> componentType = Storage.typeMap.get(typeName);
+				if(componentType != null)
+				{
+					Component component = json.readValue(componentType, cvalue);
+					entity.add(component);
+				}
+				else
+				{
+					throw new Error("type name not registered : " + String.valueOf(typeName));
+				}
 				
 			}
 		}

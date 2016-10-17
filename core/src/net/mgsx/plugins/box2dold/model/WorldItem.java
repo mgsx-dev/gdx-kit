@@ -16,9 +16,6 @@ import com.badlogic.gdx.utils.Array;
 import net.mgsx.core.Command;
 import net.mgsx.core.CommandHistory;
 import net.mgsx.core.Editor;
-import net.mgsx.core.components.Attach;
-import net.mgsx.core.plugins.Movable;
-import net.mgsx.plugins.box2d.BodyMove;
 import net.mgsx.plugins.box2d.model.Box2DBodyModel;
 
 // TODO it is more an EditorContext (ctx) ...

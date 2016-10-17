@@ -7,9 +7,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 
 import net.mgsx.core.EntityEditor;
 import net.mgsx.core.helpers.ReflectionHelper;
-import net.mgsx.core.plugins.EditablePlugin;
+import net.mgsx.core.plugins.EntityEditorPlugin;
 
-public class ParallaxEditor implements EditablePlugin {
+public class ParallaxEditor implements EntityEditorPlugin {
 
 	@Override
 	public Actor createEditor(Entity entity, Skin skin) {

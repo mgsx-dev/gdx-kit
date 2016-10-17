@@ -17,7 +17,7 @@ import net.mgsx.core.EntityEditor;
 import net.mgsx.core.NativeService;
 import net.mgsx.core.NativeService.DialogCallback;
 import net.mgsx.core.helpers.ReflectionHelper;
-import net.mgsx.core.plugins.EditorPlugin;
+import net.mgsx.core.plugins.GlobalEditorPlugin;
 import net.mgsx.core.tools.NoTool;
 import net.mgsx.core.tools.Tool;
 import net.mgsx.core.tools.ToolGroup;
@@ -50,7 +50,7 @@ import net.mgsx.plugins.box2dold.tools.JointWheelTool;
 import net.mgsx.plugins.box2dold.tools.ParticleTool;
 import net.mgsx.plugins.box2dold.tools.PresetTool;
 
-public class Box2DEditorPlugin implements EditorPlugin {
+public class Box2DEditorPlugin implements GlobalEditorPlugin {
 
 	private WorldItem worldItem; // TODO worldItem should be set in entity aspect (BodyItem)
 	

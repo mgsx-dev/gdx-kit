@@ -5,9 +5,9 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
-import net.mgsx.core.plugins.EditablePlugin;
+import net.mgsx.core.plugins.EntityEditorPlugin;
 
-public class Box2DBodyEditorPlugin implements EditablePlugin
+public class Box2DBodyEditorPlugin implements EntityEditorPlugin
 {
 
 	@Override

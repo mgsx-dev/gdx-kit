@@ -15,10 +15,11 @@ import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.utils.Array;
 
 import net.mgsx.core.Editor;
+import net.mgsx.core.plugins.EditorPlugin;
 import net.mgsx.core.plugins.Movable;
-import net.mgsx.core.plugins.Plugin;
+import net.mgsx.core.storage.Storage;
 
-public class ModelPlugin extends Plugin
+public class ModelPlugin extends EditorPlugin
 {
 
 	private ModelBatch modelBatch;
@@ -27,6 +28,7 @@ public class ModelPlugin extends Plugin
 	@Override
 	public void initialize(final Editor editor) 
 	{
+		Storage.register(G3DModel.class, "g3d");
 		
 		// TODO tool for model adding/loading (TODO use a special asset manager to propose already loaded assets like blender)
 		// TODO a file can contains several files ... so on loading, propose list of nodes

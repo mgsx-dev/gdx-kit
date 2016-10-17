@@ -36,7 +36,7 @@ public class Attach implements Component
 
 	public void update()
 	{
-		offset.z = 0;
+		offset.z = 0; // XXX
 		master.getPosition(masterEntity, position);
 		position.add(offset);
 		slave.moveTo(slaveEntity, position);

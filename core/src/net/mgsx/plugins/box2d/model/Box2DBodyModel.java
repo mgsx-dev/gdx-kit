@@ -6,11 +6,10 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.utils.Array;
 
-import net.mgsx.core.storage.Storable;
 import net.mgsx.plugins.box2dold.behavior.BodyBehavior;
 import net.mgsx.plugins.box2dold.model.SpriteItem;
 
-public class Box2DBodyModel implements Component, Storable
+public class Box2DBodyModel implements Component
 {
 	public String id; // TODO confusion with id/name in persistence model and ui model
 	public BodyDef def;

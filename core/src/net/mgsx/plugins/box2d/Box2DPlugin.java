@@ -17,13 +17,14 @@ import com.badlogic.gdx.physics.box2d.Shape;
 import net.mgsx.core.CommandHistory;
 import net.mgsx.core.Editor;
 import net.mgsx.core.components.Attach;
+import net.mgsx.core.plugins.EditorPlugin;
 import net.mgsx.core.plugins.Movable;
-import net.mgsx.core.plugins.Plugin;
+import net.mgsx.core.storage.Storage;
 import net.mgsx.core.tools.Tool;
 import net.mgsx.plugins.box2d.model.Box2DBodyModel;
 import net.mgsx.plugins.box2dold.model.WorldItem;
 
-public class Box2DPlugin extends Plugin 
+public class Box2DPlugin extends EditorPlugin 
 {
 
 	private WorldItem worldItem;
@@ -45,6 +46,8 @@ public class Box2DPlugin extends Plugin
 	@Override
 	public void initialize(final Editor editor) 
 	{
+		Storage.register(Box2DBodyModel.class, "box2d");
+		
 		renderer = new ShapeRenderer();
 		box2dRenderer = new Box2DDebugRenderer();
 		CommandHistory commandHistory = new CommandHistory(); // XXX fake

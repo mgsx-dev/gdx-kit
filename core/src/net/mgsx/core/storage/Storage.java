@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
 
+import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.assets.AssetManager;
@@ -167,6 +168,16 @@ public class Storage
 		Json json = setup(assets, serializers);
 		EntityGroup group = json.fromJson(EntityGroup.class, reader);
 		for(Entity entity : group.entities) engine.addEntity(entity);
+	}
+
+	public static final ObjectMap<String, Class<? extends Component>> typeMap = new ObjectMap<String, Class<? extends Component>>();
+	public static final ObjectMap<Class<? extends Component>, String> nameMap = new ObjectMap<Class<? extends Component>, String>();
+	
+	public static void register(Class<? extends Component> storable, String name)
+	{
+		// TODO raise error if already exists ? prevent conflicts.
+		typeMap.put(name, storable);
+		nameMap.put(storable, name);
 	}
 
 }

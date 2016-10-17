@@ -1,8 +1,11 @@
 package net.mgsx.core.plugins;
 
-import net.mgsx.core.Editor;
+import net.mgsx.core.GameEngine;
 
-public class Plugin 
-{
-	public void initialize(Editor editor){}
+/**
+ * Base plugin runtime
+ */
+public interface Plugin {
+
+	public void initialize(GameEngine engine);
 }

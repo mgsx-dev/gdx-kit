@@ -10,10 +10,8 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.Json;
 
-import net.mgsx.core.plugins.Plugin;
-import net.mgsx.core.plugins.StorablePlugin;
+import net.mgsx.core.plugins.EditorPlugin;
 
 // TODO
 // shoulb be a screen (because of multi screen features or multi viewport ...
@@ -23,21 +21,15 @@ public class GameEngine extends ApplicationAdapter
 	public AssetManager assets;
 	public ShapeRenderer shapeRenderer;
 	protected SpriteBatch batch;
-	protected Array<Plugin> plugins = new Array<Plugin>();
+	protected Array<EditorPlugin> plugins = new Array<EditorPlugin>();
 	public PooledEngine entityEngine;
 	public OrthographicCamera orthographicCamera;
 	public PerspectiveCamera perspectiveCamera;
 	
-	public void registerPlugin(Plugin plugin) {
+	public void registerPlugin(EditorPlugin plugin) {
 		plugins.add(plugin);
 	}
 
-	private Json json;
-
-	public <T> void registerPlugin(Class<T> type, StorablePlugin<T> plugin) {
-		json.setSerializer(type, plugin);
-	}
-	
 	@Override
 	public void create() 
 	{

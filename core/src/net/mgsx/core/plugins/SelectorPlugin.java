@@ -5,6 +5,11 @@ import com.badlogic.gdx.utils.Array;
 
 import net.mgsx.core.Editor;
 
+/**
+ * Plugin that handle entity selection by a specific component
+ * knowing an entity position/size/shape it can know which entities
+ * are hit at a screen point (touch pointer) or a boundray (rectangle selection ...)
+ */
 abstract public class SelectorPlugin {
 
 	protected Editor editor;

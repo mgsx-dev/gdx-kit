@@ -8,10 +8,11 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import net.mgsx.core.Editor;
 import net.mgsx.core.helpers.EntityHelper.SingleComponentIteratingSystem;
+import net.mgsx.core.plugins.EditorPlugin;
 import net.mgsx.core.plugins.Movable;
-import net.mgsx.core.plugins.Plugin;
+import net.mgsx.core.storage.Storage;
 
-public class SpritePlugin extends Plugin
+public class SpritePlugin extends EditorPlugin
 {
 	// TODO use batch processor in editor ...
 	private SpriteBatch batch;
@@ -19,6 +20,8 @@ public class SpritePlugin extends Plugin
 	public void initialize(final Editor editor) 
 	{
 		batch = new SpriteBatch();
+		
+		Storage.register(SpriteModel.class, "sprite");
 		
 		// plugin for editor only (movable)
 		editor.entityEngine.addEntityListener(Family.one(SpriteModel.class).get(), new EntityListener() {

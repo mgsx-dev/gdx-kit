@@ -33,10 +33,10 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import net.mgsx.core.NativeService.DialogCallback;
 import net.mgsx.core.components.Attach;
 import net.mgsx.core.helpers.EntityHelper.SingleComponentIteratingSystem;
-import net.mgsx.core.plugins.EditablePlugin;
 import net.mgsx.core.plugins.EditorPlugin;
+import net.mgsx.core.plugins.EntityEditorPlugin;
+import net.mgsx.core.plugins.GlobalEditorPlugin;
 import net.mgsx.core.plugins.Movable;
-import net.mgsx.core.plugins.Plugin;
 import net.mgsx.core.plugins.SelectorPlugin;
 import net.mgsx.core.storage.Storage;
 import net.mgsx.core.tools.NoTool;
@@ -84,7 +84,7 @@ public class Editor extends GameEngine
 	private ToolGroup mainToolGroup; // XXX temporarily public ...
 	public ToolGroup subToolGroup;
 	
-	private Map<String, EditorPlugin> globalEditors = new LinkedHashMap<String, EditorPlugin>();
+	private Map<String, GlobalEditorPlugin> globalEditors = new LinkedHashMap<String, GlobalEditorPlugin>();
 	
 	@Override
 	public void create() {
@@ -190,14 +190,14 @@ public class Editor extends GameEngine
 		// register listener after plugins creation to create filters on all possible components
 		// finally initiate plugins.
 		// TODO separate runtme plugin part (model, serialization, update, render) from editor part
-		for(Plugin plugin : plugins){
+		for(EditorPlugin plugin : plugins){
 			plugin.initialize(this);
 		}
 		
 
 
 		global.addTab("Off", new Label("", skin));
-		for(Entry<String, EditorPlugin> entry : globalEditors.entrySet()){
+		for(Entry<String, GlobalEditorPlugin> entry : globalEditors.entrySet()){
 			global.addTab(entry.getKey(), entry.getValue().createEditor(this, skin));
 		}
 		// global.sett
@@ -365,9 +365,9 @@ public class Editor extends GameEngine
 			// EditorEntity config = entity.getComponent(EditorEntity.class);
 			
 			for(Component aspect : entity.getComponents()){
-				Array<EditablePlugin> editors = editablePlugins.get(aspect.getClass());
+				Array<EntityEditorPlugin> editors = editablePlugins.get(aspect.getClass());
 				if(editors != null)
-					for(EditablePlugin editor : editors){
+					for(EntityEditorPlugin editor : editors){
 						outline.add(createOutlineHeader(editor, entity, aspect)).fill().row();
 						outline.add(editor.createEditor(entity, skin)).fill().row();
 					}
@@ -375,7 +375,7 @@ public class Editor extends GameEngine
 		}
 	}
 	
-	private Actor createOutlineHeader(EditablePlugin plugin, final Entity entity, final Component component)
+	private Actor createOutlineHeader(EntityEditorPlugin plugin, final Entity entity, final Component component)
 	{
 		TextButton btRemove = new TextButton("Remove " + plugin.getClass().getSimpleName(), skin);
 		btRemove.addListener(new ChangeListener() {
@@ -387,13 +387,13 @@ public class Editor extends GameEngine
 		return btRemove;
 	}
 	
-	private Map<Class, Array<EditablePlugin>> editablePlugins = new HashMap<Class, Array<EditablePlugin>>();
+	private Map<Class, Array<EntityEditorPlugin>> editablePlugins = new HashMap<Class, Array<EntityEditorPlugin>>();
 	public Array<Entity> selection = new Array<Entity>();
 	public boolean selectionDirty;
-	public <T> void registerPlugin(Class<T> type, EditablePlugin plugin) 
+	public <T> void registerPlugin(Class<T> type, EntityEditorPlugin plugin) 
 	{
-		Array<EditablePlugin> plugins = editablePlugins.get(type);
-		if(plugins == null) editablePlugins.put(type, plugins = new Array<EditablePlugin>());
+		Array<EntityEditorPlugin> plugins = editablePlugins.get(type);
+		if(plugins == null) editablePlugins.put(type, plugins = new Array<EntityEditorPlugin>());
 		plugins.add(plugin);
 	}
 
@@ -451,7 +451,7 @@ public class Editor extends GameEngine
 		return assets.get(fileName, type);
 	}
 
-	public void addGlobalEditor(String name, EditorPlugin plugin) 
+	public void addGlobalEditor(String name, GlobalEditorPlugin plugin) 
 	{
 		globalEditors.put(name, plugin);
 	}

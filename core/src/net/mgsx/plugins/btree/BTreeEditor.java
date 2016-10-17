@@ -18,9 +18,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 
-import net.mgsx.core.plugins.EditablePlugin;
+import net.mgsx.core.plugins.EntityEditorPlugin;
 
-public class BTreeEditor implements EditablePlugin {
+public class BTreeEditor implements EntityEditorPlugin {
 
 	public Actor createEditor(Entity entity, Skin skin) {
 		BTreeModel model = entity.getComponent(BTreeModel.class);

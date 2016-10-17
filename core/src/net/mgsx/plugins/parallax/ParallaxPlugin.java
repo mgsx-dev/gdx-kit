@@ -6,11 +6,12 @@ import com.badlogic.gdx.math.Vector3;
 
 import net.mgsx.core.Editor;
 import net.mgsx.core.helpers.EntityHelper.SingleComponentIteratingSystem;
+import net.mgsx.core.plugins.EditorPlugin;
 import net.mgsx.core.plugins.Movable;
-import net.mgsx.core.plugins.Plugin;
+import net.mgsx.core.storage.Storage;
 import net.mgsx.core.tools.ComponentTool;
 
-public class ParallaxPlugin extends Plugin {
+public class ParallaxPlugin extends EditorPlugin {
 
 	private Vector3 camPos = new Vector3();
 	private Vector3 pos = new Vector3();
@@ -18,6 +19,8 @@ public class ParallaxPlugin extends Plugin {
 	@Override
 	public void initialize(final Editor editor) 
 	{
+		Storage.register(ParallaxModel.class, "parallax");
+		
 		editor.addTool(new ComponentTool("Parallax", editor, Movable.class) {
 			@Override
 			protected Component createComponent(Entity entity) {
