@@ -25,4 +25,7 @@ public class Movable implements Component
 	public void getPosition(Entity entity, Vector3 pos) {if(delegate != null) delegate.getPosition(entity, pos);}
 	public float getRotation(Entity entity) { if(delegate != null) return delegate.getRotation(entity); else return 0;}
 	
+	public void getOrigin(Entity entity, Vector3 pos) {if(delegate != null) delegate.getOrigin(entity, pos);}
+	public void setOrigin(Entity entity, Vector3 pos) {if(delegate != null) delegate.setOrigin(entity, pos);}
+	
 }

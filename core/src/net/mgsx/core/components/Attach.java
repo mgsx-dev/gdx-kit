@@ -26,7 +26,13 @@ public class Attach implements Component
 		master.getPosition(masterEntity, masterPosition);
 		slave.getPosition(slaveEntity, slavePosition);
 		
+		Vector3 origin = new Vector3();
+		slave.getOrigin(slaveEntity, origin);
+		
 		offset.set(slavePosition).sub(masterPosition);
+
+		origin.add(offset).scl(-1);
+		slave.setOrigin(slaveEntity, origin);
 	}
 
 
