@@ -2,14 +2,14 @@ package net.mgsx.core.tools;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector2;
 
 import net.mgsx.core.Editor;
 
+// TODO choose between ortho and perspective ... should be synchronized in some way ...
 public class ZoomTool extends Tool
 {
-	private Vector2 prev, originScreen, originWorld;
+	private Vector2 prev; //, originScreen; //, originWorld;
 	
 	public ZoomTool(Editor editor) {
 		super("Pan", editor);
@@ -34,7 +34,7 @@ public class ZoomTool extends Tool
 			
 			float rate = (pos.x - prev.x) - (pos.y - prev.y) + (pos.x - prev.x) * (pos.y - prev.y);
 			Vector2 worldPos = new Vector2(screenX, screenY);
-			Vector2 delta = new Vector2(worldPos).sub(prev).scl(pixelSize());
+//			Vector2 delta = new Vector2(worldPos).sub(prev).scl(pixelSize());
 			camera.translate(0, 0, -rate * 0.01f);
 			camera.update(true);
 			prev = worldPos;
@@ -54,8 +54,8 @@ public class ZoomTool extends Tool
 		if(button == Input.Buttons.MIDDLE && ctrl())
 		{
 			prev = new Vector2(screenX, screenY);
-			originScreen = new Vector2(screenX, screenY);
-			originWorld = unproject(originScreen);
+//			originScreen = new Vector2(screenX, screenY);
+//			originWorld = unproject(originScreen);
 			return true;
 		}
 		return super.touchDown(screenX, screenY, pointer, button);

@@ -2,10 +2,8 @@ package net.mgsx.plugins.btree;
 
 import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.Entity;
-import com.badlogic.gdx.ai.btree.BehaviorTree;
 import com.badlogic.gdx.ai.btree.LeafTask;
 import com.badlogic.gdx.ai.btree.Task;
-import com.badlogic.gdx.ai.btree.utils.BehaviorTreeLibraryManager;
 
 import net.mgsx.core.Editor;
 import net.mgsx.core.plugins.EditorPlugin;
