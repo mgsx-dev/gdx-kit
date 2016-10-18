@@ -38,6 +38,7 @@ public class ProfilerPanel implements GlobalEditorPlugin
 		
 		Table stats = new Table(skin);
 		
+		final Label fps = createRow(stats, "fps");
 		final Label calls = createRow(stats, "calls");
 		final Label drawCalls = createRow(stats, "drawCalls");
 		final Label shaderSwitches = createRow(stats, "shaderSwitches");
@@ -50,6 +51,7 @@ public class ProfilerPanel implements GlobalEditorPlugin
 			public void act(float delta) {
 				
 				// display results
+				fps.setText(String.valueOf(ProfilerPlugin.model.fps));
 				calls.setText(String.valueOf(ProfilerPlugin.model.calls));
 				drawCalls.setText(String.valueOf(ProfilerPlugin.model.drawCalls));
 				shaderSwitches.setText(String.valueOf(ProfilerPlugin.model.shaderSwitches));

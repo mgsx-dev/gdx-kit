@@ -1,6 +1,7 @@
 package net.mgsx.plugins.profiling;
 
 import com.badlogic.ashley.core.EntitySystem;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.profiling.GLProfiler;
 
 import net.mgsx.core.Editor;
@@ -34,6 +35,7 @@ public class ProfilerPlugin extends EditorPlugin
 				model.shaderSwitches = GLProfiler.shaderSwitches;
 				model.textureBindings = GLProfiler.textureBindings;
 				model.vertexCount = GLProfiler.vertexCount.count;
+				model.fps = Gdx.graphics.getFramesPerSecond();
 				
 				GLProfiler.reset();
 			}

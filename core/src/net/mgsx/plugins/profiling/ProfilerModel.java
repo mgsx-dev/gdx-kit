@@ -14,4 +14,6 @@ public class ProfilerModel {
 	public int shaderSwitches;
 
 	public int vertexCount;
+
+	public float fps;
 }
