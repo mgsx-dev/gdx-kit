@@ -5,6 +5,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
+import com.badlogic.gdx.graphics.g3d.utils.AnimationController;
 import com.badlogic.gdx.math.Vector2;
 
 import net.mgsx.core.Editor;
@@ -35,6 +36,11 @@ public class AddModelTool extends Tool
 				Entity entity = editor.currentEntity();
 				G3DModel data = new G3DModel();
 				data.modelInstance = modelInstance;
+
+				// TODO if animations not empty ?
+				data.animationController = new AnimationController(modelInstance);
+				
+				
 				entity.add(data);
 				
 				entity.add(new Movable(new ModelMove(data)));
@@ -56,5 +62,6 @@ public class AddModelTool extends Tool
 		modelInstance.transform.translate(position.x, position.y, 0);
 		// nothing ...
 		modelInstance = null;
+		end();
 	}
 }

@@ -55,6 +55,7 @@ public class SelectTool extends Tool
 		if(moving){
 			Vector3 worldPos = editor.orthographicCamera.unproject(new Vector3(screenX, screenY, 0)); // unproject(screenX, screenY);
 			Vector3 delta = new Vector3(worldPos).sub(prev.x, prev.y, 0);
+			delta.z = 0; // XXX better fix by using vector 3 for prev as well ?
 			if(ctrl()){
 				delta.rotate(90, 1, 0, 0);
 			}else if(shift()){

@@ -13,6 +13,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
+import com.badlogic.gdx.graphics.g3d.model.Node;
 import com.badlogic.gdx.graphics.glutils.FileTextureData;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
@@ -56,6 +57,7 @@ public class Storage
 	}
 	
 	// TODO it's a model serializer not model instance !
+	// TODO move this to G3D plugin
 	static class ModelRef implements Json.Serializer<ModelInstance>{
 		private AssetManager assets;
 		
@@ -83,8 +85,8 @@ public class Storage
 			}
 			return null;
 		}
-		
 	}
+	
 	static class SpriteSerializer implements Json.Serializer<Sprite>{
 
 		@Override
@@ -165,9 +167,15 @@ public class Storage
 	public static final ObjectMap<String, Class<? extends Component>> typeMap = new ObjectMap<String, Class<? extends Component>>();
 	public static final ObjectMap<Class<? extends Component>, String> nameMap = new ObjectMap<Class<? extends Component>, String>();
 	
+	/**
+	 * Register a type to be persisted (saved and loaded within game file)
+	 * @param storable type to store
+	 * @param name type name in file (should be unique)
+	 * throw runtime error if name conflicts within registry.
+	 */
 	public static void register(Class<? extends Component> storable, String name)
 	{
-		// TODO raise error if already exists ? prevent conflicts.
+		if(typeMap.containsKey(name)) throw new Error("type name " + name + " already registered for class " + typeMap.get(name).getName());
 		typeMap.put(name, storable);
 		nameMap.put(storable, name);
 	}

@@ -1,5 +1,6 @@
 package net.mgsx.plugins.g3d;
 
+import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntityListener;
 import com.badlogic.ashley.core.EntitySystem;
@@ -8,7 +9,10 @@ import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
+import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
+import com.badlogic.gdx.graphics.g3d.model.Node;
+import com.badlogic.gdx.graphics.g3d.model.NodePart;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
@@ -17,12 +21,15 @@ import com.badlogic.gdx.utils.Array;
 import net.mgsx.core.Editor;
 import net.mgsx.core.GamePipeline;
 import net.mgsx.core.components.Movable;
+import net.mgsx.core.helpers.EntityHelper;
 import net.mgsx.core.plugins.EditorPlugin;
 import net.mgsx.core.storage.Storage;
+import net.mgsx.core.tools.ComponentTool;
+import net.mgsx.plugins.g3d.animation.TextureAnimationComponent;
+import net.mgsx.plugins.g3d.animation.TextureAnimationEditor;
 
 public class ModelPlugin extends EditorPlugin
 {
-
 	private ModelBatch modelBatch;
 	private Array<ModelInstance> modelInstances = new Array<ModelInstance>();
 
@@ -30,6 +37,7 @@ public class ModelPlugin extends EditorPlugin
 	public void initialize(final Editor editor) 
 	{
 		Storage.register(G3DModel.class, "g3d");
+		Storage.register(TextureAnimationComponent.class, "g3d.texAnim");
 		
 		// TODO tool for model adding/loading (TODO use a special asset manager to propose already loaded assets like blender)
 		// TODO a file can contains several files ... so on loading, propose list of nodes
@@ -39,7 +47,8 @@ public class ModelPlugin extends EditorPlugin
 		
 		// TODO model as movable (create a move model)
 		
-		// TODO editor for model
+		// editor for model
+		editor.registerPlugin(G3DModel.class, new G3DNodeEditor());
 		
 		// TODO select processor
 		editor.addSelector(new ModelSelector(editor));
@@ -79,6 +88,15 @@ public class ModelPlugin extends EditorPlugin
 //				model.modelInstance.transform.translate(model.origin);
 //			}
 //		});
+        
+        editor.entityEngine.addSystem(new EntityHelper.SingleComponentIteratingSystem<G3DModel>(G3DModel.class, GamePipeline.BEFORE_RENDER) {
+			@Override
+			protected void processEntity(Entity entity, G3DModel component, float deltaTime) {
+				if(component.animationController != null){
+					component.animationController.update(deltaTime);
+				}
+			}
+		});
   
 		editor.entityEngine.addSystem(new EntitySystem(GamePipeline.RENDER) {
 			
@@ -96,12 +114,9 @@ public class ModelPlugin extends EditorPlugin
 			@Override
 			public void update(float deltaTime) {
 				BoundingBox box = new BoundingBox();
-				editor.shapeRenderer.setProjectionMatrix(editor.orthographicCamera.combined);
+				editor.shapeRenderer.setProjectionMatrix(editor.perspectiveCamera.combined);
 				editor.shapeRenderer.begin(ShapeType.Line);
 				for(ModelInstance modelInstance : modelInstances){
-					Vector3 vector = new Vector3();
-					modelInstance.transform.getTranslation(vector);
-					modelInstance.transform.setTranslation(vector.x, vector.y, 0); // XXX
 					modelInstance.calculateBoundingBox(box);
 					box.mul(modelInstance.transform); // .mul(modelInstance.nodes.get(0).globalTransform)
 					editor.shapeRenderer.box(box.min.x, box.min.y, box.min.z, box.max.x - box.min.x, box.max.y - box.min.y, box.max.z - box.min.z);
@@ -110,6 +125,30 @@ public class ModelPlugin extends EditorPlugin
 			}
 		});
 		
+		
+		editor.addTool(new ComponentTool("Texture animation", editor, G3DModel.class) {
+			@Override
+			protected Component createComponent(Entity entity) {
+				TextureAnimationComponent model = new TextureAnimationComponent();
+				return model;
+			}
+		});
+		
+       editor.entityEngine.addSystem(new EntityHelper.SingleComponentIteratingSystem<TextureAnimationComponent>(TextureAnimationComponent.class, GamePipeline.BEFORE_RENDER) {
+			@Override
+			protected void processEntity(Entity entity, TextureAnimationComponent component, float deltaTime) {
+				G3DModel model = entity.getComponent(G3DModel.class);
+				for(Node node : model.modelInstance.nodes)
+					for(NodePart part : node.parts){
+						TextureAttribute ta = (TextureAttribute)part.material.get(TextureAttribute.Diffuse);
+						ta.offsetU += deltaTime * component.uPerSec;
+						ta.offsetV += deltaTime * component.vPerSec;
+					}
+			}
+		});
+       
+       editor.registerPlugin(TextureAnimationComponent.class, new TextureAnimationEditor());
+
 		// TODO global editor to synchronize perspective and orthographic camera
 		// need a perspective camera
 		

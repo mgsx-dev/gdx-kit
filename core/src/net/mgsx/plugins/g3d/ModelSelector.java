@@ -2,8 +2,12 @@ package net.mgsx.plugins.g3d;
 
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
+import com.badlogic.gdx.graphics.Mesh;
+import com.badlogic.gdx.graphics.g3d.model.MeshPart;
 import com.badlogic.gdx.graphics.g3d.model.Node;
+import com.badlogic.gdx.graphics.g3d.model.NodePart;
 import com.badlogic.gdx.math.Intersector;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.math.collision.Ray;
@@ -12,6 +16,12 @@ import com.badlogic.gdx.utils.Array;
 import net.mgsx.core.Editor;
 import net.mgsx.core.plugins.SelectorPlugin;
 
+// TODO choice of conception :
+// - each node or mesh part is an entity
+// - export each models separately ?
+// - create an entity for each model Instance children (hierarchy is treated as one entity !)
+// - this could interfer with renderer ?
+//
 public class ModelSelector  extends SelectorPlugin
 {
 	private BoundingBox box;
@@ -21,23 +31,47 @@ public class ModelSelector  extends SelectorPlugin
 		super(editor);
 	}
 
-	private boolean intersectRay(Node node, Ray ray)
+	private Node intersectRay(Node node, Ray ray)
 	{
 		node.calculateBoundingBox(box, true);
-		box.mul(node.globalTransform);
 		if(Intersector.intersectRayBounds(ray, box, intersection))
 		{
-			if(node.parts != null && node.parts.size > 0 && !node.hasChildren()) return true;
-			for(Node child : node.getChildren()){
-				if(intersectRay(child, ray)){
-					return true;
+			if(node.parts != null)
+			{
+				for(NodePart nodePart : node.parts){
+					
+					Matrix4 mat = node.globalTransform.cpy().inv();
+					Ray localRay = ray.cpy().mul(mat);
+					
+					
+					MeshPart part = nodePart.meshPart;
+					Mesh mesh = part.mesh;
+					short[] indices = new short[mesh.getNumIndices()];
+					mesh.getIndices(indices);
+					int floatsPerVertex = mesh.getVertexSize() / Float.BYTES;
+					float[] vertices = new float[mesh.getNumVertices() * floatsPerVertex];
+					mesh.getVertices(vertices );
+					if(Intersector.intersectRayTriangles(localRay, vertices, indices, floatsPerVertex, new Vector3())){
+						return node;
+					}
 				}
 			}
-//			for(NodePart nodePart : node.parts){
-//				// TODO if precise collision with triangles nodePart.meshPart.mesh.
-//			}
+			
+			return intersectRay(node.getChildren(), ray);
 		}
-		return false;
+		return null;
+	}
+	
+	private Node intersectRay(Iterable<Node> nodes, Ray ray)
+	{
+		for(Node node : nodes)
+		{
+			Node foundNode = intersectRay(node, ray);
+			if(foundNode != null){
+				return foundNode;
+			}
+		}
+		return null;
 	}
 	
 	@Override
@@ -48,13 +82,16 @@ public class ModelSelector  extends SelectorPlugin
 			G3DModel model = entity.getComponent(G3DModel.class);
 			box = new BoundingBox();
 			model.modelInstance.calculateBoundingBox(box);
-			box.mul(model.modelInstance.transform);
-			if(Intersector.intersectRayBounds(ray, box, intersection)){
-				for(Node node : model.modelInstance.nodes){
-					if(intersectRay(node, ray)){
-						entities.add(entity);
-						count++;
-					}
+			Matrix4 mat = model.modelInstance.transform.cpy().inv();
+			ray.mul(mat);
+			//box.mul(model.modelInstance.transform);
+			if(Intersector.intersectRayBounds(ray, box, intersection))
+			{
+				Node node = intersectRay(model.modelInstance.nodes, ray);
+				if(node != null){
+					entities.add(entity);
+					count++;
+					break;
 				}
 			}
 		}
