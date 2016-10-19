@@ -10,8 +10,11 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Json.Serializer;
+import com.badlogic.gdx.utils.ObjectMap;
 
 import net.mgsx.core.plugins.EditorPlugin;
+import net.mgsx.core.plugins.Plugin;
 
 // TODO
 // shoulb be a screen (because of multi screen features or multi viewport ...
@@ -21,17 +24,22 @@ public class GameEngine extends ApplicationAdapter
 	public AssetManager assets;
 	public ShapeRenderer shapeRenderer;
 	protected SpriteBatch batch;
-	protected Array<EditorPlugin> plugins = new Array<EditorPlugin>();
+	protected Array<EditorPlugin> editorPlugins = new Array<EditorPlugin>();
+	protected Array<Plugin> plugins = new Array<Plugin>();
 	public PooledEngine entityEngine;
 	public OrthographicCamera orthographicCamera;
 	public PerspectiveCamera perspectiveCamera;
 	
+	final protected ObjectMap<Class, Serializer> serializers = new ObjectMap<Class, Serializer>();
 	
-	
-	public void registerPlugin(EditorPlugin plugin) {
+	public void registerPlugin(Plugin plugin) {
 		plugins.add(plugin);
 	}
 
+	public <T> void addSerializer(Class<T> type, Serializer<T> serializer) {
+		serializers.put(type, serializer);
+	}
+	
 	@Override
 	public void create() 
 	{
@@ -50,6 +58,11 @@ public class GameEngine extends ApplicationAdapter
 		perspectiveCamera.near = 1f;
 		perspectiveCamera.far = 3000f;
 		perspectiveCamera.update();
+		
+		for(Plugin plugin : plugins){
+			plugin.initialize(this);
+		}
+
 	}
 	
 	@Override

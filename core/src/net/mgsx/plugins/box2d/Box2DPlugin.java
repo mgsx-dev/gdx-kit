@@ -1,5 +1,6 @@
 package net.mgsx.plugins.box2d;
 
+import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntityListener;
 import com.badlogic.ashley.core.EntitySystem;
@@ -10,17 +11,22 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.ChainShape;
 import com.badlogic.gdx.physics.box2d.CircleShape;
+import com.badlogic.gdx.physics.box2d.Contact;
+import com.badlogic.gdx.physics.box2d.ContactImpulse;
+import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.EdgeShape;
+import com.badlogic.gdx.physics.box2d.Fixture;
+import com.badlogic.gdx.physics.box2d.Manifold;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.Shape;
 
 import net.mgsx.core.Editor;
 import net.mgsx.core.GamePipeline;
 import net.mgsx.core.commands.CommandHistory;
-import net.mgsx.core.components.Attach;
 import net.mgsx.core.components.Movable;
 import net.mgsx.core.plugins.EditorPlugin;
 import net.mgsx.core.storage.Storage;
+import net.mgsx.core.tools.ComponentTool;
 import net.mgsx.core.tools.Tool;
 import net.mgsx.plugins.box2d.model.Box2DBodyModel;
 import net.mgsx.plugins.box2dold.model.WorldItem;
@@ -56,6 +62,67 @@ public class Box2DPlugin extends EditorPlugin
 		worldItem.editor = editor;
 		worldItem.initialize();
 		
+		worldItem.world.setContactListener(new ContactListener() {
+			
+			@Override
+			public void preSolve(Contact contact, Manifold oldManifold) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void postSolve(Contact contact, ContactImpulse impulse) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void endContact(Contact contact) {
+				Fixture fixtureA = contact.getFixtureA();
+				Fixture fixtureB = contact.getFixtureB();
+				
+				Object dataA = fixtureA.getUserData();
+				Object dataB = fixtureB.getUserData();
+				
+				if(dataA instanceof Box2DListener){
+					((Box2DListener) dataA).endContact(contact, fixtureA, fixtureB);
+				}
+				if(dataB instanceof Box2DListener){
+					((Box2DListener) dataB).endContact(contact, fixtureB, fixtureA);
+				}
+			}
+			
+			@Override
+			public void beginContact(Contact contact) 
+			{
+				Fixture fixtureA = contact.getFixtureA();
+				Fixture fixtureB = contact.getFixtureB();
+				
+				Object dataA = fixtureA.getUserData();
+				Object dataB = fixtureB.getUserData();
+				
+				if(dataA instanceof Box2DListener){
+					((Box2DListener) dataA).beginContact(contact, fixtureA, fixtureB);
+				}
+				if(dataB instanceof Box2DListener){
+					((Box2DListener) dataB).beginContact(contact, fixtureB, fixtureA);
+				}
+			}
+		});
+		
+		// TODO just a workaround ... need to think deeper is this stuff !
+		editor.addTool(new ComponentTool("Attach to body", editor, Family.all(Box2DBodyModel.class).get()) {
+			
+			@Override
+			protected Component createComponent(Entity entity) {
+				Box2DBodyModel model = entity.getComponent(Box2DBodyModel.class);
+				if(model.slave != null){
+					model.slaveEnabled = true;
+				}
+				return null;
+			}
+		});
+		
 		// TODO activation create a body
 		//editor.addTool(new AddBox2DTool(editor, worldItem));
 		
@@ -88,13 +155,9 @@ public class Box2DPlugin extends EditorPlugin
 				Box2DBodyModel object = entity.getComponent(Box2DBodyModel.class);
 				object.body.setUserData(entity);
 				
-				// TODO why auto attach ? conceptually OK but ...
-				Movable oldMovable = entity.getComponent(Movable.class);
-				Movable newMovable = new Movable(new BodyMove(object.body));
-				if(oldMovable != null){
-					entity.add(new Attach(entity, newMovable, entity, oldMovable));
-				}
-				entity.add(newMovable);
+				// TODO why auto attach ? conceptually OK but ... many many drawbacks
+				object.slave =  entity.getComponent(Movable.class);
+				entity.add(new Movable(new BodyMove(object.body)));
 			}
 		});
 		
@@ -113,6 +176,9 @@ public class Box2DPlugin extends EditorPlugin
 				for(Entity e : editor.entityEngine.getEntitiesFor(Family.one(Box2DBodyModel.class).get())){
 					Box2DBodyModel bodyItem = e.getComponent(Box2DBodyModel.class);
 					if(bodyItem.behavior != null) bodyItem.behavior.act();
+					if(bodyItem.slaveEnabled && bodyItem.slave != null){
+						// TODO sync pos ...
+					}
 				}
 			}
 		});

@@ -8,20 +8,21 @@ import net.mgsx.core.Editor;
 
 abstract public class ComponentTool extends Tool
 {
-
-	private Editor editor;
-
 	public ComponentTool(String name, Editor editor, Class<? extends Component> assignableFor) {
+		this(name, editor, Family.one(assignableFor).get());
+	}
+	
+	public ComponentTool(String name, Editor editor, Family activator) {
 		super(name, editor);
-		this.editor = editor;
-		this.activator = Family.one(assignableFor).get();
+		this.activator = activator;
 	}
 	
 	@Override
 	protected void activate() 
 	{
 		Entity entity = editor.getSelected();
-		entity.add(createComponent(entity));
+		Component component = createComponent(entity);
+		if(component != null) entity.add(component);
 		end();
 	}
 

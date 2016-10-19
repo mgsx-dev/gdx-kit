@@ -7,6 +7,7 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.utils.Array;
 
 import net.mgsx.core.components.Duplicable;
+import net.mgsx.core.components.Movable;
 import net.mgsx.plugins.box2dold.behavior.BodyBehavior;
 
 public class Box2DBodyModel implements Component, Duplicable
@@ -17,6 +18,9 @@ public class Box2DBodyModel implements Component, Duplicable
 	public Array<Box2DFixtureModel> fixtures;
 	public BodyBehavior behavior;
 	public Entity entity;
+	public Movable slave;
+	public boolean slaveEnabled;
+	
 	public Box2DBodyModel(){}
 	public Box2DBodyModel(Entity entity, String id, BodyDef def, Body body) {
 		super();

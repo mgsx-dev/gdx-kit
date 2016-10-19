@@ -30,8 +30,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.Json.Serializer;
-import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 import net.mgsx.core.NativeService.DialogCallback;
@@ -95,6 +93,11 @@ public class Editor extends GameEngine
 	public ToolGroup subToolGroup;
 	
 	private Map<String, GlobalEditorPlugin> globalEditors = new LinkedHashMap<String, GlobalEditorPlugin>();
+	
+	public void registerPlugin(EditorPlugin plugin) {
+		editorPlugins.add(plugin);
+	}
+
 	
 	@Override
 	public void create() 
@@ -205,7 +208,7 @@ public class Editor extends GameEngine
 		// register listener after plugins creation to create filters on all possible components
 		// finally initiate plugins.
 		// TODO separate runtme plugin part (model, serialization, update, render) from editor part
-		for(EditorPlugin plugin : plugins){
+		for(EditorPlugin plugin : editorPlugins){
 			plugin.initialize(this);
 		}
 		
@@ -474,11 +477,6 @@ public class Editor extends GameEngine
 	public void addGlobalEditor(String name, GlobalEditorPlugin plugin) 
 	{
 		globalEditors.put(name, plugin);
-	}
-
-	private ObjectMap<Class, Serializer> serializers = new ObjectMap<Class, Serializer>();
-	public <T> void addSerializer(Class<T> type, Serializer<T> serializer) {
-		serializers.put(type, serializer);
 	}
 
 	public Vector2 unproject(float screenX, float screenY) {

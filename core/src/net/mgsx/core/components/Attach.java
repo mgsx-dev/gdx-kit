@@ -44,6 +44,8 @@ public class Attach implements Component
 		master.getPosition(masterEntity, position);
 		position.add(offset);
 		slave.moveTo(slaveEntity, position);
+		
+		// TODO option attach position only !
 		slave.rotateTo(slaveEntity, master.getRotation(masterEntity));
 	}
 	

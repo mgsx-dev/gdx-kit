@@ -38,7 +38,6 @@ public class G3DModel implements Component, Duplicable, Serializable
 	@Override
 	public void read(Json json, JsonValue jsonData) 
 	{
-		json.readField(this, "uid", jsonData);
 		json.readField(this, "modelInstance", jsonData);
 		json.readField(this, "origin", jsonData);
 		animationController = new AnimationController(modelInstance);

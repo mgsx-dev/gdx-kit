@@ -85,6 +85,10 @@ public class EntityGroupSerializer implements Json.Serializer<EntityGroup>
 				if(componentType != null)
 				{
 					Component component = json.readValue(componentType, cvalue);
+					// special case where no type given TODO try with knownType (3 args)
+					if(component == null){
+						component = ReflectionHelper.newInstance(componentType);
+					}
 					entity.add(component);
 				}
 				else
