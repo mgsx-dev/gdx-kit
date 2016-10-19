@@ -187,6 +187,7 @@ public class Box2DPlugin extends EditorPlugin
 			
 			@Override
 			public void update(float deltaTime) {
+				// TODO should be switchable !
 				box2dRenderer.render(worldItem.world, editor.orthographicCamera.combined);
 				Vector2 s = Tool.pixelSize(editor.orthographicCamera).scl(3);
 				renderer.setProjectionMatrix(editor.orthographicCamera.combined);

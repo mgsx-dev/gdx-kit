@@ -102,13 +102,13 @@ public class ModelPlugin extends EditorPlugin
 			@Override
 			public void update(float deltaTime) {
 				
-				modelBatch.begin(editor.perspectiveCamera);
+				modelBatch.begin(editor.perspectiveCamera); // TODO allow switch between persperctive and ortho for Box2D drawings ...
 				modelBatch.render(modelInstances, environment);
 			    modelBatch.end();
 			}
 		});
 		
-		editor.entityEngine.addSystem(new EntitySystem() {
+		editor.entityEngine.addSystem(new EntitySystem(GamePipeline.RENDER_OVER) {
 			
 			@Override
 			public void update(float deltaTime) {
@@ -118,6 +118,7 @@ public class ModelPlugin extends EditorPlugin
 				for(ModelInstance modelInstance : modelInstances){
 					modelInstance.calculateBoundingBox(box);
 					box.mul(modelInstance.transform); // .mul(modelInstance.nodes.get(0).globalTransform)
+					// XXX should be switchable
 					editor.shapeRenderer.box(box.min.x, box.min.y, box.min.z, box.max.x - box.min.x, box.max.y - box.min.y, box.max.z - box.min.z);
 				}
 				editor.shapeRenderer.end();

@@ -37,7 +37,7 @@ public class FollowSelectionTool extends Tool
 					movable.getPosition(selected, target);
 					target.lerp(editor.orthographicCamera.position, 0.97f); // track smooth
 					editor.orthographicCamera.position.x = target.x;
-					editor.orthographicCamera.position.y = target.y;
+					editor.orthographicCamera.position.y = target.y; // XXX TODO + 0.05f shift should be configurable
 				}
 			}
 			
