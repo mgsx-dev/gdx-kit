@@ -17,10 +17,15 @@ final public class GamePipeline
 	public static final int INPUT = 1;
 	
 	// then update phyisics (check collision to get a status)
-	public static final int BEFORE_LOGIC = INPUT+1;
-	public static final int PHYSICS = BEFORE_LOGIC; // alias
+	public static final int BEFORE_PHYSICS = INPUT; // alias
+	public static final int PHYSICS = BEFORE_PHYSICS + 1;
+	
+	// good place to update logic from physics (position, angle ...)
+	public static final int AFTER_PHYSICS = PHYSICS + 1;
+			
 	
 	// then logic (responding to physic and input analysis)
+	public static final int BEFORE_LOGIC = AFTER_PHYSICS; // alias
 	public static final int LOGIC = BEFORE_LOGIC + 1;
 	
 	// after logic could be matrix updates

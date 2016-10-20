@@ -22,6 +22,8 @@ import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.ObjectMap.Entries;
 import com.badlogic.gdx.utils.ObjectMap.Entry;
 
+import net.mgsx.game.core.plugins.Initializable;
+
 public class Storage 
 {
 	// TODO implement all required serializer here !
@@ -152,15 +154,25 @@ public class Storage
 			json.toJson(group, writer);
 	}
 
-	public static void load(Engine engine, FileHandle file, AssetManager assets, ObjectMap<Class, Serializer> serializers) 
+	public static Array<Entity> load(Engine engine, FileHandle file, AssetManager assets, ObjectMap<Class, Serializer> serializers) 
 	{
-		load(engine, file.reader(), assets, serializers);
+		return load(engine, file.reader(), assets, serializers);
 	}
-	public static void load(Engine engine, Reader reader, AssetManager assets, ObjectMap<Class, Serializer> serializers) 
+	public static Array<Entity> load(Engine engine, Reader reader, AssetManager assets, ObjectMap<Class, Serializer> serializers) 
 	{
 		Json json = setup(assets, serializers);
 		EntityGroup group = json.fromJson(EntityGroup.class, reader);
-		for(Entity entity : group.entities) engine.addEntity(entity);
+		for(Entity entity : group.entities)
+		{
+			// post initialization
+			for(Component component : entity.getComponents()){
+				if(component instanceof Initializable){
+					((Initializable) component).initialize(engine, entity);
+				}
+			}
+			engine.addEntity(entity);
+		}
+		return group.entities;
 	}
 
 	public static final ObjectMap<String, Class<? extends Component>> typeMap = new ObjectMap<String, Class<? extends Component>>();

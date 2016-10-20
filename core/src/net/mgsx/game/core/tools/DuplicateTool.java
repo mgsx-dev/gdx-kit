@@ -8,6 +8,7 @@ import com.badlogic.gdx.utils.Array;
 
 import net.mgsx.game.core.Editor;
 import net.mgsx.game.core.components.Duplicable;
+import net.mgsx.game.core.plugins.Initializable;
 
 public class DuplicateTool extends SelectTool
 {
@@ -39,6 +40,9 @@ public class DuplicateTool extends SelectTool
 					if(component instanceof Duplicable)
 					{
 						Component newComponent = ((Duplicable) component).duplicate();
+						if(newComponent instanceof Initializable){
+							((Initializable) newComponent).initialize(editor.entityEngine, newEntity);
+						}
 						newEntity.add(newComponent);
 					}
 				}

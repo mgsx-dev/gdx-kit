@@ -5,6 +5,7 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntityListener;
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.ashley.core.Family;
+import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
@@ -24,6 +25,7 @@ import net.mgsx.game.core.Editor;
 import net.mgsx.game.core.GamePipeline;
 import net.mgsx.game.core.commands.CommandHistory;
 import net.mgsx.game.core.components.Movable;
+import net.mgsx.game.core.components.Transform2DComponent;
 import net.mgsx.game.core.plugins.EditorPlugin;
 import net.mgsx.game.core.storage.Storage;
 import net.mgsx.game.core.tools.ComponentTool;
@@ -34,7 +36,7 @@ import net.mgsx.game.plugins.box2dold.model.WorldItem;
 public class Box2DPlugin extends EditorPlugin 
 {
 
-	private WorldItem worldItem;
+	public WorldItem worldItem;
 	
 	// TODO future of Box2D package :
 	
@@ -126,7 +128,7 @@ public class Box2DPlugin extends EditorPlugin
 		// TODO activation create a body
 		//editor.addTool(new AddBox2DTool(editor, worldItem));
 		
-		editor.addSerializer(Box2DBodyModel.class, new Box2DModelSerializer(worldItem.world));
+		editor.addSerializer(Box2DBodyModel.class, new Box2DModelSerializer(worldItem));
 		editor.addSerializer(PolygonShape.class, Box2DShapesSerializers.polygon());
 		editor.addSerializer(ChainShape.class, Box2DShapesSerializers.chain());
 		editor.addSerializer(CircleShape.class, Box2DShapesSerializers.circle());
@@ -144,10 +146,8 @@ public class Box2DPlugin extends EditorPlugin
 			
 			@Override
 			public void entityRemoved(Entity entity) {
-				Box2DBodyModel model = entity.getComponent(Box2DBodyModel.class);
-				model.body.setUserData(null);
-				worldItem.world.destroyBody(model.body);
-				entity.remove(Box2DBodyModel.class);
+				Box2DBodyModel model = (Box2DBodyModel)entity.remove(Box2DBodyModel.class);
+				if(model != null) model.dispose();
 			}
 			
 			@Override
@@ -167,6 +167,17 @@ public class Box2DPlugin extends EditorPlugin
 			@Override
 			public void update(float deltaTime) {
 				worldItem.update(); // TODO move box 2D code here ?
+			}
+		});
+		editor.entityEngine.addSystem(new IteratingSystem(Family.all(Box2DBodyModel.class, Transform2DComponent.class).get(), GamePipeline.AFTER_PHYSICS) {
+			@Override
+			public void processEntity(Entity entity, float deltaTime) {
+				Box2DBodyModel physic = entity.getComponent(Box2DBodyModel.class);
+				if(physic.body != null){
+					Transform2DComponent t = entity.getComponent(Transform2DComponent.class);
+					t.position.set(physic.body.getPosition());
+					t.angle = physic.body.getAngle();
+				}
 			}
 		});
 		editor.entityEngine.addSystem(new EntitySystem(GamePipeline.LOGIC) {

@@ -5,6 +5,7 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntityListener;
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.ashley.core.Family;
+import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
@@ -20,6 +21,7 @@ import com.badlogic.gdx.utils.Array;
 import net.mgsx.game.core.Editor;
 import net.mgsx.game.core.GamePipeline;
 import net.mgsx.game.core.components.Movable;
+import net.mgsx.game.core.components.Transform2DComponent;
 import net.mgsx.game.core.helpers.EntityHelper;
 import net.mgsx.game.core.plugins.EditorPlugin;
 import net.mgsx.game.core.storage.Storage;
@@ -64,15 +66,17 @@ public class ModelPlugin extends EditorPlugin
 			@Override
 			public void entityRemoved(Entity entity) {
 				G3DModel model = (G3DModel)entity.remove(G3DModel.class);
-				modelInstances.removeValue(model.modelInstance, true);
-				entity.remove(Movable.class);
+				if(model != null){
+					modelInstances.removeValue(model.modelInstance, true);
+					entity.remove(Movable.class);
+				}
 			}
 			
 			@Override
 			public void entityAdded(Entity entity) {
 				G3DModel model = entity.getComponent(G3DModel.class);
 				modelInstances.add(model.modelInstance);
-				entity.add(new Movable(new ModelMove(model)));
+				if(entity.getComponent(Movable.class) == null) entity.add(new Movable(new ModelMove(model)));
 			}
 		});
 		
@@ -97,6 +101,19 @@ public class ModelPlugin extends EditorPlugin
 				}
 			}
 		});
+        
+        editor.entityEngine.addSystem(new IteratingSystem(Family.all(G3DModel.class, Transform2DComponent.class).get(), GamePipeline.BEFORE_RENDER) {
+			@Override
+			protected void processEntity(Entity entity, float deltaTime) {
+				G3DModel model = entity.getComponent(G3DModel.class);
+				Transform2DComponent transformation = entity.getComponent(Transform2DComponent.class);
+				model.modelInstance.transform.idt();
+				model.modelInstance.transform.translate(transformation.position.x, transformation.position.y, 0); // 0 is sprite plan
+				model.modelInstance.transform.rotate(0, 0, 1, transformation.angle);
+				model.modelInstance.transform.translate(-model.origin.x, -model.origin.y, -model.origin.z);
+			}
+		});
+  
   
 		editor.entityEngine.addSystem(new EntitySystem(GamePipeline.RENDER) {
 			

@@ -9,6 +9,7 @@ import com.badlogic.gdx.utils.Array;
 import net.mgsx.game.core.components.Duplicable;
 import net.mgsx.game.core.components.Movable;
 import net.mgsx.game.plugins.box2dold.behavior.BodyBehavior;
+import net.mgsx.game.plugins.box2dold.model.WorldItem;
 
 public class Box2DBodyModel implements Component, Duplicable
 {
@@ -20,13 +21,15 @@ public class Box2DBodyModel implements Component, Duplicable
 	public Entity entity;
 	public Movable slave;
 	public boolean slaveEnabled;
+	public WorldItem context;
 	
 	public Box2DBodyModel(){}
-	public Box2DBodyModel(Entity entity, String id, BodyDef def, Body body) {
+	public Box2DBodyModel(WorldItem context, Entity entity, String id, BodyDef def, Body body) {
 		super();
 		this.id = id;
 		this.def = def;
 		this.body = body;
+		this.context = context;
 		this.fixtures = new Array<Box2DFixtureModel>();
 		if(body != null) body.setUserData(entity);
 	}
@@ -41,6 +44,7 @@ public class Box2DBodyModel implements Component, Duplicable
 		Box2DBodyModel model = new Box2DBodyModel();
 		model.id = id; // TODO ? + " (clone)";
 		model.def = def;
+		model.context = context;
 		model.fixtures = new Array<Box2DFixtureModel>();
 		model.body = body.getWorld().createBody(def);
 		model.body.setTransform(body.getPosition(), body.getAngle());
@@ -52,6 +56,15 @@ public class Box2DBodyModel implements Component, Duplicable
 			model.fixtures.add(newFixture);
 		}
 		return model;
+	}
+	public void dispose() 
+	{
+		if(body != null){
+			body.getWorld().destroyBody(body);
+			body = null;
+			fixtures.clear();
+		}
+		
 	}
 
 

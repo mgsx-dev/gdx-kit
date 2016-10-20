@@ -7,6 +7,7 @@ import com.badlogic.ashley.core.Family;
 import net.mgsx.game.core.Editor;
 import net.mgsx.game.core.plugins.EditorPlugin;
 import net.mgsx.game.core.tools.ComponentTool;
+import net.mgsx.game.examples.platformer.core.BonusComponent;
 import net.mgsx.game.examples.platformer.core.PlayerComponent;
 import net.mgsx.game.plugins.box2d.model.Box2DBodyModel;
 import net.mgsx.game.plugins.g3d.G3DModel;
@@ -14,7 +15,7 @@ import net.mgsx.game.plugins.g3d.G3DModel;
 public class PlatformerGameEditor extends EditorPlugin {
 
 	@Override
-	public void initialize(Editor editor) 
+	public void initialize(final Editor editor) 
 	{
 //		editor.addTool(new ClickTool("Player", editor) {
 //			@Override
@@ -41,11 +42,25 @@ public class PlatformerGameEditor extends EditorPlugin {
 			protected Component createComponent(Entity entity) 
 			{
 				PlayerComponent logic = new PlayerComponent();
-				logic.initialize(entity);
+				logic.initialize(editor.entityEngine, entity);
 				entity.add(logic);
 				
 				return logic;
 			}
 		});
+		
+		editor.addTool(new ComponentTool("Bonus Logic", editor, Family.all(G3DModel.class, Box2DBodyModel.class).get()) {
+			
+			@Override
+			protected Component createComponent(Entity entity) 
+			{
+				BonusComponent logic = new BonusComponent();
+				logic.initialize(editor.entityEngine, entity);
+				entity.add(logic);
+				
+				return logic;
+			}
+		});
+
 	}
 }

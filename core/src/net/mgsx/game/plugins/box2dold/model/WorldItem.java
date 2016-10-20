@@ -28,6 +28,8 @@ public class WorldItem
 	public Array<Actor> actors = new Array<Actor>();
 	public Array<SpriteItem> sprites = new Array<SpriteItem>();
 	
+	private Array<Box2DBodyModel> scheduledForDeletion = new Array<Box2DBodyModel>();
+	
 	private final CommandHistory commandHistory;
 	
 	
@@ -111,6 +113,10 @@ public class WorldItem
 					settings.timeStep, 
 					settings.velocityIterations, 
 					settings.positionIterations);
+			
+			for(Box2DBodyModel body : scheduledForDeletion){
+				body.dispose();
+			}
 		}
 		
 		
@@ -139,7 +145,7 @@ public class WorldItem
 			BodyDef def = settings.body();
 			def.position.set(x, y);
 			Body body = world.createBody(def);
-			item = new Box2DBodyModel(entity, defaultName, def, body);
+			item = new Box2DBodyModel(this, entity, defaultName, def, body);
 			entity.add(item);
 		}
 		return item;
@@ -188,6 +194,11 @@ public class WorldItem
 		// TODO add to history ... 
 		commandHistory.add(command);
 		
+	}
+
+	public void scheduleRemove(Entity entity, Box2DBodyModel body) 
+	{
+		scheduledForDeletion.add(body);
 	}
 
 	

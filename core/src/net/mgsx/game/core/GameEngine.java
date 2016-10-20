@@ -9,12 +9,14 @@ import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json.Serializer;
 import com.badlogic.gdx.utils.ObjectMap;
 
+import net.mgsx.game.core.components.Transform2DComponent;
+import net.mgsx.game.core.helpers.TypeMap;
 import net.mgsx.game.core.plugins.EditorPlugin;
 import net.mgsx.game.core.plugins.Plugin;
+import net.mgsx.game.core.storage.Storage;
 
 // TODO
 // shoulb be a screen (because of multi screen features or multi viewport ...
@@ -24,8 +26,8 @@ public class GameEngine extends ApplicationAdapter
 	public AssetManager assets;
 	public ShapeRenderer shapeRenderer;
 	protected SpriteBatch batch;
-	protected Array<EditorPlugin> editorPlugins = new Array<EditorPlugin>();
-	protected Array<Plugin> plugins = new Array<Plugin>();
+	protected TypeMap<EditorPlugin> editorPlugins = new TypeMap<EditorPlugin>();
+	protected TypeMap<Plugin> plugins = new TypeMap<Plugin>();
 	public PooledEngine entityEngine;
 	public OrthographicCamera orthographicCamera;
 	public PerspectiveCamera perspectiveCamera;
@@ -33,7 +35,7 @@ public class GameEngine extends ApplicationAdapter
 	final protected ObjectMap<Class, Serializer> serializers = new ObjectMap<Class, Serializer>();
 	
 	public void registerPlugin(Plugin plugin) {
-		plugins.add(plugin);
+		plugins.put(plugin.getClass(), plugin);
 	}
 
 	public <T> void addSerializer(Class<T> type, Serializer<T> serializer) {
@@ -44,6 +46,10 @@ public class GameEngine extends ApplicationAdapter
 	public void create() 
 	{
 		super.create();
+		
+		// register some core components
+		Storage.register(Transform2DComponent.class, "2d");
+		
 		assets = new AssetManager(); // TODO resolver maybe different for game and editor ?
 		Texture.setAssetManager(assets);
 		entityEngine = new PooledEngine();
@@ -59,7 +65,7 @@ public class GameEngine extends ApplicationAdapter
 		perspectiveCamera.far = 3000f;
 		perspectiveCamera.update();
 		
-		for(Plugin plugin : plugins){
+		for(Plugin plugin : plugins.values()){
 			plugin.initialize(this);
 		}
 
@@ -81,6 +87,10 @@ public class GameEngine extends ApplicationAdapter
 		perspectiveCamera.viewportHeight = Gdx.graphics.getHeight();
 		
 		perspectiveCamera.update();
+	}
+
+	public <T extends Plugin> T getPlugin(Class<T> type) {
+		return (T)plugins.get(type);
 	}
 	
 

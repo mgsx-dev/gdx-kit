@@ -1,22 +1,21 @@
 package net.mgsx.game.plugins.box2d;
 
-import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.Json.Serializer;
 import com.badlogic.gdx.utils.JsonValue;
 
 import net.mgsx.game.plugins.box2d.model.Box2DBodyModel;
 import net.mgsx.game.plugins.box2d.model.Box2DFixtureModel;
+import net.mgsx.game.plugins.box2dold.model.WorldItem;
 
 public class Box2DModelSerializer implements Serializer<Box2DBodyModel> {
 
-	private World world;
+	private WorldItem context;
 	
 	
-	
-	public Box2DModelSerializer(World world) {
+	public Box2DModelSerializer(WorldItem context) {
 		super();
-		this.world = world;
+		this.context = context;
 	}
 
 	@Override
@@ -38,7 +37,8 @@ public class Box2DModelSerializer implements Serializer<Box2DBodyModel> {
 		json.readField(object, "fixtures", jsonData);
 
 		// then create instances
-		object.body = world.createBody(object.def);
+		object.context = context;
+		object.body = context.world.createBody(object.def);
 		object.body.setUserData(null); // dont know yet
 		for(Box2DFixtureModel fixture : object.fixtures){
 			fixture.fixture = object.body.createFixture(fixture.def);

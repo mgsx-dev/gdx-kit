@@ -29,6 +29,7 @@ public class Box2DFixtureModel implements Serializable
 		
 	}
 
+	// TODO should not be used !
 	public Box2DBodyModel getBodyItem() {
 		return (Box2DBodyModel)fixture.getBody().getUserData();
 	}

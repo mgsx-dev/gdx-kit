@@ -1,6 +1,7 @@
 package net.mgsx.game.examples.platformer.core;
 
 import com.badlogic.ashley.core.Component;
+import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -10,11 +11,12 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.Fixture;
 
+import net.mgsx.game.core.plugins.Initializable;
 import net.mgsx.game.plugins.box2d.Box2DListener;
 import net.mgsx.game.plugins.box2d.model.Box2DBodyModel;
 import net.mgsx.game.plugins.g3d.G3DModel;
 
-public class PlayerComponent implements Component
+public class PlayerComponent implements Component, Initializable
 {
 	private G3DModel model;
 	private Animation walkAnimation;
@@ -28,7 +30,8 @@ public class PlayerComponent implements Component
 	private boolean onGround;
 	private int contactCount = 0;
 	
-	public void initialize(Entity entity)
+	@Override
+	public void initialize(final Engine negine, final Entity entity)
 	{
 		state = State.IDLE;
 		
@@ -46,6 +49,29 @@ public class PlayerComponent implements Component
 				onGround = true;
 				contactCount++;
 				System.out.println(contactCount);
+			}
+		});
+		
+		physics.fixtures.get(0).fixture.setUserData(new Box2DListener() { // XXX hard coded sensor index 0 alias body
+			@Override
+			public void endContact(Contact contact, Fixture self, Fixture other) {
+				
+			}
+			@Override
+			public void beginContact(Contact contact, Fixture self, Fixture other) {
+				Entity otherEntity = (Entity)other.getBody().getUserData();
+				if(otherEntity != null){
+					BonusComponent bonus = otherEntity.getComponent(BonusComponent.class);
+					if(bonus != null && bonus.isCatchable()){
+						bonus.setCatch();
+						// TODO add score
+						// remove bonus body (mark for deletion)
+						Box2DBodyModel body = otherEntity.getComponent(Box2DBodyModel.class);
+						body.context.scheduleRemove(otherEntity, body);
+						contact.setEnabled(false);
+						return;
+					}
+				}
 			}
 		});
 		

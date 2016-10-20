@@ -78,7 +78,7 @@ public class Box2DCommands {
 			@Override
 			public void commit() {
 				body = worldItem.world.createBody(def);
-				bodyItem = new Box2DBodyModel(null, name, def, body); // XXX
+				bodyItem = new Box2DBodyModel(worldItem, null, name, def, body); // XXX
 				worldItem.items.bodies.add(bodyItem);
 			}
 			@Override

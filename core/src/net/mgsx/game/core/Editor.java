@@ -43,6 +43,7 @@ import net.mgsx.game.core.plugins.EntityEditorPlugin;
 import net.mgsx.game.core.plugins.GlobalEditorPlugin;
 import net.mgsx.game.core.plugins.SelectorPlugin;
 import net.mgsx.game.core.storage.Storage;
+import net.mgsx.game.core.tools.ClickTool;
 import net.mgsx.game.core.tools.DeleteTool;
 import net.mgsx.game.core.tools.DuplicateTool;
 import net.mgsx.game.core.tools.FollowSelectionTool;
@@ -96,7 +97,7 @@ public class Editor extends GameEngine
 	private Map<String, GlobalEditorPlugin> globalEditors = new LinkedHashMap<String, GlobalEditorPlugin>();
 	
 	public void registerPlugin(EditorPlugin plugin) {
-		editorPlugins.add(plugin);
+		editorPlugins.put(plugin.getClass(), plugin);
 	}
 
 	
@@ -187,8 +188,38 @@ public class Editor extends GameEngine
 		
 		subToolGroup = createToolGroup();
 		mainToolGroup = createToolGroup();
-		
+
 		addTool(new NoTool("Select", this));;
+		
+		addTool(new ClickTool("Import", this) {
+			private FileHandle file;
+			@Override
+			protected void activate() {
+				NativeService.instance.openSaveDialog(new DialogCallback() {
+					@Override
+					public void selected(FileHandle selectedFile) {
+						file = selectedFile;
+					}
+					@Override
+					public void cancel() {
+					}
+				});
+			}
+			@Override
+			protected void create(final Vector2 position) 
+			{
+				for(Entity entity : Storage.load(entityEngine, file, assets, serializers)){
+					Movable movable = entity.getComponent(Movable.class);
+					if(movable != null){
+						movable.moveTo(entity, new Vector3(position.x, position.y, 0)); // sprite plan
+					}
+				}
+				// TODO update things in GUI ?
+				
+			}
+		});;
+
+		
 		addTool(new DeleteTool("Delete", this));;
 		
 //		addGlobalTool(new SelectToolBase(this){
@@ -210,7 +241,7 @@ public class Editor extends GameEngine
 		// register listener after plugins creation to create filters on all possible components
 		// finally initiate plugins.
 		// TODO separate runtme plugin part (model, serialization, update, render) from editor part
-		for(EditorPlugin plugin : editorPlugins){
+		for(EditorPlugin plugin : editorPlugins.values()){
 			plugin.initialize(this);
 		}
 		
@@ -562,6 +593,11 @@ public class Editor extends GameEngine
 		}
 		
 	}
+	
+	public <T extends EditorPlugin> T getEditorPlugin(Class<T> type) {
+		return (T)editorPlugins.get(type);
+	}
+
 
 
 }
