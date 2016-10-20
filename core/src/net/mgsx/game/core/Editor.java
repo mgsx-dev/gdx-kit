@@ -425,7 +425,7 @@ public class Editor extends GameEngine
 	private Map<Class, Array<EntityEditorPlugin>> editablePlugins = new HashMap<Class, Array<EntityEditorPlugin>>();
 	public Array<Entity> selection = new Array<Entity>();
 	public boolean selectionDirty;
-	public boolean displayEnabled;
+	public boolean displayEnabled = true; // true by default
 	public <T> void registerPlugin(Class<T> type, EntityEditorPlugin plugin) 
 	{
 		Array<EntityEditorPlugin> plugins = editablePlugins.get(type);
