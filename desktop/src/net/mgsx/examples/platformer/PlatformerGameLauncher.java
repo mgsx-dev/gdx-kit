@@ -4,9 +4,9 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 
 import net.mgsx.box2d.editor.desktop.DesktopNativeInterface;
-import net.mgsx.core.GameEngine;
-import net.mgsx.core.NativeService;
-import net.mgsx.examples.platformer.core.PlatformerPlugin;
+import net.mgsx.game.core.GameEngine;
+import net.mgsx.game.core.NativeService;
+import net.mgsx.game.examples.platformer.core.PlatformerPlugin;
 
 public class PlatformerGameLauncher 
 {

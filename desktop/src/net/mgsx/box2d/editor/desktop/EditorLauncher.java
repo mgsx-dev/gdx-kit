@@ -3,14 +3,14 @@ package net.mgsx.box2d.editor.desktop;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 
-import net.mgsx.core.Editor;
-import net.mgsx.core.NativeService;
-import net.mgsx.plugins.box2d.Box2DPlugin;
-import net.mgsx.plugins.btree.BTreePlugin;
-import net.mgsx.plugins.g3d.ModelPlugin;
-import net.mgsx.plugins.parallax.ParallaxPlugin;
-import net.mgsx.plugins.profiling.ProfilerPlugin;
-import net.mgsx.plugins.sprite.SpritePlugin;
+import net.mgsx.game.core.Editor;
+import net.mgsx.game.core.NativeService;
+import net.mgsx.game.plugins.box2d.Box2DPlugin;
+import net.mgsx.game.plugins.btree.BTreePlugin;
+import net.mgsx.game.plugins.g3d.ModelPlugin;
+import net.mgsx.game.plugins.parallax.ParallaxPlugin;
+import net.mgsx.game.plugins.profiling.ProfilerPlugin;
+import net.mgsx.game.plugins.sprite.SpritePlugin;
 
 public class EditorLauncher 
 {

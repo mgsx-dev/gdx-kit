@@ -7,8 +7,8 @@ import javax.swing.JFileChooser;
 
 import com.badlogic.gdx.Gdx;
 
-import net.mgsx.core.NativeService.DialogCallback;
-import net.mgsx.core.NativeService.NativeServiceInterface;
+import net.mgsx.game.core.NativeService.DialogCallback;
+import net.mgsx.game.core.NativeService.NativeServiceInterface;
 
 public class DesktopNativeInterface implements NativeServiceInterface
 {

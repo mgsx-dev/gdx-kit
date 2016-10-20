@@ -5,9 +5,9 @@ import java.io.File;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 
-import net.mgsx.core.NativeService;
-import net.mgsx.plugins.box2dold.Box2DEditor;
-import net.mgsx.plugins.sprite.SpritePlugin;
+import net.mgsx.game.core.NativeService;
+import net.mgsx.game.plugins.box2dold.Box2DEditor;
+import net.mgsx.game.plugins.sprite.SpritePlugin;
 
 public class DesktopLauncher 
 {
