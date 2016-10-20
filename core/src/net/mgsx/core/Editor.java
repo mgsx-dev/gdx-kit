@@ -49,6 +49,7 @@ import net.mgsx.core.tools.FollowSelectionTool;
 import net.mgsx.core.tools.NoTool;
 import net.mgsx.core.tools.PanTool;
 import net.mgsx.core.tools.SelectTool;
+import net.mgsx.core.tools.SwitchModeTool;
 import net.mgsx.core.tools.Tool;
 import net.mgsx.core.tools.ToolGroup;
 import net.mgsx.core.tools.UndoTool;
@@ -204,6 +205,7 @@ public class Editor extends GameEngine
 		addGlobalTool(new PanTool(this));
 		addGlobalTool(new DuplicateTool(this));
 		addGlobalTool(new FollowSelectionTool(this));
+		addGlobalTool(new SwitchModeTool(this));
 
 		// register listener after plugins creation to create filters on all possible components
 		// finally initiate plugins.
@@ -281,6 +283,12 @@ public class Editor extends GameEngine
 				component.update();
 			}
 		});
+		
+		
+		for(EntitySystem system : entityEngine.getSystems()){
+			if(system.priority == GamePipeline.RENDER_OVER) overSystems.add(system);
+		}
+		
 
 		
 		// build GUI
@@ -329,6 +337,7 @@ public class Editor extends GameEngine
 
 		entityEngine.update(Gdx.graphics.getDeltaTime());
 
+		stage.act();
 		// TODO maybe legacy
 		batch.begin();
 		for(ToolGroup g : tools){
@@ -338,9 +347,12 @@ public class Editor extends GameEngine
 		for(ToolGroup g : tools){
 			g.render(shapeRenderer);
 		}
+		if(displayEnabled){
+
+			
+			stage.draw();
+		}
 		
-		stage.act();
-		stage.draw();
 		
 	}
 	
@@ -413,6 +425,7 @@ public class Editor extends GameEngine
 	private Map<Class, Array<EntityEditorPlugin>> editablePlugins = new HashMap<Class, Array<EntityEditorPlugin>>();
 	public Array<Entity> selection = new Array<Entity>();
 	public boolean selectionDirty;
+	public boolean displayEnabled;
 	public <T> void registerPlugin(Class<T> type, EntityEditorPlugin plugin) 
 	{
 		Array<EntityEditorPlugin> plugins = editablePlugins.get(type);
@@ -534,6 +547,19 @@ public class Editor extends GameEngine
 
 	public Entity createEntity() {
 		return entityEngine.createEntity(); // new Entity(); // TODO use pool
+	}
+
+	private Array<EntitySystem> overSystems = new Array<EntitySystem>();
+
+	public void toggleMode() {
+		if(displayEnabled){
+			for(EntitySystem system : overSystems) entityEngine.removeSystem(system);
+			displayEnabled = false;
+		}else{
+			for(EntitySystem system : overSystems) entityEngine.addSystem(system);
+			displayEnabled = true;
+		}
+		
 	}
 
 
