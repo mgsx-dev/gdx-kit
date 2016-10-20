@@ -1,7 +1,9 @@
 package net.mgsx.game.core.tools;
 
 import com.badlogic.ashley.core.Entity;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
@@ -32,6 +34,23 @@ public class SelectTool extends Tool
 			for(SelectorPlugin selector : editor.selectors){
 				selector.getSelection(selection, screenX, screenY);
 			}
+			// TODO select by knot only if not in selection ?
+			// then add selection for movables : TODO use engine query instead
+			for(Entity entity : editor.entityEngine.getEntities()){
+				Movable movable = entity.getComponent(Movable.class);
+				if(movable != null){
+					
+					Vector3 pos = new Vector3();
+					movable.getPosition(entity, pos);
+					Vector2 s = new Vector2(5, 5);
+					Vector3 v = editor.orthographicCamera.project(pos);
+					if(new Rectangle(v.x-s.x, v.y-s.y, 2*s.x, 2*s.y).contains(screenX, Gdx.graphics.getHeight() - screenY)){
+						selection.add(entity);
+					}
+				}
+			}
+			
+			
 			for(Entity entity : selection){
 				handleSelection(entity, editor.selection);
 			}

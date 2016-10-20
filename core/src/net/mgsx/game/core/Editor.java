@@ -255,7 +255,7 @@ public class Editor extends GameEngine
 			});
 		}
 		
-		entityEngine.addSystem(new EntitySystem() {
+		entityEngine.addSystem(new EntitySystem(GamePipeline.RENDER_OVER) {
 			
 			@Override
 			public void update(float deltaTime) {
@@ -264,12 +264,13 @@ public class Editor extends GameEngine
 				shapeRenderer.setProjectionMatrix(orthographicCamera.combined);
 				shapeRenderer.begin(ShapeType.Line);
 				for(Entity e : entityEngine.getEntitiesFor(Family.one(Movable.class).get())){
-					if(selection.contains(e, true)){
-						Movable movable = e.getComponent(Movable.class);
-						if(movable != null){
-							movable.getPosition(e, pos);
-							shapeRenderer.rect(pos.x-s.x, pos.y-s.y, 2*s.x, 2*s.y);
-						}
+					Movable movable = e.getComponent(Movable.class);
+					if(movable != null){
+						movable.getPosition(e, pos);
+						boolean inSelection = selection.contains(e, true);
+						if(inSelection) shapeRenderer.setColor(1, 1, 0, 1);
+						shapeRenderer.rect(pos.x-s.x, pos.y-s.y, 2*s.x, 2*s.y);
+						if(inSelection) shapeRenderer.setColor(1, 1, 1, 1);
 					}
 				}
 				shapeRenderer.end();

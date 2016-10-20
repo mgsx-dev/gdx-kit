@@ -76,22 +76,23 @@ public class ModelSelector  extends SelectorPlugin
 	
 	@Override
 	public int getSelection(Array<Entity> entities, float screenX, float screenY) {
-		Ray ray = editor.perspectiveCamera.getPickRay(screenX, screenY);
+		Ray baseRay = editor.perspectiveCamera.getPickRay(screenX, screenY);
+		Ray ray = new Ray();
 		int count = 0;
 		for(Entity entity : editor.entityEngine.getEntitiesFor(Family.one(G3DModel.class).get())){
+			ray.set(baseRay);
 			G3DModel model = entity.getComponent(G3DModel.class);
 			box = new BoundingBox();
+			model.modelInstance.calculateTransforms();
 			model.modelInstance.calculateBoundingBox(box);
 			Matrix4 mat = model.modelInstance.transform.cpy().inv();
 			ray.mul(mat);
-			//box.mul(model.modelInstance.transform);
 			if(Intersector.intersectRayBounds(ray, box, intersection))
 			{
 				Node node = intersectRay(model.modelInstance.nodes, ray);
 				if(node != null){
 					entities.add(entity);
 					count++;
-					break;
 				}
 			}
 		}

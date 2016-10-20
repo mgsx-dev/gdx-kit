@@ -43,6 +43,7 @@ public class AddModelTool extends Tool
 				
 				entity.add(data);
 				
+				// TODO not necessary, done in listener
 				entity.add(new Movable(new ModelMove(data)));
 			}
 			@Override
@@ -52,7 +53,7 @@ public class AddModelTool extends Tool
 	}
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-		if(button == Input.Buttons.LEFT){ // TODO use click tool
+		if(button == Input.Buttons.LEFT && modelInstance != null){ // TODO use click tool
 			create(unproject(screenX, screenY));
 			return true;
 		}

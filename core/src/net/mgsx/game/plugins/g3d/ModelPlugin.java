@@ -63,7 +63,8 @@ public class ModelPlugin extends EditorPlugin
 			
 			@Override
 			public void entityRemoved(Entity entity) {
-				modelInstances.removeValue(entity.getComponent(G3DModel.class).modelInstance, true);
+				G3DModel model = (G3DModel)entity.remove(G3DModel.class);
+				modelInstances.removeValue(model.modelInstance, true);
 				entity.remove(Movable.class);
 			}
 			
@@ -113,7 +114,7 @@ public class ModelPlugin extends EditorPlugin
 			@Override
 			public void update(float deltaTime) {
 				BoundingBox box = new BoundingBox();
-				editor.shapeRenderer.setProjectionMatrix(editor.perspectiveCamera.combined);
+				editor.shapeRenderer.setProjectionMatrix(editor.orthographicCamera.combined);
 				editor.shapeRenderer.begin(ShapeType.Line);
 				for(ModelInstance modelInstance : modelInstances){
 					modelInstance.calculateBoundingBox(box);
