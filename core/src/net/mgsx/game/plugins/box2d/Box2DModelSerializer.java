@@ -3,11 +3,10 @@ package net.mgsx.game.plugins.box2d;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.Json.Serializer;
+import com.badlogic.gdx.utils.JsonValue;
 
 import net.mgsx.game.plugins.box2d.model.Box2DBodyModel;
 import net.mgsx.game.plugins.box2d.model.Box2DFixtureModel;
-
-import com.badlogic.gdx.utils.JsonValue;
 
 public class Box2DModelSerializer implements Serializer<Box2DBodyModel> {
 

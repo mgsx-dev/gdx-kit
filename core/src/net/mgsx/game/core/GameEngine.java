@@ -11,11 +11,10 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json.Serializer;
+import com.badlogic.gdx.utils.ObjectMap;
 
 import net.mgsx.game.core.plugins.EditorPlugin;
 import net.mgsx.game.core.plugins.Plugin;
-
-import com.badlogic.gdx.utils.ObjectMap;
 
 // TODO
 // shoulb be a screen (because of multi screen features or multi viewport ...

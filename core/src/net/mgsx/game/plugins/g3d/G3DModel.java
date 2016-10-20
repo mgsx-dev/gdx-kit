@@ -6,10 +6,9 @@ import com.badlogic.gdx.graphics.g3d.utils.AnimationController;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.Json.Serializable;
+import com.badlogic.gdx.utils.JsonValue;
 
 import net.mgsx.game.core.components.Duplicable;
-
-import com.badlogic.gdx.utils.JsonValue;
 
 public class G3DModel implements Component, Duplicable, Serializable
 {
