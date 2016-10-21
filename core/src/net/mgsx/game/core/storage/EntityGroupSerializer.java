@@ -3,6 +3,9 @@ package net.mgsx.game.core.storage;
 import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.assets.loaders.TextureLoader.TextureParameter;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
@@ -88,7 +91,12 @@ public class EntityGroupSerializer implements Json.Serializer<EntityGroup>
 			JsonValue asset = i.next();
 			Class assetType = ReflectionHelper.forName(asset.get("type").asString());
 			String name = asset.get("name").asString();
-			assets.load(name, assetType);
+			if(assetType == Texture.class){
+				TextureParameter p = new TextureParameter();
+				p.wrapU = TextureWrap.Repeat;
+				p.wrapV = TextureWrap.Repeat; // XXX hack for reapeat texture always !
+				assets.load(name, Texture.class, p);
+			}else assets.load(name, assetType);
 		}
 		
 		assets.finishLoading(); // XXX remove this when go for EntityGroupLoader

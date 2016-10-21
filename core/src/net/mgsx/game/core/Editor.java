@@ -672,7 +672,7 @@ public class Editor extends GameEngine
 				parameters.genMipMaps = true;
 				Texture tex = loadAssetNow(file.path(), Texture.class, parameters);
 				tex.setFilter(TextureFilter.MipMapLinearLinear, TextureFilter.MipMapLinearLinear);
-				tex.setWrap(TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);
+				tex.setWrap(TextureWrap.ClampToEdge, TextureWrap.ClampToEdge); // XXX maybe not !
 				callback.selected(tex);
 			}
 			@Override
