@@ -152,6 +152,15 @@ public class Box2DPlugin extends EditorPlugin
 				// TODO why auto attach ? conceptually OK but ... many many drawbacks
 				object.slave =  entity.getComponent(Movable.class);
 				entity.add(new Movable(new BodyMove(object.body)));
+				
+				Transform2DComponent transform = entity.getComponent(Transform2DComponent.class);
+				
+				if(entity.getComponent(Transform2DComponent.class) == null) 
+					entity.add(new Transform2DComponent()); 
+				// XXX auto attach again !? : body x/y
+				else{ // case of loading ...
+					object.body.setTransform(transform.position, transform.angle);
+				}
 			}
 		});
 		

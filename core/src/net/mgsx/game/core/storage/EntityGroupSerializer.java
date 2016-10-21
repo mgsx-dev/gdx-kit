@@ -8,6 +8,8 @@ import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.JsonValue.JsonIterator;
 
+import net.mgsx.game.core.components.OverrideProxy;
+import net.mgsx.game.core.components.ProxyComponent;
 import net.mgsx.game.core.helpers.ReflectionHelper;
 
 public class EntityGroupSerializer implements Json.Serializer<EntityGroup>
@@ -42,11 +44,28 @@ public class EntityGroupSerializer implements Json.Serializer<EntityGroup>
 		for(Entity entity : object.entities)
 		{
 			json.writeObjectStart();
-			for(Component component : entity.getComponents())
-			{
-				String typeName = Storage.nameMap.get(component.getClass());
-				if(typeName != null){
-					json.writeValue(typeName, component);
+			ProxyComponent proxy = entity.getComponent(ProxyComponent.class);
+			if(proxy != null){
+				// just serialize proxy
+				json.writeValue(Storage.nameMap.get(ProxyComponent.class), proxy);
+				for(Component component : entity.getComponents())
+				{
+					if(component instanceof OverrideProxy){
+						String typeName = Storage.nameMap.get(component.getClass());
+						if(typeName != null){
+							json.writeValue(typeName, component);
+						}
+					}
+				}
+			}
+			else{
+				// default serialization
+				for(Component component : entity.getComponents())
+				{
+					String typeName = Storage.nameMap.get(component.getClass());
+					if(typeName != null){
+						json.writeValue(typeName, component);
+					}
 				}
 			}
 			json.writeObjectEnd();

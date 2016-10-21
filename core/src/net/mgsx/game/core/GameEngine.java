@@ -12,6 +12,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.Json.Serializer;
 import com.badlogic.gdx.utils.ObjectMap;
 
+import net.mgsx.game.core.components.ProxyComponent;
 import net.mgsx.game.core.components.Transform2DComponent;
 import net.mgsx.game.core.helpers.TypeMap;
 import net.mgsx.game.core.plugins.EditorPlugin;
@@ -49,6 +50,7 @@ public class GameEngine extends ApplicationAdapter
 		
 		// register some core components
 		Storage.register(Transform2DComponent.class, "2d");
+		Storage.register(ProxyComponent.class, "proxy");
 		
 		assets = new AssetManager(); // TODO resolver maybe different for game and editor ?
 		Texture.setAssetManager(assets);

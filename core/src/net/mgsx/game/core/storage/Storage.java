@@ -7,6 +7,7 @@ import java.io.Writer;
 import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
@@ -22,6 +23,8 @@ import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.ObjectMap.Entries;
 import com.badlogic.gdx.utils.ObjectMap.Entry;
 
+import net.mgsx.game.core.components.OverrideProxy;
+import net.mgsx.game.core.components.ProxyComponent;
 import net.mgsx.game.core.plugins.Initializable;
 
 public class Storage 
@@ -160,10 +163,8 @@ public class Storage
 	}
 	public static Array<Entity> load(Engine engine, Reader reader, AssetManager assets, ObjectMap<Class, Serializer> serializers) 
 	{
-		Json json = setup(assets, serializers);
-		EntityGroup group = json.fromJson(EntityGroup.class, reader);
-		for(Entity entity : group.entities)
-		{
+		EntityGroup group = load(reader, assets, serializers);
+		for(Entity entity : new Array<Entity>(group.entities)){
 			// post initialization
 			for(Component component : entity.getComponents()){
 				if(component instanceof Initializable){
@@ -172,7 +173,37 @@ public class Storage
 			}
 			engine.addEntity(entity);
 		}
+
 		return group.entities;
+	}
+	
+	private static EntityGroup load(Reader reader, AssetManager assets, ObjectMap<Class, Serializer> serializers)
+	{
+		Json json = setup(assets, serializers);
+		EntityGroup group = json.fromJson(EntityGroup.class, reader);
+		// first resolve proxies
+		for(Entity entity : new Array<Entity>(group.entities)) // copy array to insert into it
+		{
+			ProxyComponent proxy = entity.getComponent(ProxyComponent.class);
+			if(proxy != null){
+				EntityGroup proxyGroup = load(Gdx.files.absolute(proxy.ref).reader(), assets, serializers);
+				
+				for(Entity sub : proxyGroup.entities){
+					sub.add(proxy.duplicate());
+					
+					for(Component c : entity.getComponents()){
+						if(c instanceof OverrideProxy){
+							sub.add(c);
+						}
+					}
+					
+					group.entities.removeValue(entity, true);
+					group.entities.add(sub);
+				}
+			}
+		}
+
+		return group;
 	}
 
 	public static final ObjectMap<String, Class<? extends Component>> typeMap = new ObjectMap<String, Class<? extends Component>>();

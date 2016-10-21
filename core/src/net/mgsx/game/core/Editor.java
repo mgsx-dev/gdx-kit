@@ -40,6 +40,7 @@ import net.mgsx.game.core.commands.Command;
 import net.mgsx.game.core.commands.CommandHistory;
 import net.mgsx.game.core.components.Attach;
 import net.mgsx.game.core.components.Movable;
+import net.mgsx.game.core.components.ProxyComponent;
 import net.mgsx.game.core.helpers.EntityHelper.SingleComponentIteratingSystem;
 import net.mgsx.game.core.plugins.EditorPlugin;
 import net.mgsx.game.core.plugins.EntityEditorPlugin;
@@ -304,8 +305,40 @@ public class Editor extends GameEngine
 				for(Entity entity : Storage.load(entityEngine, file, assets, serializers)){
 					Movable movable = entity.getComponent(Movable.class);
 					if(movable != null){
-						movable.moveTo(entity, new Vector3(position.x, position.y, 0)); // sprite plan
+						movable.move(entity, new Vector3(position.x, position.y, 0)); // sprite plan
 					}
+				}
+				// TODO update things in GUI ?
+				
+			}
+		});;
+
+		addTool(new ClickTool("Proxy", this) {
+			private FileHandle file;
+			@Override
+			protected void activate() {
+				NativeService.instance.openSaveDialog(new DialogCallback() {
+					@Override
+					public void selected(FileHandle selectedFile) {
+						file = selectedFile;
+					}
+					@Override
+					public void cancel() {
+					}
+				});
+			}
+			@Override
+			protected void create(final Vector2 position) 
+			{
+				for(Entity entity : Storage.load(entityEngine, file, assets, serializers)){
+					// TODO add proxy component
+					Movable movable = entity.getComponent(Movable.class);
+					if(movable != null){
+						movable.move(entity, new Vector3(position.x, position.y, 0)); // sprite plan
+					}
+					ProxyComponent proxy = new ProxyComponent();
+					proxy.ref = file.path();
+					entity.add(proxy);
 				}
 				// TODO update things in GUI ?
 				

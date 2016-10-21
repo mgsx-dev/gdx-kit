@@ -11,6 +11,7 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.Fixture;
 
+import net.mgsx.game.core.components.Transform2DComponent;
 import net.mgsx.game.core.plugins.Initializable;
 import net.mgsx.game.plugins.box2d.Box2DListener;
 import net.mgsx.game.plugins.box2d.model.Box2DBodyModel;
@@ -29,11 +30,14 @@ public class PlayerComponent implements Component, Initializable
 	private boolean lookRight = false;
 	private boolean onGround;
 	private int contactCount = 0;
+	private Entity entity;
 	
 	@Override
-	public void initialize(final Engine negine, final Entity entity)
+	public void initialize(final Engine engine, final Entity entity)
 	{
 		state = State.IDLE;
+		
+		this.entity = entity;
 		
 		physics = entity.getComponent(Box2DBodyModel.class);
 		
@@ -124,6 +128,9 @@ public class PlayerComponent implements Component, Initializable
 	
 	public void update(float deltaTime)
 	{
+		entity.getComponent(Transform2DComponent.class).enabled = false; // XXX handle manually 
+		
+		
 		onGround = contactCount >= 1; // TODO have to check at beginning : could already be in contact !
 		
 		updateControls();

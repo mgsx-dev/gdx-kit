@@ -24,7 +24,7 @@ public class BonusComponent implements Component, Initializable, Duplicable
 		this.manager = manager;
 		entity.getComponent(G3DModel.class).animationController.paused = false;
 		entity.getComponent(G3DModel.class).animationController.setAnimation("apple.lp|apple.lpAction", -1);
-		entity.add(new Transform2DComponent());
+		if(entity.getComponent(Transform2DComponent.class) == null) entity.add(new Transform2DComponent());
 	}
 	
 	public void setCatch() 
