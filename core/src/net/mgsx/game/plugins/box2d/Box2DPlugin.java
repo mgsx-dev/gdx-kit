@@ -6,9 +6,6 @@ import com.badlogic.ashley.core.EntityListener;
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.ChainShape;
 import com.badlogic.gdx.physics.box2d.CircleShape;
@@ -29,7 +26,6 @@ import net.mgsx.game.core.components.Transform2DComponent;
 import net.mgsx.game.core.plugins.EditorPlugin;
 import net.mgsx.game.core.storage.Storage;
 import net.mgsx.game.core.tools.ComponentTool;
-import net.mgsx.game.core.tools.Tool;
 import net.mgsx.game.plugins.box2d.model.Box2DBodyModel;
 import net.mgsx.game.plugins.box2dold.model.WorldItem;
 
@@ -50,14 +46,12 @@ public class Box2DPlugin extends EditorPlugin
 	
 	// ...
 	private Box2DDebugRenderer box2dRenderer;
-	private ShapeRenderer renderer;
 	
 	@Override
 	public void initialize(final Editor editor) 
 	{
 		Storage.register(Box2DBodyModel.class, "box2d");
 		
-		renderer = new ShapeRenderer();
 		box2dRenderer = new Box2DDebugRenderer();
 		CommandHistory commandHistory = new CommandHistory(); // XXX fake
 		worldItem = new WorldItem(commandHistory);
@@ -147,7 +141,7 @@ public class Box2DPlugin extends EditorPlugin
 			@Override
 			public void entityRemoved(Entity entity) {
 				Box2DBodyModel model = (Box2DBodyModel)entity.remove(Box2DBodyModel.class);
-				if(model != null) model.dispose();
+				if(model != null) model.context.scheduleRemove(entity, model);
 			}
 			
 			@Override
@@ -198,17 +192,16 @@ public class Box2DPlugin extends EditorPlugin
 			
 			@Override
 			public void update(float deltaTime) {
-				// TODO should be switchable !
-				box2dRenderer.render(worldItem.world, editor.orthographicCamera.combined);
-				Vector2 s = Tool.pixelSize(editor.orthographicCamera).scl(3);
-				renderer.setProjectionMatrix(editor.orthographicCamera.combined);
-				renderer.begin(ShapeType.Line);
-				for(Entity e : editor.entityEngine.getEntitiesFor(Family.one(Box2DBodyModel.class).get())){
-					Box2DBodyModel item = e.getComponent(Box2DBodyModel.class);
-					if(item.body != null)
-					renderer.rect(item.body.getPosition().x-s.x, item.body.getPosition().y-s.y, 2*s.x, 2*s.y);
-				}
-				renderer.end();
+				box2dRenderer.render(worldItem.world, editor.camera.combined);
+//				Vector2 s = Tool.pixelSize(editor.orthographicCamera).scl(3);
+//				renderer.setProjectionMatrix(editor.orthographicCamera.combined);
+//				renderer.begin(ShapeType.Line);
+//				for(Entity e : editor.entityEngine.getEntitiesFor(Family.one(Box2DBodyModel.class).get())){
+//					Box2DBodyModel item = e.getComponent(Box2DBodyModel.class);
+//					if(item.body != null)
+//					renderer.rect(item.body.getPosition().x-s.x, item.body.getPosition().y-s.y, 2*s.x, 2*s.y);
+//				}
+//				renderer.end();
 			}
 		});
 

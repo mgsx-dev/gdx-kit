@@ -35,9 +35,9 @@ public class FollowSelectionTool extends Tool
 				Movable movable = selected.getComponent(Movable.class);
 				if(movable != null){
 					movable.getPosition(selected, target);
-					target.lerp(editor.orthographicCamera.position, 0.97f); // track smooth
-					editor.orthographicCamera.position.x = target.x;
-					editor.orthographicCamera.position.y = target.y; // XXX TODO + 0.05f shift should be configurable
+					target.lerp(editor.camera.position, 0.97f); // track smooth
+					editor.camera.position.x = target.x;
+					editor.camera.position.y = target.y; // XXX TODO + 0.05f shift should be configurable
 				}
 			}
 			

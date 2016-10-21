@@ -17,7 +17,7 @@ public class ZoomTool extends Tool
 	
 	@Override
 	public boolean touchDragged(int screenX, int screenY, int pointer) {
-		if(Gdx.input.isButtonPressed(Input.Buttons.MIDDLE) && ctrl())
+		if(Gdx.input.isButtonPressed(Input.Buttons.MIDDLE) && (ctrl() || shift()))
 		{
 			Vector2 pos = new Vector2(screenX, screenY);
 //			camera = editor.orthographicCamera;
@@ -32,14 +32,42 @@ public class ZoomTool extends Tool
 //				camera.update();
 //			}
 			
-			float rate = (pos.x - prev.x) - (pos.y - prev.y) + (pos.x - prev.x) * (pos.y - prev.y);
+			float rate = (pos.x - prev.x) / Gdx.graphics.getWidth(); // - (pos.y - prev.y) + (pos.x - prev.x) * (pos.y - prev.y);
 			Vector2 worldPos = new Vector2(screenX, screenY);
 //			Vector2 delta = new Vector2(worldPos).sub(prev).scl(pixelSize());
-			camera.translate(0, 0, -rate * 0.01f);
-			camera.update(true);
+			
+			
+			if(!ctrl() && shift()){
+				editor.camera.rotate(rate * 360, 0, 1, 0);
+			}else if(ctrl() && shift())
+				editor.fov(rate);
+			else if(ctrl())
+				editor.zoom(rate);
+			else
+				return false;
+			
+			
+			
+			
 			prev = worldPos;
 			
-//			float rate = (pos.x - prev.x) - (pos.y - prev.y) + (pos.x - prev.x) * (pos.y - prev.y);
+			
+			
+//			editor.orthographicCamera.translate(0, 0, -rate * 0.01f);
+//			editor.orthographicCamera.zoom = camera.view.getScaleZ(); //position.z -5;
+			
+			
+			
+			// TODO from http://gamedev.stackexchange.com/questions/67692/how-do-i-ensure-that-perspective-and-orthographic-projection-matricies-show-obje
+//			Vector3 v = new Vector3(0,0,0);
+//			camera.unproject(v);
+//			editor.orthographicCamera.zoom = -0.8f;
+//			editor.orthographicCamera.viewportWidth = (2.f /  camera.view.val[Matrix4.M00]) * -Math.abs(v.z);
+//			editor.orthographicCamera.viewportHeight = (2.f /  camera.view.val[Matrix4.M11]) * -Math.abs(v.z);
+//			editor.orthographicCamera.update(true);
+
+			
+			//			float rate = (pos.x - prev.x) - (pos.y - prev.y) + (pos.x - prev.x) * (pos.y - prev.y);
 //			float ratio = 1 - rate * 100;
 //			editor.perspectiveCamera.position.x += ratio; // translate(0, 0, ratio);
 //			editor.perspectiveCamera.update(true);
@@ -51,7 +79,7 @@ public class ZoomTool extends Tool
 	
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-		if(button == Input.Buttons.MIDDLE && ctrl())
+		if(button == Input.Buttons.MIDDLE && (ctrl() || shift()))
 		{
 			prev = new Vector2(screenX, screenY);
 //			originScreen = new Vector2(screenX, screenY);

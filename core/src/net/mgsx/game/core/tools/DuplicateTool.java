@@ -4,6 +4,7 @@ import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 
 import net.mgsx.game.core.Editor;
@@ -52,7 +53,7 @@ public class DuplicateTool extends SelectTool
 			editor.selection.addAll(duplicates);
 			editor.invalidateSelection();
 			moving = true;
-			prev = unproject(Gdx.input.getX(), Gdx.input.getY());
+			prev = new Vector2(Gdx.input.getX(), Gdx.input.getY());
 			return true;
 		}
 		return false;

@@ -5,6 +5,7 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 
 import net.mgsx.game.core.Editor;
+import net.mgsx.game.core.plugins.Initializable;
 
 abstract public class ComponentTool extends Tool
 {
@@ -22,7 +23,11 @@ abstract public class ComponentTool extends Tool
 	{
 		Entity entity = editor.getSelected();
 		Component component = createComponent(entity);
-		if(component != null) entity.add(component);
+		if(component != null)
+		{
+			if(component instanceof Initializable) ((Initializable) component).initialize(editor.entityEngine, entity);
+			entity.add(component);
+		}
 		end();
 	}
 

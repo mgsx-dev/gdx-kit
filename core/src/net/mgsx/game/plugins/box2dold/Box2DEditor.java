@@ -96,8 +96,8 @@ public class Box2DEditor extends Editor
 		stage.clear();
 		
 		// rendering
-		orthographicCamera.position.set(0, 0, 0);
-		orthographicCamera.update();
+		camera.position.set(0, 0, 0);
+		camera.update();
 		renderer = new Box2DDebugRenderer();
 		
 		// Tools stack (order is important !)
@@ -320,7 +320,7 @@ public class Box2DEditor extends Editor
 		worldItem.update();
 
 		// draw
-		orthographicCamera.update(true);
+		camera.update(true);
 		
 		Gdx.gl.glClearColor(.5f, .5f, .5f, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -335,12 +335,12 @@ public class Box2DEditor extends Editor
 		
 		if(true){
 		// draw box2D debug
-		renderer.render(worldItem.world, orthographicCamera.combined);
+		renderer.render(worldItem.world, camera.combined);
 		
 		// draw other shapes (tools)
 		
 		shapeRenderer.begin(ShapeType.Filled);
-		Vector2 s = Tool.pixelSize(orthographicCamera).scl(3);
+		Vector2 s = Tool.pixelSize(camera).scl(3);
 		for(Box2DBodyModel item : worldItem.selection.bodies){
 			shapeRenderer.rect(item.body.getPosition().x-s.x, item.body.getPosition().y-s.y, 2*s.x, 2*s.y);
 		}	

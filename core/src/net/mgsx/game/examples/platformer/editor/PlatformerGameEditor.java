@@ -6,8 +6,12 @@ import com.badlogic.ashley.core.Family;
 
 import net.mgsx.game.core.Editor;
 import net.mgsx.game.core.plugins.EditorPlugin;
+import net.mgsx.game.core.plugins.Initializable;
 import net.mgsx.game.core.tools.ComponentTool;
 import net.mgsx.game.examples.platformer.core.BonusComponent;
+import net.mgsx.game.examples.platformer.core.EnemyBehavior;
+import net.mgsx.game.examples.platformer.core.EnemyZone;
+import net.mgsx.game.examples.platformer.core.LogicComponent;
 import net.mgsx.game.examples.platformer.core.PlayerComponent;
 import net.mgsx.game.plugins.box2d.model.Box2DBodyModel;
 import net.mgsx.game.plugins.g3d.G3DModel;
@@ -54,11 +58,29 @@ public class PlatformerGameEditor extends EditorPlugin {
 			@Override
 			protected Component createComponent(Entity entity) 
 			{
-				BonusComponent logic = new BonusComponent();
-				logic.initialize(editor.entityEngine, entity);
-				entity.add(logic);
-				
+				return new BonusComponent();
+			}
+		});
+		editor.addTool(new ComponentTool("Enemy Logic", editor, Family.all(G3DModel.class, Box2DBodyModel.class).get()) {
+			
+			@Override
+			protected Component createComponent(Entity entity) 
+			{
+				LogicComponent logic = new LogicComponent();
+				logic.behavior = new EnemyBehavior();
+				if(logic.behavior instanceof Initializable){
+					((Initializable)logic.behavior).initialize(editor.entityEngine, entity);
+				}
 				return logic;
+			}
+		});
+
+		editor.addTool(new ComponentTool("Enemy Zone", editor, Family.all(Box2DBodyModel.class).get()) {
+			
+			@Override
+			protected Component createComponent(Entity entity) 
+			{
+				return new EnemyZone();
 			}
 		});
 

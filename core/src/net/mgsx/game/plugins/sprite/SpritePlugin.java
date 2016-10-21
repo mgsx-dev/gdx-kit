@@ -44,7 +44,7 @@ public class SpritePlugin extends EditorPlugin
 			
 			@Override
 			public void update(float deltaTime) {
-				batch.setProjectionMatrix(editor.orthographicCamera.combined);
+				batch.setProjectionMatrix(editor.camera.combined);
 				batch.begin();
 				super.update(deltaTime);
 				batch.end();

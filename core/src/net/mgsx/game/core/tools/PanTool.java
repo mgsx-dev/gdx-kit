@@ -16,13 +16,13 @@ public class PanTool extends Tool
 	
 	@Override
 	public boolean touchDragged(int screenX, int screenY, int pointer) {
-		if(Gdx.input.isButtonPressed(Input.Buttons.MIDDLE))
+		if(prev != null && Gdx.input.isButtonPressed(Input.Buttons.MIDDLE))
 		{
-			
+			//
 			Vector2 worldPos = new Vector2(screenX, screenY);
-			Vector2 delta = new Vector2(worldPos).sub(prev).scl(pixelSize());
-			camera.translate(-delta.x, delta.y, 0);
-			camera.update(true);
+			Vector2 delta = new Vector2(worldPos).sub(prev).scl(pixelSize()); // XXX why 10 ?
+			editor.camera.translate(-delta.x, -delta.y, 0); 
+			editor.camera.update(true);
 			prev = worldPos;
 			return true;
 		}

@@ -41,7 +41,6 @@ public class Tool extends InputAdapter
 		super();
 		this.editor = editor;
 		this.name = name;
-		camera = editor.orthographicCamera;
 	}
 
 	final protected void end(){
@@ -71,18 +70,20 @@ public class Tool extends InputAdapter
 	}
 
 	protected Vector2 unproject(float screenX, float screenY) {
-		Vector3 v = camera.unproject(new Vector3(screenX, screenY, 0));
+		return unproject(editor.camera, screenX, screenY);
+	}
+	public static Vector2 unproject(Camera camera, float screenX, float screenY) {
+		Vector3 base = camera.project(new Vector3());
+		Vector3 v = camera.unproject(new Vector3(screenX, screenY, base.z));
 		return new Vector2(v.x, v.y);
 	}
 	protected Vector2 unproject(Vector2 screenPosition) {
 		return unproject(screenPosition.x, screenPosition.y);
 	}
 	protected Vector2 project(Vector2 worldPosition) {
-		Vector3 v = camera.project(new Vector3(worldPosition.x, worldPosition.y, 0));
+		Vector3 v = editor.camera.project(new Vector3(worldPosition.x, worldPosition.y, 0));
 		return new Vector2(v.x, v.y);
 	}
-	
-	protected Camera camera;
 	
 	final public String name;
 
@@ -98,12 +99,27 @@ public class Tool extends InputAdapter
 	 */
 	protected Vector2 pixelSize()
 	{
-		return pixelSize(camera);
+		return pixelSize(editor.camera);
 	}
 	public static Vector2 pixelSize(Camera camera)
 	{
-		Vector3 scale = camera.combined.getScale(new Vector3()).scl(0.5f); // TODO why 2 ?
-		return new Vector2(1.f / (scale.x * Gdx.graphics.getWidth()), 1.f/(scale.y * Gdx.graphics.getHeight()));
+		// that was the old method for orthographic camera
+		// TODO do the same for perspective as well.
+		
+		Vector3 base = camera.project(new Vector3());
+		
+		Vector3 a = camera.unproject(new Vector3(0,0,base.z));
+		Vector3 b = camera.unproject(new Vector3(1,1,base.z));
+		b.sub(a);
+		
+		
+//		Vector3 scale = camera.combined.getScale(new Vector3());
+//		return new Vector2(scale.x, scale.y).scl(1);
+//		return new Vector2(Gdx.graphics.getWidth() * scale.x, scale.y / Gdx.graphics.getHeight());
+		return new Vector2(b.x, b.y);
+		
+//		Vector3 scale = camera.combined.getScale(new Vector3()).scl(0.5f); // TODO why 2 ?
+//		return new Vector2(1.f / (scale.x * Gdx.graphics.getWidth()), 1.f/(scale.y * Gdx.graphics.getHeight()));
 		
 	}
 	

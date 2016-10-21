@@ -4,7 +4,6 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 
 import net.mgsx.game.core.Editor;
@@ -39,8 +38,8 @@ abstract public class MultiClickTool extends Tool
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
 		if(button == Input.Buttons.LEFT){
-			Vector3 worldPosition = camera.unproject(new Vector3(screenX, screenY, 0));
-			dots.add(new Vector2(worldPosition.x, worldPosition.y));
+			Vector2 worldPosition = unproject(screenX, screenY);
+			dots.add(worldPosition);
 			running = true;
 			if(maxPoints >= 0 && dots.size >= maxPoints){
 				running = false;

@@ -120,7 +120,7 @@ public class ModelPlugin extends EditorPlugin
 			@Override
 			public void update(float deltaTime) {
 				
-				modelBatch.begin(editor.perspectiveCamera); // TODO allow switch between persperctive and ortho for Box2D drawings ...
+				modelBatch.begin(editor.camera); // TODO allow switch between persperctive and ortho for Box2D drawings ...
 				modelBatch.render(modelInstances, environment);
 			    modelBatch.end();
 			}
@@ -131,13 +131,16 @@ public class ModelPlugin extends EditorPlugin
 			@Override
 			public void update(float deltaTime) {
 				BoundingBox box = new BoundingBox();
-				editor.shapeRenderer.setProjectionMatrix(editor.orthographicCamera.combined);
+				// TODO mode fill switchable : Gdx.gl.glEnable(GL20.GL_BLEND); and editor.shapeRenderer.begin(ShapeType.Filled);
+				editor.shapeRenderer.setColor(1, 1, 1, 0.1f);
+				editor.shapeRenderer.setProjectionMatrix(editor.camera.combined);
 				editor.shapeRenderer.begin(ShapeType.Line);
 				for(ModelInstance modelInstance : modelInstances){
 					modelInstance.calculateBoundingBox(box);
 					box.mul(modelInstance.transform); // .mul(modelInstance.nodes.get(0).globalTransform)
-					// XXX should be switchable
-					editor.shapeRenderer.box(box.min.x, box.min.y, box.min.z, box.max.x - box.min.x, box.max.y - box.min.y, box.max.z - box.min.z);
+					
+					// TODO it works but i don't know why max Z ... same result with opposite depth.
+					editor.shapeRenderer.box(box.min.x, box.min.y, Math.max(box.min.z, box.max.z), box.getWidth(), box.getHeight(), box.getDepth());
 				}
 				editor.shapeRenderer.end();
 			}

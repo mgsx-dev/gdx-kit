@@ -29,7 +29,7 @@ public class ParallaxPlugin extends EditorPlugin {
 			protected Component createComponent(Entity entity) {
 				
 				ParallaxModel model = new ParallaxModel();
-				model.cameraOrigin.set(editor.orthographicCamera.position);
+				model.cameraOrigin.set(editor.camera.position);
 				entity.getComponent(Movable.class).getPosition(entity, model.objectOrigin);
 				return model;
 			}
@@ -39,7 +39,7 @@ public class ParallaxPlugin extends EditorPlugin {
 			@Override
 			protected void processEntity(Entity entity, ParallaxModel model, float deltaTime) 
 			{
-				camPos.set(editor.orthographicCamera.position);
+				camPos.set(editor.camera.position);
 				pos
 				.set(model.cameraOrigin)
 				.sub(camPos)

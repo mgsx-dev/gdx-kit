@@ -42,8 +42,8 @@ public class SelectTool extends Tool
 					
 					Vector3 pos = new Vector3();
 					movable.getPosition(entity, pos);
-					Vector2 s = new Vector2(5, 5);
-					Vector3 v = editor.orthographicCamera.project(pos);
+					Vector2 s = new Vector2(5, 5); // size of displayed knot !
+					Vector3 v = editor.camera.project(pos);
 					if(new Rectangle(v.x-s.x, v.y-s.y, 2*s.x, 2*s.y).contains(screenX, Gdx.graphics.getHeight() - screenY)){
 						selection.add(entity);
 					}
@@ -63,7 +63,7 @@ public class SelectTool extends Tool
 				Movable movable = entity.getComponent(Movable.class);
 				if(movable != null) movable.moveBegin(entity);
 			}
-			prev = unproject(screenX, screenY);
+			prev = new Vector2(screenX, screenY);
 			return true;
 		}
 		return super.touchDown(screenX, screenY, pointer, button);
@@ -72,8 +72,9 @@ public class SelectTool extends Tool
 	@Override
 	public boolean touchDragged(int screenX, int screenY, int pointer) {
 		if(moving){
-			Vector3 worldPos = editor.orthographicCamera.unproject(new Vector3(screenX, screenY, 0)); // unproject(screenX, screenY);
-			Vector3 delta = new Vector3(worldPos).sub(prev.x, prev.y, 0);
+			Vector3 worldPos = new Vector3(screenX, screenY, 0); // editor.perspectiveCamera.unproject(new Vector3(screenX, screenY, 0)); // unproject(screenX, screenY);
+			Vector2 pixel = pixelSize();
+			Vector3 delta = new Vector3(worldPos).sub(prev.x, prev.y, 0).scl(pixel.x, pixel.y, 1); // XXX 10f pixel screen
 			delta.z = 0; // XXX better fix by using vector 3 for prev as well ?
 			if(ctrl()){
 				delta.rotate(90, 1, 0, 0);

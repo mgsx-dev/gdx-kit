@@ -4,7 +4,7 @@ import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -29,8 +29,8 @@ public class GameEngine extends ApplicationAdapter
 	protected TypeMap<EditorPlugin> editorPlugins = new TypeMap<EditorPlugin>();
 	protected TypeMap<Plugin> plugins = new TypeMap<Plugin>();
 	public PooledEngine entityEngine;
-	public OrthographicCamera orthographicCamera;
-	public PerspectiveCamera perspectiveCamera;
+	
+	public Camera camera;
 	
 	final protected ObjectMap<Class, Serializer> serializers = new ObjectMap<Class, Serializer>();
 	
@@ -53,17 +53,16 @@ public class GameEngine extends ApplicationAdapter
 		assets = new AssetManager(); // TODO resolver maybe different for game and editor ?
 		Texture.setAssetManager(assets);
 		entityEngine = new PooledEngine();
-		orthographicCamera = new OrthographicCamera();
 		shapeRenderer = new ShapeRenderer();
 		batch = new SpriteBatch();
 		
-		perspectiveCamera = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		perspectiveCamera.position.set(0, 0, 10);
-		perspectiveCamera.up.set(0,1,0);
-		perspectiveCamera.lookAt(0,0,0);
-		perspectiveCamera.near = 1f;
-		perspectiveCamera.far = 3000f;
-		perspectiveCamera.update();
+		camera = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		camera.position.set(0, 0, 10);
+		camera.up.set(0,1,0);
+		camera.lookAt(0,0,0);
+		camera.near = 1f;
+		camera.far = 3000f;
+		camera.update();
 		
 		for(Plugin plugin : plugins.values()){
 			plugin.initialize(this);
@@ -74,19 +73,17 @@ public class GameEngine extends ApplicationAdapter
 	@Override
 	public void render() {
 		
-		perspectiveCamera.position.set(orthographicCamera.position.x, orthographicCamera.position.y, orthographicCamera.position.z); // XXX 3.8f); // TODO ortho factor ?
-//		perspectiveCamera.lookAt(0,0,0);
-		perspectiveCamera.update();
+		camera.update(true);
 		super.render();
 	}
 	
 	@Override
 	public void resize(int width, int height) {
 		super.resize(width, height);
-		perspectiveCamera.viewportWidth = Gdx.graphics.getWidth();
-		perspectiveCamera.viewportHeight = Gdx.graphics.getHeight();
+		camera.viewportWidth = Gdx.graphics.getWidth();
+		camera.viewportHeight = Gdx.graphics.getHeight();
 		
-		perspectiveCamera.update();
+		camera.update(true);
 	}
 
 	public <T extends Plugin> T getPlugin(Class<T> type) {

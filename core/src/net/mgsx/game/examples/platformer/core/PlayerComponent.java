@@ -49,6 +49,13 @@ public class PlayerComponent implements Component, Initializable
 				onGround = true;
 				contactCount++;
 				System.out.println(contactCount);
+				LogicComponent enemy = ((Entity)other.getBody().getUserData()).getComponent(LogicComponent.class);
+				if(enemy != null){
+					// physics.body.applyLinearImpulse(0, 1, 0, 0, true);
+					// physics.body.setBullet(true);
+					System.out.println("bounce!!");
+					return;
+				}
 			}
 		});
 		
@@ -71,6 +78,14 @@ public class PlayerComponent implements Component, Initializable
 						contact.setEnabled(false);
 						return;
 					}
+					LogicComponent enemy = otherEntity.getComponent(LogicComponent.class);
+					if(enemy != null){
+						contact.setRestitution(1f);
+						// physics.body.applyLinearImpulse(0, 0.5f, 0, 0, true);
+						System.out.println("hurt!!");
+						return;
+					}
+					
 				}
 			}
 		});
@@ -99,7 +114,7 @@ public class PlayerComponent implements Component, Initializable
 			}
 		}
 		float limit = Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT) ? 1.2f : 3.2f;
-		float limity = 6.f;
+		float limity = 10.f;
 		if(vel.x > limit) vel.x = limit;
 		if(vel.x < -limit) vel.x = -limit;
 		if(vel.y > limity) vel.y = limity;
@@ -164,7 +179,7 @@ public class PlayerComponent implements Component, Initializable
 			
 //			model.modelInstance.transform.setToTranslation(0, 0, 0);
 //			model.modelInstance.transform.translate(delta, 0, 0);
-			model.modelInstance.transform.setToTranslation(physics.body.getPosition().x, physics.body.getPosition().y -0.2f, -3.8f); // XXX hard coded offset from body ... 
+			model.modelInstance.transform.setToTranslation(physics.body.getPosition().x, physics.body.getPosition().y -0.2f, 0); // XXX hard coded offset from body ... 
 //			model.modelInstance.transform.scale(0.5f, 0.5f, 0.5f);
 			
 			if(lookRight)

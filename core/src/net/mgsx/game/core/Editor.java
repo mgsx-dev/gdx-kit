@@ -16,10 +16,13 @@ import com.badlogic.gdx.assets.AssetLoaderParameters;
 import com.badlogic.gdx.assets.loaders.TextureLoader.TextureParameter;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -85,6 +88,9 @@ public class Editor extends GameEngine
 	protected Table outline;
 	protected TabPane global;
 	
+	private OrthographicCamera orthographicCamera;
+	private PerspectiveCamera perspectiveCamera;
+	
 	public Array<SelectorPlugin> selectors = new Array<SelectorPlugin>();
 	
 	final private Array<ToolGroup> tools = new Array<ToolGroup>();
@@ -99,12 +105,99 @@ public class Editor extends GameEngine
 	public void registerPlugin(EditorPlugin plugin) {
 		editorPlugins.put(plugin.getClass(), plugin);
 	}
+	
+	public void zoom(float rate) {
+		
+		rate *= Tool.pixelSize(perspectiveCamera).x * Gdx.graphics.getWidth(); // 100 world unit per pixel TODO pixelSize !!
+		
+		if(camera == orthographicCamera){
+			perspectiveCamera.position.set(orthographicCamera.position);
+			perspectiveCamera.translate(0, 0, -rate);
+			perspectiveCamera.update(false);
+			syncOrtho(true);
+			
+		}else{
+			perspectiveCamera.translate(0, 0, -rate);
+		}
+	}
+	
+	public void fov(float rate) 
+	{
+		rate *= 360; // degree scale
+		
+		syncPerspective(false);
+		
+		// translate camera according to FOV changes (keep sprite plan unchanged !)
+		
+		float oldFOV = perspectiveCamera.fieldOfView * MathUtils.degreesToRadians * 0.5f;
+		
+		float hWorld = (float)Math.tan(oldFOV) * camera.position.z;
+		
+		perspectiveCamera.fieldOfView += rate;
+		perspectiveCamera.update(true);
+		
+		float newFOV = perspectiveCamera.fieldOfView * MathUtils.degreesToRadians * 0.5f;
+		
+		float distWorld = hWorld / (float)Math.tan(newFOV);
+		
+		float deltaZ = distWorld - camera.position.z;
+		perspectiveCamera.translate(0, 0, deltaZ);
+		perspectiveCamera.update(false);
+		
+		
+		syncOrtho(false);
+	}
+	
+	private void syncPerspective(boolean force)
+	{
+		if(camera == orthographicCamera || force){
+			perspectiveCamera.position.set(orthographicCamera.position);
+			perspectiveCamera.update(true);
+		}
+	}
+	private void syncOrtho(boolean force)
+	{
+		if(camera == perspectiveCamera || force)
+		{
+			// sync sprite plan for ortho (working !)
+			Vector3 objectDepth = perspectiveCamera.project(new Vector3());
+			
+			Vector3 a = perspectiveCamera.unproject(new Vector3(0, 0, objectDepth.z));
+			Vector3 b = perspectiveCamera.unproject(new Vector3(1, 1, objectDepth.z));
+			b.sub(a);
+			
+			float w = Math.abs(b.x) * Gdx.graphics.getWidth();
+			float h = Math.abs(b.y) * Gdx.graphics.getHeight();
+			
+			orthographicCamera.setToOrtho(false, w, h);
+			orthographicCamera.position.set(perspectiveCamera.position);
+			
+			orthographicCamera.update(true);
+		}
+	}
 
+	public void switchCamera(){
+		if(camera == perspectiveCamera)
+		{
+			syncOrtho(true);
+			
+			camera = orthographicCamera;
+		}
+		else
+		{
+			syncPerspective(true);
+			
+			camera = perspectiveCamera;
+		}
+	}
 	
 	@Override
 	public void create() 
 	{
 		super.create();
+		
+		perspectiveCamera = (PerspectiveCamera)camera; // XXX we are sure but ...
+		orthographicCamera = new OrthographicCamera();
 	
 		skin = SkinFactory.createSkin();
 		stage = new Stage(new ScreenViewport());
@@ -286,13 +379,14 @@ public class Editor extends GameEngine
 			});
 		}
 		
+		// draw sleection
 		entityEngine.addSystem(new EntitySystem(GamePipeline.RENDER_OVER) {
 			
 			@Override
 			public void update(float deltaTime) {
 				Vector3 pos = new Vector3();
-				Vector2 s = Tool.pixelSize(orthographicCamera).scl(5);
-				shapeRenderer.setProjectionMatrix(orthographicCamera.combined);
+				Vector2 s = Tool.pixelSize(camera).scl(5);
+				shapeRenderer.setProjectionMatrix(camera.combined); // XXX ortho
 				shapeRenderer.begin(ShapeType.Line);
 				for(Entity e : entityEngine.getEntitiesFor(Family.one(Movable.class).get())){
 					Movable movable = e.getComponent(Movable.class);
@@ -350,17 +444,16 @@ public class Editor extends GameEngine
 	{
 		super.render();
 		
+		
 		if(selectionDirty){
 			selectionDirty = false;
 			updateSelection();
 		}
 		
-		orthographicCamera.update(true);
+		shapeRenderer.setProjectionMatrix(camera.combined);
 		
-		shapeRenderer.setProjectionMatrix(orthographicCamera.combined);
-		
-		batch.setTransformMatrix(orthographicCamera.view);
-		batch.setProjectionMatrix(orthographicCamera.projection);
+		batch.setTransformMatrix(camera.view);
+		batch.setProjectionMatrix(camera.projection);
 		batch.enableBlending();
 		batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 		
@@ -389,13 +482,16 @@ public class Editor extends GameEngine
 	}
 	
 	@Override
-	public void resize(int width, int height) {
-		super.resize(width, height);
-		Vector3 oldPos = new Vector3();
-		oldPos.set(orthographicCamera.position);
-		orthographicCamera.setToOrtho(false, 5 * (float)width/(float)height, 5);
-		orthographicCamera.position.set(oldPos); // XXX workaround to restore translation hich is reset in ortho ...
-		orthographicCamera.update(true);
+	public void resize(int width, int height) 
+	{
+		syncPerspective(false);
+		
+		perspectiveCamera.viewportWidth = Gdx.graphics.getWidth();
+		perspectiveCamera.viewportHeight = Gdx.graphics.getHeight();
+		perspectiveCamera.update(true);
+
+		syncOrtho(false);
+		
 		stage.getViewport().update(width, height, true);
 	}
 	
@@ -525,8 +621,7 @@ public class Editor extends GameEngine
 	}
 
 	public Vector2 unproject(float screenX, float screenY) {
-		Vector3 v = orthographicCamera.unproject(new Vector3(screenX, screenY, 0));
-		return new Vector2(v.x, v.y);
+		return Tool.unproject(camera, screenX, screenY);
 	}
 
 	public void addSelector(SelectorPlugin selector) {
@@ -597,6 +692,10 @@ public class Editor extends GameEngine
 	public <T extends EditorPlugin> T getEditorPlugin(Class<T> type) {
 		return (T)editorPlugins.get(type);
 	}
+
+	
+
+	
 
 
 
