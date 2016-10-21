@@ -15,6 +15,7 @@ import com.badlogic.gdx.utils.Array;
 import net.mgsx.game.core.Editor;
 import net.mgsx.game.core.commands.Command;
 import net.mgsx.game.core.commands.CommandHistory;
+import net.mgsx.game.core.components.Transform2DComponent;
 import net.mgsx.game.plugins.box2d.model.Box2DBodyModel;
 
 // TODO it is more an EditorContext (ctx) ...
@@ -143,6 +144,12 @@ public class WorldItem
 		if(item == null){
 			
 			BodyDef def = settings.body();
+			// XXX ???
+			if(entity != null && entity.getComponent(Transform2DComponent.class) != null){
+				x = entity.getComponent(Transform2DComponent.class).position.x;
+				y = entity.getComponent(Transform2DComponent.class).position.y;
+				
+			}
 			def.position.set(x, y);
 			Body body = world.createBody(def);
 			item = new Box2DBodyModel(this, entity, defaultName, def, body);

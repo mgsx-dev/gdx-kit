@@ -155,10 +155,14 @@ public class Box2DPlugin extends EditorPlugin
 				
 				Transform2DComponent transform = entity.getComponent(Transform2DComponent.class);
 				
-				if(entity.getComponent(Transform2DComponent.class) == null) 
-					entity.add(new Transform2DComponent()); 
+				if(entity.getComponent(Transform2DComponent.class) == null) {
+					transform = new Transform2DComponent();
+					
+					transform.origin.set(object.body.getPosition());
+					entity.add(transform); 
+					
 				// XXX auto attach again !? : body x/y
-				else{ // case of loading ...
+				}else{ // case of loading ...
 					object.body.setTransform(transform.position, transform.angle);
 				}
 			}

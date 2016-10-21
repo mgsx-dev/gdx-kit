@@ -9,6 +9,7 @@ public class Transform2DComponent implements Component, Duplicable, OverrideProx
 	public float angle;
 	public boolean rotation = true;
 	public boolean enabled = true;
+	public Vector2 origin = new Vector2();
 	@Override
 	public Component duplicate() {
 		Transform2DComponent clone = new Transform2DComponent();

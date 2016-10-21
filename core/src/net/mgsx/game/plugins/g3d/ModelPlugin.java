@@ -112,6 +112,7 @@ public class ModelPlugin extends EditorPlugin
 					model.modelInstance.transform.translate(transformation.position.x, transformation.position.y, 0); // 0 is sprite plan
 					model.modelInstance.transform.rotate(0, 0, 1, transformation.angle);
 					model.modelInstance.transform.translate(-model.origin.x, -model.origin.y, -model.origin.z);
+					model.modelInstance.transform.translate(-transformation.origin.x, -transformation.origin.y, 0);
 				}
 			}
 		});
