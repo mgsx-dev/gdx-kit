@@ -33,6 +33,9 @@ public class PlatformerPlugin implements Plugin
 		Storage.register(EnemyComponent.class, "example.platformer.enemy");
 		engine.addSerializer(EnemyComponent.class, new EmptySerializer<EnemyComponent>());
 		
+		Storage.register(TreeComponent.class, "example.platformer.tree");
+		engine.addSerializer(TreeComponent.class, new EmptySerializer<TreeComponent>());
+		
 		// add a processor for player
 		// TODO could be automated with a generic component and abstract behavior attached to it ?
 		engine.entityEngine.addSystem(new EntityHelper.SingleComponentIteratingSystem<PlayerComponent>(PlayerComponent.class) {
@@ -42,9 +45,15 @@ public class PlatformerPlugin implements Plugin
 			}
 		});
 		
-		engine.entityEngine.addSystem(new EntityHelper.SingleComponentIteratingSystem<LogicComponent>(LogicComponent.class) {
+		engine.entityEngine.addSystem(new EntityHelper.SingleComponentIteratingSystem<EnemyComponent>(EnemyComponent.class) {
 			@Override
-			protected void processEntity(Entity entity, LogicComponent component, float deltaTime) {
+			protected void processEntity(Entity entity, EnemyComponent component, float deltaTime) {
+				component.behavior.update(deltaTime);
+			}
+		});
+		engine.entityEngine.addSystem(new EntityHelper.SingleComponentIteratingSystem<TreeComponent>(TreeComponent.class) {
+			@Override
+			protected void processEntity(Entity entity, TreeComponent component, float deltaTime) {
 				component.behavior.update(deltaTime);
 			}
 		});
