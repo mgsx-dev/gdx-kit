@@ -35,18 +35,7 @@ public class DuplicateTool extends SelectTool
 			Array<Entity> duplicates = new Array<Entity>();
 			for(Entity entity : editor.selection)
 			{
-				Entity newEntity = editor.createEntity();
-				editor.entityEngine.addEntity(newEntity);
-				for(Component component : entity.getComponents()){
-					if(component instanceof Duplicable)
-					{
-						Component newComponent = ((Duplicable) component).duplicate();
-						if(newComponent instanceof Initializable){
-							((Initializable) newComponent).initialize(editor.entityEngine, newEntity);
-						}
-						newEntity.add(newComponent);
-					}
-				}
+				Entity newEntity = duplicateEntity(editor, entity);
 				duplicates.add(newEntity);
 			}
 			editor.selection.clear();
@@ -57,6 +46,22 @@ public class DuplicateTool extends SelectTool
 			return true;
 		}
 		return false;
+	}
+	
+	public static Entity duplicateEntity(Editor editor, Entity base){
+		Entity newEntity = editor.createEntity();
+		editor.entityEngine.addEntity(newEntity);
+		for(Component component : base.getComponents()){
+			if(component instanceof Duplicable)
+			{
+				Component newComponent = ((Duplicable) component).duplicate();
+				if(newComponent instanceof Initializable){
+					((Initializable) newComponent).initialize(editor.entityEngine, newEntity);
+				}
+				newEntity.add(newComponent);
+			}
+		}
+		return newEntity;
 	}
 	
 	

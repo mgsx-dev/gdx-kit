@@ -80,13 +80,18 @@ public class Particle2DPlugin implements Plugin
 					ParticleEffectPool pool = pools.get(model.reference);
 					if(pool == null){
 						ParticleEffect template = engine.assets.get(model.reference, ParticleEffect.class);
-						pool = new ParticleEffectPool(template, 100, 10000); // TODO tweak ? how ?
+						pool = new ParticleEffectPool(template, 100, 10000){ // TODO tweak ? how ?
+							@Override
+							protected PooledEffect newObject() {
+								PooledEffect effect = super.newObject();
+								effect.scaleEffect(0.01f); // XXX scale once to not have drawbacks !
+								return effect;
+							}
+						}; 
 						pools.put(model.reference, pool);
 					}
 					PooledEffect effect = pool.obtain();
 					model.effect = effect;
-					
-					effect.scaleEffect(0.01f); // XXX ??
 					
 					effects.add(effect);
 					
