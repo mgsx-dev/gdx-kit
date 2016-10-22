@@ -502,9 +502,11 @@ public class Editor extends GameEngine
 			g.render(batch);
 		}
 		batch.end();
+		
 		for(ToolGroup g : tools){
 			g.render(shapeRenderer);
 		}
+		
 		if(displayEnabled){
 
 			

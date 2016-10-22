@@ -141,6 +141,7 @@ public class Particle2DPlugin implements Plugin
 				    effect.draw(engine.batch);
 				}
 				engine.batch.end();
+				Gdx.gl.glDisable(GL20.GL_DEPTH_TEST);
 			}
 		});
 	}

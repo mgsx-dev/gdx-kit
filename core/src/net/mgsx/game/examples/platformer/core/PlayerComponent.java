@@ -6,6 +6,7 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g3d.model.Animation;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Contact;
@@ -36,6 +37,7 @@ public class PlayerComponent implements Component, Initializable
 	private Entity entity;
 	private boolean climbing;
 	private boolean canClimb;
+	private boolean inWater;
 	
 	@Override
 	public void initialize(final Engine engine, final Entity entity)
@@ -123,7 +125,24 @@ public class PlayerComponent implements Component, Initializable
 			}
 		};
 		
-		physics.fixtures.get(0).fixture.setUserData(new Box2DMultiplexer(bonusListener, enemyListener, climbListener));
+		Box2DListener swimListener = new Box2DComponentTrigger<WaterZone>(WaterZone.class) {
+
+			@Override
+			protected void enter(Contact contact, Fixture self, Fixture other, Entity otherEntity,
+					WaterZone otherComponent, boolean b) {
+				inWater = true;
+				enterWater();
+			}
+
+			@Override
+			protected void exit(Contact contact, Fixture self, Fixture other, Entity otherEntity,
+					WaterZone otherComponent, boolean b) {
+				inWater = false;
+				exitWater();
+			}
+		};
+		
+		physics.fixtures.get(0).fixture.setUserData(new Box2DMultiplexer(bonusListener, enemyListener, climbListener, swimListener));
 		
 		model = entity.getComponent(G3DModel.class);
 		model.animationController.allowSameAnimation = true;
@@ -131,6 +150,21 @@ public class PlayerComponent implements Component, Initializable
 		idelAnimation = model.modelInstance.getAnimation("IdlePose");
 		
 	}
+	
+	private void enterWater(){
+		// TODO anim particle ...
+		physics.body.setGravityScale(-0.1f);
+		physics.body.setLinearDamping(2);
+		model.animationController.animate("Climb", -1, 1, null, 1); // TODO swim animation
+	}
+	
+	private void exitWater(){
+		// TODO anim particle ...
+		physics.body.setGravityScale(1);
+		physics.body.setLinearDamping(0);
+		model.animationController.animate("IdlePose", -1, 1, null, 1);
+	}
+	
 	
 	private void updateControls(){
 		Body body = physics.body;
@@ -163,8 +197,13 @@ public class PlayerComponent implements Component, Initializable
 		
 		onGround = contactCount >= 1; // TODO have to check at beginning : could already be in contact !
 
+		
+		if(inWater)
+		{
+			updateSwim();
+		}
 		// trigger climb mode
-		if(!climbing && canClimb && Gdx.input.isKeyPressed(Input.Keys.UP)){
+		else if(!climbing && canClimb && Gdx.input.isKeyPressed(Input.Keys.UP)){
 			climbing = true;
 			
 			model.animationController.animate("Climb", -1, 1, null, 1);
@@ -179,12 +218,53 @@ public class PlayerComponent implements Component, Initializable
 			physics.body.setGravityScale(1);
 		}
 		
-		
-		if(climbing)
+		if(inWater);
+		else if(climbing)
 			updateClimbing(deltaTime);
 		else
 			updateWalking(deltaTime);
 	}
+	
+	
+	private void updateSwim()
+	{
+		Body body = physics.body;
+		Vector2 vel = body.getLinearVelocity().cpy();
+		float speed = 2;
+		
+		if(Gdx.input.isKeyPressed(Input.Keys.LEFT)){
+			vel.x = -speed;
+		}else if(Gdx.input.isKeyPressed(Input.Keys.RIGHT)){
+			vel.x = speed;
+		}else{
+			vel.x = 0;
+		}
+		if(Gdx.input.isKeyPressed(Input.Keys.UP)){
+			vel.y = speed;
+		}else if(Gdx.input.isKeyPressed(Input.Keys.DOWN)){
+			vel.y = -speed;
+		}else{
+			model.animationController.paused = true;
+			vel.y = 0;
+		}
+		model.animationController.current.speed = 0.5f;
+		if(vel.y != 0 || vel.x != 0) model.animationController.paused = false;
+		
+		// body.setLinearVelocity(vel);
+		body.applyForceToCenter(vel.scl(0.5f), true);
+		
+		float angle = -90 + MathUtils.atan2(body.getLinearVelocity().y, body.getLinearVelocity().x) * MathUtils.radiansToDegrees;
+		
+		// TODO refactor with walk state ?
+		if(model.animationController != null && model.animationController.current != null){
+			model.modelInstance.transform.setToTranslation(physics.body.getPosition().x, physics.body.getPosition().y -0.2f, 0); // XXX hard coded offset from body ... 
+			model.modelInstance.transform.rotate(0,0, 1, angle);
+			model.modelInstance.transform.rotate(0,1, 0, body.getLinearVelocity().x < 0 ? -90 : 90);
+			
+		}
+		// System.out.println(angle);
+	}
+	
 	private void updateClimbing(float deltaTime)
 	{
 		Body body = physics.body;

@@ -14,6 +14,7 @@ import net.mgsx.game.examples.platformer.core.EnemyZone;
 import net.mgsx.game.examples.platformer.core.LogicComponent;
 import net.mgsx.game.examples.platformer.core.PlayerComponent;
 import net.mgsx.game.examples.platformer.core.TreeComponent;
+import net.mgsx.game.examples.platformer.core.WaterZone;
 import net.mgsx.game.plugins.box2d.model.Box2DBodyModel;
 import net.mgsx.game.plugins.g3d.G3DModel;
 
@@ -88,6 +89,15 @@ public class PlatformerGameEditor extends EditorPlugin {
 			protected Component createComponent(Entity entity) 
 			{
 				return new ClimbZone();
+			}
+		});
+		
+		editor.addTool(new ComponentTool("Water Zone", editor, Family.all(Box2DBodyModel.class).get()) {
+			
+			@Override
+			protected Component createComponent(Entity entity) 
+			{
+				return new WaterZone();
 			}
 		});
 		
