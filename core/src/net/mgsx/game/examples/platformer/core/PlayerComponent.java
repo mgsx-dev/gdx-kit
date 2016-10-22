@@ -13,7 +13,10 @@ import com.badlogic.gdx.physics.box2d.Fixture;
 
 import net.mgsx.game.core.components.Transform2DComponent;
 import net.mgsx.game.core.plugins.Initializable;
+import net.mgsx.game.plugins.box2d.Box2DComponentListener;
+import net.mgsx.game.plugins.box2d.Box2DComponentTrigger;
 import net.mgsx.game.plugins.box2d.Box2DListener;
+import net.mgsx.game.plugins.box2d.Box2DMultiplexer;
 import net.mgsx.game.plugins.box2d.model.Box2DBodyModel;
 import net.mgsx.game.plugins.g3d.G3DModel;
 
@@ -31,6 +34,8 @@ public class PlayerComponent implements Component, Initializable
 	private boolean onGround;
 	private int contactCount = 0;
 	private Entity entity;
+	private boolean climbing;
+	private boolean canClimb;
 	
 	@Override
 	public void initialize(final Engine engine, final Entity entity)
@@ -44,12 +49,15 @@ public class PlayerComponent implements Component, Initializable
 		physics.fixtures.get(1).fixture.setUserData(new Box2DListener() { // XXX hard coded sensor index 1
 			@Override
 			public void endContact(Contact contact, Fixture self, Fixture other) {
+				if(other.isSensor()) return;
 				onGround = false;
 				contactCount--;
+				
 				System.out.println(contactCount);
 			}
 			@Override
 			public void beginContact(Contact contact, Fixture self, Fixture other) {
+				if(other.isSensor()) return;
 				onGround = true;
 				contactCount++;
 				System.out.println(contactCount);
@@ -63,36 +71,59 @@ public class PlayerComponent implements Component, Initializable
 			}
 		});
 		
-		physics.fixtures.get(0).fixture.setUserData(new Box2DListener() { // XXX hard coded sensor index 0 alias body
+		Box2DListener bonusListener = new Box2DComponentListener<BonusComponent>(BonusComponent.class) {
+
 			@Override
-			public void endContact(Contact contact, Fixture self, Fixture other) {
-				
-			}
-			@Override
-			public void beginContact(Contact contact, Fixture self, Fixture other) {
-				Entity otherEntity = (Entity)other.getBody().getUserData();
-				if(otherEntity != null){
-					BonusComponent bonus = otherEntity.getComponent(BonusComponent.class);
-					if(bonus != null && bonus.isCatchable()){
-						bonus.setCatch();
-						// TODO add score
-						// remove bonus body (mark for deletion)
-						Box2DBodyModel body = otherEntity.getComponent(Box2DBodyModel.class);
-						body.context.scheduleRemove(otherEntity, body);
-						contact.setEnabled(false);
-						return;
-					}
-					LogicComponent enemy = otherEntity.getComponent(LogicComponent.class);
-					if(enemy != null){
-						contact.setRestitution(1f);
-						// physics.body.applyLinearImpulse(0, 0.5f, 0, 0, true);
-						System.out.println("hurt!!");
-						return;
-					}
-					
+			protected void beginContact(Contact contact, Fixture self, Fixture other, Entity otherEntity, BonusComponent bonus) 
+			{
+				if(bonus.isCatchable()){
+					bonus.setCatch();
+					// TODO add score
+					// remove bonus body (mark for deletion)
+					// TODO should be done in bonus logic (how it disapear ...)
+					Box2DBodyModel body = otherEntity.getComponent(Box2DBodyModel.class);
+					body.context.scheduleRemove(otherEntity, body);
+					contact.setEnabled(false);
+					return;
 				}
 			}
-		});
+
+			@Override
+			protected void endContact(Contact contact, Fixture self, Fixture other, Entity otherEntity, BonusComponent otherComponent) {
+			}
+		};
+		
+		Box2DListener enemyListener = new Box2DComponentListener<EnemyComponent>(EnemyComponent.class) {
+
+			@Override
+			protected void beginContact(Contact contact, Fixture self, Fixture other, Entity otherEntity, EnemyComponent enemy) 
+			{
+				contact.setRestitution(1f);
+				// physics.body.applyLinearImpulse(0, 0.5f, 0, 0, true);
+				System.out.println("hurt!!");
+			}
+
+			@Override
+			protected void endContact(Contact contact, Fixture self, Fixture other, Entity otherEntity, EnemyComponent otherComponent) {
+			}
+		};
+		
+		Box2DListener climbListener = new Box2DComponentTrigger<ClimbZone>(ClimbZone.class) {
+
+			@Override
+			protected void enter(Contact contact, Fixture self, Fixture other, Entity otherEntity,
+					ClimbZone otherComponent, boolean b) {
+				canClimb = true;
+			}
+
+			@Override
+			protected void exit(Contact contact, Fixture self, Fixture other, Entity otherEntity,
+					ClimbZone otherComponent, boolean b) {
+				canClimb = false;
+			}
+		};
+		
+		physics.fixtures.get(0).fixture.setUserData(new Box2DMultiplexer(bonusListener, enemyListener, climbListener));
 		
 		model = entity.getComponent(G3DModel.class);
 		model.animationController.allowSameAnimation = true;
@@ -130,8 +161,65 @@ public class PlayerComponent implements Component, Initializable
 	{
 		entity.getComponent(Transform2DComponent.class).enabled = false; // XXX handle manually 
 		
-		
 		onGround = contactCount >= 1; // TODO have to check at beginning : could already be in contact !
+
+		// trigger climb mode
+		if(!climbing && canClimb && Gdx.input.isKeyPressed(Input.Keys.UP)){
+			climbing = true;
+			
+			model.animationController.animate("Climb", -1, 1, null, 1);
+			physics.body.setGravityScale(0);
+		}
+		else if(climbing && !canClimb || climbing && Gdx.input.isKeyPressed(Input.Keys.Z) || climbing&&onGround&&!Gdx.input.isKeyPressed(Input.Keys.UP)){
+			climbing = false;
+			
+			model.animationController.animate("IdlePose", -1, 1, null, 1);
+			if(Gdx.input.isKeyPressed(Input.Keys.Z)) physics.body.applyLinearImpulse(0, 1f, // TODO jump force refactor ...
+					0, 0, true); // XXX little jump not needed 
+			physics.body.setGravityScale(1);
+		}
+		
+		
+		if(climbing)
+			updateClimbing(deltaTime);
+		else
+			updateWalking(deltaTime);
+	}
+	private void updateClimbing(float deltaTime)
+	{
+		Body body = physics.body;
+		Vector2 vel = body.getLinearVelocity();
+		float speed = 2;
+		
+		if(Gdx.input.isKeyPressed(Input.Keys.LEFT)){
+			vel.x = -speed;
+		}else if(Gdx.input.isKeyPressed(Input.Keys.RIGHT)){
+			vel.x = speed;
+		}else{
+			vel.x = 0;
+		}
+		if(Gdx.input.isKeyPressed(Input.Keys.UP)){
+			vel.y = speed;
+		}else if(Gdx.input.isKeyPressed(Input.Keys.DOWN)){
+			vel.y = -speed;
+		}else{
+			model.animationController.paused = true;
+			vel.y = 0;
+		}
+		model.animationController.current.speed = 2.5f;
+		if(vel.y != 0 || vel.x != 0) model.animationController.paused = false;
+		
+		body.setLinearVelocity(vel);
+		
+		// TODO refactor with walk state ?
+		if(model.animationController != null && model.animationController.current != null){
+			model.modelInstance.transform.setToTranslation(physics.body.getPosition().x, physics.body.getPosition().y -0.2f, 0); // XXX hard coded offset from body ... 
+			model.modelInstance.transform.rotate(0, 1,0, 180);
+			
+		}
+	}
+	private void updateWalking(float deltaTime)
+	{
 		
 		updateControls();
 		

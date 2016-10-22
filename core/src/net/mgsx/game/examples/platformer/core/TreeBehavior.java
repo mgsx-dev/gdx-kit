@@ -22,8 +22,8 @@ public class TreeBehavior implements LogicBehavior, Initializable
 	private G3DModel model;
 	private int sensorContact = 0;
 	
-	private Engine manager;
-	private Entity entity;
+	protected Engine manager;
+	protected Entity entity;
 	
 	private boolean playerEnter = false;
 	private boolean playerExit = false;

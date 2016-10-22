@@ -36,6 +36,9 @@ public class PlatformerPlugin implements Plugin
 		Storage.register(TreeComponent.class, "example.platformer.tree");
 		engine.addSerializer(TreeComponent.class, new EmptySerializer<TreeComponent>());
 		
+		Storage.register(ClimbZone.class, "example.platformer.climb-zone");
+		engine.addSerializer(ClimbZone.class, new EmptySerializer<ClimbZone>());
+		
 		// add a processor for player
 		// TODO could be automated with a generic component and abstract behavior attached to it ?
 		engine.entityEngine.addSystem(new EntityHelper.SingleComponentIteratingSystem<PlayerComponent>(PlayerComponent.class) {

@@ -8,6 +8,7 @@ import net.mgsx.game.core.Editor;
 import net.mgsx.game.core.plugins.EditorPlugin;
 import net.mgsx.game.core.tools.ComponentTool;
 import net.mgsx.game.examples.platformer.core.BonusComponent;
+import net.mgsx.game.examples.platformer.core.ClimbZone;
 import net.mgsx.game.examples.platformer.core.EnemyComponent;
 import net.mgsx.game.examples.platformer.core.EnemyZone;
 import net.mgsx.game.examples.platformer.core.LogicComponent;
@@ -78,6 +79,15 @@ public class PlatformerGameEditor extends EditorPlugin {
 			protected Component createComponent(Entity entity) 
 			{
 				return new EnemyZone();
+			}
+		});
+		
+		editor.addTool(new ComponentTool("Climb Zone", editor, Family.all(Box2DBodyModel.class).get()) {
+			
+			@Override
+			protected Component createComponent(Entity entity) 
+			{
+				return new ClimbZone();
 			}
 		});
 		

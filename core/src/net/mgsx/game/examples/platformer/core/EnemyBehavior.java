@@ -52,6 +52,7 @@ public class EnemyBehavior implements LogicBehavior, Initializable
 	public void update(float deltaTime) 
 	{
 		boolean isOutside = outsideCounter > 0;
+		System.out.println(isOutside);
 		// TODO query box2D 
 		// TODO 
 		// body.context.queryFirstBody(pos);
