@@ -112,15 +112,26 @@ public class Storage
 		
 	}
 	
+	private static Array<AssetSerializer> assetSerializers = new Array<AssetSerializer>();
+	
+	public static void register(AssetSerializer serializer){
+		assetSerializers.add(serializer);
+	}
+	
 	private static Json setup(AssetManager assets, ObjectMap<Class, Serializer> serializers)
 	{
 		Json json = new Json();
 		json.setSerializer(EntityGroup.class, new EntityGroupSerializer(assets));
 		
-		// TODO configure in plugins
+		// TODO configure in plugins using asset serializer
 		json.setSerializer(Sprite.class, new SpriteSerializer());
 		json.setSerializer(Texture.class, new TextureRef(assets));
 		json.setSerializer(ModelInstance.class, new ModelRef(assets));
+		
+		for(AssetSerializer serializer : assetSerializers){
+			serializer.assets = assets;
+			json.setSerializer(serializer.getType(), serializer);
+		}
 		
 		for(Entries<Class, Serializer> entries = serializers.iterator() ; entries.hasNext() ; ){
 			Entry<Class, Serializer> entry = entries.next();

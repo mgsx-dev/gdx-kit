@@ -18,6 +18,10 @@ abstract public class ComponentTool extends Tool
 		this.activator = activator;
 	}
 	
+	public ComponentTool(String name, Editor editor) {
+		super(name, editor);
+	}
+	
 	@Override
 	protected void activate() 
 	{

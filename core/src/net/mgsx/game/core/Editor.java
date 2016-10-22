@@ -485,8 +485,8 @@ public class Editor extends GameEngine
 		
 		shapeRenderer.setProjectionMatrix(camera.combined);
 		
-		batch.setTransformMatrix(camera.view);
-		batch.setProjectionMatrix(camera.projection);
+		// TODO some code should be placed in engine ...
+		batch.setProjectionMatrix(camera.combined);
 		batch.enableBlending();
 		batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 		

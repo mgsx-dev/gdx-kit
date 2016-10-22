@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.Json.Serializer;
 import com.badlogic.gdx.utils.ObjectMap;
 
@@ -26,7 +27,7 @@ public class GameEngine extends ApplicationAdapter
 {
 	public AssetManager assets;
 	public ShapeRenderer shapeRenderer;
-	protected SpriteBatch batch;
+	public SpriteBatch batch;
 	protected TypeMap<EditorPlugin> editorPlugins = new TypeMap<EditorPlugin>();
 	protected TypeMap<Plugin> plugins = new TypeMap<Plugin>();
 	public PooledEngine entityEngine;
@@ -39,7 +40,7 @@ public class GameEngine extends ApplicationAdapter
 		plugins.put(plugin.getClass(), plugin);
 	}
 
-	public <T> void addSerializer(Class<T> type, Serializer<T> serializer) {
+	public <T> void addSerializer(Class<T> type, Json.Serializer<T> serializer) {
 		serializers.put(type, serializer);
 	}
 	

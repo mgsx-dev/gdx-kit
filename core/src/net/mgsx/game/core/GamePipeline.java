@@ -33,9 +33,15 @@ final public class GamePipeline
 
 	// then render (normal rendering and over rendering (debug, tools, ... always on top)
 	public static final int BEFORE_RENDER = AFTER_LOGIC; // alias
-	public static final int RENDER = BEFORE_RENDER + 1;
-	public static final int RENDER_OVER = RENDER + 1;
-	public static final int AFTER_RENDER = RENDER_OVER + 1;
+	public static final int RENDER_OPAQUE = BEFORE_RENDER + 1;
+	public static final int RENDER_TRANSPARENT = RENDER_OPAQUE + 1;
+	public static final int RENDER_DEBUG = RENDER_TRANSPARENT + 1;
+	public static final int AFTER_RENDER = RENDER_DEBUG + 1;
+	
+	
+	public static final int RENDER = RENDER_OPAQUE; // alias
+	public static final int RENDER_OVER = RENDER_DEBUG; // alias
+	
 	
 	// 
 	public static final int LAST = AFTER_RENDER + 1;

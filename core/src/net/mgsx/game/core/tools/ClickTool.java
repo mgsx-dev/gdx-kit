@@ -17,6 +17,7 @@ abstract public class ClickTool extends Tool
 		if(button == Input.Buttons.LEFT){
 			create(unproject(screenX, screenY));
 			end();
+			return true;
 		}
 		return super.touchDown(screenX, screenY, pointer, button);
 	}
