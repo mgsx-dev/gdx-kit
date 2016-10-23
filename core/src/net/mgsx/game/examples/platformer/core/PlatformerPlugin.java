@@ -18,7 +18,7 @@ import net.mgsx.game.core.storage.Storage;
 public class PlatformerPlugin implements Plugin
 {
 	public GameEngine engine;
-	protected PlatformerPostProcessing ppp;
+	public PlatformerPostProcessing ppp;
 	
 	@Override
 	public void initialize(GameEngine engine) 
@@ -65,7 +65,7 @@ public class PlatformerPlugin implements Plugin
 			}
 		});
 		
-		ppp = new PlatformerPostProcessing(engine.entityEngine);
+		ppp = new PlatformerPostProcessing(engine);
 		
 	}
 

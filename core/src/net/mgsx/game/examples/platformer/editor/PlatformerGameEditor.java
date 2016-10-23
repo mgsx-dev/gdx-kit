@@ -112,6 +112,9 @@ public class PlatformerGameEditor extends EditorPlugin {
 			}
 		});
 
+		
+		
+		editor.addGlobalEditor("Water Effect", new WaterEffectEditor());
 
 	}
 }

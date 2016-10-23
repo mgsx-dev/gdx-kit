@@ -35,8 +35,9 @@ final public class GamePipeline
 	public static final int BEFORE_RENDER = AFTER_LOGIC; // alias
 	public static final int RENDER_OPAQUE = BEFORE_RENDER + 1;
 	public static final int RENDER_TRANSPARENT = RENDER_OPAQUE + 1;
-	public static final int RENDER_DEBUG = RENDER_TRANSPARENT + 1;
-	public static final int AFTER_RENDER = RENDER_DEBUG + 1;
+	public static final int AFTER_RENDER = RENDER_TRANSPARENT + 1;
+	
+	public static final int RENDER_DEBUG = AFTER_RENDER + 1;
 	
 	
 	public static final int RENDER = RENDER_OPAQUE; // alias
@@ -44,6 +45,6 @@ final public class GamePipeline
 	
 	
 	// 
-	public static final int LAST = AFTER_RENDER + 1;
+	public static final int LAST = RENDER_DEBUG + 1;
 	
 }
