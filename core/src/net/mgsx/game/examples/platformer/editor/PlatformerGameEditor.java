@@ -92,7 +92,7 @@ public class PlatformerGameEditor extends EditorPlugin {
 			}
 		});
 		
-		editor.addTool(new ComponentTool("Water Zone", editor, Family.all(Box2DBodyModel.class).get()) {
+		editor.addTool(new ComponentTool("Water Zone", editor, Family.one(Box2DBodyModel.class, G3DModel.class).get()) {
 			
 			@Override
 			protected Component createComponent(Entity entity) 

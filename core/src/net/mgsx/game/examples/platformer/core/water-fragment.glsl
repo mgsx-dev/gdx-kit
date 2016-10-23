@@ -8,6 +8,7 @@ precision mediump float;
 varying LOWP vec4 v_color;
 varying vec2 v_texCoords;
 uniform sampler2D u_texture;
+uniform sampler2D u_texture1;
 uniform float u_time;
 uniform vec2 u_world;
 uniform float u_frequency;
@@ -38,6 +39,8 @@ float noise2(vec2 pos){
 
 void main()
 {
-	vec2 noise = (vec2(noise(v_texCoords.x * u_frequency + u_time + u_world.x), noise(v_texCoords.y * u_frequency + u_time + u_world.y)) - vec2(0.5, 0.5)) * u_rate;
+	vec4 mask = texture2D(u_texture1, v_texCoords);
+	
+	vec2 noise = mask.a * (vec2(noise(v_texCoords.x * u_frequency + u_time + u_world.x), noise(v_texCoords.y * u_frequency + u_time + u_world.y)) - vec2(0.5, 0.5)) * u_rate;
 	gl_FragColor = v_color * texture2D(u_texture, v_texCoords + noise);
 }
