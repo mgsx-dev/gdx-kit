@@ -43,6 +43,9 @@ public class PlatformerPlugin implements Plugin
 		Storage.register(WaterZone.class, "example.platformer.water-zone");
 		engine.addSerializer(WaterZone.class, new EmptySerializer<WaterZone>());
 		
+		Storage.register(LianaZone.class, "example.platformer.liana-zone");
+		engine.addSerializer(LianaZone.class, new EmptySerializer<LianaZone>());
+		
 		// add a processor for player
 		// TODO could be automated with a generic component and abstract behavior attached to it ?
 		engine.entityEngine.addSystem(new EntityHelper.SingleComponentIteratingSystem<PlayerComponent>(PlayerComponent.class) {

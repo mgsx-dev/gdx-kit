@@ -37,7 +37,9 @@ public class PlayerComponent implements Component, Initializable
 	private Entity entity;
 	private boolean climbing;
 	private boolean canClimb;
-	private boolean inWater;
+	private boolean inWater, onLiana;
+	
+	private Body currentLiana;
 	
 	@Override
 	public void initialize(final Engine engine, final Entity entity)
@@ -142,7 +144,28 @@ public class PlayerComponent implements Component, Initializable
 			}
 		};
 		
-		physics.fixtures.get(0).fixture.setUserData(new Box2DMultiplexer(bonusListener, enemyListener, climbListener, swimListener));
+		Box2DListener lianaListener = new Box2DComponentTrigger<LianaZone>(LianaZone.class) {
+
+			@Override
+			protected void beginContact(Contact contact, Fixture self, Fixture other, Entity otherEntity,
+					LianaZone otherComponent) {
+				if(!onLiana) currentLiana = otherEntity.getComponent(Box2DBodyModel.class).body;
+				super.beginContact(contact, self, other, otherEntity, otherComponent);
+			}
+			@Override
+			protected void enter(Contact contact, Fixture self, Fixture other, Entity otherEntity,
+					LianaZone otherComponent, boolean b) {
+				enterLiana();
+			}
+
+			@Override
+			protected void exit(Contact contact, Fixture self, Fixture other, Entity otherEntity,
+					LianaZone otherComponent, boolean b) {
+				exitLiana();
+			}
+		};
+		
+		physics.fixtures.get(0).fixture.setUserData(new Box2DMultiplexer(lianaListener, bonusListener, enemyListener, climbListener, swimListener));
 		
 		model = entity.getComponent(G3DModel.class);
 		model.animationController.allowSameAnimation = true;
@@ -163,6 +186,13 @@ public class PlayerComponent implements Component, Initializable
 		physics.body.setGravityScale(1);
 		physics.body.setLinearDamping(0);
 		model.animationController.animate("IdlePose", -1, 1, null, 1);
+	}
+	
+	private void enterLiana(){
+	}
+	
+	private void exitLiana(){
+		currentLiana = null;
 	}
 	
 	
@@ -197,10 +227,17 @@ public class PlayerComponent implements Component, Initializable
 		
 		onGround = contactCount >= 1; // TODO have to check at beginning : could already be in contact !
 
+		if(!onLiana && currentLiana!=null && Gdx.input.isKeyPressed(Input.Keys.A)){
+			onLiana = true;
+		}
 		
 		if(inWater)
 		{
 			updateSwim();
+		}
+		else if(onLiana)
+		{
+			updateLiana();
 		}
 		// trigger climb mode
 		else if(!climbing && canClimb && Gdx.input.isKeyPressed(Input.Keys.UP)){
@@ -219,12 +256,37 @@ public class PlayerComponent implements Component, Initializable
 		}
 		
 		if(inWater);
+		else if(onLiana);
 		else if(climbing)
 			updateClimbing(deltaTime);
 		else
 			updateWalking(deltaTime);
 	}
 	
+	
+	private void updateLiana()
+	{
+		if(!Gdx.input.isKeyPressed(Input.Keys.A)){
+			onLiana = false;
+			physics.body.setTransform(physics.body.getPosition(), 0);
+			physics.body.setLinearVelocity(currentLiana.getLinearVelocity());
+			return; // TODO restore model transform back ?
+		}
+		
+		physics.body.setTransform(currentLiana.getPosition(), currentLiana.getAngle());
+		model.modelInstance.transform.setToTranslation(currentLiana.getPosition().x, currentLiana.getPosition().y, 0); 
+		model.modelInstance.transform.rotate(0,0, 1, currentLiana.getAngle() * MathUtils.radiansToDegrees);
+		// model.modelInstance.transform.rotate(0,1, 0, body.getLinearVelocity().x < 0 ? -90 : 90);
+		
+		float force = 0;
+		if(Gdx.input.isKeyPressed(Input.Keys.LEFT))
+			force = -1;
+		else if(Gdx.input.isKeyPressed(Input.Keys.RIGHT))
+			force = 1;
+		
+		currentLiana.applyForce(force, 0, physics.body.getPosition().x, physics.body.getPosition().y, true);
+		
+	}
 	
 	private void updateSwim()
 	{
