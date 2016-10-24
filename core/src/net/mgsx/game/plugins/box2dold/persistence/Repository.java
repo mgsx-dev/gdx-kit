@@ -23,8 +23,8 @@ import com.badlogic.gdx.utils.Json;
 import net.mgsx.game.core.storage.IgnoreSerializer;
 import net.mgsx.game.plugins.box2d.model.Box2DBodyModel;
 import net.mgsx.game.plugins.box2d.model.Box2DFixtureModel;
+import net.mgsx.game.plugins.box2d.model.Box2DJointModel;
 import net.mgsx.game.plugins.box2dold.model.EditorSettings;
-import net.mgsx.game.plugins.box2dold.model.JointItem;
 import net.mgsx.game.plugins.box2dold.model.WorldItem;
 
 public class Repository 
@@ -185,7 +185,7 @@ public class Repository
 			}
 		}
 		
-		for(JointItem jointItem : worldItem.items.joints)
+		for(Box2DJointModel jointItem : worldItem.items.joints)
 		{
 			JointData jd = new JointData();
 			jd.def = jointItem.def;
@@ -240,7 +240,7 @@ public class Repository
 			jd.def.bodyA = bodies.get(jd.bodyA).body;
 			jd.def.bodyB = bodies.get(jd.bodyB).body;
 			Joint joint = worldItem.world.createJoint(jd.def);
-			worldItem.items.joints.add(new JointItem(jd.name, jd.def, joint));
+			worldItem.items.joints.add(new Box2DJointModel(jd.name, jd.def, joint));
 		}
 	}
 }

@@ -35,7 +35,7 @@ abstract public class JointTool<T extends JointDef> extends MultiClickTool
 		def.bodyA = bodyA.body;
 		def.bodyB = bodyB.body;
 		
-		editor.performCommand(Box2DCommands.addJoint(worldItem.world, name, def));
+		editor.performCommand(Box2DCommands.addJoint(editor, worldItem.world, name, def));
 		
 		end();
 	}

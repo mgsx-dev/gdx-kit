@@ -1,20 +1,21 @@
 package net.mgsx.game.plugins.box2dold.commands;
 
+import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
-import com.badlogic.gdx.physics.box2d.Joint;
 import com.badlogic.gdx.physics.box2d.JointDef;
 import com.badlogic.gdx.physics.box2d.World;
 
+import net.mgsx.game.core.Editor;
 import net.mgsx.game.core.commands.Command;
 import net.mgsx.game.plugins.box2d.model.Box2DBodyModel;
 import net.mgsx.game.plugins.box2d.model.Box2DFixtureModel;
+import net.mgsx.game.plugins.box2d.model.Box2DJointModel;
 import net.mgsx.game.plugins.box2dold.Box2DPresets.Box2DPreset;
 import net.mgsx.game.plugins.box2dold.model.Items;
-import net.mgsx.game.plugins.box2dold.model.JointItem;
 import net.mgsx.game.plugins.box2dold.model.WorldItem;
 
 public class Box2DCommands {
@@ -89,21 +90,24 @@ public class Box2DCommands {
 			}
 		};
 	}
-	public static Command addJoint(final World world, final String name, final JointDef def){
+	public static Command addJoint(final Editor editor, final World world, final String name, final JointDef def){
 		return new Command(){
-			private Joint joint;
-			private JointItem jointItem;
 			@Override
 			public void commit() {
-				joint = world.createJoint(def);
-				// TODO add entity
-				// jointItem = new JointItem(name, def, joint);
-				// worldItem.items.joints.add(jointItem);
+				Entity entity = editor.currentEntity();
+				
+				// XXX it works so why not : bodyB carry joint which is logic : B depends A
+				// prevent add component joint on entity with bosy component. It could work but
+				// not sure if it's a good idea.
+//				if(entity.getComponent(Box2DBodyModel.class) != null)
+//					entity = editor.createAndAddEntity();
+				
+				entity.add(new Box2DJointModel(name, def, world.createJoint(def)));
 			}
 			@Override
 			public void rollback() {
-				world.destroyJoint(joint);
-				// TODO remove entity
+				// TODO support undo ...
+				// world.destroyJoint(joint);
 				// worldItem.items.joints.removeValue(jointItem, true);
 			}
 		};

@@ -17,6 +17,7 @@ import net.mgsx.game.core.commands.Command;
 import net.mgsx.game.core.commands.CommandHistory;
 import net.mgsx.game.core.components.Transform2DComponent;
 import net.mgsx.game.plugins.box2d.model.Box2DBodyModel;
+import net.mgsx.game.plugins.box2d.model.Box2DJointModel;
 
 // TODO it is more an EditorContext (ctx) ...
 public class WorldItem 
@@ -59,7 +60,7 @@ public class WorldItem
 	}
 	public void destroy(Items items) 
 	{
-		for(JointItem joint : items.joints)
+		for(Box2DJointModel joint : items.joints)
 			world.destroyJoint(joint.joint);
 		for(Box2DBodyModel body : items.bodies)
 			world.destroyBody(body.body);

@@ -6,6 +6,7 @@ import com.badlogic.ashley.core.EntityListener;
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
+import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.ChainShape;
 import com.badlogic.gdx.physics.box2d.CircleShape;
@@ -17,6 +18,8 @@ import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.Manifold;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.Shape;
+import com.badlogic.gdx.utils.Json;
+import com.badlogic.gdx.utils.JsonValue;
 
 import net.mgsx.game.core.Editor;
 import net.mgsx.game.core.GamePipeline;
@@ -24,9 +27,11 @@ import net.mgsx.game.core.commands.CommandHistory;
 import net.mgsx.game.core.components.Movable;
 import net.mgsx.game.core.components.Transform2DComponent;
 import net.mgsx.game.core.plugins.EditorPlugin;
+import net.mgsx.game.core.storage.ContextualSerializer;
 import net.mgsx.game.core.storage.Storage;
 import net.mgsx.game.core.tools.ComponentTool;
 import net.mgsx.game.plugins.box2d.model.Box2DBodyModel;
+import net.mgsx.game.plugins.box2d.model.Box2DJointModel;
 import net.mgsx.game.plugins.box2dold.model.WorldItem;
 
 public class Box2DPlugin extends EditorPlugin 
@@ -51,6 +56,7 @@ public class Box2DPlugin extends EditorPlugin
 	public void initialize(final Editor editor) 
 	{
 		Storage.register(Box2DBodyModel.class, "box2d");
+		Storage.register(Box2DJointModel.class, "box2d.joint");
 		
 		box2dRenderer = new Box2DDebugRenderer();
 		CommandHistory commandHistory = new CommandHistory(); // XXX fake
@@ -123,11 +129,31 @@ public class Box2DPlugin extends EditorPlugin
 		//editor.addTool(new AddBox2DTool(editor, worldItem));
 		
 		editor.addSerializer(Box2DBodyModel.class, new Box2DModelSerializer(worldItem));
+		editor.addSerializer(Box2DJointModel.class, new Box2DJointSerializer(worldItem));
 		editor.addSerializer(PolygonShape.class, Box2DShapesSerializers.polygon());
 		editor.addSerializer(ChainShape.class, Box2DShapesSerializers.chain());
 		editor.addSerializer(CircleShape.class, Box2DShapesSerializers.circle());
 		editor.addSerializer(EdgeShape.class, Box2DShapesSerializers.edge());
 		editor.addSerializer(Shape.class, Box2DShapesSerializers.shape());
+		
+		Storage.register(new Box2DJointSerializer(worldItem));
+		
+		Storage.register(new ContextualSerializer<Body>(Body.class) {
+			@Override
+			public void write(Json json, Body object, Class knownType) {
+				Entity entity = (Entity)object.getUserData();
+				int entityIndex = editor.entityEngine.getEntities().indexOf(entity, true);
+				json.writeValue(entityIndex);
+			}
+
+			@Override
+			public Body read(Json json, JsonValue jsonData, Class type) {
+				int entityIndex = jsonData.asInt();
+				Entity entity = findEntity(entityIndex);
+				Box2DBodyModel bodyModel = entity.getComponent(Box2DBodyModel.class);
+				return bodyModel.body;
+			}
+		});
 		
 		editor.addGlobalEditor("Box2D", new Box2DEditorPlugin(worldItem));
 		

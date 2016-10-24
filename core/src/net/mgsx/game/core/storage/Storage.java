@@ -113,20 +113,32 @@ public class Storage
 	}
 	
 	private static Array<AssetSerializer> assetSerializers = new Array<AssetSerializer>();
+	private static Array<ContextualSerializer> contextualSerializers = new Array<ContextualSerializer>();
 	
 	public static void register(AssetSerializer serializer){
 		assetSerializers.add(serializer);
 	}
 	
+	public static void register(ContextualSerializer serializer){
+		contextualSerializers.add(serializer);
+	}
+	
 	private static Json setup(AssetManager assets, ObjectMap<Class, Serializer> serializers)
 	{
+		EntityGroupSerializer entityGroupSerializer = new EntityGroupSerializer(assets);
+		
 		Json json = new Json();
-		json.setSerializer(EntityGroup.class, new EntityGroupSerializer(assets));
+		json.setSerializer(EntityGroup.class, entityGroupSerializer);
 		
 		// TODO configure in plugins using asset serializer
 		json.setSerializer(Sprite.class, new SpriteSerializer());
 		json.setSerializer(Texture.class, new TextureRef(assets));
 		json.setSerializer(ModelInstance.class, new ModelRef(assets));
+		
+		for(ContextualSerializer serializer : contextualSerializers){
+			serializer.context = entityGroupSerializer;
+			json.setSerializer(serializer.getType(), serializer);
+		}
 		
 		for(AssetSerializer serializer : assetSerializers){
 			serializer.assets = assets;
@@ -191,6 +203,7 @@ public class Storage
 	private static EntityGroup load(Reader reader, AssetManager assets, ObjectMap<Class, Serializer> serializers)
 	{
 		Json json = setup(assets, serializers);
+		
 		EntityGroup group = json.fromJson(EntityGroup.class, reader);
 		// first resolve proxies
 		for(Entity entity : new Array<Entity>(group.entities)) // copy array to insert into it

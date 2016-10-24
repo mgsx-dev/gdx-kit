@@ -19,6 +19,8 @@ public class EntityGroupSerializer implements Json.Serializer<EntityGroup>
 {
 	private AssetManager assets;
 	
+	/** used to track entities */
+	EntityGroup object;
 	
 	
 	public EntityGroupSerializer(AssetManager assets) {
@@ -84,7 +86,7 @@ public class EntityGroupSerializer implements Json.Serializer<EntityGroup>
 	@Override
 	public EntityGroup read(Json json, JsonValue jsonData, Class type) 
 	{
-		EntityGroup object = new EntityGroup();
+		EntityGroup object = this.object = new EntityGroup();
 		object.entities = new Array<Entity>();
 		
 		for(JsonIterator i = jsonData.get("assets").iterator() ; i.hasNext() ; ){

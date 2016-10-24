@@ -719,6 +719,12 @@ public class Editor extends GameEngine
 		return entityEngine.createEntity(); // new Entity(); // TODO use pool
 	}
 
+	public Entity createAndAddEntity() {
+		Entity e = createEntity();
+		entityEngine.addEntity(e);
+		return e;
+	}
+
 	private Array<EntitySystem> overSystems = new Array<EntitySystem>();
 
 	public void toggleMode() {

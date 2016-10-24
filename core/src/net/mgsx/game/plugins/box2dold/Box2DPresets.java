@@ -14,8 +14,8 @@ import com.badlogic.gdx.physics.box2d.joints.RopeJointDef;
 
 import net.mgsx.game.plugins.box2d.model.Box2DBodyModel;
 import net.mgsx.game.plugins.box2d.model.Box2DFixtureModel;
+import net.mgsx.game.plugins.box2d.model.Box2DJointModel;
 import net.mgsx.game.plugins.box2dold.model.Items;
-import net.mgsx.game.plugins.box2dold.model.JointItem;
 
 public class Box2DPresets 
 {
@@ -76,7 +76,7 @@ public class Box2DPresets
 			Joint joint = world.createJoint(jdef);
 			
 			items.bodies.addAll(ballA, ballB);
-			items.joints.add(new JointItem("Pulley", jdef, joint));
+			items.joints.add(new Box2DJointModel("Pulley", jdef, joint));
 		}
 	};
 	
@@ -101,7 +101,7 @@ public class Box2DPresets
 			Joint joint = world.createJoint(jdef);
 			
 			items.bodies.addAll(ballA, ballB);
-			items.joints.add(new JointItem("Revolute", jdef, joint));
+			items.joints.add(new Box2DJointModel("Revolute", jdef, joint));
 		}
 	};
 	
@@ -151,7 +151,7 @@ public class Box2DPresets
 //					def.localAnchorB.set(x, y-i*10);
 					def.maxLength = 1;
 					Joint joint = world.createJoint(def);
-					items.joints.add(new JointItem("rope node", def, joint));
+					items.joints.add(new Box2DJointModel("rope node", def, joint));
 				}
 				
 				prev = cur;
