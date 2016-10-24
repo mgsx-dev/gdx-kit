@@ -24,17 +24,19 @@ abstract public class JointTool<T extends JointDef> extends MultiClickTool
 	protected void complete() 
 	{
 		// TODO based on editor !
-		if(worldItem.selection.bodies.size < 2){
+		if(editor.selection.size < 2){
 			return;
 		}
-		Box2DBodyModel bodyA = worldItem.selection.bodies.get(worldItem.selection.bodies.size-2);
-		Box2DBodyModel bodyB = worldItem.selection.bodies.get(worldItem.selection.bodies.size-1);
+		Box2DBodyModel bodyA = editor.selection.get(editor.selection.size-2).getComponent(Box2DBodyModel.class);
+		Box2DBodyModel bodyB = editor.selection.get(editor.selection.size-1).getComponent(Box2DBodyModel.class);
 		
 		final T def = createJoint(bodyA, bodyB);
 		
 		def.bodyA = bodyA.body;
 		def.bodyB = bodyB.body;
 		
-		worldItem.performCommand(Box2DCommands.addJoint(worldItem, name, def));
+		editor.performCommand(Box2DCommands.addJoint(worldItem.world, name, def));
+		
+		end();
 	}
 }

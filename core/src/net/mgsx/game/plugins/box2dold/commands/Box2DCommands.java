@@ -7,6 +7,7 @@ import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.Joint;
 import com.badlogic.gdx.physics.box2d.JointDef;
+import com.badlogic.gdx.physics.box2d.World;
 
 import net.mgsx.game.core.commands.Command;
 import net.mgsx.game.plugins.box2d.model.Box2DBodyModel;
@@ -88,20 +89,22 @@ public class Box2DCommands {
 			}
 		};
 	}
-	public static Command addJoint(final WorldItem worldItem, final String name, final JointDef def){
+	public static Command addJoint(final World world, final String name, final JointDef def){
 		return new Command(){
 			private Joint joint;
 			private JointItem jointItem;
 			@Override
 			public void commit() {
-				joint = worldItem.world.createJoint(def);
-				jointItem = new JointItem(name, def, joint);
-				worldItem.items.joints.add(jointItem);
+				joint = world.createJoint(def);
+				// TODO add entity
+				// jointItem = new JointItem(name, def, joint);
+				// worldItem.items.joints.add(jointItem);
 			}
 			@Override
 			public void rollback() {
-				worldItem.world.destroyJoint(joint);
-				worldItem.items.joints.removeValue(jointItem, true);
+				world.destroyJoint(joint);
+				// TODO remove entity
+				// worldItem.items.joints.removeValue(jointItem, true);
 			}
 		};
 	}

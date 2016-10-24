@@ -25,7 +25,7 @@ public class WorldItem
 	public World world;
 	public Editor editor;
 	public Items items = new Items();
-	public Items selection = new Items();
+	private Items selection = new Items();
 	public Array<Actor> actors = new Array<Actor>();
 	public Array<SpriteItem> sprites = new Array<SpriteItem>();
 	

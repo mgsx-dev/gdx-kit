@@ -9,9 +9,4 @@ public class NoTool extends Tool
 		super(name, editor);
 	}
 
-	@Override
-	protected void activate() {
-		editor.subToolGroup.clear();
-	}
-
 }

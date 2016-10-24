@@ -19,7 +19,6 @@ import net.mgsx.game.core.helpers.ReflectionHelper;
 import net.mgsx.game.core.plugins.GlobalEditorPlugin;
 import net.mgsx.game.core.tools.NoTool;
 import net.mgsx.game.core.tools.Tool;
-import net.mgsx.game.core.tools.ToolGroup;
 import net.mgsx.game.core.ui.EntityEditor;
 import net.mgsx.game.core.ui.TabPane;
 import net.mgsx.game.plugins.box2d.model.Box2DBodyModel;
@@ -63,14 +62,14 @@ public class Box2DEditorPlugin implements GlobalEditorPlugin {
 	@Override
 	public Actor createEditor(Editor editor, Skin skin) {
 		
-		ToolGroup mainTools = editor.subToolGroup; // mainToolGroup;
-		mainTools.clear();
+		final Array<Tool> allTools = new Array<Tool>();
 		
+		Tool noTool = new NoTool("no tool", editor);
 		
 		// Shape tools
 		final Array<Tool> shapeTools = new Array<Tool>();
 		
-		shapeTools.add(new NoTool("no tool", editor));
+		shapeTools.add(noTool);
 		shapeTools.add(new CreateRectangleTool(editor, worldItem));
 		shapeTools.add(new CreatePolygonTool(editor, worldItem));
 		shapeTools.add(new CreateCircleTool(editor, worldItem));
@@ -78,7 +77,7 @@ public class Box2DEditorPlugin implements GlobalEditorPlugin {
 		shapeTools.add(new CreateLoopTool(editor, worldItem));
 		shapeTools.add(new CreateEdgeTool(editor, worldItem));
 		
-		mainTools.tools.addAll(shapeTools);
+		allTools.addAll(shapeTools);
 		
 		// Joint tools
 		final Array<Tool> jointTools = new Array<Tool>();
@@ -95,7 +94,7 @@ public class Box2DEditorPlugin implements GlobalEditorPlugin {
 		jointTools.add(new JointWeldTool(editor, worldItem));
 		jointTools.add(new JointWheelTool(editor, worldItem));
 
-		mainTools.tools.addAll(jointTools);
+		allTools.addAll(jointTools);
 		
 		// Test tools
 		final Array<Tool> testTools = new Array<Tool>();
@@ -105,12 +104,8 @@ public class Box2DEditorPlugin implements GlobalEditorPlugin {
 		testTools.add(behaviorTool(editor, "Simple AI", SimpleAI.class));
 		
 		// ...
-		
-
 
 		
-		mainTools.setDefaultTool(null);
-		mainTools.setActiveTool(null);
 		
 		// remaining...
 		EntityEditor worldEditor = new EntityEditor(skin);
@@ -155,8 +150,8 @@ public class Box2DEditorPlugin implements GlobalEditorPlugin {
 			if(field.getType() == Box2DPreset.class){
 				final Box2DPreset preset = ReflectionHelper.get(null, field, Box2DPreset.class);
 				final Tool tool = new PresetTool(field.getName(), editor, worldItem, preset);
-				mainTools.tools.add(tool);
-				presetTable.addActor(editor.createToolButton(mainTools, tool));
+				allTools.add(tool);
+				presetTable.addActor(editor.createToolButton(tool));
 			}
 		}
 		
@@ -201,13 +196,13 @@ public class Box2DEditorPlugin implements GlobalEditorPlugin {
 		worldPane.addActor(playPauseButton);
 		
 		VerticalGroup shapePane = new VerticalGroup();
-		for(Tool tool : shapeTools) shapePane.addActor(editor.createToolButton(mainTools, tool));
+		for(Tool tool : shapeTools) shapePane.addActor(editor.createToolButton(tool));
 		
 		VerticalGroup jointPane = new VerticalGroup();
-		for(Tool tool : jointTools) jointPane.addActor(editor.createToolButton(mainTools, tool));
+		for(Tool tool : jointTools) jointPane.addActor(editor.createToolButton(tool));
 
 		VerticalGroup testPane = new VerticalGroup();
-		for(Tool tool : testTools) testPane.addActor(editor.createToolButton(mainTools, tool));
+		for(Tool tool : testTools) testPane.addActor(editor.createToolButton(tool));
 
 		TabPane tabs = new TabPane(skin);
 		tabs.addTab("World", worldPane);

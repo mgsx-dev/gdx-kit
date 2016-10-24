@@ -9,8 +9,6 @@ import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
-import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -83,7 +81,6 @@ public class Box2DEditor extends Editor
 	public void reset(){
 		super.reset();
 		worldItem.items.clear();
-		worldItem.selection.clear();
 		worldItem.world.dispose();
 		worldItem.world = new World(worldItem.settings.gravity, true);
 		rebuild();
@@ -243,16 +240,16 @@ public class Box2DEditor extends Editor
 		worldPane.addActor(btBg);
 		
 		VerticalGroup shapePane = new VerticalGroup();
-		for(Tool tool : shapeTools) shapePane.addActor(createToolButton(mainTools, tool));
+		for(Tool tool : shapeTools) shapePane.addActor(createToolButton(tool));
 		
 		VerticalGroup jointPane = new VerticalGroup();
-		for(Tool tool : jointTools) jointPane.addActor(createToolButton(mainTools, tool));
+		for(Tool tool : jointTools) jointPane.addActor(createToolButton(tool));
 
 		VerticalGroup testPane = new VerticalGroup();
-		for(Tool tool : testTools) testPane.addActor(createToolButton(mainTools, tool));
+		for(Tool tool : testTools) testPane.addActor(createToolButton(tool));
 
 		VerticalGroup editPane = new VerticalGroup();
-		for(Tool tool : editTools) editPane.addActor(createToolButton(mainTools, tool));
+		for(Tool tool : editTools) editPane.addActor(createToolButton(tool));
 		
 		TabPane tabs = new TabPane(skin);
 		tabs.addTab("World", worldPane);
@@ -340,10 +337,6 @@ public class Box2DEditor extends Editor
 		// draw other shapes (tools)
 		
 		shapeRenderer.begin(ShapeType.Filled);
-		Vector2 s = Tool.pixelSize(camera).scl(3);
-		for(Box2DBodyModel item : worldItem.selection.bodies){
-			shapeRenderer.rect(item.body.getPosition().x-s.x, item.body.getPosition().y-s.y, 2*s.x, 2*s.y);
-		}	
 		for(Box2DBodyModel item : worldItem.items.bodies){
 			if(item.behavior != null) item.behavior.renderDebug(shapeRenderer);
 		}
@@ -351,11 +344,6 @@ public class Box2DEditor extends Editor
 		shapeRenderer.end();
 		
 		shapeRenderer.begin(ShapeType.Line);
-		for(SpriteItem item : worldItem.selection.sprites){
-			Rectangle r = item.sprite.getBoundingRectangle();
-			shapeRenderer.rect(item.sprite.getX(), item.sprite.getY(), item.sprite.getWidth(), item.sprite.getHeight());
-			shapeRenderer.rect(r.x, r.y, r.width, r.height);
-		}
 		shapeRenderer.end();
 		}
 		//System.out.println(1.f / Gdx.graphics.getDeltaTime());

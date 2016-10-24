@@ -98,8 +98,10 @@ public class Editor extends GameEngine
 	
 	private InputMultiplexer toolDelegator;
 	
-	private ToolGroup mainToolGroup; // XXX temporarily public ...
-	public ToolGroup subToolGroup;
+	private ToolGroup mainToolGroup;
+	
+	/** tools displayed as button when selection change (contextual tools) */
+	private Array<Tool> mainTools = new Array<Tool>();
 	
 	private Map<String, GlobalEditorPlugin> globalEditors = new LinkedHashMap<String, GlobalEditorPlugin>();
 	
@@ -280,7 +282,6 @@ public class Editor extends GameEngine
 		
 		createToolGroup().addProcessor(new UndoTool(this));
 		
-		subToolGroup = createToolGroup();
 		mainToolGroup = createToolGroup();
 
 		addTool(new NoTool("Select", this));;
@@ -551,7 +552,7 @@ public class Editor extends GameEngine
 		buttons.clear();
 //		for(ToolGroup toolGroup : tools)
 //		{
-			for(Tool tool : mainToolGroup.tools){
+			for(Tool tool : mainTools){
 				if(tool.activator == null || (entity != null && tool.activator.matches(entity))){
 					buttons.add(createToolButton(tool.name, mainToolGroup, tool));
 				}
@@ -608,12 +609,19 @@ public class Editor extends GameEngine
 
 	public void addTool(Tool tool) {
 		mainToolGroup.tools.add(tool);
+		mainTools.add(tool);
+	}
+	
+	public void addSubTool(Tool tool) {
+		mainToolGroup.tools.add(tool);
 	}
 	
 	
-	public TextButton createToolButton(final ToolGroup group, final Tool tool) 
+	
+	
+	public TextButton createToolButton(final Tool tool) 
 	{
-		return createToolButton(tool.name, group, tool);
+		return createToolButton(tool.name, mainToolGroup, tool); // all groups
 	}
 	protected TextButton createToolButton(String name, final ToolGroup group, final Tool tool) 
 	{
@@ -726,6 +734,11 @@ public class Editor extends GameEngine
 	
 	public <T extends EditorPlugin> T getEditorPlugin(Class<T> type) {
 		return (T)editorPlugins.get(type);
+	}
+
+	public void performCommand(Command command) 
+	{
+		history.add(command);
 	}
 
 	
