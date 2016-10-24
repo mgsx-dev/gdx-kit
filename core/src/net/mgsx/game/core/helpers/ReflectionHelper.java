@@ -1,6 +1,8 @@
 package net.mgsx.game.core.helpers;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 public class ReflectionHelper {
 
@@ -91,6 +93,27 @@ public class ReflectionHelper {
 		try {
 			return Class.forName(className);
 		} catch (ClassNotFoundException e) {
+			throw new ReflectionError(e);
+		}
+	}
+	public static Method method(Class type, String name, Class ...parameterTypes) {
+		try {
+			return type.getMethod(name, parameterTypes);
+		} catch (NoSuchMethodException e) {
+			return null; // not found
+		} catch (SecurityException e) {
+			throw new ReflectionError(e);
+		}
+	}
+	/** note : return null if return type is void */
+	public static Object invoke(Object obj, Method method, Object...args) {
+		try {
+			return method.invoke(obj, args);
+		} catch (IllegalAccessException e) {
+			throw new ReflectionError(e);
+		} catch (IllegalArgumentException e) {
+			throw new ReflectionError(e);
+		} catch (InvocationTargetException e) {
 			throw new ReflectionError(e);
 		}
 	}

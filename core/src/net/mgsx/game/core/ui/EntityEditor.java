@@ -1,6 +1,7 @@
 package net.mgsx.game.core.ui;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
 import com.badlogic.gdx.Input;
@@ -24,143 +25,264 @@ public class EntityEditor extends Table
 	public static class EntityEvent extends Event
 	{
 		public Object entity;
-		public Field field;
+		public Accessor accessor;
 		public Object value;
-		public EntityEvent(Object entity, Field field, Object value) {
+		public EntityEvent(Object entity, Accessor accessor, Object value) {
 			super();
 			this.entity = entity;
-			this.field = field;
+			this.accessor = accessor;
 			this.value = value;
 		}
 	}
+	private Array<Object> stack = new Array<Object>();
+	
 	public EntityEditor(Skin skin) {
 		super(skin);
+	}
+	public EntityEditor(Object entity, Skin skin) {
+		super(skin);
+		setEntity(entity);
 	}
 	
 	public void setEntity(Object entity)
 	{
+		stack.clear();
+		
 		clearChildren();
 		
-		try {
-			if(entity != null) generate(entity);
-		} catch (IllegalArgumentException e) {
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			e.printStackTrace();
+		if(entity != null)
+		{
+			generate(entity, this);
 		}
 	}
 	
-	private void generate(final Object entity) throws IllegalArgumentException, IllegalAccessException{
+	public static interface Accessor
+	{
+		public Object get();
+		public void set(Object value);
+		public String getName();
+		public Class getType();
+	}
+	private static class FieldAccessor implements Accessor
+	{
+		private Object object;
+		private Field field;
+		
+		public FieldAccessor(Object object, Field field) {
+			super();
+			this.object = object;
+			this.field = field;
+		}
+		public FieldAccessor(Object object, String fieldName) {
+			super();
+			this.object = object;
+			this.field = ReflectionHelper.field(object, fieldName);
+		}
+
+		@Override
+		public Object get() {
+			return ReflectionHelper.get(object, field);
+		}
+
+		@Override
+		public void set(Object value) {
+			ReflectionHelper.set(object, field, value);
+		}
+		@Override
+		public String getName() {
+			return field.getName();
+		}
+		@Override
+		public Class getType() {
+			return field.getType();
+		}
+		
+	}
+	private static class MethodAccessor implements Accessor
+	{
+		private Object object;
+		private String name;
+		private Method getter;
+		private Method setter;
+		
+		
+		public MethodAccessor(Object object, String name, Method getter, Method setter) {
+			super();
+			this.object = object;
+			this.name = name;
+			this.getter = getter;
+			this.setter = setter;
+		}
+
+		@Override
+		public Object get() {
+			return ReflectionHelper.invoke(object, getter);
+		}
+
+		@Override
+		public void set(Object value) {
+			ReflectionHelper.invoke(object, setter, value);
+		}
+
+		@Override
+		public String getName() {
+			return name;
+		}
+
+		@Override
+		public Class getType() {
+			return getter.getReturnType();
+		}
+		
+	}
+	
+	private void generate(final Object entity, final Table table)
+	{
+		// prevent cycles
+		if(entity == null || stack.contains(entity, true)) return;
+		stack.add(entity);
+		
+		// first scan class to get all accessors
+		Array<Accessor> accessors = new Array<Accessor>();
+		
+		// scan fields
 		for(Field field : entity.getClass().getFields())
 		{
-			final Field fField = field;
 			if(Modifier.isStatic(field.getModifiers())) continue;
-			add(field.getName()).fill().left();
-			if(field.getType() == int.class){
+			
+			accessors.add(new FieldAccessor(entity, field));
+		}
+		
+		// scan getter/setter pattern
+		for(Method method : entity.getClass().getMethods())
+		{
+			if(Modifier.isStatic(method.getModifiers())) continue;
+			
+			if(method.getName().startsWith("set") && method.getName().length() > 3 && method.getParameterCount() == 1)
+			{
+				String getterName = "g" + method.getName().substring(1);
+				Method getter = ReflectionHelper.method(entity.getClass(), getterName);
+				if(getter == null || getter.getReturnType() != method.getParameterTypes()[0]){
+					// try boolean pattern setX/isX
+					getterName = "is" + method.getName().substring(3);
+					getter = ReflectionHelper.method(entity.getClass(), getterName);
+				}
+				if(getter != null && getter.getReturnType() == method.getParameterTypes()[0]){
+					String name = method.getName().substring(3,4).toLowerCase() + method.getName().substring(4);
+					accessors.add(new MethodAccessor(entity, name, getter, method));
+				}
+			}
+		}
+		
+		for(final Accessor accessor : accessors)
+		{
+			table.add(accessor.getName()).fill().left();
+			if(accessor.getType() == int.class){
 				// TODO slider
 				final Label label = new Label("", getSkin());
 				TextButton btPlus = new TextButton("+", getSkin());
 				TextButton btMinus = new TextButton("-", getSkin());
-				add(label);
-				add(btPlus);
-				add(btMinus);
-				label.setText(String.valueOf(field.getInt(entity)));
+				table.add(label);
+				table.add(btPlus);
+				table.add(btMinus);
+				label.setText(String.valueOf(accessor.get()));
 				
 				btPlus.addListener(new ChangeListener() {
 					@Override
 					public void changed(ChangeEvent event, Actor actor) {
-						int value = 1 + (Integer)ReflectionHelper.get(entity, fField);
-						ReflectionHelper.set(entity, fField, value);
+						int value = 1 + (Integer)accessor.get();
+						accessor.set(value);
 						label.setText(String.valueOf(value));
-						fire(new EntityEvent(entity, fField, value));
+						fire(new EntityEvent(entity, accessor, value));
 					}
 				});
 				btMinus.addListener(new ChangeListener() {
 					@Override
 					public void changed(ChangeEvent event, Actor actor) {
-						int value = -1 + (Integer)ReflectionHelper.get(entity, fField);
-						ReflectionHelper.set(entity, fField, value);
+						int value = -1 + (Integer)accessor.get();
+						accessor.set(value);
 						label.setText(String.valueOf(value));
-						fire(new EntityEvent(entity, fField, value));
+						fire(new EntityEvent(entity, accessor, value));
 					}
 				});
 				
-			}else if(field.getType() == float.class){
+			}else if(accessor.getType() == float.class){
 				
-				createSlider(this, entity, fField, entity, fField);
+				createSlider(table, entity, accessor, entity, accessor);
 				
 				
-			}else if(field.getType() == boolean.class){
-				String value = String.valueOf(field.getBoolean(entity));
+			}else if(accessor.getType() == boolean.class){
+				String value = String.valueOf(accessor.get());
 				final TextButton btCheck = new TextButton(value, getSkin());
-				btCheck.setChecked(field.getBoolean(entity));
+				btCheck.setChecked((Boolean)accessor.get());
 				btCheck.addListener(new ChangeListener() {
 					
 					@Override
 					public void changed(ChangeEvent event, Actor actor) {
 						btCheck.setText(String.valueOf(btCheck.isChecked()));
-						ReflectionHelper.set(entity, fField, btCheck.isChecked());
-						fire(new EntityEvent(entity, fField, btCheck.isChecked()));
+						accessor.set(btCheck.isChecked());
+						fire(new EntityEvent(entity, accessor, btCheck.isChecked()));
 					}
 				});
-				add(btCheck);
+				table.add(btCheck);
 				
-			}else if(field.getType() == Vector2.class){
-				Vector2 v = ReflectionHelper.get(entity, fField, Vector2.class);
-				add("(");
-				createSlider(this, entity, fField, v, ReflectionHelper.field(v, "x"));
-				add(",");
-				createSlider(this, entity, fField, v, ReflectionHelper.field(v, "y"));
-				add(")");
-			}else if(field.getType().isEnum()){
+			}else if(accessor.getType() == Vector2.class){
+				Vector2 v = (Vector2)accessor.get();
+				// TODO subtable
+				table.add("(");
+				createSlider(table, entity, accessor, v, new FieldAccessor(v, "x"));
+				table.add(",");
+				createSlider(table, entity, accessor, v, new FieldAccessor(v, "y"));
+				table.add(")");
+			}else if(accessor.getType().isEnum()){
 				final SelectBox<Object> selector = new SelectBox<Object>(getSkin());
 				Array<Object> values = new Array<Object>();
-				for(Object o : field.getType().getEnumConstants()) values.add(o);
+				for(Object o : accessor.getType().getEnumConstants()) values.add(o);
 				selector.setItems(values);
-				selector.setSelected(ReflectionHelper.get(entity, fField));
+				selector.setSelected(accessor.get());
 				selector.addListener(new ChangeListener() {
 					@Override
 					public void changed(ChangeEvent event, Actor actor) {
-						ReflectionHelper.set(entity, fField, selector.getSelected());
+						accessor.set(selector.getSelected());
 					}
 				});
-				add(selector);
+				table.add(selector);
 			}else{
-				EntityEditor subEditor = new EntityEditor(getSkin());
-				subEditor.setEntity(field.get(entity));
-				add(subEditor).fill();
+				Table sub = new Table(getSkin());
+				table.add(sub).fill();
+				generate(accessor.get(), sub);
 			}
-			row();
+			table.row();
 		}
 	}
 	
-	static public void createSlider(final Table table, final Object entity, final Field fField){
-		createSlider(table, entity, fField, entity, fField);
+	static public void createSlider(final Table table, final Object entity, final Accessor accessor){
+		createSlider(table, entity, accessor, entity, accessor);
 	}	
-	static public void createSlider(final Table table, final Object rootEntity, final Field rootField, final Object entity, final Field fField){
+	static public void createSlider(final Table table, final Object rootEntity, final Accessor rootField, final Object entity, final Accessor accessor){
 		final Label label = new Label("", table.getSkin());
-		label.setText(String.valueOf(ReflectionHelper.get(entity, fField)));
+		label.setText(String.valueOf(accessor.get()));
 		table.add(label);
 		label.addListener(new DragListener(){
 			@Override
 			public void drag(InputEvent event, float x, float y,
 					int pointer) {
-				float value = (Float)ReflectionHelper.get(entity, fField);
+				float value = (Float)accessor.get();
 				value += value == 0 ? 0.1f : -getDeltaX() * value * 0.01;
-				ReflectionHelper.set(entity, fField, value);
+				accessor.set(value);
 				label.setText(String.valueOf(value));
 				
-				table.fire(new EntityEvent(rootEntity, rootField, ReflectionHelper.get(rootEntity, rootField)));
+				table.fire(new EntityEvent(rootEntity, rootField, rootField.get()));
 			}
 			@Override
 			public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
 				if(button == Input.Buttons.RIGHT){
-					float value = (Float)ReflectionHelper.get(entity, fField);
+					float value = (Float)accessor.get();
 					value = -value;
-					ReflectionHelper.set(entity, fField, value);
+					accessor.set(value);
 					label.setText(String.valueOf(value));
 					
-					table.fire(new EntityEvent(rootEntity, rootField, ReflectionHelper.get(rootEntity, rootField)));
+					table.fire(new EntityEvent(rootEntity, rootField, rootField.get()));
 
 					return true;
 				}

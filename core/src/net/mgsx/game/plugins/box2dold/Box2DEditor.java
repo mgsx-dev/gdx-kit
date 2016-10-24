@@ -24,7 +24,6 @@ import com.badlogic.gdx.utils.Array;
 import net.mgsx.game.core.Editor;
 import net.mgsx.game.core.NativeService;
 import net.mgsx.game.core.NativeService.DialogCallback;
-import net.mgsx.game.core.helpers.ReflectionHelper;
 import net.mgsx.game.core.tools.Tool;
 import net.mgsx.game.core.tools.ToolGroup;
 import net.mgsx.game.core.ui.EntityEditor;
@@ -140,8 +139,6 @@ public class Box2DEditor extends Editor
 			@Override
 			public boolean handle(Event event) {
 				if(event instanceof EntityEditor.EntityEvent){
-					EntityEditor.EntityEvent e = ((EntityEditor.EntityEvent) event);
-					ReflectionHelper.set(e.entity, e.field, e.value);
 					worldItem.world.setGravity(worldItem.settings.gravity);
 					// TODO update others ...
 					return true;

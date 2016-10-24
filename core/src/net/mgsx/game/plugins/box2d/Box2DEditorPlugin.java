@@ -115,8 +115,6 @@ public class Box2DEditorPlugin implements GlobalEditorPlugin {
 			@Override
 			public boolean handle(Event event) {
 				if(event instanceof EntityEditor.EntityEvent){
-					EntityEditor.EntityEvent e = ((EntityEditor.EntityEvent) event);
-					ReflectionHelper.set(e.entity, e.field, e.value);
 					worldItem.world.setGravity(worldItem.settings.gravity);
 					// TODO update others ...
 					return true;

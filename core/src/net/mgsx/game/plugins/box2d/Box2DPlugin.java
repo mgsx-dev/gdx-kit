@@ -219,6 +219,7 @@ public class Box2DPlugin extends EditorPlugin
 			}
 		});
 
+		// TODO type should be configured in editor (activation function !)
 		editor.registerPlugin(Box2DBodyModel.class, new Box2DBodyEditorPlugin());
 		
 	}
