@@ -53,6 +53,7 @@ public class PlatformerPostProcessing
 		public float speed = 1.5f;
 		public float frequency = 100f;
 		public float rate = 0.01f;
+		public boolean enabled = false;
 	}
 	
 	public Settings settings = new Settings();
@@ -147,6 +148,7 @@ public class PlatformerPostProcessing
 			@Override
 			public void update(float deltaTime) 
 			{
+				if(!settings.enabled) return;
 				validate();
 				
 				fbo.begin();
@@ -157,6 +159,8 @@ public class PlatformerPostProcessing
 			@Override
 			public void update(float deltaTime) 
 			{
+				if(!settings.enabled) return;
+				
 				fbo.end();
 				
 				fbo2.begin();

@@ -99,6 +99,7 @@ public class EntityEditor extends Table
 					@Override
 					public void changed(ChangeEvent event, Actor actor) {
 						btCheck.setText(String.valueOf(btCheck.isChecked()));
+						ReflectionHelper.set(entity, fField, btCheck.isChecked());
 						fire(new EntityEvent(entity, fField, btCheck.isChecked()));
 					}
 				});
