@@ -164,7 +164,7 @@ public class PlatformerPostProcessing
 				fbo.end();
 				
 				fbo2.begin();
-				Gdx.gl.glClearColor(0, 0, 0, 0);
+				Gdx.gl.glClearColor(0,0,0, 0);
 				Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 				modelBatch.begin(engine.camera);
 				modelBatch.render(waterModels);
@@ -177,6 +177,7 @@ public class PlatformerPostProcessing
 				Vector3 v = engine.camera.project(new Vector3(0,0,d));
 				world.set(-v.x / Gdx.graphics.getWidth(), -v.y / Gdx.graphics.getHeight());
 				
+				batch.disableBlending();
 				batch.begin();
 				Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 				
