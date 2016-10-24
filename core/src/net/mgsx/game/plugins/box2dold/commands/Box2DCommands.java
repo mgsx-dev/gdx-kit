@@ -96,11 +96,12 @@ public class Box2DCommands {
 			public void commit() {
 				Entity entity = editor.currentEntity();
 				
+				// prevent add component joint on entity with body component. 
 				// XXX it works so why not : bodyB carry joint which is logic : B depends A
-				// prevent add component joint on entity with bosy component. It could work but
-				// not sure if it's a good idea.
-//				if(entity.getComponent(Box2DBodyModel.class) != null)
-//					entity = editor.createAndAddEntity();
+				// problem is, creation order : if B created before A this will raise an error !
+				// so need to have a lector for joints or attach it to a mesh or a sprite ...
+				if(entity.getComponent(Box2DBodyModel.class) != null)
+					entity = editor.createAndAddEntity();
 				
 				entity.add(new Box2DJointModel(name, def, world.createJoint(def)));
 			}

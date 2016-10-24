@@ -41,6 +41,7 @@ import net.mgsx.game.core.commands.CommandHistory;
 import net.mgsx.game.core.components.Attach;
 import net.mgsx.game.core.components.Movable;
 import net.mgsx.game.core.components.ProxyComponent;
+import net.mgsx.game.core.components.Transform2DComponent;
 import net.mgsx.game.core.helpers.EntityHelper.SingleComponentIteratingSystem;
 import net.mgsx.game.core.plugins.EditorPlugin;
 import net.mgsx.game.core.plugins.EntityEditorPlugin;
@@ -59,6 +60,7 @@ import net.mgsx.game.core.tools.Tool;
 import net.mgsx.game.core.tools.ToolGroup;
 import net.mgsx.game.core.tools.UndoTool;
 import net.mgsx.game.core.tools.ZoomTool;
+import net.mgsx.game.core.ui.EntityEditor;
 import net.mgsx.game.core.ui.TabPane;
 import net.mgsx.game.plugins.box2dold.SkinFactory;
 
@@ -346,6 +348,13 @@ public class Editor extends GameEngine
 			}
 		});;
 
+		// TODO create helper for these
+		registerPlugin(Transform2DComponent.class, new EntityEditorPlugin() {
+			@Override
+			public Actor createEditor(Entity entity, Skin skin) {
+				return new EntityEditor(entity.getComponent(Transform2DComponent.class), skin);
+			}
+		});
 		
 		addTool(new DeleteTool("Delete", this));;
 		

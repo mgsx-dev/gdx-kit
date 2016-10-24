@@ -19,6 +19,8 @@ public class JointDistanceTool extends JointTool<DistanceJointDef> {
 		def.bodyA = bodyA.body;
 		def.bodyB = bodyB.body;
 		def.collideConnected = true;
+		def.length = dots.get(0).dst(dots.get(1));
+		
 		def.localAnchorA.set(new Vector2(dots.get(0)).sub(bodyA.body
 				.getPosition()));
 		def.localAnchorB.set(new Vector2(dots.get(1)).sub(bodyB.body

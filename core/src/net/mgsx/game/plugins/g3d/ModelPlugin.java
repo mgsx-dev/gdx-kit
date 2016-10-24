@@ -17,6 +17,7 @@ import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.graphics.g3d.model.Node;
 import com.badlogic.gdx.graphics.g3d.model.NodePart;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.utils.Array;
 
@@ -112,7 +113,7 @@ public class ModelPlugin extends EditorPlugin
 				if(transformation.enabled){
 					model.modelInstance.transform.idt();
 					model.modelInstance.transform.translate(transformation.position.x, transformation.position.y, 0); // 0 is sprite plan
-					model.modelInstance.transform.rotate(0, 0, 1, transformation.angle);
+					model.modelInstance.transform.rotate(0, 0, 1, transformation.angle * MathUtils.radiansToDegrees);
 					model.modelInstance.transform.translate(-model.origin.x, -model.origin.y, -model.origin.z);
 					model.modelInstance.transform.translate(-transformation.origin.x, -transformation.origin.y, 0);
 				}
