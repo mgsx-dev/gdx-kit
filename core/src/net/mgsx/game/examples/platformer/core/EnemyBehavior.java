@@ -7,6 +7,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.Fixture;
 
+import net.mgsx.game.core.components.Transform2DComponent;
 import net.mgsx.game.core.plugins.Initializable;
 import net.mgsx.game.plugins.box2d.Box2DListener;
 import net.mgsx.game.plugins.box2d.model.Box2DBodyModel;
@@ -52,7 +53,7 @@ public class EnemyBehavior implements LogicBehavior, Initializable
 	public void update(float deltaTime) 
 	{
 		boolean isOutside = outsideCounter > 0;
-		System.out.println(isOutside);
+		// System.out.println(outsideCounter);
 		// TODO query box2D 
 		// TODO 
 		// body.context.queryFirstBody(pos);
@@ -64,18 +65,34 @@ public class EnemyBehavior implements LogicBehavior, Initializable
 //			// body.body.applyTorque(0.1f * direction, true);
 //			isOutside = false;
 //		}
-		if(body.body.getPosition().sub(startup).len() > 2) direction = body.body.getPosition().sub(startup).x > 0 ? -1 : 1;
-//		body.fixtures.get(0).fixture.setFriction(0.5f);
+		
+		// if(body.body.getPosition().sub(startup).len() > 10 || body.body.getLinearVelocity().x < 0.1f) direction = body.body.getPosition().sub(startup).x > 0 ? -1 : 1;
+
+		if(Math.abs(body.body.getLinearVelocity().len()) < 0.001f) direction = body.body.getLinearVelocity().x > 0 ? -1 : 1;
+
+		
+		//		body.fixtures.get(0).fixture.setFriction(0.5f);
 //		body.fixtures.get(0).fixture.setRestitution(0.3f);
 //		body.body.setAngularVelocity(8f * direction);
 		// body.body.setLinearVelocity(1f * direction, 0);
 		if(Math.abs(body.body.getLinearVelocity().x) < 1f)
-			body.body.applyForceToCenter(2.5f * direction, 0, true);
-		
+			body.body.applyForceToCenter(5.5f * direction, 0, true);
 		
 		Entity entity = (Entity)body.body.getUserData();
+		
+		Transform2DComponent tr = entity.getComponent(Transform2DComponent.class);
+		if(tr != null){
+			tr.enabled = false;
+		}
+		
 		G3DModel model = entity.getComponent(G3DModel.class);
 		if(model != null){
+			
+			// XXX patch animation current
+			model.animationController.allowSameAnimation = true;
+			if(model.animationController.current == null) 
+				model.animationController.setAnimation(model.modelInstance.animations.first().id, -1);
+			
 			model.modelInstance.transform.idt();
 			model.modelInstance.transform.translate(body.body.getPosition().x, body.body.getPosition().y - 0.1f, 0);
 			model.modelInstance.transform.rotate(0, 0, 1, body.body.getAngle() * MathUtils.radiansToDegrees);
