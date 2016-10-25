@@ -165,7 +165,24 @@ public class PlayerComponent implements Component, Initializable
 			}
 		};
 		
-		physics.fixtures.get(0).fixture.setUserData(new Box2DMultiplexer(lianaListener, bonusListener, enemyListener, climbListener, swimListener));
+		Box2DListener platformListener = new Box2DComponentListener<PlatformComponent>(PlatformComponent.class) {
+
+			@Override
+			protected void beginContact(Contact contact, Fixture self, Fixture other, Entity otherEntity,
+					PlatformComponent otherComponent) {
+				contact.setFriction(1); // TODO is it really necessary ?
+			}
+
+			@Override
+			protected void endContact(Contact contact, Fixture self, Fixture other, Entity otherEntity,
+					PlatformComponent otherComponent) {
+				
+			}
+
+		};
+		
+
+		physics.fixtures.get(0).fixture.setUserData(new Box2DMultiplexer(platformListener, lianaListener, bonusListener, enemyListener, climbListener, swimListener));
 		
 		model = entity.getComponent(G3DModel.class);
 		model.animationController.allowSameAnimation = true;

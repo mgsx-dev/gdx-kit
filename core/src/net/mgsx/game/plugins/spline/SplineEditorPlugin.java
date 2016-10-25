@@ -20,7 +20,6 @@ import net.mgsx.game.core.NativeService;
 import net.mgsx.game.core.NativeService.DialogCallback;
 import net.mgsx.game.core.helpers.EntityHelper;
 import net.mgsx.game.core.plugins.EditorPlugin;
-import net.mgsx.game.core.storage.Storage;
 import net.mgsx.game.core.tools.Tool;
 
 public class SplineEditorPlugin extends EditorPlugin
@@ -34,8 +33,8 @@ public class SplineEditorPlugin extends EditorPlugin
 				NativeService.instance.openLoadDialog(new DialogCallback() {
 					@Override
 					public void selected(FileHandle file) {
-						// TODO ? BlenderCurve curve = editor.loadAssetNow(file.path(), BlenderCurve.class);
-						BlenderCurve curve = Storage.load(file, BlenderCurve.class);
+						BlenderCurve curve = editor.loadAssetNow(file.path(), BlenderCurve.class);
+						// BlenderCurve curve = Storage.load(file, BlenderCurve.class);
 						PathComponent path = new PathComponent();
 						path.path = curve;
 						Entity entity = editor.currentEntity();

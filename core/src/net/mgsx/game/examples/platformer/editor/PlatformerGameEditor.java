@@ -13,6 +13,7 @@ import net.mgsx.game.examples.platformer.core.EnemyComponent;
 import net.mgsx.game.examples.platformer.core.EnemyZone;
 import net.mgsx.game.examples.platformer.core.LianaZone;
 import net.mgsx.game.examples.platformer.core.LogicComponent;
+import net.mgsx.game.examples.platformer.core.PlatformComponent;
 import net.mgsx.game.examples.platformer.core.PlayerComponent;
 import net.mgsx.game.examples.platformer.core.TreeComponent;
 import net.mgsx.game.examples.platformer.core.WaterZone;
@@ -108,6 +109,15 @@ public class PlatformerGameEditor extends EditorPlugin {
 			protected Component createComponent(Entity entity) 
 			{
 				return new LianaZone();
+			}
+		});
+		
+		editor.addTool(new ComponentTool("Platform", editor, Family.all(Box2DBodyModel.class).get()) {
+			
+			@Override
+			protected Component createComponent(Entity entity) 
+			{
+				return new PlatformComponent();
 			}
 		});
 		
