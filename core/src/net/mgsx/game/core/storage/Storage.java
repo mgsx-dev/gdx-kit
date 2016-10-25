@@ -130,6 +130,10 @@ public class Storage
 		Json json = new Json();
 		json.setSerializer(EntityGroup.class, entityGroupSerializer);
 		
+		for(Entry<String, Class> entry : classTags){
+			json.addClassTag(entry.key, entry.value);
+		}
+		
 		// TODO configure in plugins using asset serializer
 		json.setSerializer(Sprite.class, new SpriteSerializer());
 		json.setSerializer(Texture.class, new TextureRef(assets));
@@ -244,6 +248,17 @@ public class Storage
 		if(typeMap.containsKey(name)) throw new Error("type name " + name + " already registered for class " + typeMap.get(name).getName());
 		typeMap.put(name, storable);
 		nameMap.put(storable, name);
+	}
+
+	private static ObjectMap<String, Class> classTags = new ObjectMap<String, Class>();
+	
+	public static void addClassTag(String tag, Class type) {
+		classTags.put(tag, type);
+	}
+
+	public static <T> T load(FileHandle file, Class<T> type) {
+		Json json = setup(null, new ObjectMap<Class, Json.Serializer>()); // XXX ?
+		return json.fromJson(type, file);
 	}
 
 }

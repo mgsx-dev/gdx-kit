@@ -15,6 +15,8 @@ import net.mgsx.game.plugins.parallax.ParallaxPlugin;
 import net.mgsx.game.plugins.particle2d.Particle2DEditorPlugin;
 import net.mgsx.game.plugins.particle2d.Particle2DPlugin;
 import net.mgsx.game.plugins.profiling.ProfilerPlugin;
+import net.mgsx.game.plugins.spline.SplineEditorPlugin;
+import net.mgsx.game.plugins.spline.SplinePlugin;
 import net.mgsx.game.plugins.sprite.SpritePlugin;
 
 public class PlatformerGameEditorLauncher {
@@ -32,6 +34,9 @@ public class PlatformerGameEditorLauncher {
 		editor.registerPlugin(new SpritePlugin());
 		editor.registerPlugin(new ParallaxPlugin());
 		editor.registerPlugin(new ModelPlugin());
+		
+		editor.registerPlugin(new SplinePlugin());
+		editor.registerPlugin(new SplineEditorPlugin());
 		
 		editor.registerPlugin(new Particle2DPlugin());
 		editor.registerPlugin(new Particle2DEditorPlugin());
