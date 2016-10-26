@@ -6,18 +6,27 @@ import com.badlogic.ashley.core.EntityListener;
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
+import com.badlogic.gdx.graphics.g3d.Renderable;
+import com.badlogic.gdx.graphics.g3d.Shader;
 import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.graphics.g3d.model.Node;
 import com.badlogic.gdx.graphics.g3d.model.NodePart;
+import com.badlogic.gdx.graphics.g3d.utils.DefaultShaderProvider;
+import com.badlogic.gdx.graphics.g3d.utils.ShaderProvider;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Quaternion;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.utils.Array;
 
@@ -37,6 +46,29 @@ public class ModelPlugin extends EditorPlugin
 	private ModelBatch modelBatch;
 	private Array<ModelInstance> modelInstances = new Array<ModelInstance>();
 
+	// TODO should be in editor code !
+	public static enum ShaderType{
+		DEFAULT, VERTEX, FRAGMENT, TOON
+	}
+	
+	public static class Settings
+	{
+		public ShaderType shader = ShaderType.DEFAULT;
+		
+		public Color ambient = new Color(0.4f, 0.4f, 0.4f, 1f);
+		public Color diffuse = new Color(0.8f, 0.8f, 0.8f, 1f);
+
+		public Quaternion direction = new Quaternion().setFromAxisRad(-1f, -0.8f, -0.2f, 0);
+	}
+	
+	Settings settings = new Settings();
+	
+	Environment environment;
+	
+	DirectionalLight light;
+	
+	private ShaderProvider [] shaderProviders;
+	
 	@Override
 	public void initialize(final Editor editor) 
 	{
@@ -61,7 +93,27 @@ public class ModelPlugin extends EditorPlugin
 		
 		// TODO env should be configurable ... in some way but it's not 1-1 mapping !
 		
-		modelBatch = new ModelBatch();
+		FileHandle vs = Gdx.files.classpath("net/mgsx/game/plugins/g3d/shaders/pixel-vertex.glsl");
+		FileHandle fs = Gdx.files.classpath("net/mgsx/game/plugins/g3d/shaders/pixel-fragment.glsl");
+		
+		shaderProviders = new ShaderProvider[ShaderType.values().length];
+		shaderProviders[ShaderType.DEFAULT.ordinal()] = new DefaultShaderProvider();
+		shaderProviders[ShaderType.VERTEX.ordinal()] = new DefaultShaderProvider();
+		shaderProviders[ShaderType.FRAGMENT.ordinal()] = new DefaultShaderProvider(vs, fs);
+		shaderProviders[ShaderType.TOON.ordinal()] = new DefaultShaderProvider(vs, fs); // TODO toon !
+		
+		
+		ShaderProvider switchableProvider = new ShaderProvider() {
+			@Override
+			public Shader getShader(Renderable renderable) {
+				return shaderProviders[settings.shader.ordinal()].getShader(renderable);
+			}
+			@Override
+			public void dispose() {
+			}
+		};
+		
+		modelBatch = new ModelBatch(switchableProvider);
 		
 		// synchronize modelInstances with entities
 		editor.entityEngine.addEntityListener(Family.one(G3DModel.class).get(), new EntityListener() {
@@ -83,9 +135,11 @@ public class ModelPlugin extends EditorPlugin
 			}
 		});
 		
-		final Environment environment = new Environment();
-        environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1f));
-        environment.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -1f, -0.8f, -0.2f));
+		light = new DirectionalLight().set(settings.diffuse, settings.direction.transform(new Vector3(0,0,1)) );
+		
+		environment = new Environment();
+        environment.set(new ColorAttribute(ColorAttribute.AmbientLight, settings.ambient));
+        environment.add(light);
 
 //        editor.entityEngine.addSystem(new SingleComponentIteratingSystem<G3DModel>(G3DModel.class, GamePipeline.BEFORE_RENDER) {
 //			@Override
@@ -125,6 +179,11 @@ public class ModelPlugin extends EditorPlugin
 			
 			@Override
 			public void update(float deltaTime) {
+				
+				// update environnement TODO editor specific ?
+				((ColorAttribute)environment.get(ColorAttribute.AmbientLight)).color.set(settings.ambient);
+				light.color.set(settings.diffuse);
+				light.direction.set(settings.direction.transform(new Vector3(0,0,1)));
 				
 				modelBatch.begin(editor.camera); // TODO allow switch between persperctive and ortho for Box2D drawings ...
 				modelBatch.render(modelInstances, environment);

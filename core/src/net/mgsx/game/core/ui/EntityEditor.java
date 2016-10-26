@@ -5,6 +5,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Event;
@@ -234,6 +235,9 @@ public class EntityEditor extends Table
 				table.add(",");
 				createSlider(table, entity, accessor, v, new FieldAccessor(v, "y"));
 				table.add(")");
+			}else if(accessor.getType() == Quaternion.class){
+				Quaternion q = (Quaternion)accessor.get();
+				createSlider2D(table, entity, accessor.getName(), q);
 			}else if(accessor.getType().isEnum()){
 				final SelectBox<Object> selector = new SelectBox<Object>(getSkin());
 				Array<Object> values = new Array<Object>();
@@ -256,6 +260,19 @@ public class EntityEditor extends Table
 		}
 	}
 	
+	private void createSlider2D(Table table, Object entity, String name, final Quaternion q) {
+		Label ctrl = new Label("CTRL", table.getSkin());
+		ctrl.addListener(new DragListener(){
+			Quaternion m = new Quaternion();
+			@Override
+			public void drag(InputEvent event, float x, float y, int pointer) {
+				float dx = getDeltaX();
+				float dy = getDeltaY();
+				q.mul(m.setEulerAngles(dx, dy,0));
+			}
+		});
+		table.add(ctrl);
+	}
 	static public void createSlider(final Table table, final Object entity, final Accessor accessor){
 		createSlider(table, entity, accessor, entity, accessor);
 	}	

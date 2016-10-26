@@ -10,6 +10,7 @@ import net.mgsx.game.examples.platformer.core.PlatformerPlugin;
 import net.mgsx.game.examples.platformer.editor.PlatformerGameEditor;
 import net.mgsx.game.plugins.box2d.Box2DPlugin;
 import net.mgsx.game.plugins.btree.BTreePlugin;
+import net.mgsx.game.plugins.g3d.G3DEditor;
 import net.mgsx.game.plugins.g3d.ModelPlugin;
 import net.mgsx.game.plugins.parallax.ParallaxPlugin;
 import net.mgsx.game.plugins.particle2d.Particle2DEditorPlugin;
@@ -33,7 +34,9 @@ public class PlatformerGameEditorLauncher {
 		editor.registerPlugin(new ProfilerPlugin());
 		editor.registerPlugin(new SpritePlugin());
 		editor.registerPlugin(new ParallaxPlugin());
+		
 		editor.registerPlugin(new ModelPlugin());
+		editor.addGlobalEditor("G3D", new G3DEditor());
 		
 		editor.registerPlugin(new SplinePlugin());
 		editor.registerPlugin(new SplineEditorPlugin());
