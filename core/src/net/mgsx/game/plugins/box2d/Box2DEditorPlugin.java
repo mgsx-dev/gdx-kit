@@ -2,19 +2,14 @@ package net.mgsx.game.plugins.box2d;
 
 import java.lang.reflect.Field;
 
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Array;
 
 import net.mgsx.game.core.Editor;
-import net.mgsx.game.core.NativeService;
-import net.mgsx.game.core.NativeService.DialogCallback;
 import net.mgsx.game.core.helpers.ReflectionHelper;
 import net.mgsx.game.core.plugins.GlobalEditorPlugin;
 import net.mgsx.game.core.tools.NoTool;
@@ -28,7 +23,6 @@ import net.mgsx.game.plugins.box2dold.behavior.BodyBehavior;
 import net.mgsx.game.plugins.box2dold.behavior.PlayerBehavior;
 import net.mgsx.game.plugins.box2dold.behavior.SimpleAI;
 import net.mgsx.game.plugins.box2dold.model.WorldItem;
-import net.mgsx.game.plugins.box2dold.persistence.Repository;
 import net.mgsx.game.plugins.box2dold.tools.CreateChainTool;
 import net.mgsx.game.plugins.box2dold.tools.CreateCircleTool;
 import net.mgsx.game.plugins.box2dold.tools.CreateEdgeTool;
@@ -123,24 +117,6 @@ public class Box2DEditorPlugin implements GlobalEditorPlugin {
 			}
 		});
 		
-		TextButton btReset = new TextButton("Reset", skin);
-		btReset.addListener(new ChangeListener() {
-			@Override
-			public void changed(ChangeEvent event, Actor actor) {
-				// TODO reset();
-			}
-		});
-		
-		final TextButton playPauseButton = new TextButton("pause", skin);
-		playPauseButton.setChecked(true);
-		playPauseButton.addListener(new ChangeListener() {
-			@Override
-			public void changed(ChangeEvent event, Actor actor) {
-				worldItem.settings.runSimulation = playPauseButton.isChecked();
-				playPauseButton.setText(worldItem.settings.runSimulation ? "pause" : "play");
-			}
-		});
-		
 		// convert to tools
 		VerticalGroup presetTable = new VerticalGroup();
 		presetTable.wrap(false);
@@ -153,45 +129,7 @@ public class Box2DEditorPlugin implements GlobalEditorPlugin {
 			}
 		}
 		
-		TextButton btSave = new TextButton("Save", skin);
-		TextButton btOpen = new TextButton("Open", skin);
-		
-		btSave.addListener(new ChangeListener() {
-			@Override
-			public void changed(ChangeEvent event, Actor actor) {
-				NativeService.instance.openSaveDialog(new DialogCallback() {
-					@Override
-					public void selected(FileHandle file) {
-						Repository.save(file, worldItem);
-					}
-					@Override
-					public void cancel() {
-					}
-				});
-			}
-		});
-		btOpen.addListener(new ChangeListener() {
-			@Override
-			public void changed(ChangeEvent event, Actor actor) {
-				NativeService.instance.openSaveDialog(new DialogCallback() {
-					@Override
-					public void selected(FileHandle file) {
-						Repository.load(file, worldItem);
-						// TODO rebuild();
-					}
-					@Override
-					public void cancel() {
-					}
-				});
-			}
-		});
 
-		
-		VerticalGroup worldPane = new VerticalGroup();
-		worldPane.addActor(btReset);
-		worldPane.addActor(btSave);
-		worldPane.addActor(btOpen);
-		worldPane.addActor(playPauseButton);
 		
 		VerticalGroup shapePane = new VerticalGroup();
 		for(Tool tool : shapeTools) shapePane.addActor(editor.createToolButton(tool));
@@ -203,16 +141,16 @@ public class Box2DEditorPlugin implements GlobalEditorPlugin {
 		for(Tool tool : testTools) testPane.addActor(editor.createToolButton(tool));
 
 		TabPane tabs = new TabPane(skin);
-		tabs.addTab("World", worldPane);
+		tabs.addTab("World", worldEditor);
 		tabs.addTab("Shapes", shapePane);
 		tabs.addTab("Joints", jointPane);
 		tabs.addTab("Presets", presetTable);
 		tabs.addTab("Test", testPane);
 
 //		tabs.add(editor.createToolButton(mainTools, new NoTool("no tool", orthographicCamera))).row();
-		tabs.add(worldEditor);
+		// tabs.add(worldEditor);
 		
-		tabs.setTab(worldPane);
+		tabs.setTab(worldEditor);
 		
 		return tabs;
 	}

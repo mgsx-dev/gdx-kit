@@ -13,7 +13,9 @@ import com.badlogic.ashley.core.Family;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.assets.AssetLoaderParameters;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.TextureLoader.TextureParameter;
+import com.badlogic.gdx.assets.loaders.resolvers.ClasspathFileHandleResolver;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -28,6 +30,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -49,6 +52,7 @@ import net.mgsx.game.core.plugins.GlobalEditorPlugin;
 import net.mgsx.game.core.plugins.SelectorPlugin;
 import net.mgsx.game.core.storage.Storage;
 import net.mgsx.game.core.tools.ClickTool;
+import net.mgsx.game.core.tools.ComponentTool;
 import net.mgsx.game.core.tools.DeleteTool;
 import net.mgsx.game.core.tools.DuplicateTool;
 import net.mgsx.game.core.tools.FollowSelectionTool;
@@ -62,7 +66,6 @@ import net.mgsx.game.core.tools.UndoTool;
 import net.mgsx.game.core.tools.ZoomTool;
 import net.mgsx.game.core.ui.EntityEditor;
 import net.mgsx.game.core.ui.TabPane;
-import net.mgsx.game.plugins.box2dold.SkinFactory;
 
 // TODO avoid complexity here : 
 // panel could be separated
@@ -88,8 +91,10 @@ public class Editor extends GameEngine
 	protected Stage stage;
 	protected Table panel;
 	protected Table buttons;
-	protected Table outline;
 	protected TabPane global;
+	private Table superGlobal;
+	
+	private AssetManager editorAssets;
 	
 	private OrthographicCamera orthographicCamera;
 	private PerspectiveCamera perspectiveCamera;
@@ -201,10 +206,14 @@ public class Editor extends GameEngine
 	{
 		super.create();
 		
+		editorAssets = new AssetManager(new ClasspathFileHandleResolver());
+		
 		perspectiveCamera = (PerspectiveCamera)camera; // XXX we are sure but ...
 		orthographicCamera = new OrthographicCamera();
 	
-		skin = SkinFactory.createSkin();
+		// XXX skin = SkinFactory.createSkin();
+		skin = loadAssetNow(editorAssets, "data/uiskin.json", Skin.class);
+		
 		stage = new Stage(new ScreenViewport());
 		history = new CommandHistory();
 		
@@ -212,14 +221,11 @@ public class Editor extends GameEngine
 		
 		Gdx.input.setInputProcessor(new InputMultiplexer(stage, toolDelegator));
 
-		outline = new Table(skin);
-		
-		
 		panel = new Table(skin);
 		// TODO add menu
 		global = new TabPane(skin);
 		buttons = new Table(skin);
-		Table superGlobal = new Table(skin);
+		superGlobal = new Table(skin);
 		
 		TextButton btSave = new TextButton("Save", skin);
 		TextButton btOpen = new TextButton("Open", skin);
@@ -269,12 +275,11 @@ public class Editor extends GameEngine
 		});
 		
 		
-		
+		ScrollPane scroll = new ScrollPane(buttons, skin);
 		
 		panel.add(superGlobal).row();
 		panel.add(global).row();
-		panel.add(buttons).row();
-		panel.add(outline).row();
+		panel.add(scroll).row();
 		
 		Table main = new Table();
 		main.add(panel).expand().left().top();
@@ -286,9 +291,9 @@ public class Editor extends GameEngine
 		
 		mainToolGroup = createToolGroup();
 
-		addTool(new NoTool("Select", this));;
+		addSuperTool(new NoTool("Select", this));;
 		
-		addTool(new ClickTool("Import", this) {
+		addSuperTool(new ClickTool("Import", this) {
 			private FileHandle file;
 			@Override
 			protected void activate() {
@@ -316,7 +321,7 @@ public class Editor extends GameEngine
 			}
 		});;
 
-		addTool(new ClickTool("Proxy", this) {
+		addSuperTool(new ClickTool("Proxy", this) {
 			private FileHandle file;
 			@Override
 			protected void activate() {
@@ -356,7 +361,7 @@ public class Editor extends GameEngine
 			}
 		});
 		
-		addTool(new DeleteTool("Delete", this));;
+		addSuperTool(new DeleteTool("Delete", this));;
 		
 //		addGlobalTool(new SelectToolBase(this){
 //			@Override
@@ -551,49 +556,94 @@ public class Editor extends GameEngine
 	}
 	
 	
-	public void updateSelection() 
+	private void updateSelection() 
 	{
 		Entity entity = selection.size == 1 ? selection.first() : null;
-		outline.clear();
 		
+		Array<Class<? extends Component>> handledComponents = new Array<Class<? extends Component>>();
 		
 		// rebuild menus as well :
 		buttons.clear();
-//		for(ToolGroup toolGroup : tools)
-//		{
-			for(Tool tool : mainTools){
-				if(tool.activator == null || (entity != null && tool.activator.matches(entity))){
-					buttons.add(createToolButton(tool.name, mainToolGroup, tool));
+		for(Tool tool : mainTools){
+			if(tool.activator == null || (entity != null && tool.activator.matches(entity)))
+			{
+				boolean handled = false;
+				
+				if(tool instanceof ComponentTool && entity != null){
+					ComponentTool componentTool = ((ComponentTool) tool);
+					Class<? extends Component> componentType = componentTool.getAssignableFor();
+					if(componentType != null){
+						Component component = entity.getComponent(componentType);
+						if(component != null){
+							handledComponents.add(componentType);
+							buttons.add(createOutline(entity, component)).row();
+							handled = true;
+						}
+					}
+				}
+				if(!handled){
+					buttons.add(createToolButton(tool.name, mainToolGroup, tool)).fill().row();
 				}
 			}
-//		}
+		}
 
 		
 		if(entity != null){
 			// EditorEntity config = entity.getComponent(EditorEntity.class);
 			
 			for(Component aspect : entity.getComponents()){
-				Array<EntityEditorPlugin> editors = editablePlugins.get(aspect.getClass());
-				if(editors != null)
-					for(EntityEditorPlugin editor : editors){
-						outline.add(createOutlineHeader(editor, entity, aspect)).fill().row();
-						outline.add(editor.createEditor(entity, skin)).fill().row();
-					}
+				if(!handledComponents.contains(aspect.getClass(), true)){
+					buttons.add(createOutline(entity, aspect)).fill().row();
+				}
 			}
 		}
 	}
 	
-	private Actor createOutlineHeader(EntityEditorPlugin plugin, final Entity entity, final Component component)
+	private Actor createOutline(final Entity entity, final Component component)
 	{
-		TextButton btRemove = new TextButton("Remove " + plugin.getClass().getSimpleName(), skin);
+		final TextButton btOpenClose = new TextButton(component.getClass().getSimpleName(), skin, "toggle");
+		
+		final TextButton btRemove = new TextButton("Remove", skin);
+		
+		final Table view = new Table(skin);
+		view.setBackground(skin.getDrawable("default-window"));
+		
+		final Table group = new Table(skin);
+		
+		group.add(btOpenClose);
+		group.add(btRemove).row();
+		group.add(view);
+		group.row();
+		
+		Array<EntityEditorPlugin> editors = editablePlugins.get(component.getClass());
+		if(editors != null){
+			for(EntityEditorPlugin editor : editors){
+				view.add(editor.createEditor(entity, skin)).row();;
+			}
+		}
+		
+		
+		btOpenClose.addListener(new ChangeListener() {
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				view.setVisible(btOpenClose.isChecked()); // TODO find another way ....
+			}
+		});
+		
 		btRemove.addListener(new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
 				entity.remove(component.getClass());
 			}
 		});
-		return btRemove;
+		
+		
+		
+		btOpenClose.setChecked(true);
+		
+		return group;
 	}
+	
 	
 	private Map<Class, Array<EntityEditorPlugin>> editablePlugins = new HashMap<Class, Array<EntityEditorPlugin>>();
 	public Array<Entity> selection = new Array<Entity>();
@@ -620,6 +670,10 @@ public class Editor extends GameEngine
 		mainToolGroup.tools.add(tool);
 		mainTools.add(tool);
 	}
+	private void addSuperTool(Tool tool) {
+		mainToolGroup.tools.add(tool);
+		superGlobal.add(createToolButton(tool));
+	}
 	
 	public void addSubTool(Tool tool) {
 		mainToolGroup.tools.add(tool);
@@ -634,7 +688,7 @@ public class Editor extends GameEngine
 	}
 	protected TextButton createToolButton(String name, final ToolGroup group, final Tool tool) 
 	{
-		final TextButton btTool = new TextButton(name, skin);
+		final TextButton btTool = new TextButton(name, skin, "toggle");
 		btTool.addListener(new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
@@ -656,12 +710,18 @@ public class Editor extends GameEngine
 	}
 
 	public <T> T loadAssetNow(String fileName, Class<T> type) {
+		return loadAssetNow(assets, fileName, type);
+	}
+	public <T> T loadAssetNow(String fileName, Class<T> type, AssetLoaderParameters<T> parameters) {
+		return loadAssetNow(assets, fileName, type, parameters);
+	}
+
+	public static <T> T loadAssetNow(AssetManager assets, String fileName, Class<T> type) {
 		assets.load(fileName, type);
 		assets.finishLoadingAsset(fileName);
 		return assets.get(fileName, type);
 	}
-
-	public <T> T loadAssetNow(String fileName, Class<T> type, AssetLoaderParameters<T> parameters) {
+	public static <T> T loadAssetNow(AssetManager assets, String fileName, Class<T> type, AssetLoaderParameters<T> parameters) {
 		assets.load(fileName, type, parameters);
 		assets.finishLoadingAsset(fileName);
 		return assets.get(fileName, type);

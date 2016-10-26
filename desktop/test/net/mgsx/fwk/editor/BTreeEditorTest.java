@@ -71,7 +71,7 @@ public class BTreeEditorTest
 					}
 				});
 				
-				outline.add(btStep).row();
+				buttons.add(btStep).row();
 				
 			}
 		}, config);

@@ -9,8 +9,15 @@ import net.mgsx.game.core.plugins.Initializable;
 
 abstract public class ComponentTool extends Tool
 {
+	private Class<? extends Component> assignableFor;
+	
 	public ComponentTool(String name, Editor editor, Class<? extends Component> assignableFor) {
 		this(name, editor, Family.one(assignableFor).get());
+		this.assignableFor = assignableFor;
+	}
+	
+	public Class<? extends Component> getAssignableFor() {
+		return assignableFor;
 	}
 	
 	public ComponentTool(String name, Editor editor, Family activator) {

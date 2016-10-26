@@ -12,7 +12,7 @@ public class ToggleButton extends TextButton
 {
 
 	public ToggleButton(final String textOn, final String textOff, final boolean checked, Skin skin) {
-		super(checked ? textOn : textOff, skin);
+		super(checked ? textOn : textOff, skin, "toggle");
 		setChecked(checked);
 		addListener(new ChangeListener() {
 			@Override

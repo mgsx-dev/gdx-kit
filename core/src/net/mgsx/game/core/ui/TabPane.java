@@ -28,7 +28,7 @@ public class TabPane extends Table
 	}
 	
 	public Button addTab(String title, final Actor page){
-		final TextButton button = new TextButton(title, getSkin());
+		final TextButton button = new TextButton(title, getSkin(), "toggle");
 		button.addListener(new ChangeListener() {
 			
 			@Override

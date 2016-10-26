@@ -39,9 +39,10 @@ public class EntityEditor extends Table
 	
 	public EntityEditor(Skin skin) {
 		super(skin);
+		setBackground(skin.getDrawable("default-window"));
 	}
 	public EntityEditor(Object entity, Skin skin) {
-		super(skin);
+		this(skin);
 		setEntity(entity);
 	}
 	
@@ -180,13 +181,16 @@ public class EntityEditor extends Table
 			table.add(accessor.getName()).fill().left();
 			if(accessor.getType() == int.class){
 				// TODO slider
+				Table sub = new Table(table.getSkin());
 				final Label label = new Label("", getSkin());
 				TextButton btPlus = new TextButton("+", getSkin());
 				TextButton btMinus = new TextButton("-", getSkin());
-				table.add(label);
-				table.add(btPlus);
-				table.add(btMinus);
+				sub.add(btMinus);
+				sub.add(label).pad(4);
+				sub.add(btPlus);
 				label.setText(String.valueOf(accessor.get()));
+				
+				table.add(sub).fill();
 				
 				btPlus.addListener(new ChangeListener() {
 					@Override
@@ -214,7 +218,7 @@ public class EntityEditor extends Table
 				
 			}else if(accessor.getType() == boolean.class){
 				String value = String.valueOf(accessor.get());
-				final TextButton btCheck = new TextButton(value, getSkin());
+				final TextButton btCheck = new TextButton(value, getSkin(), "toggle");
 				btCheck.setChecked((Boolean)accessor.get());
 				btCheck.addListener(new ChangeListener() {
 					
@@ -229,12 +233,13 @@ public class EntityEditor extends Table
 				
 			}else if(accessor.getType() == Vector2.class){
 				Vector2 v = (Vector2)accessor.get();
-				// TODO subtable
-				table.add("(");
-				createSlider(table, entity, accessor, v, new FieldAccessor(v, "x"));
-				table.add(",");
-				createSlider(table, entity, accessor, v, new FieldAccessor(v, "y"));
-				table.add(")");
+				Table sub = new Table(table.getSkin());
+				sub.add("(");
+				createSlider(sub, entity, accessor, v, new FieldAccessor(v, "x"));
+				sub.add(",");
+				createSlider(sub, entity, accessor, v, new FieldAccessor(v, "y"));
+				sub.add(")");
+				table.add(sub);
 			}else if(accessor.getType() == Quaternion.class){
 				Quaternion q = (Quaternion)accessor.get();
 				createSlider2D(table, entity, accessor.getName(), q);
@@ -252,8 +257,10 @@ public class EntityEditor extends Table
 				});
 				table.add(selector);
 			}else{
+				// TODO background ?
 				Table sub = new Table(getSkin());
-				table.add(sub).fill();
+				sub.setBackground(getSkin().getDrawable("default-window"));
+				table.add(sub).expand().fill().left();
 				generate(accessor.get(), sub);
 			}
 			table.row();
@@ -269,6 +276,7 @@ public class EntityEditor extends Table
 				float dx = getDeltaX();
 				float dy = getDeltaY();
 				q.mul(m.setEulerAngles(dx, dy,0));
+				event.cancel();
 			}
 		});
 		table.add(ctrl);
@@ -290,6 +298,9 @@ public class EntityEditor extends Table
 				label.setText(String.valueOf(value));
 				
 				table.fire(new EntityEvent(rootEntity, rootField, rootField.get()));
+				
+				 // prevent other widget (like ScrollPane) to act during dragging value
+				label.getStage().cancelTouchFocusExcept(this, label);
 			}
 			@Override
 			public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
