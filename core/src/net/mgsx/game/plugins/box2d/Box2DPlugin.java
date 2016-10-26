@@ -112,6 +112,20 @@ public class Box2DPlugin extends EditorPlugin
 			}
 		});
 		
+		
+		editor.entityEngine.addEntityListener(Family.all(Box2DJointModel.class).get(), new EntityListener() {
+			@Override
+			public void entityRemoved(Entity entity) {
+				entity.remove(Movable.class);
+			}
+			
+			@Override
+			public void entityAdded(Entity entity) {
+				entity.add(new Movable(new Box2DJointMovable()));
+			}
+		});
+		
+		
 		// TODO just a workaround ... need to think deeper is this stuff !
 		editor.addTool(new ComponentTool("Attach to body", editor, Family.all(Box2DBodyModel.class).get()) {
 			
@@ -247,6 +261,7 @@ public class Box2DPlugin extends EditorPlugin
 
 		// TODO type should be configured in editor (activation function !)
 		editor.registerPlugin(Box2DBodyModel.class, new Box2DBodyEditorPlugin());
+		editor.registerPlugin(Box2DJointModel.class, new Box2DJointEditorPlugin());
 		
 	}
 }
