@@ -10,5 +10,12 @@ import net.mgsx.game.core.Editor;
  */
 public interface GlobalEditorPlugin {
 
+	/**
+	 * return a new editor. Note that this methd is called once, editor is reused during
+	 * editor lifecycle.
+	 * @param editor
+	 * @param skin
+	 * @return
+	 */
 	public Actor createEditor(Editor editor, Skin skin);
 }

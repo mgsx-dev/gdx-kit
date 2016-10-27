@@ -386,6 +386,9 @@ public class Editor extends GameEngine
 		addGlobalTool(new FollowSelectionTool(this));
 		addGlobalTool(new SwitchModeTool(this));
 
+		
+		addGlobalEditor("Ashley", new EntityGlobalEditorPlugin());
+		
 		// register listener after plugins creation to create filters on all possible components
 		// finally initiate plugins.
 		// TODO separate runtme plugin part (model, serialization, update, render) from editor part
