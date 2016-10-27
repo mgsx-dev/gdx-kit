@@ -112,6 +112,8 @@ public class PlatformerPlugin implements Plugin
 			
 		});
 		
+		engine.entityEngine.addSystem(new PulleySystem());
+		
 		ppp = new PlatformerPostProcessing(engine);
 		
 	}
