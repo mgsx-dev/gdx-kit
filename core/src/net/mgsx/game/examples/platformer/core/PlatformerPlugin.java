@@ -9,10 +9,10 @@ import net.mgsx.SplineTest.BlenderNURBSCurve;
 import net.mgsx.game.core.GameEngine;
 import net.mgsx.game.core.GamePipeline;
 import net.mgsx.game.core.helpers.EmptySerializer;
-import net.mgsx.game.core.helpers.EntityHelper;
 import net.mgsx.game.core.plugins.Plugin;
 import net.mgsx.game.core.storage.Storage;
 import net.mgsx.game.plugins.box2d.model.Box2DBodyModel;
+import net.mgsx.game.plugins.g3d.G3DModel;
 import net.mgsx.game.plugins.spline.PathComponent;
 
 /**
@@ -58,23 +58,25 @@ public class PlatformerPlugin implements Plugin
 		
 		// add a processor for player
 		// TODO could be automated with a generic component and abstract behavior attached to it ?
-		engine.entityEngine.addSystem(new EntityHelper.SingleComponentIteratingSystem<PlayerComponent>(PlayerComponent.class) {
+		engine.entityEngine.addSystem(new IteratingSystem(Family.all(PlayerComponent.class, Box2DBodyModel.class, G3DModel.class).get(), GamePipeline.LOGIC) {
 			@Override
-			protected void processEntity(Entity entity, PlayerComponent component, float deltaTime) {
-				component.update(deltaTime);
+			protected void processEntity(Entity entity, float deltaTime) {
+				PlayerComponent pc = entity.getComponent(PlayerComponent.class);
+				pc.update(deltaTime);
 			}
 		});
 		
-		engine.entityEngine.addSystem(new EntityHelper.SingleComponentIteratingSystem<EnemyComponent>(EnemyComponent.class) {
+		engine.entityEngine.addSystem(new IteratingSystem(Family.all(EnemyComponent.class, Box2DBodyModel.class, G3DModel.class).get(), GamePipeline.LOGIC) {
 			@Override
-			protected void processEntity(Entity entity, EnemyComponent component, float deltaTime) {
-				component.behavior.update(deltaTime);
+			protected void processEntity(Entity entity, float deltaTime) {
+				entity.getComponent(EnemyComponent.class).behavior.update(deltaTime);
+				
 			}
 		});
-		engine.entityEngine.addSystem(new EntityHelper.SingleComponentIteratingSystem<TreeComponent>(TreeComponent.class) {
+		engine.entityEngine.addSystem(new IteratingSystem(Family.all(TreeComponent.class, Box2DBodyModel.class, G3DModel.class).get(), GamePipeline.LOGIC) {
 			@Override
-			protected void processEntity(Entity entity, TreeComponent component, float deltaTime) {
-				component.behavior.update(deltaTime);
+			protected void processEntity(Entity entity, float deltaTime) {
+				entity.getComponent(TreeComponent.class).behavior.update(deltaTime);
 			}
 		});
 		
