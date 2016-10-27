@@ -25,6 +25,7 @@ import com.badlogic.gdx.utils.ObjectMap.Entry;
 
 import net.mgsx.game.core.components.OverrideProxy;
 import net.mgsx.game.core.components.ProxyComponent;
+import net.mgsx.game.core.exceptions.NotSupportedEntityGroupException;
 import net.mgsx.game.core.plugins.Initializable;
 
 public class Storage 
@@ -186,11 +187,14 @@ public class Storage
 
 	public static Array<Entity> load(Engine engine, FileHandle file, AssetManager assets, ObjectMap<Class, Serializer> serializers) 
 	{
-		return load(engine, file.reader(), assets, serializers);
+		return load(engine, file, assets, serializers, false);
 	}
-	public static Array<Entity> load(Engine engine, Reader reader, AssetManager assets, ObjectMap<Class, Serializer> serializers) 
+	public static Array<Entity> load(Engine engine, FileHandle file, AssetManager assets, ObjectMap<Class, Serializer> serializers, boolean allowOnlySingle) 
 	{
-		EntityGroup group = load(reader, assets, serializers);
+		EntityGroup group = load(file.reader(), assets, serializers);
+		if(allowOnlySingle && group.entities.size > 1){
+			throw new NotSupportedEntityGroupException(file.path(), group);
+		}
 		for(Entity entity : new Array<Entity>(group.entities)){
 			// post initialization
 			for(Component component : entity.getComponents()){
@@ -216,7 +220,7 @@ public class Storage
 			if(proxy != null){
 				EntityGroup proxyGroup = load(Gdx.files.absolute(proxy.ref).reader(), assets, serializers);
 				if(proxyGroup.entities.size != 1){
-					throw new Error("Multi proxy not supported : having " + proxyGroup.entities.size + " elements in " + proxy.ref);
+					throw new NotSupportedEntityGroupException(proxy.ref, group);
 				}
 				
 				for(Entity sub : proxyGroup.entities){

@@ -345,7 +345,7 @@ public class Editor extends GameEngine
 			@Override
 			protected void create(final Vector2 position) 
 			{
-				for(Entity entity : Storage.load(entityEngine, file, assets, serializers)){
+				for(Entity entity : Storage.load(entityEngine, file, assets, serializers, true)){
 					// TODO add proxy component
 					Movable movable = entity.getComponent(Movable.class);
 					if(movable != null){

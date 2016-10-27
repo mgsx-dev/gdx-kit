@@ -1,6 +1,5 @@
 package net.mgsx;
 
-import java.io.StringReader;
 import java.io.StringWriter;
 
 import com.badlogic.ashley.core.Engine;
@@ -49,7 +48,7 @@ public class SerialTest {
 		Storage.save(engine, assets, writer, true, new ObjectMap<Class, Json.Serializer>());
 		engine.removeAllEntities();
 		
-		Storage.load(engine, new StringReader(writer.toString()), assets, new ObjectMap<Class, Json.Serializer>());
+		// Storage.load(engine, new StringReader(writer.toString()), assets, new ObjectMap<Class, Json.Serializer>());
 		
 		writer.append("\n\n");
 		Storage.save(engine, assets, writer, true, new ObjectMap<Class, Json.Serializer>());
