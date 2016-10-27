@@ -170,6 +170,38 @@ default-window
   orig: 27, 29
   offset: 0, 0
   index: -1
+default-window-header
+  rotate: false
+  xy: 1, 20
+  size: 27, 20
+  split: 4, 3, 2, 3
+  orig: 27, 20
+  offset: 0, 0
+  index: -1
+default-window-header-left
+  rotate: false
+  xy: 42, 1
+  size: 20, 27
+  split: 4, 4, 2, 4
+  orig: 20, 27
+  offset: 0, 0
+  index: -1
+default-window-body-right
+  rotate: false
+  xy: 62, 1
+  size: 9, 27
+  split: 2, 2, 4, 2
+  orig: 9, 27
+  offset: 0, 0
+  index: -1
+default-window-body
+  rotate: false
+  xy: 1, 40
+  size: 27, 9
+  split: 2, 1, 2, 2
+  orig: 27, 9
+  offset: 0, 0
+  index: -1
 selection
   rotate: false
   xy: 174, 48
