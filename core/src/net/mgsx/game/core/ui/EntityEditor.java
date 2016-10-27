@@ -11,11 +11,14 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
 import com.badlogic.gdx.utils.Array;
 
@@ -39,7 +42,7 @@ public class EntityEditor extends Table
 	
 	public EntityEditor(Skin skin) {
 		super(skin);
-		setBackground(skin.getDrawable("default-window"));
+		// setBackground(skin.getDrawable("default-window"));
 	}
 	public EntityEditor(Object entity, Skin skin) {
 		this(skin);
@@ -178,7 +181,8 @@ public class EntityEditor extends Table
 		
 		for(final Accessor accessor : accessors)
 		{
-			table.add(accessor.getName()).fill().left();
+			Label accessorLabel = new Label(accessor.getName(), table.getSkin());
+			table.add(accessorLabel).fill().left();
 			if(accessor.getType() == int.class){
 				// TODO slider
 				Table sub = new Table(table.getSkin());
@@ -215,6 +219,30 @@ public class EntityEditor extends Table
 				
 				createSlider(table, entity, accessor, entity, accessor);
 				
+				
+			}else if(accessor.getType() == String.class){
+				
+				final TextField field = new TextField(String.valueOf(accessor.get()), getSkin());
+				table.add(field);
+				field.addListener(new ChangeListener(){
+					@Override
+					public void changed(ChangeEvent event, Actor actor) {
+						accessor.set(field.getText());
+					}
+				});
+				
+				field.addListener(new ClickListener(){
+					@Override
+					public void touchDragged(InputEvent event, float x, float y, int pointer) {
+						field.getStage().cancelTouchFocusExcept(field.getDefaultInputListener(), field);
+						super.touchDragged(event, x, y, pointer);
+					}
+					@Override
+					public boolean keyDown(InputEvent event, int keycode) {
+						if(keycode == Input.Keys.ENTER) field.getStage().setKeyboardFocus(null);
+						return super.keyDown(event, keycode);
+					}
+				});
 				
 			}else if(accessor.getType() == boolean.class){
 				String value = String.valueOf(accessor.get());
@@ -258,8 +286,9 @@ public class EntityEditor extends Table
 				table.add(selector);
 			}else{
 				// TODO background ?
+				accessorLabel.setStyle(table.getSkin().get("tab-left", LabelStyle.class));
 				Table sub = new Table(getSkin());
-				sub.setBackground(getSkin().getDrawable("default-window"));
+				sub.setBackground(getSkin().getDrawable("default-window-body-right"));
 				table.add(sub).expand().fill().left();
 				generate(accessor.get(), sub);
 			}

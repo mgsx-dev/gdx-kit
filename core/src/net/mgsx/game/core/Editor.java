@@ -29,12 +29,14 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
@@ -91,6 +93,7 @@ public class Editor extends GameEngine
 	protected Stage stage;
 	protected Table panel;
 	protected Table buttons;
+	protected Table outline;
 	protected TabPane global;
 	private Table superGlobal;
 	
@@ -224,7 +227,8 @@ public class Editor extends GameEngine
 		panel = new Table(skin);
 		// TODO add menu
 		global = new TabPane(skin);
-		buttons = new Table(skin);
+		buttons = new Table(skin); buttons.setBackground(skin.getDrawable("default-rect"));
+		outline = new Table(skin); 
 		superGlobal = new Table(skin);
 		
 		TextButton btSave = new TextButton("Save", skin);
@@ -274,12 +278,15 @@ public class Editor extends GameEngine
 			}
 		});
 		
+		Table grp = new Table();
+		grp.add(buttons).fill().row();
+		grp.add(outline).fill().row();
 		
-		ScrollPane scroll = new ScrollPane(buttons, skin);
+		ScrollPane scroll = new ScrollPane(grp, skin, "light");
 		
 		panel.add(superGlobal).row();
 		panel.add(global).row();
-		panel.add(scroll).row();
+		panel.add(scroll).left().row();
 		
 		Table main = new Table();
 		main.add(panel).expand().left().top();
@@ -412,20 +419,28 @@ public class Editor extends GameEngine
 			}
 		});
 		
+		EntityListener selectionListener = new EntityListener() {
+			
+			@Override
+			public void entityRemoved(Entity entity) {
+				if(entity == getSelected()){
+					if(!entityEngine.getEntities().contains(entity, true)){
+						selection.removeValue(entity, true);
+					}
+					invalidateSelection(); // TODO or contains ?
+				}
+			}
+			
+			@Override
+			public void entityAdded(Entity entity) {
+				if(entity == getSelected()) invalidateSelection();
+			}
+		};
+		
 		for(Class<? extends Component> type : editablePlugins.keySet()){
-			entityEngine.addEntityListener(Family.one(type).get(), new EntityListener() {
-				
-				@Override
-				public void entityRemoved(Entity entity) {
-					if(entity == getSelected()) invalidateSelection();
-				}
-				
-				@Override
-				public void entityAdded(Entity entity) {
-					if(entity == getSelected()) invalidateSelection();
-				}
-			});
+			entityEngine.addEntityListener(Family.one(type).get(), selectionListener);
 		}
+		entityEngine.addEntityListener(selectionListener); // TODO maybe not the same listener
 		
 		// draw sleection
 		entityEngine.addSystem(new EntitySystem(GamePipeline.RENDER_OVER) {
@@ -558,90 +573,124 @@ public class Editor extends GameEngine
 	
 	private void updateSelection() 
 	{
-		Entity entity = selection.size == 1 ? selection.first() : null;
+		final Entity entity = selection.size == 1 ? selection.first() : null;
 		
-		Array<Class<? extends Component>> handledComponents = new Array<Class<? extends Component>>();
-		
-		// rebuild menus as well :
 		buttons.clear();
-		for(Tool tool : mainTools){
-			if(tool.activator == null || (entity != null && tool.activator.matches(entity)))
+		outline.clear();
+		outline.setBackground((Drawable)null);
+		
+		if(selection.size > 1)
+		{
+			buttons.add(String.valueOf(selection.size) + " entities").expandX().fill().row();
+		}
+		else
+		{
+			// Display all tools
+			buttons.add("Tools").expandX().center().row();
+			for(Tool tool : mainTools)
 			{
-				boolean handled = false;
 				
-				if(tool instanceof ComponentTool && entity != null){
-					ComponentTool componentTool = ((ComponentTool) tool);
-					Class<? extends Component> componentType = componentTool.getAssignableFor();
-					if(componentType != null){
-						Component component = entity.getComponent(componentType);
-						if(component != null){
-							handledComponents.add(componentType);
-							buttons.add(createOutline(entity, component)).row();
-							handled = true;
+				if(tool.activator == null || (entity != null && tool.activator.matches(entity)))
+				{
+					boolean handled = false;
+					
+					if(tool instanceof ComponentTool && entity != null){
+						ComponentTool componentTool = ((ComponentTool) tool);
+						Class<? extends Component> componentType = componentTool.getAssignableFor();
+						if(componentType != null){
+							Component component = entity.getComponent(componentType);
+							if(component == null){
+								buttons.add(createOutline(entity, component)).expandX().fill().row();
+								handled = true;
+							}
 						}
 					}
-				}
-				if(!handled){
-					buttons.add(createToolButton(tool.name, mainToolGroup, tool)).fill().row();
+					if(!handled){
+						buttons.add(createToolButton(tool.name, mainToolGroup, tool)).fill().row();
+					}
 				}
 			}
-		}
-
-		
-		if(entity != null){
-			// EditorEntity config = entity.getComponent(EditorEntity.class);
 			
-			for(Component aspect : entity.getComponents()){
-				if(!handledComponents.contains(aspect.getClass(), true)){
-					buttons.add(createOutline(entity, aspect)).fill().row();
+			// Display all entity components
+			if(entity != null)
+			{
+				Button btRemove = new Button(skin.getDrawable("tree-minus"));
+				btRemove.addListener(new ChangeListener(){
+					@Override
+					public void changed(ChangeEvent event, Actor actor) {
+						entityEngine.removeEntity(entity);
+					}
+				});
+				
+				outline.setBackground(skin.getDrawable("default-rect"));
+				String title = "Entity # " + String.valueOf(entityEngine.getEntities().indexOf(entity, true));
+				outline.add(title).expandX().center();
+				outline.add(btRemove).row();
+				for(Component aspect : entity.getComponents()){
+					outline.add(createOutline(entity, aspect)).expandX().fill().row();
 				}
 			}
 		}
+		
 	}
 	
 	private Actor createOutline(final Entity entity, final Component component)
 	{
-		final TextButton btOpenClose = new TextButton(component.getClass().getSimpleName(), skin, "toggle");
+		final boolean hasEditors = editablePlugins.get(component.getClass()) != null;
 		
-		final TextButton btRemove = new TextButton("Remove", skin);
 		
-		final Table view = new Table(skin);
-		view.setBackground(skin.getDrawable("default-window"));
+		final Table bodyTable = new Table(skin);
+		bodyTable.setBackground(skin.getDrawable("default-window-body"));
 		
-		final Table group = new Table(skin);
-		
-		group.add(btOpenClose);
-		group.add(btRemove).row();
-		group.add(view);
-		group.row();
-		
-		Array<EntityEditorPlugin> editors = editablePlugins.get(component.getClass());
-		if(editors != null){
-			for(EntityEditorPlugin editor : editors){
-				view.add(editor.createEditor(entity, skin)).row();;
-			}
+		final Table headerTable = new Table(skin);
+		if(hasEditors){
+			final Button btOpenClose = new Button(skin, "node");
+			
+			headerTable.add(btOpenClose).padRight(4);
+			btOpenClose.addListener(new ChangeListener() {
+				@Override
+				public void changed(ChangeEvent event, Actor actor) 
+				{
+					if(btOpenClose.isChecked()){
+						createComponentEditor(bodyTable, entity, component);
+					}else{
+						bodyTable.clear();
+					}
+				}
+			});
 		}
 		
-		
-		btOpenClose.addListener(new ChangeListener() {
-			@Override
-			public void changed(ChangeEvent event, Actor actor) {
-				view.setVisible(btOpenClose.isChecked()); // TODO find another way ....
-			}
-		});
-		
-		btRemove.addListener(new ChangeListener() {
+		Button btRemove = new Button(skin.getDrawable("tree-minus"));
+		btRemove.addListener(new ChangeListener(){
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
 				entity.remove(component.getClass());
 			}
 		});
 		
+		headerTable.add(component.getClass().getSimpleName()).expandX().left();
+		headerTable.add(btRemove);
+		
+		headerTable.setBackground(skin.getDrawable("default-window-header"));
 		
 		
-		btOpenClose.setChecked(true);
+		final Table group = new Table(skin);
+		
+		group.add(headerTable).expandX().fill().row();
+		group.add(bodyTable).expandX().fill();
+		
 		
 		return group;
+	}
+	
+	private void createComponentEditor(Table table, Entity entity, Component component)
+	{
+		Array<EntityEditorPlugin> editors = editablePlugins.get(component.getClass());
+		if(editors != null){
+			for(EntityEditorPlugin editor : editors){
+				table.add(editor.createEditor(entity, skin)).row();
+			}
+		}
 	}
 	
 	
