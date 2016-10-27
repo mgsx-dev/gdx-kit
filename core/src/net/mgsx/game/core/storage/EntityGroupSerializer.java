@@ -46,9 +46,12 @@ public class EntityGroupSerializer implements Json.Serializer<EntityGroup>
 		json.writeArrayEnd();
 		
 		json.writeArrayStart("entities");
-		for(Entity entity : object.entities)
+		for(int i=0 ; i<object.entities.size ; i++)
 		{
+			Entity entity = object.entities.get(i);
+			
 			json.writeObjectStart();
+			json.writeValue("id", i);
 			ProxyComponent proxy = entity.getComponent(ProxyComponent.class);
 			if(proxy != null){
 				// just serialize proxy
@@ -110,6 +113,7 @@ public class EntityGroupSerializer implements Json.Serializer<EntityGroup>
 			for(JsonIterator i = value.iterator() ; i.hasNext() ; ){
 				JsonValue cvalue = i.next();
 				String typeName = cvalue.name;
+				if("id".equals(typeName)) continue; // skip id tag
 				Class<? extends Component> componentType = Storage.typeMap.get(typeName);
 				if(componentType != null)
 				{
