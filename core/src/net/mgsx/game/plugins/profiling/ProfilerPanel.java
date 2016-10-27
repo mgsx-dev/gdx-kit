@@ -15,7 +15,7 @@ import net.mgsx.game.core.ui.ToggleButton;
 public class ProfilerPanel implements GlobalEditorPlugin
 {
 	@Override
-	public Actor createEditor(Editor editor, Skin skin) 
+	public Actor createEditor(final Editor editor, Skin skin) 
 	{
 		final TextButton switchButton = new ToggleButton("enabled", "disabled", false, skin);
 		switchButton.addListener(new ChangeListener() {
@@ -45,6 +45,8 @@ public class ProfilerPanel implements GlobalEditorPlugin
 		final Label textureBindings = createRow(stats, "textureBindings");
 		final Label vertexCount = createRow(stats, "vertexCount");
 		final Label triangleCount = createRow(stats, "triangleCount");
+	
+		final Label entityCount = createRow(stats, "entityCount");
 		
 		Table main = new Table(skin){
 			@Override
@@ -58,6 +60,9 @@ public class ProfilerPanel implements GlobalEditorPlugin
 				textureBindings.setText(String.valueOf(ProfilerPlugin.model.textureBindings));
 				vertexCount.setText(String.valueOf(ProfilerPlugin.model.vertexCount)); // TODO more
 				triangleCount.setText(String.valueOf(ProfilerPlugin.model.vertexCount / 6)); // TODO not really true ...
+				
+				entityCount.setText(String.valueOf(editor.entityEngine.getEntities().size()));
+				
 				super.act(delta);
 			}
 		};
