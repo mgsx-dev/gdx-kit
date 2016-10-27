@@ -215,6 +215,9 @@ public class Storage
 			ProxyComponent proxy = entity.getComponent(ProxyComponent.class);
 			if(proxy != null){
 				EntityGroup proxyGroup = load(Gdx.files.absolute(proxy.ref).reader(), assets, serializers);
+				if(proxyGroup.entities.size != 1){
+					throw new Error("Multi proxy not supported : having " + proxyGroup.entities.size + " elements in " + proxy.ref);
+				}
 				
 				for(Entity sub : proxyGroup.entities){
 					sub.add(proxy.duplicate());
