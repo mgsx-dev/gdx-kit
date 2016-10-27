@@ -220,9 +220,10 @@ public class ModelPlugin extends EditorPlugin
 			}
 		});
 		
-       editor.entityEngine.addSystem(new EntityHelper.SingleComponentIteratingSystem<TextureAnimationComponent>(TextureAnimationComponent.class, GamePipeline.BEFORE_RENDER) {
+       editor.entityEngine.addSystem(new IteratingSystem(Family.all(TextureAnimationComponent.class, G3DModel.class).get(), GamePipeline.BEFORE_RENDER) {
 			@Override
-			protected void processEntity(Entity entity, TextureAnimationComponent component, float deltaTime) {
+			protected void processEntity(Entity entity, float deltaTime) {
+				TextureAnimationComponent component = entity.getComponent(TextureAnimationComponent.class);
 				G3DModel model = entity.getComponent(G3DModel.class);
 				for(Node node : model.modelInstance.nodes)
 					for(NodePart part : node.parts){
