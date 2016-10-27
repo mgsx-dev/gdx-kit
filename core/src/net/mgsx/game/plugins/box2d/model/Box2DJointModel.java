@@ -17,5 +17,10 @@ public class Box2DJointModel implements Component
 		this.def = def;
 		this.joint = joint;
 	}
+	public void destroy() 
+	{
+		joint.getBodyA().getWorld().destroyJoint(joint);
+		joint = null;
+	}
 	
 }

@@ -116,12 +116,17 @@ public class Box2DPlugin extends EditorPlugin
 		editor.entityEngine.addEntityListener(Family.all(Box2DJointModel.class).get(), new EntityListener() {
 			@Override
 			public void entityRemoved(Entity entity) {
+				Box2DJointModel jm = (Box2DJointModel)entity.remove(Box2DJointModel.class);
+				if(jm != null){
+					jm.destroy();
+				}
 				entity.remove(Movable.class);
 			}
 			
 			@Override
 			public void entityAdded(Entity entity) {
 				entity.add(new Movable(new Box2DJointMovable()));
+				entity.getComponent(Box2DJointModel.class).joint.setUserData(entity);
 			}
 		});
 		
@@ -182,7 +187,10 @@ public class Box2DPlugin extends EditorPlugin
 			@Override
 			public void entityRemoved(Entity entity) {
 				Box2DBodyModel model = (Box2DBodyModel)entity.remove(Box2DBodyModel.class);
-				if(model != null) model.context.scheduleRemove(entity, model);
+				if(model != null){
+					model.context.scheduleRemove(entity, model);
+					entity.remove(Movable.class); // because of body reference
+				}
 			}
 			
 			@Override

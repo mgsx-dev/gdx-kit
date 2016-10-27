@@ -116,9 +116,11 @@ public class WorldItem
 					settings.velocityIterations, 
 					settings.positionIterations);
 			
-			for(Box2DBodyModel body : scheduledForDeletion){
+			for(Box2DBodyModel body : scheduledForDeletion)
+			{
 				body.dispose();
 			}
+			scheduledForDeletion.clear();
 		}
 		
 		

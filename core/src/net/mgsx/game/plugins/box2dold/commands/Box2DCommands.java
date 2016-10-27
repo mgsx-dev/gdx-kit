@@ -6,6 +6,7 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.badlogic.gdx.physics.box2d.Joint;
 import com.badlogic.gdx.physics.box2d.JointDef;
 import com.badlogic.gdx.physics.box2d.World;
 
@@ -103,7 +104,9 @@ public class Box2DCommands {
 				if(entity.getComponent(Box2DBodyModel.class) != null)
 					entity = editor.createAndAddEntity();
 				
-				entity.add(new Box2DJointModel(name, def, world.createJoint(def)));
+				Joint joint = world.createJoint(def);
+				joint.setUserData(entity);
+				entity.add(new Box2DJointModel(name, def, joint));
 			}
 			@Override
 			public void rollback() {
