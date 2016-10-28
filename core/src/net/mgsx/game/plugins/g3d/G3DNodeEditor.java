@@ -3,6 +3,7 @@ package net.mgsx.game.plugins.g3d;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.graphics.g3d.model.Animation;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -10,6 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Array;
 
 import net.mgsx.game.core.plugins.EntityEditorPlugin;
+import net.mgsx.game.core.ui.EntityEditor;
 
 public class G3DNodeEditor implements EntityEditorPlugin
 {
@@ -75,6 +77,24 @@ public class G3DNodeEditor implements EntityEditorPlugin
 		main.add("Animation");
 		main.add(animationSelector);
 		main.row();
+		
+		
+		final Button btBlend = EntityEditor.createBoolean(skin, model.blended);
+		
+		main.add("Blended");
+		main.add(btBlend);
+		main.row();
+		
+		
+		btBlend.addListener(new ChangeListener() {
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				if(model.blended != btBlend.isChecked()){
+					model.blended = btBlend.isChecked();
+					model.applyBlending();
+				}
+			}
+		});
 
 //		main.add("Parts");
 //		main.add(model.node.parts == null ? "none" : String.valueOf(model.node.parts.size));

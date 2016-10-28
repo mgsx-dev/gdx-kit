@@ -131,6 +131,7 @@ public class ModelPlugin extends EditorPlugin
 			public void entityAdded(Entity entity) {
 				G3DModel model = entity.getComponent(G3DModel.class);
 				modelInstances.add(model.modelInstance);
+				model.applyBlending();
 				if(entity.getComponent(Movable.class) == null) entity.add(new Movable(new ModelMove(model)));
 			}
 		});
@@ -230,10 +231,10 @@ public class ModelPlugin extends EditorPlugin
 						TextureAttribute ta = (TextureAttribute)part.material.get(TextureAttribute.Diffuse);
 						ta.offsetU += deltaTime * component.uPerSec;
 						ta.offsetV += deltaTime * component.vPerSec;
-						part.material.set(new BlendingAttribute(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA)); // XXX hack to force blending
 					}
 			}
 		});
+       
        
        editor.registerPlugin(TextureAnimationComponent.class, new TextureAnimationEditor());
 

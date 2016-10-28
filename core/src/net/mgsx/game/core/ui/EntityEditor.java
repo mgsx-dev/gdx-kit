@@ -10,6 +10,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
@@ -245,14 +246,11 @@ public class EntityEditor extends Table
 				});
 				
 			}else if(accessor.getType() == boolean.class){
-				String value = String.valueOf(accessor.get());
-				final TextButton btCheck = new TextButton(value, getSkin(), "toggle");
-				btCheck.setChecked((Boolean)accessor.get());
+				final Button btCheck = createBoolean(getSkin(), (Boolean)accessor.get());
 				btCheck.addListener(new ChangeListener() {
 					
 					@Override
 					public void changed(ChangeEvent event, Actor actor) {
-						btCheck.setText(String.valueOf(btCheck.isChecked()));
 						accessor.set(btCheck.isChecked());
 						fire(new EntityEvent(entity, accessor, btCheck.isChecked()));
 					}
@@ -346,6 +344,18 @@ public class EntityEditor extends Table
 				return super.touchDown(event, x, y, pointer, button);
 			}
 		});
+	}
+	public static Button createBoolean(Skin skin, boolean value) 
+	{
+		final TextButton btCheck = new TextButton(String.valueOf(value), skin, "toggle");
+		btCheck.setChecked(value);
+		btCheck.addListener(new ChangeListener() {
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				btCheck.setText(String.valueOf(btCheck.isChecked()));
+			}
+		});
+		return btCheck;
 	}
 	
 }

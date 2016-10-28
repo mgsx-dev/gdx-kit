@@ -1,7 +1,9 @@
 package net.mgsx.game.plugins.g3d;
 
 import com.badlogic.ashley.core.Component;
+import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
+import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.AnimationController;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Json;
@@ -15,6 +17,7 @@ public class G3DModel implements Component, Duplicable, Serializable
 	public ModelInstance modelInstance;
 	public Vector3 origin = new Vector3(0,0,0); // TODO introduce a pre matrix ... ?
 	public AnimationController animationController;
+	public boolean blended;
 	
 	@Override
 	public Component duplicate() 
@@ -25,6 +28,7 @@ public class G3DModel implements Component, Duplicable, Serializable
 		if(animationController != null){
 			model.animationController = new AnimationController(model.modelInstance);
 		}
+		model.blended = blended;
 		return model;
 	}
 
@@ -33,6 +37,7 @@ public class G3DModel implements Component, Duplicable, Serializable
 	{
 		json.writeField(this, "modelInstance");
 		json.writeField(this, "origin");
+		json.writeField(this, "blended");
 	}
 
 	@Override
@@ -40,7 +45,20 @@ public class G3DModel implements Component, Duplicable, Serializable
 	{
 		json.readField(this, "modelInstance", jsonData);
 		json.readField(this, "origin", jsonData);
+		json.readField(this, "blended", jsonData);
 		animationController = new AnimationController(modelInstance);
+	}
+
+	public void applyBlending() 
+	{
+		for(Material material : modelInstance.materials){
+			BlendingAttribute attr = (BlendingAttribute)material.get(BlendingAttribute.Type);
+			if(attr == null){
+				attr = new BlendingAttribute(1);
+				material.set(attr);
+			}
+			attr.blended = blended;
+		}
 	}
 	
 	
