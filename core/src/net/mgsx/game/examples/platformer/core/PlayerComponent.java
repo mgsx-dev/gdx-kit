@@ -41,6 +41,18 @@ public class PlayerComponent implements Component, Initializable
 	
 	private Body currentLiana;
 	
+	
+	// Physics constants
+	private float walkForceOnGround = 5f;
+	private float walkForceInTheAir = 2f;
+	private float jumpVelocity = 6f;
+	private float jumpForce = 1f;
+	private float lianaForce = 1;
+	private float swimForce = 4; // TODO use speed instead of force (mass independant)
+	private float climbSpeed = 2;
+	
+
+	
 	@Override
 	public void initialize(final Engine engine, final Entity entity)
 	{
@@ -216,17 +228,17 @@ public class PlayerComponent implements Component, Initializable
 	private void updateControls(){
 		Body body = physics.body;
 		Vector2 vel = body.getLinearVelocity();
-		float force = !onGround ? 1f : 5f;
+		float force = !onGround ? walkForceInTheAir : walkForceOnGround;
 		if(Gdx.input.isKeyPressed(Input.Keys.LEFT)){
 				body.applyForceToCenter(new Vector2(-force, 0),  true);
 		}else if(Gdx.input.isKeyPressed(Input.Keys.RIGHT)){
 				body.applyForceToCenter(new Vector2(force, 0),  true);
 		}else if(onGround){
-			vel.x *= 0.9f;
+			vel.x *= 0.9f; // TODO slow down ... should be handled by friction ?
 		}
 		if(Gdx.input.isKeyPressed(Input.Keys.Z)){
 			if(onGround){
-				vel.y = 6;
+				vel.y = jumpVelocity;
 			}
 		}
 		float limit = Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT) ? 1.2f : 3.2f;
@@ -267,7 +279,7 @@ public class PlayerComponent implements Component, Initializable
 			climbing = false;
 			
 			model.animationController.animate("IdlePose", -1, 1, null, 1);
-			if(Gdx.input.isKeyPressed(Input.Keys.Z)) physics.body.applyLinearImpulse(0, 1f, // TODO jump force refactor ...
+			if(Gdx.input.isKeyPressed(Input.Keys.Z)) physics.body.applyLinearImpulse(0, jumpForce, 
 					0, 0, true); // XXX little jump not needed 
 			physics.body.setGravityScale(1);
 		}
@@ -297,9 +309,9 @@ public class PlayerComponent implements Component, Initializable
 		
 		float force = 0;
 		if(Gdx.input.isKeyPressed(Input.Keys.LEFT))
-			force = -1;
+			force = -lianaForce;
 		else if(Gdx.input.isKeyPressed(Input.Keys.RIGHT))
-			force = 1;
+			force = lianaForce;
 		
 		currentLiana.applyForce(force, 0, physics.body.getPosition().x, physics.body.getPosition().y, true);
 		
@@ -309,7 +321,7 @@ public class PlayerComponent implements Component, Initializable
 	{
 		Body body = physics.body;
 		Vector2 vel = body.getLinearVelocity().cpy();
-		float speed = 2;
+		float speed = swimForce;
 		
 		if(Gdx.input.isKeyPressed(Input.Keys.LEFT)){
 			vel.x = -speed;
@@ -348,7 +360,7 @@ public class PlayerComponent implements Component, Initializable
 	{
 		Body body = physics.body;
 		Vector2 vel = body.getLinearVelocity();
-		float speed = 2;
+		float speed = climbSpeed;
 		
 		if(Gdx.input.isKeyPressed(Input.Keys.LEFT)){
 			vel.x = -speed;
