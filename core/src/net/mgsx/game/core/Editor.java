@@ -523,7 +523,7 @@ public class Editor extends GameEngine
 		batch.enableBlending();
 		batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 		
-		Gdx.gl.glClearColor(.5f, .5f, .5f, 1);
+		Gdx.gl.glClearColor(.7f, .9f, 1f, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
 		entityEngine.update(Gdx.graphics.getDeltaTime());
