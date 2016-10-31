@@ -25,7 +25,7 @@ public class EntityHelper
 
 		@Override
 		protected void processEntity(Entity entity, float deltaTime) {
-			T c = entity.getComponent(type);
+			T c = entity.getComponent(type); // TODO use mapper instead
 			if(c != null) processEntity(entity, c, deltaTime);
 		}
 		

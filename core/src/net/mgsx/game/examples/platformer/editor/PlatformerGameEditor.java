@@ -16,6 +16,7 @@ import net.mgsx.game.examples.platformer.core.LogicComponent;
 import net.mgsx.game.examples.platformer.core.PlatformComponent;
 import net.mgsx.game.examples.platformer.core.PlayerComponent;
 import net.mgsx.game.examples.platformer.core.PulleyComponent;
+import net.mgsx.game.examples.platformer.core.CavernComponent;
 import net.mgsx.game.examples.platformer.core.TreeComponent;
 import net.mgsx.game.examples.platformer.core.WaterZone;
 import net.mgsx.game.plugins.box2d.model.Box2DBodyModel;
@@ -140,6 +141,14 @@ public class PlatformerGameEditor extends EditorPlugin {
 				LogicComponent logic = new TreeComponent();
 				logic.initialize(editor.entityEngine, entity);
 				return logic;
+			}
+		});
+		editor.addTool(new ComponentTool("Cavern Logic", editor, Family.all(G3DModel.class).get()) {
+			
+			@Override
+			protected Component createComponent(Entity entity) 
+			{
+				return new CavernComponent();
 			}
 		});
 

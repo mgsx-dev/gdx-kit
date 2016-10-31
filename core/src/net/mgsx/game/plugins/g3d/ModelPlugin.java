@@ -9,13 +9,11 @@ import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.Shader;
-import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
@@ -225,12 +223,15 @@ public class ModelPlugin extends EditorPlugin
 			@Override
 			protected void processEntity(Entity entity, float deltaTime) {
 				TextureAnimationComponent component = entity.getComponent(TextureAnimationComponent.class);
+				component.time += deltaTime;
+				component.uOffset += component.uPerSec * deltaTime;
+				component.vOffset += component.vPerSec * deltaTime;
 				G3DModel model = entity.getComponent(G3DModel.class);
 				for(Node node : model.modelInstance.nodes)
 					for(NodePart part : node.parts){
 						TextureAttribute ta = (TextureAttribute)part.material.get(TextureAttribute.Diffuse);
-						ta.offsetU += deltaTime * component.uPerSec;
-						ta.offsetV += deltaTime * component.vPerSec;
+						ta.offsetU = component.uOffset;
+						ta.offsetV = component.vOffset;
 					}
 			}
 		});
