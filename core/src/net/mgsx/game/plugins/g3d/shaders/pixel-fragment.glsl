@@ -255,4 +255,5 @@ void main() {
 	#endif
 	gl_FragColor.rgb += v_ambientLight * diffuse.rgb;
 	gl_FragColor.rgb += (selfShadow * spec) * specular.rgb;
+	gl_FragColor.a = u_opacity * diffuse.a;
 }

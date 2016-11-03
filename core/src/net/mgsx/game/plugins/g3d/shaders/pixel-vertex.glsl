@@ -144,6 +144,7 @@ uniform vec4 u_diffuseColor;
 
 #ifdef diffuseTextureFlag
 uniform sampler2D u_diffuseTexture;
+uniform vec4 u_diffuseUVTransform;
 #endif
 
 #ifdef specularColorFlag
@@ -402,7 +403,9 @@ void main() {
 	#if defined(tangentFlag)
 		g_tangent = a_tangent;
 	#endif
-	#if defined(texCoord0Flag)
+	#ifdef diffuseTextureFlag
+		g_texCoord0 = u_diffuseUVTransform.xy + a_texCoord0 * u_diffuseUVTransform.zw;
+	#elif defined(texCoord0Flag)
 		g_texCoord0 = a_texCoord0;
 	#endif
 	#ifdef skinningFlag
