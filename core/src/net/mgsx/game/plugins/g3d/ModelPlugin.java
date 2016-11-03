@@ -59,13 +59,29 @@ public class ModelPlugin extends EditorPlugin
 		public Quaternion direction = new Quaternion().setFromAxisRad(-1f, -0.8f, -0.2f, 0);
 	}
 	
+	static class FilesShader extends DefaultShaderProvider
+	{
+		FileHandle vertexShader, fragmentShader;
+		public FilesShader(FileHandle vertexShader, FileHandle fragmentShader) {
+			super(vertexShader, fragmentShader);
+			this.vertexShader = vertexShader;
+			this.fragmentShader = fragmentShader;
+		}
+		public FilesShader reload()
+		{
+			dispose();
+			return new FilesShader(vertexShader, fragmentShader);
+		}
+		
+	}
+	
 	Settings settings = new Settings();
 	
 	Environment environment;
 	
 	DirectionalLight light;
 	
-	private ShaderProvider [] shaderProviders;
+	ShaderProvider [] shaderProviders;
 	
 	@Override
 	public void initialize(final Editor editor) 
@@ -97,8 +113,10 @@ public class ModelPlugin extends EditorPlugin
 		shaderProviders = new ShaderProvider[ShaderType.values().length];
 		shaderProviders[ShaderType.DEFAULT.ordinal()] = new DefaultShaderProvider();
 		shaderProviders[ShaderType.VERTEX.ordinal()] = new DefaultShaderProvider();
-		shaderProviders[ShaderType.FRAGMENT.ordinal()] = new DefaultShaderProvider(vs, fs);
-		shaderProviders[ShaderType.TOON.ordinal()] = new DefaultShaderProvider(vs, fs); // TODO toon !
+		shaderProviders[ShaderType.FRAGMENT.ordinal()] = new FilesShader(vs, fs);
+		shaderProviders[ShaderType.TOON.ordinal()] = new FilesShader(
+				Gdx.files.local("../core/src/net/mgsx/game/plugins/g3d/shaders/platform-vertex.glsl"),
+				Gdx.files.local("../core/src/net/mgsx/game/plugins/g3d/shaders/platform-fragment.glsl")); // TODO toon !
 		
 		
 		ShaderProvider switchableProvider = new ShaderProvider() {

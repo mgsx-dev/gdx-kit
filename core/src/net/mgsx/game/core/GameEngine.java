@@ -32,7 +32,7 @@ public class GameEngine extends ApplicationAdapter
 	protected TypeMap<Plugin> plugins = new TypeMap<Plugin>();
 	public PooledEngine entityEngine;
 	
-	public Camera camera;
+	public Camera camera; // TODO game camera and editor camera !
 	
 	final protected ObjectMap<Class, Serializer> serializers = new ObjectMap<Class, Serializer>();
 	

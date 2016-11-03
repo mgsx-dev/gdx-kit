@@ -11,6 +11,7 @@ import net.mgsx.game.examples.platformer.core.BonusComponent;
 import net.mgsx.game.examples.platformer.core.ClimbZone;
 import net.mgsx.game.examples.platformer.core.EnemyComponent;
 import net.mgsx.game.examples.platformer.core.EnemyZone;
+import net.mgsx.game.examples.platformer.core.EnvComponent;
 import net.mgsx.game.examples.platformer.core.LianaZone;
 import net.mgsx.game.examples.platformer.core.LogicComponent;
 import net.mgsx.game.examples.platformer.core.PlatformComponent;
@@ -149,6 +150,14 @@ public class PlatformerGameEditor extends EditorPlugin {
 			protected Component createComponent(Entity entity) 
 			{
 				return new CavernComponent();
+			}
+		});
+		editor.addTool(new ComponentTool("Env Logic", editor, Family.all(G3DModel.class).get()) {
+			
+			@Override
+			protected Component createComponent(Entity entity) 
+			{
+				return new EnvComponent();
 			}
 		});
 
