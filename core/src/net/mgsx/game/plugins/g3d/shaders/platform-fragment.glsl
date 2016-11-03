@@ -267,4 +267,6 @@ void main() {
 	vec3 toon = mix(vec3(1.0, 0.5, 0.0), vec3(-1.0, -0.5, 0.0), lightFactor.x);
 
 	gl_FragColor = vec4(toon * sh * 0.6 + lightFactor * 0.7, 1.0);
+
+	gl_FragColor.a = u_opacity * diffuse.a;
 }
