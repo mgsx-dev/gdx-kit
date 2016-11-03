@@ -61,6 +61,9 @@ public class PlatformerPlugin implements Plugin
 		
 		Storage.register(EnvComponent.class, "example.platformer.env");
 		
+		Storage.register(SpiderComponent.class, "example.platformer.spider");
+		engine.addSerializer(SpiderComponent.class, new EmptySerializer<SpiderComponent>());
+
 		// add a processor for player
 		// TODO could be automated with a generic component and abstract behavior attached to it ?
 		engine.entityEngine.addSystem(new IteratingSystem(Family.all(PlayerComponent.class, Box2DBodyModel.class, G3DModel.class).get(), GamePipeline.LOGIC) {
@@ -120,6 +123,7 @@ public class PlatformerPlugin implements Plugin
 		engine.entityEngine.addSystem(new PulleySystem());
 		engine.entityEngine.addSystem(new CavernSystem(engine));
 		engine.entityEngine.addSystem(new EnvSystem(engine));
+		engine.entityEngine.addSystem(new SpiderSystem());
 		
 		ppp = new PlatformerPostProcessing(engine);
 		

@@ -12,6 +12,7 @@ import net.mgsx.game.core.plugins.EntityEditorPlugin;
 import net.mgsx.game.core.tools.ComponentTool;
 import net.mgsx.game.core.ui.EntityEditor;
 import net.mgsx.game.examples.platformer.core.BonusComponent;
+import net.mgsx.game.examples.platformer.core.CavernComponent;
 import net.mgsx.game.examples.platformer.core.ClimbZone;
 import net.mgsx.game.examples.platformer.core.EnemyComponent;
 import net.mgsx.game.examples.platformer.core.EnemyZone;
@@ -21,7 +22,7 @@ import net.mgsx.game.examples.platformer.core.LogicComponent;
 import net.mgsx.game.examples.platformer.core.PlatformComponent;
 import net.mgsx.game.examples.platformer.core.PlayerComponent;
 import net.mgsx.game.examples.platformer.core.PulleyComponent;
-import net.mgsx.game.examples.platformer.core.CavernComponent;
+import net.mgsx.game.examples.platformer.core.SpiderComponent;
 import net.mgsx.game.examples.platformer.core.TreeComponent;
 import net.mgsx.game.examples.platformer.core.WaterZone;
 import net.mgsx.game.plugins.box2d.model.Box2DBodyModel;
@@ -162,6 +163,14 @@ public class PlatformerGameEditor extends EditorPlugin {
 			protected Component createComponent(Entity entity) 
 			{
 				return new EnvComponent();
+			}
+		});
+		editor.addTool(new ComponentTool("Spider Logic", editor, Family.all(G3DModel.class).get()) {
+			
+			@Override
+			protected Component createComponent(Entity entity) 
+			{
+				return new SpiderComponent();
 			}
 		});
 
