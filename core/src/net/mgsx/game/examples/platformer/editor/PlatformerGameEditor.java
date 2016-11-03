@@ -3,10 +3,14 @@ package net.mgsx.game.examples.platformer.editor;
 import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 import net.mgsx.game.core.Editor;
 import net.mgsx.game.core.plugins.EditorPlugin;
+import net.mgsx.game.core.plugins.EntityEditorPlugin;
 import net.mgsx.game.core.tools.ComponentTool;
+import net.mgsx.game.core.ui.EntityEditor;
 import net.mgsx.game.examples.platformer.core.BonusComponent;
 import net.mgsx.game.examples.platformer.core.ClimbZone;
 import net.mgsx.game.examples.platformer.core.EnemyComponent;
@@ -161,6 +165,13 @@ public class PlatformerGameEditor extends EditorPlugin {
 			}
 		});
 
+		editor.registerPlugin(EnvComponent.class, new EntityEditorPlugin() {
+			
+			@Override
+			public Actor createEditor(Entity entity, Skin skin) {
+				return new EntityEditor(entity.getComponent(EnvComponent.class), skin);
+			}
+		});
 		
 		
 		editor.addGlobalEditor("Water Effect", new WaterEffectEditor());

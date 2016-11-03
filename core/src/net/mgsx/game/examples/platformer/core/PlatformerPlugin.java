@@ -60,7 +60,6 @@ public class PlatformerPlugin implements Plugin
 		engine.addSerializer(CavernComponent.class, new EmptySerializer<CavernComponent>());
 		
 		Storage.register(EnvComponent.class, "example.platformer.env");
-		engine.addSerializer(EnvComponent.class, new EmptySerializer<EnvComponent>());
 		
 		// add a processor for player
 		// TODO could be automated with a generic component and abstract behavior attached to it ?

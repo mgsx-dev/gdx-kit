@@ -6,4 +6,5 @@ import com.badlogic.gdx.math.Vector3;
 public class EnvComponent implements Component {
 
 	public Vector3 cameraOffset = new Vector3();
+	public boolean enabled = false;
 }

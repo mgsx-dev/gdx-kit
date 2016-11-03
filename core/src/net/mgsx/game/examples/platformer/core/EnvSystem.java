@@ -26,25 +26,28 @@ public class EnvSystem extends IteratingSystem
 	protected void processEntity(Entity entity, float deltaTime) 
 	{
 		EnvComponent env = entity.getComponent(EnvComponent.class);
-		G3DModel model = entity.getComponent(G3DModel.class);
-		Node camera = model.modelInstance.getNode("Camera.001", true);
 		
-		env.cameraOffset.set(camera.translation);
-		gameEngine.camera.direction.set(1, 0, 0);
-		camera.rotation.transform(gameEngine.camera.direction);
-		
-		// find player entity
-		Entity player = EntityHelper.first(getEngine(), Family.one(PlayerComponent.class).get());
-		
-		if(player != null){
-			// update camera
-			Vector2 v = player.getComponent(PlayerComponent.class).physics.body.getPosition();
-			gameEngine.camera.position.set(v.x, v.y, 0);
-			gameEngine.camera.position.add(env.cameraOffset);
-			//gameEngine.camera.direction.setFromSpherical(MathUtils.degreesToRadians * 90, MathUtils.degreesToRadians * -178);
+		if(env.enabled)
+		{
+			G3DModel model = entity.getComponent(G3DModel.class);
+			Node camera = model.modelInstance.getNode("Camera.001", true);
+			env.cameraOffset.set(camera.translation);
+			gameEngine.camera.direction.set(1, 0, 0);
+			camera.rotation.transform(gameEngine.camera.direction);
 			
-			float blenderFov = 49.134f;
-			((PerspectiveCamera) gameEngine.camera).fieldOfView = BlenderHelper.fov(blenderFov, 1920f / 1080f);
+			// find player entity
+			Entity player = EntityHelper.first(getEngine(), Family.one(PlayerComponent.class).get());
+			
+			if(player != null){
+				// update camera
+				Vector2 v = player.getComponent(PlayerComponent.class).physics.body.getPosition();
+				gameEngine.camera.position.set(v.x, v.y, 0);
+				gameEngine.camera.position.add(env.cameraOffset);
+				//gameEngine.camera.direction.setFromSpherical(MathUtils.degreesToRadians * 90, MathUtils.degreesToRadians * -178);
+				
+				float blenderFov = 49.134f;
+				((PerspectiveCamera) gameEngine.camera).fieldOfView = BlenderHelper.fov(blenderFov, 1920f / 1080f);
+			}
 		}
 		
 	}
