@@ -22,4 +22,11 @@ public class NodeBoundary
 			inFrustum = inFrustumNow;
 		}
 	}
+	public void show() {
+		for(NodePart part : node.parts)
+		{
+			part.enabled = true;
+		}
+		inFrustum = true;
+	}
 }

@@ -59,6 +59,12 @@ public class ModelPlugin extends EditorPlugin
 		public Color diffuse = new Color(0.8f, 0.8f, 0.8f, 1f);
 
 		public Quaternion direction = new Quaternion().setFromAxisRad(-1f, -0.8f, -0.2f, 0);
+		
+		public boolean culling = true; // TODO engine setting, not editor ... ?
+
+		public boolean boudaryBox = false;
+		public boolean nodeBoudaryBox = false;
+		public boolean cameraFrustum = true;
 	}
 	
 	static class FilesShader extends DefaultShaderProvider
@@ -206,12 +212,19 @@ public class ModelPlugin extends EditorPlugin
 						model.boundary = new Array<NodeBoundary>();
 						scan(model.boundary, model.modelInstance.nodes);
 					}
-					// model.modelInstance.calculateTransforms();
-					model.globalBoundary.set(model.localBoundary).mul(model.modelInstance.transform);
-					model.inFrustum = editor.gameCamera.frustum.boundsInFrustum(model.globalBoundary);
-					if(model.inFrustum){
+					if(settings.culling)
+					{
+						model.globalBoundary.set(model.localBoundary).mul(model.modelInstance.transform);
+						model.inFrustum = editor.gameCamera.frustum.boundsInFrustum(model.globalBoundary);
+						if(model.inFrustum){
+							for(NodeBoundary b : model.boundary)
+								b.update(model.modelInstance, editor.gameCamera.frustum);
+						}
+					}
+					else
+					{
 						for(NodeBoundary b : model.boundary)
-							b.update(model.modelInstance, editor.gameCamera.frustum);
+							b.show();
 					}
 				}
 			}
@@ -264,47 +277,48 @@ public class ModelPlugin extends EditorPlugin
 				editor.shapeRenderer.setColor(1, 1, 1, 0.1f);
 				editor.shapeRenderer.setProjectionMatrix(editor.camera.combined);
 				editor.shapeRenderer.begin(ShapeType.Line);
-				for(G3DModel model : modelInstances){
-					editor.shapeRenderer.setColor(1, 0f, 0, 1f);
-					BoundingBox box = model.globalBoundary;
-					// TODO it works but i don't know why max Z ... same result with opposite depth.
-					editor.shapeRenderer.box(box.min.x, box.min.y, Math.max(box.min.z, box.max.z), box.getWidth(), box.getHeight(), box.getDepth());
 				
-					if(model.inFrustum)
-						for(NodeBoundary nb : model.boundary)
+				
+					for(G3DModel model : modelInstances){
+						editor.shapeRenderer.setColor(1, 0f, 0, 1f);
+						BoundingBox box = model.globalBoundary;
+						if(settings.boudaryBox)
 						{
-							editor.shapeRenderer.setColor(1, 0.5f, 0, 1f);
-							box = nb.global;
-							editor.shapeRenderer.box(box.min.x, box.min.y, Math.max(box.min.z, box.max.z), box.getWidth(), box.getHeight(), box.getDepth());
-							
+						// TODO it works but i don't know why max Z ... same result with opposite depth.
+						editor.shapeRenderer.box(box.min.x, box.min.y, Math.max(box.min.z, box.max.z), box.getWidth(), box.getHeight(), box.getDepth());
 						}
+					
+						if(model.inFrustum && settings.nodeBoudaryBox)
+							for(NodeBoundary nb : model.boundary)
+							{
+								editor.shapeRenderer.setColor(1, 0.5f, 0, 1f);
+								box = nb.global;
+								editor.shapeRenderer.box(box.min.x, box.min.y, Math.max(box.min.z, box.max.z), box.getWidth(), box.getHeight(), box.getDepth());
+								
+							}
+					}
+				if(settings.cameraFrustum)
+				{
+					editor.gameCamera.update(true);
+					editor.shapeRenderer.setColor(0, 0, 1, 1f);
+					Vector3[] pts = editor.gameCamera.frustum.planePoints;
+					
+					editor.shapeRenderer.line(pts[0], pts[1]);
+					editor.shapeRenderer.line(pts[1], pts[2]);
+					editor.shapeRenderer.line(pts[2], pts[3]);
+					editor.shapeRenderer.line(pts[3], pts[0]);
+					
+					editor.shapeRenderer.line(pts[4], pts[5]);
+					editor.shapeRenderer.line(pts[5], pts[6]);
+					editor.shapeRenderer.line(pts[6], pts[7]);
+					editor.shapeRenderer.line(pts[7], pts[4]);
+					
+					editor.shapeRenderer.line(pts[0], pts[4]);
+					editor.shapeRenderer.line(pts[1], pts[5]);
+					editor.shapeRenderer.line(pts[2], pts[6]);
+					editor.shapeRenderer.line(pts[3], pts[7]);
+					
 				}
-//				((PerspectiveCamera)editor.gameCamera).fieldOfView = 67;
-//				((PerspectiveCamera)editor.gameCamera).far = 1000;
-				editor.gameCamera.update(true);
-				editor.shapeRenderer.setColor(0, 0, 1, 1f);
-				Vector3[] pts = editor.gameCamera.frustum.planePoints;
-				
-				editor.shapeRenderer.line(pts[0], pts[1]);
-				editor.shapeRenderer.line(pts[1], pts[2]);
-				editor.shapeRenderer.line(pts[2], pts[3]);
-				editor.shapeRenderer.line(pts[3], pts[0]);
-				
-				editor.shapeRenderer.line(pts[4], pts[5]);
-				editor.shapeRenderer.line(pts[5], pts[6]);
-				editor.shapeRenderer.line(pts[6], pts[7]);
-				editor.shapeRenderer.line(pts[7], pts[4]);
-				
-				editor.shapeRenderer.line(pts[0], pts[4]);
-				editor.shapeRenderer.line(pts[1], pts[5]);
-				editor.shapeRenderer.line(pts[2], pts[6]);
-				editor.shapeRenderer.line(pts[3], pts[7]);
-				
-//				for(int i=0 ; i<6 ; i++){
-//					int index = i * 3;
-//					for(int j=0 ; j<4 ; j++)
-//						editor.shapeRenderer.line(pts[(index+j)%pts.length], pts[(index+(j+1)%4)%pts.length]);
-//				}
 				editor.shapeRenderer.end();
 			}
 		});
