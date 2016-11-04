@@ -3,12 +3,10 @@ package net.mgsx.game.examples.platformer.core;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Vector3;
 
 import net.mgsx.game.core.GamePipeline;
+import net.mgsx.game.core.components.BoundaryComponent;
 import net.mgsx.game.core.components.Transform2DComponent;
 import net.mgsx.game.plugins.box2d.model.Box2DBodyModel;
 import net.mgsx.game.plugins.g3d.G3DModel;
@@ -25,6 +23,21 @@ public class SpiderSystem extends IteratingSystem
 		SpiderComponent spider = entity.getComponent(SpiderComponent.class);
 		Box2DBodyModel physics = entity.getComponent(Box2DBodyModel.class);
 		G3DModel model = entity.getComponent(G3DModel.class);
+		
+		BoundaryComponent boundary = BoundaryComponent.components.get(entity);
+		if(boundary != null && boundary.justInside){
+			// reset
+			physics.body.setActive(true);
+			physics.body.setTransform(326.92f,  -36.8f, 0);
+			spider.time = 0;
+			spider.speed = 0;
+		}
+		if(boundary != null && boundary.justOutside){
+			physics.body.setActive(false);
+		}
+		if(boundary != null && !boundary.inside){
+			return;
+		}
 		
 		// TODO maybe a system before logic (after inputs) to set kinematics
 		// then during logic
@@ -66,7 +79,7 @@ public class SpiderSystem extends IteratingSystem
 		x += dx;
 		physics.body.setLinearVelocity(dx/deltaTime, 0);
 		
-		float t = model.animationController.current.time /  model.animationController.current.duration;
+	//	float t = model.animationController.current.time /  model.animationController.current.duration;
 		
 		model.modelInstance.transform.idt();
 		model.modelInstance.transform.translate(x + 2.1f ,y-0.2f,0);

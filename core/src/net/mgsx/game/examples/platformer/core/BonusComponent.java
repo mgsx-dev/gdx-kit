@@ -35,7 +35,10 @@ public class BonusComponent implements Component, Initializable, Duplicable
 		entity.getComponent(G3DModel.class).animationController.animate("apple.lp|apple.die", new AnimationAdapter(){
 			@Override
 			public void onEnd(AnimationDesc animation) {
-				manager.removeEntity(entity); // self destroy !
+				// TODO ok remove box2D object
+				// ok remove 3DModel
+				 
+				manager.removeEntity(entity); // self destroy ! TODO no just remove the G3D part ? or set it disabled ?
 			}
 		}, 0.2f);
 		

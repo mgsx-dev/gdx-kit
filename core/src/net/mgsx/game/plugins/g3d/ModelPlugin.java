@@ -35,6 +35,7 @@ import net.mgsx.game.core.components.Transform2DComponent;
 import net.mgsx.game.core.helpers.AdaptIterable;
 import net.mgsx.game.core.helpers.EntityHelper;
 import net.mgsx.game.core.helpers.FilterIterable;
+import net.mgsx.game.core.helpers.RenderDebugHelper;
 import net.mgsx.game.core.plugins.EditorPlugin;
 import net.mgsx.game.core.storage.Storage;
 import net.mgsx.game.core.tools.ComponentTool;
@@ -284,8 +285,7 @@ public class ModelPlugin extends EditorPlugin
 						BoundingBox box = model.globalBoundary;
 						if(settings.boudaryBox)
 						{
-						// TODO it works but i don't know why max Z ... same result with opposite depth.
-						editor.shapeRenderer.box(box.min.x, box.min.y, Math.max(box.min.z, box.max.z), box.getWidth(), box.getHeight(), box.getDepth());
+							RenderDebugHelper.box(editor.shapeRenderer, box);
 						}
 					
 						if(model.inFrustum && settings.nodeBoudaryBox)
@@ -293,30 +293,14 @@ public class ModelPlugin extends EditorPlugin
 							{
 								editor.shapeRenderer.setColor(1, 0.5f, 0, 1f);
 								box = nb.global;
-								editor.shapeRenderer.box(box.min.x, box.min.y, Math.max(box.min.z, box.max.z), box.getWidth(), box.getHeight(), box.getDepth());
-								
+								RenderDebugHelper.box(editor.shapeRenderer, box);
 							}
 					}
 				if(settings.cameraFrustum)
 				{
 					editor.gameCamera.update(true);
 					editor.shapeRenderer.setColor(0, 0, 1, 1f);
-					Vector3[] pts = editor.gameCamera.frustum.planePoints;
-					
-					editor.shapeRenderer.line(pts[0], pts[1]);
-					editor.shapeRenderer.line(pts[1], pts[2]);
-					editor.shapeRenderer.line(pts[2], pts[3]);
-					editor.shapeRenderer.line(pts[3], pts[0]);
-					
-					editor.shapeRenderer.line(pts[4], pts[5]);
-					editor.shapeRenderer.line(pts[5], pts[6]);
-					editor.shapeRenderer.line(pts[6], pts[7]);
-					editor.shapeRenderer.line(pts[7], pts[4]);
-					
-					editor.shapeRenderer.line(pts[0], pts[4]);
-					editor.shapeRenderer.line(pts[1], pts[5]);
-					editor.shapeRenderer.line(pts[2], pts[6]);
-					editor.shapeRenderer.line(pts[3], pts[7]);
+					RenderDebugHelper.frustum(editor.shapeRenderer, editor.gameCamera.frustum);
 					
 				}
 				editor.shapeRenderer.end();
