@@ -45,7 +45,7 @@ public class ModelPlugin extends EditorPlugin
 {
 	private ModelBatch modelBatch;
 	private Array<G3DModel> modelInstances = new Array<G3DModel>();
-
+	
 	// TODO should be in editor code !
 	public static enum ShaderType{
 		DEFAULT, VERTEX, FRAGMENT, TOON
@@ -196,15 +196,35 @@ public class ModelPlugin extends EditorPlugin
 		editor.entityEngine.addSystem(new EntitySystem(GamePipeline.BEFORE_RENDER) {
 			@Override
 			public void update(float deltaTime) {
+				editor.gameCamera.update(true);
 				for(G3DModel model : modelInstances)
 				{
 					if(model.localBoundary == null){
 						model.localBoundary = new BoundingBox();
 						model.modelInstance.calculateBoundingBox(model.localBoundary);
 						model.globalBoundary = new BoundingBox();
+						model.boundary = new Array<NodeBoundary>();
+						scan(model.boundary, model.modelInstance.nodes);
 					}
+					// model.modelInstance.calculateTransforms();
 					model.globalBoundary.set(model.localBoundary).mul(model.modelInstance.transform);
 					model.inFrustum = editor.gameCamera.frustum.boundsInFrustum(model.globalBoundary);
+					if(model.inFrustum){
+						for(NodeBoundary b : model.boundary)
+							b.update(model.modelInstance, editor.gameCamera.frustum);
+					}
+				}
+			}
+			private void scan(Array<NodeBoundary> bounds, Iterable<Node> nodes){
+				if(nodes == null) return;
+				for(Node node : nodes){
+					NodeBoundary b = new NodeBoundary();
+					b.node = node;
+					b.local = new BoundingBox();
+					node.calculateBoundingBox(b.local, false);
+					b.global = new BoundingBox();
+					bounds.add(b);
+					scan(bounds, node.getChildren());
 				}
 			}
 		});
@@ -245,9 +265,19 @@ public class ModelPlugin extends EditorPlugin
 				editor.shapeRenderer.setProjectionMatrix(editor.camera.combined);
 				editor.shapeRenderer.begin(ShapeType.Line);
 				for(G3DModel model : modelInstances){
+					editor.shapeRenderer.setColor(1, 0f, 0, 1f);
 					BoundingBox box = model.globalBoundary;
 					// TODO it works but i don't know why max Z ... same result with opposite depth.
 					editor.shapeRenderer.box(box.min.x, box.min.y, Math.max(box.min.z, box.max.z), box.getWidth(), box.getHeight(), box.getDepth());
+				
+					if(model.inFrustum)
+						for(NodeBoundary nb : model.boundary)
+						{
+							editor.shapeRenderer.setColor(1, 0.5f, 0, 1f);
+							box = nb.global;
+							editor.shapeRenderer.box(box.min.x, box.min.y, Math.max(box.min.z, box.max.z), box.getWidth(), box.getHeight(), box.getDepth());
+							
+						}
 				}
 //				((PerspectiveCamera)editor.gameCamera).fieldOfView = 67;
 //				((PerspectiveCamera)editor.gameCamera).far = 1000;

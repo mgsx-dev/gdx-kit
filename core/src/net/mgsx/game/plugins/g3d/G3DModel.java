@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.AnimationController;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.Json.Serializable;
 import com.badlogic.gdx.utils.JsonValue;
@@ -21,6 +22,7 @@ public class G3DModel implements Component, Duplicable, Serializable
 	public boolean blended;
 	public BoundingBox localBoundary, globalBoundary;
 	public boolean inFrustum;
+	public Array<NodeBoundary> boundary;
 	
 	@Override
 	public Component duplicate() 

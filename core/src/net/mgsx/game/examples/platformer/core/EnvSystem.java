@@ -47,6 +47,9 @@ public class EnvSystem extends IteratingSystem
 				
 				float blenderFov = 49.134f;
 				((PerspectiveCamera) gameEngine.gameCamera).fieldOfView = BlenderHelper.fov(blenderFov, 1920f / 1080f);
+				((PerspectiveCamera) gameEngine.gameCamera).near = 0.1f;
+				((PerspectiveCamera) gameEngine.gameCamera).far = 200f;
+				
 			}
 		}
 		
