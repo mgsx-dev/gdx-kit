@@ -11,7 +11,7 @@ import net.mgsx.game.core.components.LogicComponent;
  */
 public class EnemyComponent extends LogicComponent
 {
-
+	public boolean alive;
 	@Override
 	protected LogicBehavior createBehavior() {
 		return new EnemyBehavior();

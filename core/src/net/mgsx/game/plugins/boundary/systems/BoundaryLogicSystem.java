@@ -34,8 +34,9 @@ public class BoundaryLogicSystem<T extends LogicComponent> extends IteratingSyst
 			if(logic.behavior != null) logic.behavior.exit();
 		}
 		if(boundary.inside){
-			if(logic.behavior != null) logic.behavior.update(deltaTime);
+			//if(logic.behavior != null) logic.behavior.update(deltaTime);
 		}
+		if(logic.behavior != null) logic.behavior.update(deltaTime);
 	}
 	
 	public static <T extends LogicComponent> BoundaryLogicSystem<T> create(Class<T> type) {

@@ -3,16 +3,12 @@ package net.mgsx.game.examples.platformer.core;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.collision.BoundingBox;
-import com.badlogic.gdx.physics.box2d.Contact;
-import com.badlogic.gdx.physics.box2d.Fixture;
 
 import net.mgsx.game.core.components.LogicBehavior;
 import net.mgsx.game.core.components.Transform2DComponent;
 import net.mgsx.game.core.plugins.Initializable;
 import net.mgsx.game.plugins.boundary.components.BoundaryComponent;
-import net.mgsx.game.plugins.box2d.Box2DListener;
 import net.mgsx.game.plugins.box2d.model.Box2DBodyModel;
 import net.mgsx.game.plugins.g3d.G3DModel;
 
@@ -23,18 +19,31 @@ public class EnemyBehavior implements LogicBehavior, Initializable
 	private int direction = 0;
 	
 	private Entity entity;
+	private EnemyComponent enemy;
 	
 	@Override
 	public void initialize(Engine manager, Entity entity) {
 		this.entity = entity;
 		body = entity.getComponent(Box2DBodyModel.class);
+		enemy = entity.getComponent(EnemyComponent.class);
 		// box = entity.getComponent(BoundaryComponent.class).box;
 	}
 	
 	@Override
 	public void update(float deltaTime) 
 	{
-		
+		if(!enemy.alive && body.body.isActive()){
+			if(body.body.isActive()){
+				// TODO hide model (set visibility component to hidden or model.hide = true)
+				BoundingBox box = entity.getComponent(BoundaryComponent.class).box;
+				body.body.setTransform(
+						box.getCenterX(),
+						box.getCenterY()
+						, 0);
+				body.body.setActive(false);
+			}
+			return;
+		}
 		// System.out.println(outsideCounter);
 		// TODO query box2D 
 		// TODO 
@@ -84,8 +93,9 @@ public class EnemyBehavior implements LogicBehavior, Initializable
 
 	@Override
 	public void enter() {
+		if(enemy.alive) return;
 		body.body.setActive(true);
-		
+		enemy.alive = true;
 		// XXX place it from boundary
 		BoundingBox box = entity.getComponent(BoundaryComponent.class).box;
 		body.body.setTransform(
@@ -98,7 +108,8 @@ public class EnemyBehavior implements LogicBehavior, Initializable
 
 	@Override
 	public void exit() {
-		body.body.setActive(false);
+		// nothing on exit !
+		// body.body.setActive(false);
 		// TODO stop animations as well ?
 	}
 

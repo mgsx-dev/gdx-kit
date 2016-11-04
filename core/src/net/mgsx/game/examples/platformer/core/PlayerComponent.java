@@ -112,6 +112,7 @@ public class PlayerComponent implements Component, Initializable
 			protected void beginContact(Contact contact, Fixture self, Fixture other, Entity otherEntity, EnemyComponent enemy) 
 			{
 				contact.setRestitution(1f);
+				enemy.alive = false; // TODO call methods on enemy instead
 				// physics.body.applyLinearImpulse(0, 0.5f, 0, 0, true);
 				System.out.println("hurt!!");
 			}

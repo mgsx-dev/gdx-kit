@@ -213,6 +213,9 @@ public class ModelPlugin extends EditorPlugin
 						model.boundary = new Array<NodeBoundary>();
 						scan(model.boundary, model.modelInstance.nodes);
 					}
+					else if(model.culling){
+						model.modelInstance.calculateBoundingBox(model.localBoundary);
+					}
 					if(settings.culling)
 					{
 						model.globalBoundary.set(model.localBoundary).mul(model.modelInstance.transform);
@@ -224,6 +227,7 @@ public class ModelPlugin extends EditorPlugin
 					}
 					else
 					{
+						model.inFrustum = true;
 						for(NodeBoundary b : model.boundary)
 							b.show();
 					}

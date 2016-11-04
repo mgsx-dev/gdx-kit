@@ -96,6 +96,20 @@ public class G3DNodeEditor implements EntityEditorPlugin
 			}
 		});
 
+		final Button btCulling = EntityEditor.createBoolean(skin, model.culling);
+		
+		main.add("Culling");
+		main.add(btCulling);
+		main.row();
+		
+		
+		btCulling.addListener(new ChangeListener() {
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				model.culling = btCulling.isChecked();
+			}
+		});
+
 //		main.add("Parts");
 //		main.add(model.node.parts == null ? "none" : String.valueOf(model.node.parts.size));
 //		main.row();

@@ -23,6 +23,7 @@ public class G3DModel implements Component, Duplicable, Serializable
 	public BoundingBox localBoundary, globalBoundary;
 	public boolean inFrustum;
 	public Array<NodeBoundary> boundary;
+	public boolean culling = false;
 	
 	@Override
 	public Component duplicate() 
@@ -43,6 +44,7 @@ public class G3DModel implements Component, Duplicable, Serializable
 		json.writeField(this, "modelInstance");
 		json.writeField(this, "origin");
 		json.writeField(this, "blended");
+		json.writeField(this, "culling");
 	}
 
 	@Override
@@ -51,6 +53,7 @@ public class G3DModel implements Component, Duplicable, Serializable
 		json.readField(this, "modelInstance", jsonData);
 		json.readField(this, "origin", jsonData);
 		json.readField(this, "blended", jsonData);
+		json.readField(this, "culling", jsonData);
 		animationController = new AnimationController(modelInstance);
 	}
 
