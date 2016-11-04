@@ -19,11 +19,8 @@ import net.mgsx.game.plugins.g3d.G3DModel;
 public class EnemyBehavior implements LogicBehavior, Initializable
 {
 	private Box2DBodyModel body;
-	private int outsideCounter = 0;
 	
 	private int direction = 0;
-	
-	private Vector2 startup = new Vector2();
 	
 	private Entity entity;
 	
@@ -31,35 +28,13 @@ public class EnemyBehavior implements LogicBehavior, Initializable
 	public void initialize(Engine manager, Entity entity) {
 		this.entity = entity;
 		body = entity.getComponent(Box2DBodyModel.class);
-		startup.set(body.body.getPosition());
-		body.fixtures.get(0).fixture.setUserData(new Box2DListener() {
-			
-			@Override
-			public void endContact(Contact contact, Fixture self, Fixture other) {
-				Entity otherEntity = (Entity)other.getBody().getUserData();
-				if(otherEntity.getComponent(EnemyZone.class) != null){
-					outsideCounter++;
-					// direction = contact.getWorldManifold().getNormal().x > 0 ? 1 : -1;
-				}
-			}
-			
-			@Override
-			public void beginContact(Contact contact, Fixture self, Fixture other) {
-				Entity otherEntity = (Entity)other.getBody().getUserData();
-				if(otherEntity.getComponent(EnemyZone.class) != null){
-					outsideCounter--;
-					
-				}
-			}
-		});
-		
+		// box = entity.getComponent(BoundaryComponent.class).box;
 	}
 	
 	@Override
 	public void update(float deltaTime) 
 	{
 		
-		boolean isOutside = outsideCounter > 0;
 		// System.out.println(outsideCounter);
 		// TODO query box2D 
 		// TODO 
