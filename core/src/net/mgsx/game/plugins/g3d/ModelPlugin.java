@@ -11,8 +11,8 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
-import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.Renderable;
+import com.badlogic.gdx.graphics.g3d.RenderableProvider;
 import com.badlogic.gdx.graphics.g3d.Shader;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
@@ -32,7 +32,9 @@ import net.mgsx.game.core.Editor;
 import net.mgsx.game.core.GamePipeline;
 import net.mgsx.game.core.components.Movable;
 import net.mgsx.game.core.components.Transform2DComponent;
+import net.mgsx.game.core.helpers.AdaptIterable;
 import net.mgsx.game.core.helpers.EntityHelper;
+import net.mgsx.game.core.helpers.FilterIterable;
 import net.mgsx.game.core.plugins.EditorPlugin;
 import net.mgsx.game.core.storage.Storage;
 import net.mgsx.game.core.tools.ComponentTool;
@@ -42,7 +44,7 @@ import net.mgsx.game.plugins.g3d.animation.TextureAnimationEditor;
 public class ModelPlugin extends EditorPlugin
 {
 	private ModelBatch modelBatch;
-	private Array<ModelInstance> modelInstances = new Array<ModelInstance>();
+	private Array<G3DModel> modelInstances = new Array<G3DModel>();
 
 	// TODO should be in editor code !
 	public static enum ShaderType{
@@ -138,7 +140,7 @@ public class ModelPlugin extends EditorPlugin
 			public void entityRemoved(Entity entity) {
 				G3DModel model = (G3DModel)entity.remove(G3DModel.class);
 				if(model != null){
-					modelInstances.removeValue(model.modelInstance, true);
+					modelInstances.removeValue(model, true);
 					entity.remove(Movable.class);
 				}
 			}
@@ -146,7 +148,7 @@ public class ModelPlugin extends EditorPlugin
 			@Override
 			public void entityAdded(Entity entity) {
 				G3DModel model = entity.getComponent(G3DModel.class);
-				modelInstances.add(model.modelInstance);
+				modelInstances.add(model);
 				model.applyBlending();
 				if(entity.getComponent(Movable.class) == null) entity.add(new Movable(new ModelMove(model)));
 			}
@@ -191,9 +193,36 @@ public class ModelPlugin extends EditorPlugin
 			}
 		});
   
+		editor.entityEngine.addSystem(new EntitySystem(GamePipeline.BEFORE_RENDER) {
+			@Override
+			public void update(float deltaTime) {
+				for(G3DModel model : modelInstances)
+				{
+					if(model.localBoundary == null){
+						model.localBoundary = new BoundingBox();
+						model.modelInstance.calculateBoundingBox(model.localBoundary);
+						model.globalBoundary = new BoundingBox();
+					}
+					model.globalBoundary.set(model.localBoundary).mul(model.modelInstance.transform);
+					model.inFrustum = editor.gameCamera.frustum.boundsInFrustum(model.globalBoundary);
+				}
+			}
+		});
   
 		editor.entityEngine.addSystem(new EntitySystem(GamePipeline.RENDER) {
-			
+			final private Iterable<G3DModel> visibleModels = new FilterIterable<G3DModel>(modelInstances) {
+				@Override
+				protected boolean keep(G3DModel element) {
+					return element.inFrustum;
+				}
+			};
+			final private Iterable<RenderableProvider> visibleRenderableProviders = new AdaptIterable<G3DModel, RenderableProvider>(visibleModels){
+				@Override
+				protected RenderableProvider adapt(G3DModel element) {
+					return element.modelInstance;
+				}
+				
+			};
 			@Override
 			public void update(float deltaTime) {
 				
@@ -203,27 +232,49 @@ public class ModelPlugin extends EditorPlugin
 				light.direction.set(settings.direction.transform(new Vector3(0,0,1)));
 				
 				modelBatch.begin(editor.camera); // TODO allow switch between persperctive and ortho for Box2D drawings ...
-				modelBatch.render(modelInstances, environment);
+				modelBatch.render(visibleRenderableProviders, environment);
 			    modelBatch.end();
 			}
 		});
 		
 		editor.entityEngine.addSystem(new EntitySystem(GamePipeline.RENDER_OVER) {
-			
 			@Override
 			public void update(float deltaTime) {
-				BoundingBox box = new BoundingBox();
 				// TODO mode fill switchable : Gdx.gl.glEnable(GL20.GL_BLEND); and editor.shapeRenderer.begin(ShapeType.Filled);
 				editor.shapeRenderer.setColor(1, 1, 1, 0.1f);
 				editor.shapeRenderer.setProjectionMatrix(editor.camera.combined);
 				editor.shapeRenderer.begin(ShapeType.Line);
-				for(ModelInstance modelInstance : modelInstances){
-					modelInstance.calculateBoundingBox(box);
-					box.mul(modelInstance.transform); // .mul(modelInstance.nodes.get(0).globalTransform)
-					
+				for(G3DModel model : modelInstances){
+					BoundingBox box = model.globalBoundary;
 					// TODO it works but i don't know why max Z ... same result with opposite depth.
 					editor.shapeRenderer.box(box.min.x, box.min.y, Math.max(box.min.z, box.max.z), box.getWidth(), box.getHeight(), box.getDepth());
 				}
+//				((PerspectiveCamera)editor.gameCamera).fieldOfView = 67;
+//				((PerspectiveCamera)editor.gameCamera).far = 1000;
+				editor.gameCamera.update(true);
+				editor.shapeRenderer.setColor(0, 0, 1, 1f);
+				Vector3[] pts = editor.gameCamera.frustum.planePoints;
+				
+				editor.shapeRenderer.line(pts[0], pts[1]);
+				editor.shapeRenderer.line(pts[1], pts[2]);
+				editor.shapeRenderer.line(pts[2], pts[3]);
+				editor.shapeRenderer.line(pts[3], pts[0]);
+				
+				editor.shapeRenderer.line(pts[4], pts[5]);
+				editor.shapeRenderer.line(pts[5], pts[6]);
+				editor.shapeRenderer.line(pts[6], pts[7]);
+				editor.shapeRenderer.line(pts[7], pts[4]);
+				
+				editor.shapeRenderer.line(pts[0], pts[4]);
+				editor.shapeRenderer.line(pts[1], pts[5]);
+				editor.shapeRenderer.line(pts[2], pts[6]);
+				editor.shapeRenderer.line(pts[3], pts[7]);
+				
+//				for(int i=0 ; i<6 ; i++){
+//					int index = i * 3;
+//					for(int j=0 ; j<4 ; j++)
+//						editor.shapeRenderer.line(pts[(index+j)%pts.length], pts[(index+(j+1)%4)%pts.length]);
+//				}
 				editor.shapeRenderer.end();
 			}
 		});

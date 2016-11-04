@@ -11,6 +11,7 @@ import com.badlogic.ashley.core.EntityListener;
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.assets.AssetLoaderParameters;
 import com.badlogic.gdx.assets.AssetManager;
@@ -214,6 +215,8 @@ public class Editor extends GameEngine
 		perspectiveCamera = (PerspectiveCamera)camera; // XXX we are sure but ...
 		orthographicCamera = new OrthographicCamera();
 	
+		camera = perspectiveCamera;
+		
 		// XXX skin = SkinFactory.createSkin();
 		skin = loadAssetNow(editorAssets, "data/uiskin.json", Skin.class);
 		
@@ -385,7 +388,19 @@ public class Editor extends GameEngine
 		addGlobalTool(new DuplicateTool(this));
 		addGlobalTool(new FollowSelectionTool(this));
 		addGlobalTool(new SwitchModeTool(this));
-
+		addGlobalTool(new Tool(this){
+			@Override
+			public boolean keyDown(int keycode) {
+				if(keycode == Input.Keys.NUMPAD_0 || keycode == Input.Keys.INSERT){
+					if(camera == perspectiveCamera)
+						camera = gameCamera;
+					else
+						camera = perspectiveCamera;
+					return true;
+				}
+				return super.keyDown(keycode);
+			}
+		});
 		
 		addGlobalEditor("Ashley", new EntityGlobalEditorPlugin());
 		
@@ -558,6 +573,10 @@ public class Editor extends GameEngine
 		perspectiveCamera.viewportHeight = Gdx.graphics.getHeight();
 		perspectiveCamera.update(true);
 
+		gameCamera.viewportWidth = Gdx.graphics.getWidth();
+		gameCamera.viewportHeight = Gdx.graphics.getHeight();
+		gameCamera.update(true);
+		
 		syncOrtho(false);
 		
 		stage.getViewport().update(width, height, true);

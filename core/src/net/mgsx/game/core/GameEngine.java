@@ -32,7 +32,7 @@ public class GameEngine extends ApplicationAdapter
 	protected TypeMap<Plugin> plugins = new TypeMap<Plugin>();
 	public PooledEngine entityEngine;
 	
-	public Camera camera; // TODO game camera and editor camera !
+	public Camera camera, gameCamera; // TODO game camera and editor camera !
 	
 	final protected ObjectMap<Class, Serializer> serializers = new ObjectMap<Class, Serializer>();
 	
@@ -66,6 +66,14 @@ public class GameEngine extends ApplicationAdapter
 		camera.near = 1f;
 		camera.far = 3000f;
 		camera.update();
+		
+		gameCamera = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		gameCamera.position.set(0, 0, 10);
+		gameCamera.up.set(0,1,0);
+		gameCamera.lookAt(0,0,0);
+		gameCamera.near = 1f;
+		gameCamera.far = 3000f;
+		gameCamera.update();
 		
 		for(Plugin plugin : plugins.values()){
 			plugin.initialize(this);
