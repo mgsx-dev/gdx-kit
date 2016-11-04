@@ -4,9 +4,12 @@ import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.Fixture;
 
+import net.mgsx.game.core.components.BoundaryComponent;
+import net.mgsx.game.core.components.LogicBehavior;
 import net.mgsx.game.core.components.Transform2DComponent;
 import net.mgsx.game.core.plugins.Initializable;
 import net.mgsx.game.plugins.box2d.Box2DListener;
@@ -22,9 +25,11 @@ public class EnemyBehavior implements LogicBehavior, Initializable
 	
 	private Vector2 startup = new Vector2();
 	
+	private Entity entity;
 	
 	@Override
 	public void initialize(Engine manager, Entity entity) {
+		this.entity = entity;
 		body = entity.getComponent(Box2DBodyModel.class);
 		startup.set(body.body.getPosition());
 		body.fixtures.get(0).fixture.setUserData(new Box2DListener() {
@@ -47,11 +52,13 @@ public class EnemyBehavior implements LogicBehavior, Initializable
 				}
 			}
 		});
+		
 	}
 	
 	@Override
 	public void update(float deltaTime) 
 	{
+		
 		boolean isOutside = outsideCounter > 0;
 		// System.out.println(outsideCounter);
 		// TODO query box2D 
@@ -98,6 +105,26 @@ public class EnemyBehavior implements LogicBehavior, Initializable
 			model.modelInstance.transform.rotate(0, 0, 1, body.body.getAngle() * MathUtils.radiansToDegrees);
 			model.modelInstance.transform.rotate(0, 1, 0, body.body.getLinearVelocity().x > 0 ? 90 : -90);
 		}
+	}
+
+	@Override
+	public void enter() {
+		body.body.setActive(true);
+		
+		// XXX place it from boundary
+		BoundingBox box = entity.getComponent(BoundaryComponent.class).box;
+		body.body.setTransform(
+				box.getCenterX(),
+				box.getCenterY()
+				, 0);
+		
+		direction = 0;
+	}
+
+	@Override
+	public void exit() {
+		body.body.setActive(false);
+		// TODO stop animations as well ?
 	}
 
 

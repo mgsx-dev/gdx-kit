@@ -31,7 +31,7 @@ public class WorldItem
 	public Array<SpriteItem> sprites = new Array<SpriteItem>();
 	
 	private Array<Box2DBodyModel> scheduledForDeletion = new Array<Box2DBodyModel>();
-	
+	private Array<Runnable> scheduled= new Array<Runnable>();
 	private final CommandHistory commandHistory;
 	
 	
@@ -115,6 +115,11 @@ public class WorldItem
 					settings.timeStep, 
 					settings.velocityIterations, 
 					settings.positionIterations);
+			
+			for(Runnable runnable : scheduled){
+				runnable.run();
+			}
+			scheduled.clear();
 			
 			for(Box2DBodyModel body : scheduledForDeletion)
 			{
@@ -209,6 +214,11 @@ public class WorldItem
 	public void scheduleRemove(Entity entity, Box2DBodyModel body) 
 	{
 		scheduledForDeletion.add(body);
+	}
+
+	public void schedule(Runnable runnable) 
+	{
+		scheduled.add(runnable);
 	}
 
 	

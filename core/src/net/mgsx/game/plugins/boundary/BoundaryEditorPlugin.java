@@ -7,8 +7,8 @@ import com.badlogic.gdx.math.Vector3;
 import net.mgsx.game.core.Editor;
 import net.mgsx.game.core.components.BoundaryComponent;
 import net.mgsx.game.core.plugins.EditorPlugin;
-import net.mgsx.game.core.systems.BoundaryDebugSystem;
 import net.mgsx.game.core.tools.RectangleTool;
+import net.mgsx.game.plugins.boundary.systems.BoundaryDebugSystem;
 
 public class BoundaryEditorPlugin extends EditorPlugin
 {

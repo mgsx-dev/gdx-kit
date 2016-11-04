@@ -7,6 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 import net.mgsx.game.core.Editor;
+import net.mgsx.game.core.components.LogicComponent;
 import net.mgsx.game.core.plugins.EditorPlugin;
 import net.mgsx.game.core.plugins.EntityEditorPlugin;
 import net.mgsx.game.core.tools.ComponentTool;
@@ -18,7 +19,6 @@ import net.mgsx.game.examples.platformer.core.EnemyComponent;
 import net.mgsx.game.examples.platformer.core.EnemyZone;
 import net.mgsx.game.examples.platformer.core.EnvComponent;
 import net.mgsx.game.examples.platformer.core.LianaZone;
-import net.mgsx.game.examples.platformer.core.LogicComponent;
 import net.mgsx.game.examples.platformer.core.PlatformComponent;
 import net.mgsx.game.examples.platformer.core.PlayerComponent;
 import net.mgsx.game.examples.platformer.core.PulleyComponent;

@@ -12,6 +12,7 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.Fixture;
 
+import net.mgsx.game.core.components.LogicComponent;
 import net.mgsx.game.core.components.Transform2DComponent;
 import net.mgsx.game.core.plugins.Initializable;
 import net.mgsx.game.plugins.box2d.Box2DComponentListener;
@@ -95,10 +96,6 @@ public class PlayerComponent implements Component, Initializable
 				if(bonus.isCatchable()){
 					bonus.setCatch();
 					// TODO add score
-					// remove bonus body (mark for deletion)
-					// TODO should be done in bonus logic (how it disapear ...)
-					Box2DBodyModel body = otherEntity.getComponent(Box2DBodyModel.class);
-					body.context.scheduleRemove(otherEntity, body);
 					contact.setEnabled(false);
 					return;
 				}

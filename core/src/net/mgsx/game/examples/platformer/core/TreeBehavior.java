@@ -10,6 +10,7 @@ import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.Fixture;
 
 import net.mgsx.game.core.components.Duplicable;
+import net.mgsx.game.core.components.LogicBehavior;
 import net.mgsx.game.core.components.Transform2DComponent;
 import net.mgsx.game.core.plugins.Initializable;
 import net.mgsx.game.plugins.box2d.Box2DListener;
@@ -100,6 +101,18 @@ public class TreeBehavior implements LogicBehavior, Initializable
 		if(playerEnter) onPlayerEnter();
 		else if(playerExit) onPlayerExit();
 		playerEnter = playerExit = false;
+	}
+
+	@Override
+	public void enter() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void exit() {
+		// TODO Auto-generated method stub
+		
 	}
 
 

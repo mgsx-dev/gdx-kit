@@ -1,4 +1,4 @@
-package net.mgsx.game.core.systems;
+package net.mgsx.game.plugins.boundary.systems;
 
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;

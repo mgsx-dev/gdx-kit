@@ -1,10 +1,9 @@
-package net.mgsx.game.examples.platformer.core;
+package net.mgsx.game.core.components;
 
 import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 
-import net.mgsx.game.core.components.Duplicable;
 import net.mgsx.game.core.helpers.ReflectionHelper;
 import net.mgsx.game.core.plugins.Initializable;
 

@@ -8,9 +8,11 @@ import com.badlogic.gdx.math.Vector3;
 import net.mgsx.SplineTest.BlenderNURBSCurve;
 import net.mgsx.game.core.GameEngine;
 import net.mgsx.game.core.GamePipeline;
+import net.mgsx.game.core.components.BoundaryComponent;
 import net.mgsx.game.core.helpers.EmptySerializer;
 import net.mgsx.game.core.plugins.Plugin;
 import net.mgsx.game.core.storage.Storage;
+import net.mgsx.game.plugins.boundary.systems.BoundaryLogicSystem;
 import net.mgsx.game.plugins.box2d.model.Box2DBodyModel;
 import net.mgsx.game.plugins.g3d.G3DModel;
 import net.mgsx.game.plugins.spline.PathComponent;
@@ -74,13 +76,6 @@ public class PlatformerPlugin implements Plugin
 			}
 		});
 		
-		engine.entityEngine.addSystem(new IteratingSystem(Family.all(EnemyComponent.class, Box2DBodyModel.class, G3DModel.class).get(), GamePipeline.LOGIC) {
-			@Override
-			protected void processEntity(Entity entity, float deltaTime) {
-				entity.getComponent(EnemyComponent.class).behavior.update(deltaTime);
-				
-			}
-		});
 		engine.entityEngine.addSystem(new IteratingSystem(Family.all(TreeComponent.class, Box2DBodyModel.class, G3DModel.class).get(), GamePipeline.LOGIC) {
 			@Override
 			protected void processEntity(Entity entity, float deltaTime) {
@@ -120,10 +115,23 @@ public class PlatformerPlugin implements Plugin
 			
 		});
 		
+		// TODO how to generalize ? state machine ? just logic ?
+		engine.entityEngine.addSystem(new IteratingSystem(Family.all(BonusComponent.class, BoundaryComponent.class).get(), GamePipeline.LOGIC) {
+			@Override
+			protected void processEntity(Entity entity, float deltaTime) {
+				if(BoundaryComponent.components.get(entity).justOutside)
+					entity.getComponent(BonusComponent.class).exit();
+				else if(BoundaryComponent.components.get(entity).justInside)
+					entity.getComponent(BonusComponent.class).enter();
+			}
+		});
+
+		
 		engine.entityEngine.addSystem(new PulleySystem());
 		engine.entityEngine.addSystem(new CavernSystem(engine));
 		engine.entityEngine.addSystem(new EnvSystem(engine));
 		engine.entityEngine.addSystem(new SpiderSystem());
+		engine.entityEngine.addSystem(BoundaryLogicSystem.create(EnemyComponent.class));
 		
 		ppp = new PlatformerPostProcessing(engine);
 		

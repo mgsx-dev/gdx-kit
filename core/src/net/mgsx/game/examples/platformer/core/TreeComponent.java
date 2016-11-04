@@ -1,5 +1,8 @@
 package net.mgsx.game.examples.platformer.core;
 
+import net.mgsx.game.core.components.LogicBehavior;
+import net.mgsx.game.core.components.LogicComponent;
+
 public class TreeComponent extends LogicComponent
 {
 
