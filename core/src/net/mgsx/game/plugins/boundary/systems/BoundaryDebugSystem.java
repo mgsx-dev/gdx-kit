@@ -8,8 +8,8 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 
 import net.mgsx.game.core.GameEngine;
 import net.mgsx.game.core.GamePipeline;
-import net.mgsx.game.core.components.BoundaryComponent;
 import net.mgsx.game.core.helpers.RenderDebugHelper;
+import net.mgsx.game.plugins.boundary.components.BoundaryComponent;
 
 public class BoundaryDebugSystem extends IteratingSystem
 {

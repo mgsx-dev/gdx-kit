@@ -5,8 +5,8 @@ import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
 
 import net.mgsx.game.core.GamePipeline;
-import net.mgsx.game.core.components.BoundaryComponent;
 import net.mgsx.game.core.components.LogicComponent;
+import net.mgsx.game.plugins.boundary.components.BoundaryComponent;
 
 /**
  * abstract system for component inherit from LogicComponent

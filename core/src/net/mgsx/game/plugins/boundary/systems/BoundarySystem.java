@@ -6,7 +6,7 @@ import com.badlogic.ashley.systems.IteratingSystem;
 
 import net.mgsx.game.core.GameEngine;
 import net.mgsx.game.core.GamePipeline;
-import net.mgsx.game.core.components.BoundaryComponent;
+import net.mgsx.game.plugins.boundary.components.BoundaryComponent;
 
 public class BoundarySystem extends IteratingSystem
 {
