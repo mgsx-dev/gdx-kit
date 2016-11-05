@@ -23,11 +23,48 @@ import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.ObjectMap.Entries;
 import com.badlogic.gdx.utils.ObjectMap.Entry;
 
+import net.mgsx.game.core.GameEngine;
 import net.mgsx.game.core.components.OverrideProxy;
 import net.mgsx.game.core.components.ProxyComponent;
 import net.mgsx.game.core.exceptions.NotSupportedEntityGroupException;
 import net.mgsx.game.core.plugins.Initializable;
 
+/**
+ * Storage service.
+ * 
+ * A component could implements Serializable in that way :
+ * <pre>
+ * 
+ * 
+	public void write(Json json) 
+	{
+		json.writeField(this, "life");
+		json.writeField(this, "points");
+	}
+
+	@Override
+	public void read(Json json, JsonValue jsonData) 
+	{
+		json.readField(this, "life", jsonData);
+		json.readField(this, "points", jsonData);
+		time = 0; // init not persisted data
+	}
+	</pre>
+ * 
+ * or you can register a serializer :
+ * 
+ * {@link GameEngine#addSerializer(Class, Serializer)} :
+ * <pre>
+ * GameEngine.addSerializer(MyType.class, new MySerializer());
+ * </pre>
+ * or any builtin serializers :
+ * <pre>
+ * GameEngine.addSerializer(MyType.class, new IgnoreSerializer<MyType>());
+ * GameEngine.addSerializer(MyType.class, new AnnotationSerializer<MyType>()); TODO ?
+ * </pre>
+ * @author mgsx
+ *
+ */
 public class Storage 
 {
 	// TODO implement all required serializer here !

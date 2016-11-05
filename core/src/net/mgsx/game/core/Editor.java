@@ -48,7 +48,7 @@ import net.mgsx.game.core.components.Attach;
 import net.mgsx.game.core.components.Movable;
 import net.mgsx.game.core.components.ProxyComponent;
 import net.mgsx.game.core.components.Transform2DComponent;
-import net.mgsx.game.core.helpers.EntityHelper.SingleComponentIteratingSystem;
+import net.mgsx.game.core.helpers.systems.ComponentIteratingSystem;
 import net.mgsx.game.core.plugins.EditorPlugin;
 import net.mgsx.game.core.plugins.EntityEditorPlugin;
 import net.mgsx.game.core.plugins.GlobalEditorPlugin;
@@ -483,7 +483,7 @@ public class Editor extends GameEngine
 			}
 		});
 		
-		entityEngine.addSystem(new SingleComponentIteratingSystem<Attach>(Attach.class) {
+		entityEngine.addSystem(new ComponentIteratingSystem<Attach>(Attach.class, 0) { // TODO prio 0 ?
 
 			@Override
 			protected void processEntity(Entity entity, Attach component, float deltaTime) {

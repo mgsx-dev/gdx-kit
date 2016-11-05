@@ -12,6 +12,7 @@ import net.mgsx.game.plugins.boundary.BoundaryEditorPlugin;
 import net.mgsx.game.plugins.boundary.BoundaryPlugin;
 import net.mgsx.game.plugins.box2d.Box2DPlugin;
 import net.mgsx.game.plugins.btree.BTreePlugin;
+import net.mgsx.game.plugins.fsm.StateMachinePlugin;
 import net.mgsx.game.plugins.g3d.G3DEditor;
 import net.mgsx.game.plugins.g3d.ModelPlugin;
 import net.mgsx.game.plugins.parallax.ParallaxPlugin;
@@ -53,6 +54,8 @@ public class PlatformerGameEditorLauncher {
 		
 		editor.registerPlugin(new BoundaryPlugin());
 		editor.registerPlugin(new BoundaryEditorPlugin());
+		
+		editor.registerPlugin(new StateMachinePlugin());
 		
 		new LwjglApplication(editor, config);
 	}

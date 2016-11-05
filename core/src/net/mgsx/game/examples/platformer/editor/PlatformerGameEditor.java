@@ -12,6 +12,7 @@ import net.mgsx.game.core.plugins.EditorPlugin;
 import net.mgsx.game.core.plugins.EntityEditorPlugin;
 import net.mgsx.game.core.tools.ComponentTool;
 import net.mgsx.game.core.ui.EntityEditor;
+import net.mgsx.game.examples.platformer.core.BeeStates;
 import net.mgsx.game.examples.platformer.core.BonusComponent;
 import net.mgsx.game.examples.platformer.core.CavernComponent;
 import net.mgsx.game.examples.platformer.core.ClimbZone;
@@ -173,6 +174,17 @@ public class PlatformerGameEditor extends EditorPlugin {
 				return new SpiderComponent();
 			}
 		});
+		editor.addTool(new ComponentTool("Bee Logic", editor, Family.all(G3DModel.class).get()) {
+			
+			@Override
+			protected Component createComponent(Entity entity) 
+			{
+//				StateMachineComponent smc = editor.entityEngine.createComponent(StateMachineComponent.class);
+//				smc.initialState = BeeState.INIT;
+				return editor.entityEngine.createComponent(BeeStates.FlyState.class);
+			}
+		});
+
 
 		editor.registerPlugin(EnvComponent.class, new EntityEditorPlugin() {
 			

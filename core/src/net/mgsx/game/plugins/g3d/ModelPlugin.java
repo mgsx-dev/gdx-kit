@@ -33,9 +33,9 @@ import net.mgsx.game.core.GamePipeline;
 import net.mgsx.game.core.components.Movable;
 import net.mgsx.game.core.components.Transform2DComponent;
 import net.mgsx.game.core.helpers.AdaptIterable;
-import net.mgsx.game.core.helpers.EntityHelper;
 import net.mgsx.game.core.helpers.FilterIterable;
 import net.mgsx.game.core.helpers.RenderDebugHelper;
+import net.mgsx.game.core.helpers.systems.ComponentIteratingSystem;
 import net.mgsx.game.core.plugins.EditorPlugin;
 import net.mgsx.game.core.storage.Storage;
 import net.mgsx.game.core.tools.ComponentTool;
@@ -176,7 +176,7 @@ public class ModelPlugin extends EditorPlugin
 //			}
 //		});
         
-        editor.entityEngine.addSystem(new EntityHelper.SingleComponentIteratingSystem<G3DModel>(G3DModel.class, GamePipeline.BEFORE_RENDER) {
+        editor.entityEngine.addSystem(new ComponentIteratingSystem<G3DModel>(G3DModel.class, GamePipeline.BEFORE_RENDER) {
 			@Override
 			protected void processEntity(Entity entity, G3DModel component, float deltaTime) {
 				if(component.animationController != null){

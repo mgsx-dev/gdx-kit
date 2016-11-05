@@ -133,6 +133,8 @@ public class PlatformerPlugin implements Plugin
 		engine.entityEngine.addSystem(new SpiderSystem());
 		engine.entityEngine.addSystem(BoundaryLogicSystem.create(EnemyComponent.class));
 		
+		BeeStates.create(engine.entityEngine);
+		
 		ppp = new PlatformerPostProcessing(engine);
 		
 	}

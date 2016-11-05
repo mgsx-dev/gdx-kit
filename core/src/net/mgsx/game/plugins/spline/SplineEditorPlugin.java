@@ -18,7 +18,7 @@ import net.mgsx.game.core.Editor;
 import net.mgsx.game.core.GamePipeline;
 import net.mgsx.game.core.NativeService;
 import net.mgsx.game.core.NativeService.DialogCallback;
-import net.mgsx.game.core.helpers.EntityHelper;
+import net.mgsx.game.core.helpers.systems.ComponentIteratingSystem;
 import net.mgsx.game.core.plugins.EditorPlugin;
 import net.mgsx.game.core.tools.Tool;
 
@@ -48,7 +48,7 @@ public class SplineEditorPlugin extends EditorPlugin
 			}
 		});
 		
-		editor.entityEngine.addSystem(new EntityHelper.SingleComponentIteratingSystem<PathComponent>(PathComponent.class, GamePipeline.RENDER_DEBUG) {
+		editor.entityEngine.addSystem(new ComponentIteratingSystem<PathComponent>(PathComponent.class, GamePipeline.RENDER_DEBUG) {
 			
 			private Vector3 tmp = new Vector3();
 			private Vector3 out = new Vector3();

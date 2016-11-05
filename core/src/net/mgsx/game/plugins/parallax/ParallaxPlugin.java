@@ -5,8 +5,9 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.math.Vector3;
 
 import net.mgsx.game.core.Editor;
+import net.mgsx.game.core.GamePipeline;
 import net.mgsx.game.core.components.Movable;
-import net.mgsx.game.core.helpers.EntityHelper.SingleComponentIteratingSystem;
+import net.mgsx.game.core.helpers.systems.ComponentIteratingSystem;
 import net.mgsx.game.core.plugins.EditorPlugin;
 import net.mgsx.game.core.storage.Storage;
 import net.mgsx.game.core.tools.ComponentTool;
@@ -35,7 +36,7 @@ public class ParallaxPlugin extends EditorPlugin {
 			}
 		});
 		
-		editor.entityEngine.addSystem(new SingleComponentIteratingSystem<ParallaxModel>(ParallaxModel.class) {
+		editor.entityEngine.addSystem(new ComponentIteratingSystem<ParallaxModel>(ParallaxModel.class, GamePipeline.BEFORE_RENDER) {
 			@Override
 			protected void processEntity(Entity entity, ParallaxModel model, float deltaTime) 
 			{
