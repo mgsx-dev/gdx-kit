@@ -12,7 +12,6 @@ import net.mgsx.game.core.plugins.EditorPlugin;
 import net.mgsx.game.core.plugins.EntityEditorPlugin;
 import net.mgsx.game.core.tools.ComponentTool;
 import net.mgsx.game.core.ui.EntityEditor;
-import net.mgsx.game.examples.platformer.core.BeeStates;
 import net.mgsx.game.examples.platformer.core.BonusComponent;
 import net.mgsx.game.examples.platformer.core.CavernComponent;
 import net.mgsx.game.examples.platformer.core.ClimbZone;
@@ -26,6 +25,7 @@ import net.mgsx.game.examples.platformer.core.PulleyComponent;
 import net.mgsx.game.examples.platformer.core.SpiderComponent;
 import net.mgsx.game.examples.platformer.core.TreeComponent;
 import net.mgsx.game.examples.platformer.core.WaterZone;
+import net.mgsx.game.examples.platformer.core.states.FlyingState.FlyingComponent;
 import net.mgsx.game.plugins.box2d.model.Box2DBodyModel;
 import net.mgsx.game.plugins.box2d.model.Box2DJointModel;
 import net.mgsx.game.plugins.g3d.G3DModel;
@@ -181,7 +181,7 @@ public class PlatformerGameEditor extends EditorPlugin {
 			{
 //				StateMachineComponent smc = editor.entityEngine.createComponent(StateMachineComponent.class);
 //				smc.initialState = BeeState.INIT;
-				return editor.entityEngine.createComponent(BeeStates.FlyState.class);
+				return editor.entityEngine.createComponent(FlyingComponent.class);
 			}
 		});
 

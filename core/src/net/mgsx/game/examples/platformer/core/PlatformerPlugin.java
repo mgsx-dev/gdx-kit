@@ -11,6 +11,7 @@ import net.mgsx.game.core.GamePipeline;
 import net.mgsx.game.core.helpers.EmptySerializer;
 import net.mgsx.game.core.plugins.Plugin;
 import net.mgsx.game.core.storage.Storage;
+import net.mgsx.game.examples.platformer.core.states.FlyingState;
 import net.mgsx.game.plugins.boundary.components.BoundaryComponent;
 import net.mgsx.game.plugins.boundary.systems.BoundaryLogicSystem;
 import net.mgsx.game.plugins.box2d.model.Box2DBodyModel;
@@ -133,7 +134,7 @@ public class PlatformerPlugin implements Plugin
 		engine.entityEngine.addSystem(new SpiderSystem());
 		engine.entityEngine.addSystem(BoundaryLogicSystem.create(EnemyComponent.class));
 		
-		BeeStates.create(engine.entityEngine);
+		engine.entityEngine.addSystem(new FlyingState());
 		
 		ppp = new PlatformerPostProcessing(engine);
 		
