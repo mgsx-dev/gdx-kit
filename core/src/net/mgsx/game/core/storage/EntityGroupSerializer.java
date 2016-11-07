@@ -3,9 +3,12 @@ package net.mgsx.game.core.storage;
 import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.assets.loaders.ModelLoader.ModelParameters;
 import com.badlogic.gdx.assets.loaders.TextureLoader.TextureParameter;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
+import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
@@ -100,7 +103,19 @@ public class EntityGroupSerializer implements Json.Serializer<EntityGroup>
 				TextureParameter p = new TextureParameter();
 				p.wrapU = TextureWrap.Repeat;
 				p.wrapV = TextureWrap.Repeat; // XXX hack for reapeat texture always !
+				p.magFilter = TextureFilter.MipMapLinearLinear;
+				p.minFilter = TextureFilter.MipMapLinearLinear;
+				p.genMipMaps = true; // XXX hack again ...
 				assets.load(name, Texture.class, p);
+			}else if(assetType == Model.class){
+				ModelParameters mp = new ModelParameters();
+				TextureParameter p = mp.textureParameter;
+				p.wrapU = TextureWrap.Repeat;
+				p.wrapV = TextureWrap.Repeat; // XXX hack for reapeat texture always !
+				p.magFilter = TextureFilter.MipMapLinearLinear;
+				p.minFilter = TextureFilter.MipMapLinearLinear;
+				p.genMipMaps = true; // XXX hack again ...
+				assets.load(name, Model.class, mp);
 			}else assets.load(name, assetType);
 		}
 		
