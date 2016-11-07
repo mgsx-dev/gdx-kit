@@ -1,6 +1,7 @@
 package net.mgsx.game.plugins.fsm.systems;
 
 import com.badlogic.ashley.core.Component;
+import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntityListener;
@@ -11,21 +12,24 @@ import com.badlogic.gdx.utils.Array;
 import net.mgsx.game.core.GamePipeline;
 import net.mgsx.game.plugins.fsm.components.StateComponent;
 
-public abstract class EntityStateSystem extends IteratingSystem implements EntityListener
+public abstract class EntityStateSystem<T extends StateComponent> extends IteratingSystem implements EntityListener
 {
 	private Family stateFamily;
 	
-	private Class<? extends Component> stateComponentType;
+	private Class<T> stateComponentType;
+	
+	private ComponentMapper<T> mapper;
 
 	/**
 	 * System initialization
 	 * @param stateComponentType state component to listen to
 	 * @param builder family builder : call {@link #configure()} and add all/one/exclude query (order isn't important)
 	 */
-	public EntityStateSystem(Class<? extends StateComponent> stateComponentType, Builder builder) {
+	public EntityStateSystem(Class<T> stateComponentType, Builder builder) {
 		super(builder.all(stateComponentType).get(), GamePipeline.LOGIC);
 		this.stateComponentType = stateComponentType;
 		stateFamily = Family.all(stateComponentType).get();
+		mapper = ComponentMapper.getFor(stateComponentType);
 	}
 	@Override
 	public void addedToEngine(Engine engine) 
@@ -40,14 +44,22 @@ public abstract class EntityStateSystem extends IteratingSystem implements Entit
 		super.removedFromEngine(engine);
 	}
 	
+	protected T state(Entity entity){
+		return mapper.get(entity);
+	}
+	
 	
 	public static class Builder
 	{
-		private Array<Class<? extends Component>> all = new Array<Class<? extends Component>>();
-		private Array<Class<? extends Component>> one = new Array<Class<? extends Component>>();
-		private Array<Class<? extends Component>> exclude = new Array<Class<? extends Component>>();
+		private Array<Class<? extends Component>> all = new Array<Class<? extends Component>>(Class.class);
+		private Array<Class<? extends Component>> one = new Array<Class<? extends Component>>(Class.class);
+		private Array<Class<? extends Component>> exclude = new Array<Class<? extends Component>>(Class.class);
+		
+		private Builder() {
+			super();
+		}
 		public Builder all(Class<? extends Component>... componentTypes){
-			all.addAll(componentTypes);
+			for(Class<? extends Component> componentType : componentTypes) all.add(componentType);
 			return this;
 		}
 		public Builder one(Class<? extends Component>... componentTypes){
@@ -65,7 +77,7 @@ public abstract class EntityStateSystem extends IteratingSystem implements Entit
 			return this;
 		}
 		public Family get(){
-			return Family.all(all.shrink()).one(one.shrink()).exclude(exclude.shrink()).get();
+			return Family.all(all.toArray()).one(one.toArray()).exclude(exclude.toArray()).get();
 		}
 	}
 	
@@ -83,9 +95,9 @@ public abstract class EntityStateSystem extends IteratingSystem implements Entit
 
 	@Override
 	public void entityRemoved(Entity entity) {
-		exit(entity);
+		// nothing to do since component is already recycled.
 	}
-
+	
 	@Override
 	public void processEntity(Entity entity, float deltaTime) {
 		update(entity, deltaTime);
@@ -93,6 +105,7 @@ public abstract class EntityStateSystem extends IteratingSystem implements Entit
 	
 	protected void change(Entity entity, Class<? extends StateComponent> newState)
 	{
+		exit(entity); // call exit before remove
 		entity.remove(stateComponentType);
 		entity.add(getEngine().createComponent(newState));
 	}
