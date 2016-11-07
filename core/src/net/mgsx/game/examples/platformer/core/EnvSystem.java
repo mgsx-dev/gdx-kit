@@ -18,7 +18,7 @@ public class EnvSystem extends IteratingSystem
 	private GameEngine gameEngine;
 
 	public EnvSystem(GameEngine gameEngine) {
-		super(Family.all(G3DModel.class, EnvComponent.class).get(), GamePipeline.BEFORE_RENDER);
+		super(Family.all(G3DModel.class, EnvComponent.class).get(), GamePipeline.LOGIC); // TODO before render but not before VBO !
 		this.gameEngine = gameEngine;
 	}
 	

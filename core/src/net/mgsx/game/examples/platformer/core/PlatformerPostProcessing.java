@@ -174,9 +174,10 @@ public class PlatformerPostProcessing
 				time += deltaTime * settings.speed;
 				
 				float d = engine.camera.unproject(new Vector3()).z;
+				d = 4;
 				Vector3 v = engine.camera.project(new Vector3(0,0,d));
 				world.set(-v.x / Gdx.graphics.getWidth(), -v.y / Gdx.graphics.getHeight());
-				
+
 				batch.disableBlending();
 				batch.begin();
 				Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
