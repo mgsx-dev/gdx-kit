@@ -5,6 +5,7 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.collision.BoundingBox;
 
+import net.mgsx.game.core.components.Hidden;
 import net.mgsx.game.core.components.LogicBehavior;
 import net.mgsx.game.core.components.Transform2DComponent;
 import net.mgsx.game.core.plugins.Initializable;
@@ -20,10 +21,12 @@ public class EnemyBehavior implements LogicBehavior, Initializable
 	
 	private Entity entity;
 	private EnemyComponent enemy;
-	
+	private Engine manager;
 	@Override
 	public void initialize(Engine manager, Entity entity) {
+		this.manager = manager;
 		this.entity = entity;
+		
 		body = entity.getComponent(Box2DBodyModel.class);
 		enemy = entity.getComponent(EnemyComponent.class);
 		// box = entity.getComponent(BoundaryComponent.class).box;
@@ -32,7 +35,7 @@ public class EnemyBehavior implements LogicBehavior, Initializable
 	@Override
 	public void update(float deltaTime) 
 	{
-		if(!enemy.alive && body.body.isActive()){
+		if(!enemy.alive){
 			if(body.body.isActive()){
 				// TODO hide model (set visibility component to hidden or model.hide = true)
 				BoundingBox box = entity.getComponent(BoundaryComponent.class).box;
@@ -41,6 +44,8 @@ public class EnemyBehavior implements LogicBehavior, Initializable
 						box.getCenterY()
 						, 0);
 				body.body.setActive(false);
+				
+				entity.add(manager.createComponent(Hidden.class));
 			}
 			return;
 		}
@@ -95,6 +100,8 @@ public class EnemyBehavior implements LogicBehavior, Initializable
 	public void enter() {
 		if(enemy.alive) return;
 		body.body.setActive(true);
+		
+		entity.remove(Hidden.class);
 		enemy.alive = true;
 		// XXX place it from boundary
 		BoundingBox box = entity.getComponent(BoundaryComponent.class).box;

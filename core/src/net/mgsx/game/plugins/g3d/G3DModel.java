@@ -1,6 +1,7 @@
 package net.mgsx.game.plugins.g3d;
 
 import com.badlogic.ashley.core.Component;
+import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
@@ -16,6 +17,8 @@ import net.mgsx.game.core.components.Duplicable;
 
 public class G3DModel implements Component, Duplicable, Serializable
 {
+	public final static ComponentMapper<G3DModel> components = ComponentMapper.getFor(G3DModel.class);
+	
 	public ModelInstance modelInstance;
 	public Vector3 origin = new Vector3(0,0,0); // TODO introduce a pre matrix ... ?
 	public AnimationController animationController;

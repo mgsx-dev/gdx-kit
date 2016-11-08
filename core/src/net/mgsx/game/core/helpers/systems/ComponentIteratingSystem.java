@@ -6,6 +6,7 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
 
+// TODO non standard, cannot add family filters !
 abstract public class ComponentIteratingSystem<T extends Component> extends IteratingSystem
 {
 	protected Class<T> type;

@@ -1,5 +1,9 @@
 package net.mgsx.game.plugins.profiling;
 
+import java.lang.reflect.Field;
+
+import com.badlogic.ashley.core.EntitySystem;
+import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.graphics.profiling.GLProfiler;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -7,8 +11,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.utils.ObjectMap;
 
 import net.mgsx.game.core.Editor;
+import net.mgsx.game.core.GamePipeline;
+import net.mgsx.game.core.helpers.ReflectionHelper;
 import net.mgsx.game.core.plugins.GlobalEditorPlugin;
 import net.mgsx.game.core.ui.ToggleButton;
 
@@ -47,6 +54,30 @@ public class ProfilerPanel implements GlobalEditorPlugin
 		final Label triangleCount = createRow(stats, "triangleCount");
 	
 		final Label entityCount = createRow(stats, "entityCount");
+		
+		// TODO ashley plugin !
+		//
+		ObjectMap<Integer, String> pipelineLegend = new ObjectMap<Integer, String>();
+		for(Field field : GamePipeline.class.getFields()){
+			Integer priority = (Integer)ReflectionHelper.get(null, field);
+			if(priority != null) pipelineLegend.put(priority, field.getName());
+		}
+		for(EntitySystem system : editor.entityEngine.getSystems())
+		{
+			String systemName = system.getClass().getSimpleName();
+			
+			String priorityName = pipelineLegend.get(system.priority);
+			if(priorityName == null) priorityName = "undefined (" + String.valueOf(system.priority) + ")";
+			
+			String description = "";
+			if(system instanceof IteratingSystem){
+				int size = ((IteratingSystem) system).getEntities().size();
+				description += String.valueOf(size) + " entities";
+			}
+			
+			createRow(stats, systemName).setText(priorityName + " " + description);
+		}
+		// end
 		
 		Table main = new Table(skin){
 			@Override

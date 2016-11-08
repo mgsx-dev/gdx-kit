@@ -9,6 +9,7 @@ import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 
 import net.mgsx.game.core.Editor;
@@ -18,6 +19,7 @@ import net.mgsx.game.core.components.Movable;
 import net.mgsx.game.core.plugins.EditorPlugin;
 import net.mgsx.game.core.storage.Storage;
 import net.mgsx.game.core.tools.Tool;
+import net.mgsx.game.plugins.boundary.components.BoundaryComponent;
 
 public class TilesPlugin extends EditorPlugin
 {
@@ -33,6 +35,7 @@ public class TilesPlugin extends EditorPlugin
 					public void selected(FileHandle file) {
 						TiledMap map = new TmxMapLoader(new AbsoluteFileHandleResolver()).load(file.path());
 						importMap(map, file, editor);
+						end();
 					}
 					@Override
 					public void cancel() {
@@ -58,6 +61,10 @@ public class TilesPlugin extends EditorPlugin
 							for(Entity entity : Storage.load(editor.entityEngine, file, editor.assets, editor.serializers))
 							{
 								entity.getComponent(Movable.class).move(entity, new Vector3(x * res, y * res, 0));
+								BoundaryComponent b = entity.getComponent(BoundaryComponent.class);
+								if(b != null){
+									b.box.mul(new Matrix4().setTranslation(new Vector3(x * res, y * res, 0)));
+								}
 							}
 						}
 					}

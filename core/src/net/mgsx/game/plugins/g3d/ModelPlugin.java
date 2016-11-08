@@ -12,7 +12,6 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.Renderable;
-import com.badlogic.gdx.graphics.g3d.RenderableProvider;
 import com.badlogic.gdx.graphics.g3d.Shader;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
@@ -30,10 +29,9 @@ import com.badlogic.gdx.utils.Array;
 
 import net.mgsx.game.core.Editor;
 import net.mgsx.game.core.GamePipeline;
+import net.mgsx.game.core.components.Hidden;
 import net.mgsx.game.core.components.Movable;
 import net.mgsx.game.core.components.Transform2DComponent;
-import net.mgsx.game.core.helpers.AdaptIterable;
-import net.mgsx.game.core.helpers.FilterIterable;
 import net.mgsx.game.core.helpers.RenderDebugHelper;
 import net.mgsx.game.core.helpers.systems.ComponentIteratingSystem;
 import net.mgsx.game.core.plugins.EditorPlugin;
@@ -140,7 +138,7 @@ public class ModelPlugin extends EditorPlugin
 		
 		modelBatch = new ModelBatch(switchableProvider);
 		
-		// synchronize modelInstances with entities
+		// TODO just a patch for movable ...
 		editor.entityEngine.addEntityListener(Family.one(G3DModel.class).get(), new EntityListener() {
 			
 			@Override
@@ -185,7 +183,7 @@ public class ModelPlugin extends EditorPlugin
 			}
 		});
         
-        editor.entityEngine.addSystem(new IteratingSystem(Family.all(G3DModel.class, Transform2DComponent.class).get(), GamePipeline.BEFORE_RENDER) {
+        editor.entityEngine.addSystem(new IteratingSystem(Family.all(G3DModel.class, Transform2DComponent.class).exclude(Hidden.class).get(), GamePipeline.BEFORE_RENDER) {
 			@Override
 			protected void processEntity(Entity entity, float deltaTime) {
 				G3DModel model = entity.getComponent(G3DModel.class);
@@ -200,38 +198,11 @@ public class ModelPlugin extends EditorPlugin
 			}
 		});
   
-		editor.entityEngine.addSystem(new EntitySystem(GamePipeline.BEFORE_RENDER) {
+		editor.entityEngine.addSystem(new IteratingSystem(Family.all(G3DModel.class).exclude(Hidden.class).get(), GamePipeline.BEFORE_RENDER) {
 			@Override
 			public void update(float deltaTime) {
 				editor.gameCamera.update(true);
-				for(G3DModel model : modelInstances)
-				{
-					if(model.localBoundary == null){
-						model.localBoundary = new BoundingBox();
-						model.modelInstance.calculateBoundingBox(model.localBoundary);
-						model.globalBoundary = new BoundingBox();
-						model.boundary = new Array<NodeBoundary>();
-						scan(model.boundary, model.modelInstance.nodes);
-					}
-					else if(model.culling){
-						model.modelInstance.calculateBoundingBox(model.localBoundary);
-					}
-					if(settings.culling)
-					{
-						model.globalBoundary.set(model.localBoundary).mul(model.modelInstance.transform);
-						model.inFrustum = editor.gameCamera.frustum.boundsInFrustum(model.globalBoundary);
-						if(model.inFrustum){
-							for(NodeBoundary b : model.boundary)
-								b.update(model.modelInstance, editor.gameCamera.frustum);
-						}
-					}
-					else
-					{
-						model.inFrustum = true;
-						for(NodeBoundary b : model.boundary)
-							b.show();
-					}
-				}
+				super.update(deltaTime);
 			}
 			private void scan(Array<NodeBoundary> bounds, Iterable<Node> nodes){
 				if(nodes == null) return;
@@ -245,22 +216,52 @@ public class ModelPlugin extends EditorPlugin
 					scan(bounds, node.getChildren());
 				}
 			}
+			@Override
+			protected void processEntity(Entity entity, float deltaTime) 
+			{
+				G3DModel model = G3DModel.components.get(entity);
+				if(model.localBoundary == null){
+					model.localBoundary = new BoundingBox();
+					model.modelInstance.calculateBoundingBox(model.localBoundary);
+					model.globalBoundary = new BoundingBox();
+					model.boundary = new Array<NodeBoundary>();
+					scan(model.boundary, model.modelInstance.nodes);
+				}
+				else if(model.culling){
+					model.modelInstance.calculateBoundingBox(model.localBoundary);
+				}
+				if(settings.culling)
+				{
+					model.globalBoundary.set(model.localBoundary).mul(model.modelInstance.transform);
+					model.inFrustum = editor.gameCamera.frustum.boundsInFrustum(model.globalBoundary);
+					if(model.inFrustum){
+						for(NodeBoundary b : model.boundary)
+							b.update(model.modelInstance, editor.gameCamera.frustum);
+					}
+				}
+				else
+				{
+					model.inFrustum = true;
+					for(NodeBoundary b : model.boundary)
+						b.show();
+				}
+			}
 		});
   
-		editor.entityEngine.addSystem(new EntitySystem(GamePipeline.RENDER) {
-			final private Iterable<G3DModel> visibleModels = new FilterIterable<G3DModel>(modelInstances) {
-				@Override
-				protected boolean keep(G3DModel element) {
-					return element.inFrustum;
-				}
-			};
-			final private Iterable<RenderableProvider> visibleRenderableProviders = new AdaptIterable<G3DModel, RenderableProvider>(visibleModels){
-				@Override
-				protected RenderableProvider adapt(G3DModel element) {
-					return element.modelInstance;
-				}
-				
-			};
+		editor.entityEngine.addSystem(new IteratingSystem(Family.all(G3DModel.class).exclude(Hidden.class).get(), GamePipeline.RENDER) {
+//			final private Iterable<G3DModel> visibleModels = new FilterIterable<G3DModel>(modelInstances) {
+//				@Override
+//				protected boolean keep(G3DModel element) {
+//					return element.inFrustum;
+//				}
+//			};
+//			final private Iterable<RenderableProvider> visibleRenderableProviders = new AdaptIterable<G3DModel, RenderableProvider>(visibleModels){
+//				@Override
+//				protected RenderableProvider adapt(G3DModel element) {
+//					return element.modelInstance;
+//				}
+//				
+//			};
 			@Override
 			public void update(float deltaTime) {
 				
@@ -270,8 +271,15 @@ public class ModelPlugin extends EditorPlugin
 				light.direction.set(settings.direction.transform(new Vector3(0,0,1)));
 				
 				modelBatch.begin(editor.camera); // TODO allow switch between persperctive and ortho for Box2D drawings ...
-				modelBatch.render(visibleRenderableProviders, environment);
+				super.update(deltaTime);
 			    modelBatch.end();
+			}
+			@Override
+			protected void processEntity(Entity entity, float deltaTime) {
+				G3DModel model = G3DModel.components.get(entity);
+				if(model.inFrustum){
+					modelBatch.render(model.modelInstance, environment);
+				}
 			}
 		});
 		
@@ -320,6 +328,7 @@ public class ModelPlugin extends EditorPlugin
 			}
 		});
 		
+		// texture effect
        editor.entityEngine.addSystem(new IteratingSystem(Family.all(TextureAnimationComponent.class, G3DModel.class).get(), GamePipeline.BEFORE_RENDER) {
 			@Override
 			protected void processEntity(Entity entity, float deltaTime) {
