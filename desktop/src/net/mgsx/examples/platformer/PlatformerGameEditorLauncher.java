@@ -22,6 +22,7 @@ import net.mgsx.game.plugins.profiling.ProfilerPlugin;
 import net.mgsx.game.plugins.spline.SplineEditorPlugin;
 import net.mgsx.game.plugins.spline.SplinePlugin;
 import net.mgsx.game.plugins.sprite.SpritePlugin;
+import net.mgsx.game.plugins.tiles.TilesPlugin;
 
 public class PlatformerGameEditorLauncher {
 
@@ -56,6 +57,7 @@ public class PlatformerGameEditorLauncher {
 		editor.registerPlugin(new BoundaryEditorPlugin());
 		
 		editor.registerPlugin(new StateMachinePlugin());
+		editor.registerPlugin(new TilesPlugin());
 		
 		new LwjglApplication(editor, config);
 	}

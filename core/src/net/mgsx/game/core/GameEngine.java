@@ -34,7 +34,7 @@ public class GameEngine extends ApplicationAdapter
 	
 	public Camera camera, gameCamera; // TODO game camera and editor camera !
 	
-	final protected ObjectMap<Class, Serializer> serializers = new ObjectMap<Class, Serializer>();
+	public final ObjectMap<Class, Serializer> serializers = new ObjectMap<Class, Serializer>();
 	
 	public void registerPlugin(Plugin plugin) {
 		plugins.put(plugin.getClass(), plugin);
