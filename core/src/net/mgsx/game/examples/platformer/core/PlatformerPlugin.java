@@ -72,7 +72,9 @@ public class PlatformerPlugin implements Plugin
 		// TODO could be automated with a generic component and abstract behavior attached to it ?
 		engine.entityEngine.addSystem(new IteratingSystem(Family.all(PlayerComponent.class, Box2DBodyModel.class, G3DModel.class).get(), GamePipeline.LOGIC) {
 			@Override
-			protected void processEntity(Entity entity, float deltaTime) {
+			protected void processEntity(Entity entity, float deltaTime) 
+			{
+				// TODO do the update here !
 				PlayerComponent pc = entity.getComponent(PlayerComponent.class);
 				pc.update(deltaTime);
 			}

@@ -42,6 +42,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 import net.mgsx.game.core.NativeService.DialogCallback;
+import net.mgsx.game.core.annotations.EditableComponent;
 import net.mgsx.game.core.commands.Command;
 import net.mgsx.game.core.commands.CommandHistory;
 import net.mgsx.game.core.components.Movable;
@@ -116,6 +117,24 @@ public class Editor extends GameEngine
 	
 	public void registerPlugin(EditorPlugin plugin) {
 		editorPlugins.put(plugin.getClass(), plugin);
+	}
+	
+	private final static EntityEditorPlugin defaultComponentEditor = new EntityEditorPlugin() {
+		@Override
+		public Actor createEditor(Entity entity, Skin skin) {
+			return new EntityEditor(entity, skin);
+		}
+	};
+	
+	@Override
+	public void register(Class<? extends Component> type) 
+	{
+		super.register(type);
+		
+		EditableComponent config = type.getAnnotation(EditableComponent.class);
+		if(config != null){
+			registerPlugin(type, defaultComponentEditor);
+		}
 	}
 	
 	public void zoom(float rate) {

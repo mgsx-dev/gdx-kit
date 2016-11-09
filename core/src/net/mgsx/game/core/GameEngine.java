@@ -16,6 +16,7 @@ import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.Json.Serializer;
 import com.badlogic.gdx.utils.ObjectMap;
 
+import net.mgsx.game.core.annotations.Storable;
 import net.mgsx.game.core.components.ProxyComponent;
 import net.mgsx.game.core.components.Transform2DComponent;
 import net.mgsx.game.core.helpers.TypeMap;
@@ -53,6 +54,15 @@ public class GameEngine extends ApplicationAdapter
 
 	public <T> void addSerializer(Class<T> type, Json.Serializer<T> serializer) {
 		serializers.put(type, serializer);
+	}
+	
+	public void register(Class<? extends Component> type){
+		
+		Storable storable = type.getAnnotation(Storable.class);
+		if(storable != null){
+			Storage.register(type, storable.tag());
+		}
+		
 	}
 	
 	@Override
