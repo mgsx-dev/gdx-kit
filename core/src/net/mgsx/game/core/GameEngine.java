@@ -1,5 +1,7 @@
 package net.mgsx.game.core;
 
+import com.badlogic.ashley.core.Component;
+import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
@@ -9,6 +11,7 @@ import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.Json.Serializer;
 import com.badlogic.gdx.utils.ObjectMap;
@@ -31,6 +34,14 @@ public class GameEngine extends ApplicationAdapter
 	protected TypeMap<EditorPlugin> editorPlugins = new TypeMap<EditorPlugin>();
 	protected TypeMap<Plugin> plugins = new TypeMap<Plugin>();
 	public PooledEngine entityEngine;
+	
+	// TODO not really cool ...
+	public void remove(Entity entity, Class<? extends Component> type){
+		Component component = entity.remove(type);
+		if(component instanceof Disposable){
+			((Disposable) component).dispose();
+		}
+	}
 	
 	public Camera camera, gameCamera; // TODO game camera and editor camera !
 	

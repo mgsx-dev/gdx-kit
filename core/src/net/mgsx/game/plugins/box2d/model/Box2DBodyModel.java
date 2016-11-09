@@ -6,18 +6,20 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.JointEdge;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Disposable;
+import com.badlogic.gdx.utils.Pool.Poolable;
 
 import net.mgsx.game.core.components.Duplicable;
 import net.mgsx.game.core.components.Movable;
 import net.mgsx.game.plugins.box2dold.behavior.BodyBehavior;
 import net.mgsx.game.plugins.box2dold.model.WorldItem;
 
-public class Box2DBodyModel implements Component, Duplicable
+public class Box2DBodyModel implements Component, Duplicable, Poolable, Disposable
 {
 	public String id; // TODO confusion with id/name in persistence model and ui model
 	public BodyDef def;
 	public Body body;
-	public Array<Box2DFixtureModel> fixtures;
+	public Array<Box2DFixtureModel> fixtures = new Array<Box2DFixtureModel>();
 	public BodyBehavior behavior;
 	public Entity entity;
 	public Movable slave;
@@ -31,7 +33,6 @@ public class Box2DBodyModel implements Component, Duplicable
 		this.def = def;
 		this.body = body;
 		this.context = context;
-		this.fixtures = new Array<Box2DFixtureModel>();
 		if(body != null) body.setUserData(entity);
 	}
 
@@ -58,6 +59,8 @@ public class Box2DBodyModel implements Component, Duplicable
 		}
 		return model;
 	}
+	
+	@Override
 	public void dispose() 
 	{
 		if(body != null)
@@ -79,6 +82,14 @@ public class Box2DBodyModel implements Component, Duplicable
 			body = null;
 			fixtures.clear();
 		}
+		
+	}
+	
+	@Override
+	public void reset() 
+	{
+		// TODO other fields ?
+		dispose();
 		
 	}
 

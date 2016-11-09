@@ -160,7 +160,14 @@ public class WorldItem
 			}
 			def.position.set(x, y);
 			Body body = world.createBody(def);
-			item = new Box2DBodyModel(this, entity, defaultName, def, body);
+			item = editor.entityEngine.createComponent(Box2DBodyModel.class);
+			item.context = this;
+			item.entity = entity;
+			item.id = defaultName;
+			item.def = def;
+			item.body = body;
+			item.body.setUserData(entity);
+			// XXX item = new Box2DBodyModel(this, entity, defaultName, def, body);
 			entity.add(item);
 		}
 		return item;
