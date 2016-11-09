@@ -9,7 +9,7 @@ import net.mgsx.game.core.components.LogicComponent;
 import net.mgsx.game.plugins.boundary.components.BoundaryComponent;
 
 /**
- * abstract system for component inherit from LogicComponent
+ * generic system for component inherit from LogicComponent
  * @author mgsx
  *
  * @param <T>

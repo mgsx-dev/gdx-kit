@@ -44,11 +44,9 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import net.mgsx.game.core.NativeService.DialogCallback;
 import net.mgsx.game.core.commands.Command;
 import net.mgsx.game.core.commands.CommandHistory;
-import net.mgsx.game.core.components.Attach;
 import net.mgsx.game.core.components.Movable;
 import net.mgsx.game.core.components.ProxyComponent;
 import net.mgsx.game.core.components.Transform2DComponent;
-import net.mgsx.game.core.helpers.systems.ComponentIteratingSystem;
 import net.mgsx.game.core.plugins.EditorPlugin;
 import net.mgsx.game.core.plugins.EntityEditorPlugin;
 import net.mgsx.game.core.plugins.GlobalEditorPlugin;
@@ -480,14 +478,6 @@ public class Editor extends GameEngine
 					}
 				}
 				shapeRenderer.end();
-			}
-		});
-		
-		entityEngine.addSystem(new ComponentIteratingSystem<Attach>(Attach.class, 0) { // TODO prio 0 ?
-
-			@Override
-			protected void processEntity(Entity entity, Attach component, float deltaTime) {
-				component.update();
 			}
 		});
 		

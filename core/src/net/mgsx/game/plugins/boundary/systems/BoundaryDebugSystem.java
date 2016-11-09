@@ -11,6 +11,7 @@ import net.mgsx.game.core.GamePipeline;
 import net.mgsx.game.core.helpers.RenderDebugHelper;
 import net.mgsx.game.plugins.boundary.components.BoundaryComponent;
 
+
 public class BoundaryDebugSystem extends IteratingSystem
 {
 	private GameEngine engine;

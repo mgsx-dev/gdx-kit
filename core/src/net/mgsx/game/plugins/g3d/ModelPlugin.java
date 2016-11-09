@@ -3,7 +3,6 @@ package net.mgsx.game.plugins.g3d;
 import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntityListener;
-import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.Gdx;
@@ -43,8 +42,57 @@ import net.mgsx.game.plugins.g3d.animation.TextureAnimationEditor;
 public class ModelPlugin extends EditorPlugin
 {
 	private ModelBatch modelBatch;
-	private Array<G3DModel> modelInstances = new Array<G3DModel>();
+	// private Array<G3DModel> modelInstances = new Array<G3DModel>();
 	
+	public static class ModelDebugSystem extends IteratingSystem {
+		private final Editor editor;
+		private final Settings settings;
+		public ModelDebugSystem(Editor editor, Settings settings) {
+			super(Family.all(G3DModel.class).get(), GamePipeline.RENDER_OVER);
+			this.editor = editor;
+			this.settings = settings;
+		}
+
+		@Override
+		public void update(float deltaTime) {
+			// TODO mode fill switchable : Gdx.gl.glEnable(GL20.GL_BLEND); and editor.shapeRenderer.begin(ShapeType.Filled);
+			editor.shapeRenderer.setColor(1, 1, 1, 0.1f);
+			editor.shapeRenderer.setProjectionMatrix(editor.camera.combined);
+			editor.shapeRenderer.begin(ShapeType.Line);
+			
+			super.update(deltaTime);
+			
+			if(settings.cameraFrustum)
+			{
+				editor.gameCamera.update(true);
+				editor.shapeRenderer.setColor(0, 0, 1, 1f);
+				RenderDebugHelper.frustum(editor.shapeRenderer, editor.gameCamera.frustum);
+				
+			}
+			editor.shapeRenderer.end();
+		}
+
+		@Override
+		protected void processEntity(Entity entity, float deltaTime) 
+		{
+			G3DModel model = G3DModel.components.get(entity);
+			editor.shapeRenderer.setColor(1, 0f, 0, 1f);
+			BoundingBox box = model.globalBoundary;
+			if(settings.boudaryBox)
+			{
+				RenderDebugHelper.box(editor.shapeRenderer, box);
+			}
+		
+			if(model.inFrustum && settings.nodeBoudaryBox)
+				for(NodeBoundary nb : model.boundary)
+				{
+					editor.shapeRenderer.setColor(1, 0.5f, 0, 1f);
+					box = nb.global;
+					RenderDebugHelper.box(editor.shapeRenderer, box);
+				}
+		}
+	}
+
 	// TODO should be in editor code !
 	public static enum ShaderType{
 		DEFAULT, VERTEX, FRAGMENT, TOON
@@ -96,21 +144,14 @@ public class ModelPlugin extends EditorPlugin
 		Storage.register(G3DModel.class, "g3d");
 		Storage.register(TextureAnimationComponent.class, "g3d.texAnim");
 		
-		// TODO tool for model adding/loading (TODO use a special asset manager to propose already loaded assets like blender)
-		// TODO a file can contains several files ... so on loading, propose list of nodes
 		editor.addTool(new AddModelTool(editor));
 		
-		// TODO storage handler for model : just save reference
-		
-		// TODO model as movable (create a move model)
 		
 		// editor for model
 		editor.registerPlugin(G3DModel.class, new G3DNodeEditor());
 		
 		// TODO select processor
 		editor.addSelector(new ModelSelector(editor));
-		
-		// TODO render processor
 		
 		// TODO env should be configurable ... in some way but it's not 1-1 mapping !
 		
@@ -143,19 +184,19 @@ public class ModelPlugin extends EditorPlugin
 			
 			@Override
 			public void entityRemoved(Entity entity) {
-				G3DModel model = (G3DModel)entity.remove(G3DModel.class);
-				if(model != null){
-					modelInstances.removeValue(model, true);
+//				G3DModel model = (G3DModel)entity.remove(G3DModel.class);
+//				if(model != null){
+//					modelInstances.removeValue(model, true);
 					entity.remove(Movable.class);
-				}
+//				}
 			}
 			
 			@Override
 			public void entityAdded(Entity entity) {
 				G3DModel model = entity.getComponent(G3DModel.class);
-				modelInstances.add(model);
+//				modelInstances.add(model);
 				model.applyBlending();
-				if(entity.getComponent(Movable.class) == null) entity.add(new Movable(new ModelMove(model)));
+//				if(entity.getComponent(Movable.class) == null) entity.add(new Movable(new ModelMove(model)));
 			}
 		});
 		
@@ -283,41 +324,7 @@ public class ModelPlugin extends EditorPlugin
 			}
 		});
 		
-		editor.entityEngine.addSystem(new EntitySystem(GamePipeline.RENDER_OVER) {
-			@Override
-			public void update(float deltaTime) {
-				// TODO mode fill switchable : Gdx.gl.glEnable(GL20.GL_BLEND); and editor.shapeRenderer.begin(ShapeType.Filled);
-				editor.shapeRenderer.setColor(1, 1, 1, 0.1f);
-				editor.shapeRenderer.setProjectionMatrix(editor.camera.combined);
-				editor.shapeRenderer.begin(ShapeType.Line);
-				
-				
-					for(G3DModel model : modelInstances){
-						editor.shapeRenderer.setColor(1, 0f, 0, 1f);
-						BoundingBox box = model.globalBoundary;
-						if(settings.boudaryBox)
-						{
-							RenderDebugHelper.box(editor.shapeRenderer, box);
-						}
-					
-						if(model.inFrustum && settings.nodeBoudaryBox)
-							for(NodeBoundary nb : model.boundary)
-							{
-								editor.shapeRenderer.setColor(1, 0.5f, 0, 1f);
-								box = nb.global;
-								RenderDebugHelper.box(editor.shapeRenderer, box);
-							}
-					}
-				if(settings.cameraFrustum)
-				{
-					editor.gameCamera.update(true);
-					editor.shapeRenderer.setColor(0, 0, 1, 1f);
-					RenderDebugHelper.frustum(editor.shapeRenderer, editor.gameCamera.frustum);
-					
-				}
-				editor.shapeRenderer.end();
-			}
-		});
+		editor.entityEngine.addSystem(new ModelDebugSystem(editor, settings));
 		
 		
 		editor.addTool(new ComponentTool("Texture animation", editor, G3DModel.class) {
