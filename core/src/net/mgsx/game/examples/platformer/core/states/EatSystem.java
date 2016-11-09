@@ -2,6 +2,7 @@ package net.mgsx.game.examples.platformer.core.states;
 
 import com.badlogic.ashley.core.Entity;
 
+import net.mgsx.game.examples.platformer.core.input.PlayerController;
 import net.mgsx.game.plugins.fsm.systems.EntityStateSystem;
 import net.mgsx.game.plugins.g3d.G3DModel;
 
@@ -21,6 +22,11 @@ public class EatSystem extends EntityStateSystem<EatState>
 
 	@Override
 	protected void update(Entity entity, float deltaTime) {
+		PlayerController player = PlayerController.components.get(entity);
+		if(player != null && player.justGrab){
+			player.justGrab = false;
+			change(entity, FlyingState.class);
+		}
 	}
 
 	@Override

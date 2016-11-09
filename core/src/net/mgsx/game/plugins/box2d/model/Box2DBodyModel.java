@@ -1,6 +1,7 @@
 package net.mgsx.game.plugins.box2d.model;
 
 import com.badlogic.ashley.core.Component;
+import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -16,6 +17,9 @@ import net.mgsx.game.plugins.box2dold.model.WorldItem;
 
 public class Box2DBodyModel implements Component, Duplicable, Poolable, Disposable
 {
+	
+	public static ComponentMapper<Box2DBodyModel> components = ComponentMapper.getFor(Box2DBodyModel.class);
+	
 	public String id; // TODO confusion with id/name in persistence model and ui model
 	public BodyDef def;
 	public Body body;

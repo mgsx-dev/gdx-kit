@@ -3,6 +3,7 @@ package net.mgsx.game.examples.platformer.editor;
 import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
@@ -11,6 +12,7 @@ import net.mgsx.game.core.components.LogicComponent;
 import net.mgsx.game.core.plugins.EditorPlugin;
 import net.mgsx.game.core.plugins.EntityEditorPlugin;
 import net.mgsx.game.core.tools.ComponentTool;
+import net.mgsx.game.core.tools.Tool;
 import net.mgsx.game.core.ui.EntityEditor;
 import net.mgsx.game.examples.platformer.core.BonusComponent;
 import net.mgsx.game.examples.platformer.core.CavernComponent;
@@ -25,7 +27,8 @@ import net.mgsx.game.examples.platformer.core.PulleyComponent;
 import net.mgsx.game.examples.platformer.core.SpiderComponent;
 import net.mgsx.game.examples.platformer.core.TreeComponent;
 import net.mgsx.game.examples.platformer.core.WaterZone;
-import net.mgsx.game.examples.platformer.core.states.FlyingState;
+import net.mgsx.game.examples.platformer.core.input.KeyboardController;
+import net.mgsx.game.examples.platformer.core.input.PlayerController;
 import net.mgsx.game.plugins.box2d.model.Box2DBodyModel;
 import net.mgsx.game.plugins.box2d.model.Box2DJointModel;
 import net.mgsx.game.plugins.g3d.G3DModel;
@@ -66,6 +69,29 @@ public class PlatformerGameEditor extends EditorPlugin {
 				return logic;
 			}
 		});
+		
+		editor.addTool(new Tool("Keyboard Player", editor) {
+			
+			@Override
+			protected void activate() 
+			{
+				Entity entity = editor.currentEntity();
+				
+				entity.add(editor.entityEngine.createComponent(PlayerController.class));
+				KeyboardController keys = editor.entityEngine.createComponent(KeyboardController.class);
+				keys.up = Input.Keys.UP;
+				keys.down = Input.Keys.DOWN;
+				keys.left = Input.Keys.LEFT;
+				keys.right = Input.Keys.RIGHT;
+
+				keys.jump = Input.Keys.Z;
+				keys.grab = Input.Keys.A;
+				entity.add(keys);
+				
+				end();
+			}
+		});
+
 		
 		editor.addTool(new ComponentTool("Bonus Logic", editor, Family.all(G3DModel.class, Box2DBodyModel.class).get()) {
 			
@@ -174,17 +200,16 @@ public class PlatformerGameEditor extends EditorPlugin {
 				return new SpiderComponent();
 			}
 		});
-		editor.addTool(new ComponentTool("Bee Logic", editor, Family.all(G3DModel.class).get()) {
-			
-			@Override
-			protected Component createComponent(Entity entity) 
-			{
-//				StateMachineComponent smc = editor.entityEngine.createComponent(StateMachineComponent.class);
-//				smc.initialState = BeeState.INIT;
-				return editor.entityEngine.createComponent(FlyingState.class);
-			}
-		});
-
+//		editor.addTool(new ComponentTool("Bee Logic", editor, Family.all(G3DModel.class).get()) {
+//			
+//			@Override
+//			protected Component createComponent(Entity entity) 
+//			{
+////				StateMachineComponent smc = editor.entityEngine.createComponent(StateMachineComponent.class);
+////				smc.initialState = BeeState.INIT;
+//				return editor.entityEngine.createComponent(FlyingState.class);
+//			}
+//		});
 
 		editor.registerPlugin(EnvComponent.class, new EntityEditorPlugin() {
 			
@@ -193,6 +218,7 @@ public class PlatformerGameEditor extends EditorPlugin {
 				return new EntityEditor(entity.getComponent(EnvComponent.class), skin);
 			}
 		});
+		
 		
 		
 		editor.addGlobalEditor("Water Effect", new WaterEffectEditor());

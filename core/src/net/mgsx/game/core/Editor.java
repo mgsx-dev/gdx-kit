@@ -126,15 +126,25 @@ public class Editor extends GameEngine
 		}
 	};
 	
+	private Array<Tool> autoTools = new Array<Tool>();
+	
 	@Override
-	public void register(Class<? extends Component> type) 
+	public void register(final Class<? extends Component> type) 
 	{
 		super.register(type);
 		
 		EditableComponent config = type.getAnnotation(EditableComponent.class);
 		if(config != null){
 			registerPlugin(type, defaultComponentEditor);
+			
+			autoTools.add(new ComponentTool(config.name(), this){
+				@Override
+				protected Component createComponent(Entity entity) {
+					return entityEngine.createComponent(type);
+				}
+			});
 		}
+		
 	}
 	
 	public void zoom(float rate) {
@@ -420,6 +430,11 @@ public class Editor extends GameEngine
 		});
 		
 		addGlobalEditor("Ashley", new EntityGlobalEditorPlugin());
+		
+		
+		for(Tool tool : autoTools){
+			addTool(tool);
+		}
 		
 		// register listener after plugins creation to create filters on all possible components
 		// finally initiate plugins.

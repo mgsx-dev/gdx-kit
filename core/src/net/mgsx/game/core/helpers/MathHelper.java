@@ -4,6 +4,13 @@ import com.badlogic.gdx.math.MathUtils;
 
 public class MathHelper {
 
+	public static final float SQRT2 = sqrt(2);
+	
+	public static float sqrt(float value) 
+	{
+		return (float)Math.sqrt(value);
+	}
+	
 	// V = 2 * arctan( tan(H / 2) * aspectratio ) 
 	// H = 2 * arctan( tan(V / 2) / aspectratio )
 	// with aspectratio = x/y
@@ -13,6 +20,7 @@ public class MathHelper {
 		return (float)(2 * Math.atan(Math.tan(vFOV * MathUtils.degreesToRadians / 2) / aspectRatio) * MathUtils.radiansToDegrees);
 
 	}
+	
 	public static float hFOVtovFOV(float hFOV, float aspectRatio)
 	{
 		return (float)(2 * Math.atan(Math.tan(hFOV * MathUtils.degreesToRadians / 2) * aspectRatio) * MathUtils.radiansToDegrees);

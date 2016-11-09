@@ -90,7 +90,7 @@ public abstract class EntityStateSystem<T extends StateComponent> extends Iterat
 	
 	@Override
 	public void entityAdded(Entity entity) {
-		enter(entity);
+		if(getFamily().matches(entity)) enter(entity);
 	}
 
 	@Override
@@ -105,7 +105,7 @@ public abstract class EntityStateSystem<T extends StateComponent> extends Iterat
 	
 	protected void change(Entity entity, Class<? extends StateComponent> newState)
 	{
-		exit(entity); // call exit before remove
+		if(getFamily().matches(entity)) exit(entity); // call exit before remove
 		entity.remove(stateComponentType);
 		entity.add(getEngine().createComponent(newState));
 	}

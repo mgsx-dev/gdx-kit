@@ -11,7 +11,10 @@ import net.mgsx.game.core.GamePipeline;
 import net.mgsx.game.core.helpers.EmptySerializer;
 import net.mgsx.game.core.plugins.Plugin;
 import net.mgsx.game.core.storage.Storage;
+import net.mgsx.game.examples.platformer.core.input.KeyboardControllerSystem;
 import net.mgsx.game.examples.platformer.core.states.EatSystem;
+import net.mgsx.game.examples.platformer.core.states.FlyingControlSystem;
+import net.mgsx.game.examples.platformer.core.states.FlyingState;
 import net.mgsx.game.examples.platformer.core.states.FlyingSystem;
 import net.mgsx.game.plugins.boundary.components.BoundaryComponent;
 import net.mgsx.game.plugins.boundary.systems.BoundaryLogicSystem;
@@ -68,6 +71,8 @@ public class PlatformerPlugin implements Plugin
 		Storage.register(SpiderComponent.class, "example.platformer.spider");
 		engine.addSerializer(SpiderComponent.class, new EmptySerializer<SpiderComponent>());
 
+		engine.register(FlyingState.class);
+		
 		// add a processor for player
 		// TODO could be automated with a generic component and abstract behavior attached to it ?
 		engine.entityEngine.addSystem(new IteratingSystem(Family.all(PlayerComponent.class, Box2DBodyModel.class, G3DModel.class).get(), GamePipeline.LOGIC) {
@@ -139,6 +144,9 @@ public class PlatformerPlugin implements Plugin
 		
 		engine.entityEngine.addSystem(new FlyingSystem());
 		engine.entityEngine.addSystem(new EatSystem());
+		
+		engine.entityEngine.addSystem(new KeyboardControllerSystem());
+		engine.entityEngine.addSystem(new FlyingControlSystem());
 		
 		ppp = new PlatformerPostProcessing(engine);
 		
