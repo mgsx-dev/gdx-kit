@@ -1,4 +1,4 @@
-package net.mgsx.game.plugins.g3d;
+package net.mgsx.game.plugins.g3d.components;
 
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.model.Node;

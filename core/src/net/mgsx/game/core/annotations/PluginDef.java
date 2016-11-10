@@ -6,6 +6,8 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
+import net.mgsx.game.core.plugins.Plugin;
+
 /**
  * 
  * @author mgsx
@@ -13,8 +15,8 @@ import java.lang.annotation.Target;
  */
 @Retention(RUNTIME)
 @Target(TYPE)
-public @interface EditableSystem 
+public @interface PluginDef 
 {
-	/** name in the editor */
 	String value() default "";
+	Class<? extends Plugin>[] dependencies() default {};
 }

@@ -31,7 +31,7 @@ import net.mgsx.game.examples.platformer.core.input.KeyboardController;
 import net.mgsx.game.examples.platformer.core.input.PlayerController;
 import net.mgsx.game.plugins.box2d.model.Box2DBodyModel;
 import net.mgsx.game.plugins.box2d.model.Box2DJointModel;
-import net.mgsx.game.plugins.g3d.G3DModel;
+import net.mgsx.game.plugins.g3d.components.G3DModel;
 
 public class PlatformerGameEditor extends EditorPlugin {
 

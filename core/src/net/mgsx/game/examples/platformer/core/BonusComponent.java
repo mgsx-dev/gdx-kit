@@ -10,7 +10,7 @@ import net.mgsx.game.core.components.Transform2DComponent;
 import net.mgsx.game.core.helpers.AnimationAdapter;
 import net.mgsx.game.core.plugins.Initializable;
 import net.mgsx.game.plugins.box2d.model.Box2DBodyModel;
-import net.mgsx.game.plugins.g3d.G3DModel;
+import net.mgsx.game.plugins.g3d.components.G3DModel;
 
 public class BonusComponent implements Component, Initializable, Duplicable
 {

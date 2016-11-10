@@ -7,7 +7,7 @@ import net.mgsx.game.core.Editor;
 import net.mgsx.game.core.NativeService;
 import net.mgsx.game.plugins.box2d.Box2DPlugin;
 import net.mgsx.game.plugins.btree.BTreePlugin;
-import net.mgsx.game.plugins.g3d.ModelPlugin;
+import net.mgsx.game.plugins.g3d.G3DPlugin;
 import net.mgsx.game.plugins.parallax.ParallaxPlugin;
 import net.mgsx.game.plugins.profiling.ProfilerPlugin;
 import net.mgsx.game.plugins.sprite.SpritePlugin;
@@ -26,7 +26,7 @@ public class EditorLauncher
 		editor.registerPlugin(new ProfilerPlugin());
 		editor.registerPlugin(new SpritePlugin());
 		editor.registerPlugin(new ParallaxPlugin());
-		editor.registerPlugin(new ModelPlugin());
+		editor.registerPlugin(new G3DPlugin());
 		editor.registerPlugin(new Box2DPlugin());
 		editor.registerPlugin(new BTreePlugin());
 		

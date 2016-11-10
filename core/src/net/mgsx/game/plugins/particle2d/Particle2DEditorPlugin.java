@@ -18,8 +18,6 @@ public class Particle2DEditorPlugin extends EditorPlugin
 	@Override
 	public void initialize(Editor editor) 
 	{
-		super.initialize(editor);
-		
 		editor.addTool(new ClickTool("Add particles", editor){
 			String fileName;
 			@Override

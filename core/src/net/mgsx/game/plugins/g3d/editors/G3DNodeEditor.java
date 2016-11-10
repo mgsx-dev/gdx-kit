@@ -1,4 +1,4 @@
-package net.mgsx.game.plugins.g3d;
+package net.mgsx.game.plugins.g3d.editors;
 
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.graphics.g3d.model.Animation;
@@ -12,6 +12,7 @@ import com.badlogic.gdx.utils.Array;
 
 import net.mgsx.game.core.plugins.EntityEditorPlugin;
 import net.mgsx.game.core.ui.EntityEditor;
+import net.mgsx.game.plugins.g3d.components.G3DModel;
 
 public class G3DNodeEditor implements EntityEditorPlugin
 {

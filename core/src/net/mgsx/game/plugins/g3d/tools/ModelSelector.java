@@ -1,4 +1,4 @@
-package net.mgsx.game.plugins.g3d;
+package net.mgsx.game.plugins.g3d.tools;
 
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
@@ -15,6 +15,7 @@ import com.badlogic.gdx.utils.Array;
 
 import net.mgsx.game.core.Editor;
 import net.mgsx.game.core.plugins.SelectorPlugin;
+import net.mgsx.game.plugins.g3d.components.G3DModel;
 
 // TODO choice of conception :
 // - each node or mesh part is an entity

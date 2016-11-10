@@ -16,13 +16,13 @@ abstract public class ComponentTool extends Tool
 		this.assignableFor = assignableFor;
 	}
 	
-	public Class<? extends Component> getAssignableFor() {
-		return assignableFor;
-	}
-	
 	public ComponentTool(String name, Editor editor, Family activator) {
 		super(name, editor);
 		this.activator = activator;
+	}
+	
+	public Class<? extends Component> getAssignableFor() {
+		return assignableFor;
 	}
 	
 	public ComponentTool(String name, Editor editor) {
@@ -32,7 +32,7 @@ abstract public class ComponentTool extends Tool
 	@Override
 	protected void activate() 
 	{
-		Entity entity = editor.getSelected();
+		Entity entity = editor.currentEntity();
 		Component component = createComponent(entity);
 		if(component != null)
 		{

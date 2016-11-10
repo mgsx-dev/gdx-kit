@@ -19,7 +19,7 @@ import net.mgsx.game.examples.platformer.core.states.FlyingSystem;
 import net.mgsx.game.plugins.boundary.components.BoundaryComponent;
 import net.mgsx.game.plugins.boundary.systems.BoundaryLogicSystem;
 import net.mgsx.game.plugins.box2d.model.Box2DBodyModel;
-import net.mgsx.game.plugins.g3d.G3DModel;
+import net.mgsx.game.plugins.g3d.components.G3DModel;
 import net.mgsx.game.plugins.spline.PathComponent;
 
 /**

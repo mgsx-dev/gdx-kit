@@ -25,7 +25,7 @@ import com.badlogic.gdx.math.Vector3;
 
 import net.mgsx.game.core.GameEngine;
 import net.mgsx.game.core.GamePipeline;
-import net.mgsx.game.plugins.g3d.G3DModel;
+import net.mgsx.game.plugins.g3d.components.G3DModel;
 
 // TODO refactor things up here ... FBO ... shaders ...
 public class PlatformerPostProcessing

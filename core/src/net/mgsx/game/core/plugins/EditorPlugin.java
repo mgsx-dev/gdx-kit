@@ -5,7 +5,7 @@ import net.mgsx.game.core.Editor;
 /**
  * Base plugin for editor.
  */
-public class EditorPlugin  // TODO could be an interface ?
+public abstract class EditorPlugin 
 {
 	/**
 	 * Initialize plugin from an editor.
@@ -24,5 +24,6 @@ public class EditorPlugin  // TODO could be an interface ?
 	 * 
 	 * @param editor current editor, subclass could keep reference to this editor.
 	 */
-	public void initialize(Editor editor){} // TODO dont pass the entire editor, just interface for EditorPlugin (EditorProvider) or EditorManager
+	public abstract void initialize(Editor editor); // TODO dont pass the entire editor, just interface for EditorPlugin (EditorProvider) or EditorManager
+
 }

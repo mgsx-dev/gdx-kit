@@ -20,7 +20,7 @@ import net.mgsx.game.plugins.box2d.Box2DComponentTrigger;
 import net.mgsx.game.plugins.box2d.Box2DListener;
 import net.mgsx.game.plugins.box2d.Box2DMultiplexer;
 import net.mgsx.game.plugins.box2d.model.Box2DBodyModel;
-import net.mgsx.game.plugins.g3d.G3DModel;
+import net.mgsx.game.plugins.g3d.components.G3DModel;
 
 public class PlayerComponent implements Component, Initializable
 {

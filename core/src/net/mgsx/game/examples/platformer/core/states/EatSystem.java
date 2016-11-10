@@ -4,7 +4,7 @@ import com.badlogic.ashley.core.Entity;
 
 import net.mgsx.game.examples.platformer.core.input.PlayerController;
 import net.mgsx.game.plugins.fsm.systems.EntityStateSystem;
-import net.mgsx.game.plugins.g3d.G3DModel;
+import net.mgsx.game.plugins.g3d.components.G3DModel;
 
 public class EatSystem extends EntityStateSystem<EatState>
 {

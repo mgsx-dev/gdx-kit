@@ -43,14 +43,17 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 import net.mgsx.game.core.NativeService.DialogCallback;
 import net.mgsx.game.core.annotations.EditableComponent;
+import net.mgsx.game.core.annotations.PluginDef;
 import net.mgsx.game.core.commands.Command;
 import net.mgsx.game.core.commands.CommandHistory;
 import net.mgsx.game.core.components.Movable;
 import net.mgsx.game.core.components.ProxyComponent;
 import net.mgsx.game.core.components.Transform2DComponent;
+import net.mgsx.game.core.helpers.ReflectionHelper;
 import net.mgsx.game.core.plugins.EditorPlugin;
 import net.mgsx.game.core.plugins.EntityEditorPlugin;
 import net.mgsx.game.core.plugins.GlobalEditorPlugin;
+import net.mgsx.game.core.plugins.Plugin;
 import net.mgsx.game.core.plugins.SelectorPlugin;
 import net.mgsx.game.core.storage.Storage;
 import net.mgsx.game.core.tools.ClickTool;
@@ -116,15 +119,25 @@ public class Editor extends GameEngine
 	private Map<String, GlobalEditorPlugin> globalEditors = new LinkedHashMap<String, GlobalEditorPlugin>();
 	
 	public void registerPlugin(EditorPlugin plugin) {
+		PluginDef def = plugin.getClass().getAnnotation(PluginDef.class);
+		if(def != null){
+			for(Class<? extends Plugin> dependency : def.dependencies()){
+				registerPlugin(ReflectionHelper.newInstance(dependency));
+			}
+		}
 		editorPlugins.put(plugin.getClass(), plugin);
 	}
 	
-	private final static EntityEditorPlugin defaultComponentEditor = new EntityEditorPlugin() {
-		@Override
-		public Actor createEditor(Entity entity, Skin skin) {
-			return new EntityEditor(entity, skin);
-		}
-	};
+	private final static EntityEditorPlugin defaultComponentEditor(final Class<? extends Component> type)
+	{
+		return new EntityEditorPlugin() {
+		
+			@Override
+			public Actor createEditor(Entity entity, Skin skin) {
+				return new EntityEditor(entity.getComponent(type), true, skin);
+			}
+		};
+	}
 	
 	private Array<Tool> autoTools = new Array<Tool>();
 	
@@ -135,14 +148,19 @@ public class Editor extends GameEngine
 		
 		EditableComponent config = type.getAnnotation(EditableComponent.class);
 		if(config != null){
-			registerPlugin(type, defaultComponentEditor);
-			
-			autoTools.add(new ComponentTool(config.name(), this){
+			registerPlugin(type, defaultComponentEditor(type));
+			Family family = null;
+			if(config.all().length > 0 || config.one().length > 0 || config.exclude().length > 0){
+				family = Family.all(config.all()).one(config.one()).exclude(config.exclude()).get();
+			}
+			String name = config.name().isEmpty() ? type.getSimpleName() : config.name();
+			autoTools.add(new ComponentTool(name, this, family){
 				@Override
 				protected Component createComponent(Entity entity) {
 					return entityEngine.createComponent(type);
 				}
 			});
+			
 		}
 		
 	}
@@ -236,6 +254,8 @@ public class Editor extends GameEngine
 	public void create() 
 	{
 		super.create();
+		
+		register(Transform2DComponent.class);
 		
 		editorAssets = new AssetManager(new ClasspathFileHandleResolver());
 		

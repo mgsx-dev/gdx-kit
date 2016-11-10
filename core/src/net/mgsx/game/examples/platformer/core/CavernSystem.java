@@ -17,7 +17,7 @@ import com.badlogic.gdx.utils.Array;
 
 import net.mgsx.game.core.GameEngine;
 import net.mgsx.game.core.GamePipeline;
-import net.mgsx.game.plugins.g3d.G3DModel;
+import net.mgsx.game.plugins.g3d.components.G3DModel;
 
 public class CavernSystem extends IteratingSystem
 {

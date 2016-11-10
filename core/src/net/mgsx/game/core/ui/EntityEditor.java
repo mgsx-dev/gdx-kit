@@ -23,6 +23,9 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
 import com.badlogic.gdx.utils.Array;
 
+import net.mgsx.game.core.annotations.Editable;
+import net.mgsx.game.core.annotations.EditableComponent;
+import net.mgsx.game.core.annotations.EditableSystem;
 import net.mgsx.game.core.helpers.ReflectionHelper;
 
 public class EntityEditor extends Table
@@ -40,13 +43,20 @@ public class EntityEditor extends Table
 		}
 	}
 	private Array<Object> stack = new Array<Object>();
+	private final boolean annotationBased;
 	
 	public EntityEditor(Skin skin) {
-		super(skin);
-		// setBackground(skin.getDrawable("default-window"));
+		this(skin, false);
+	}
+	public EntityEditor(Skin skin, boolean annotationBased) {
+		this(null, annotationBased, skin);
 	}
 	public EntityEditor(Object entity, Skin skin) {
-		this(skin);
+		this(entity, false, skin);
+	}
+	public EntityEditor(Object entity, boolean annotationBased, Skin skin) {
+		super(skin);
+		this.annotationBased = annotationBased;
 		setEntity(entity);
 	}
 	
@@ -69,20 +79,69 @@ public class EntityEditor extends Table
 		public String getName();
 		public Class getType();
 	}
+	
+	private static class VoidAccessor implements Accessor
+	{
+		private final Object object;
+		private final Method method;
+		private final String name;
+		
+		public VoidAccessor(Object object, Method method) {
+			this(object, method, method.getName());
+		}
+		
+		public VoidAccessor(Object object, Method method, String name) {
+			super();
+			this.object = object;
+			this.method = method;
+			this.name = name;
+		}
+
+		@Override
+		public Object get() {
+			ReflectionHelper.invoke(object, method);
+			return null;
+		}
+
+		@Override
+		public void set(Object value) {
+		}
+
+		@Override
+		public String getName() {
+			return name;
+		}
+
+		@Override
+		public Class getType() {
+			return void.class;
+		}
+		
+	}
+	
 	private static class FieldAccessor implements Accessor
 	{
 		private Object object;
 		private Field field;
+		private String label;
 		
+		public FieldAccessor(Object object, Field field, String labelName) {
+			super();
+			this.object = object;
+			this.field = field;
+			this.label = labelName;
+		}
 		public FieldAccessor(Object object, Field field) {
 			super();
 			this.object = object;
 			this.field = field;
+			this.label = field.getName();
 		}
 		public FieldAccessor(Object object, String fieldName) {
 			super();
 			this.object = object;
 			this.field = ReflectionHelper.field(object, fieldName);
+			this.label = fieldName;
 		}
 
 		@Override
@@ -96,7 +155,7 @@ public class EntityEditor extends Table
 		}
 		@Override
 		public String getName() {
-			return field.getName();
+			return label;
 		}
 		@Override
 		public Class getType() {
@@ -142,11 +201,20 @@ public class EntityEditor extends Table
 		
 	}
 	
-	private void generate(final Object entity, final Table table)
+	public void generate(final Object entity, final Table table)
 	{
 		// prevent cycles
 		if(entity == null || stack.contains(entity, true)) return;
 		stack.add(entity);
+		
+		if(annotationBased){
+			boolean match = false;
+			
+			if(entity.getClass().getAnnotation(EditableSystem.class) != null) match = true;
+			if(entity.getClass().getAnnotation(EditableComponent.class) != null) match = true;
+			
+			if(!match) return;
+		}
 		
 		// first scan class to get all accessors
 		Array<Accessor> accessors = new Array<Accessor>();
@@ -156,7 +224,20 @@ public class EntityEditor extends Table
 		{
 			if(Modifier.isStatic(field.getModifiers())) continue;
 			
-			accessors.add(new FieldAccessor(entity, field));
+			if(annotationBased){
+				Editable editable = field.getAnnotation(Editable.class);
+				if(editable == null){
+					continue;
+				}
+				if(editable.value().isEmpty())
+					accessors.add(new FieldAccessor(entity, field));
+				else
+					accessors.add(new FieldAccessor(entity, field, editable.value()));
+			}
+			else
+			{
+				accessors.add(new FieldAccessor(entity, field));
+			}
 		}
 		
 		// scan getter/setter pattern
@@ -164,20 +245,36 @@ public class EntityEditor extends Table
 		{
 			if(Modifier.isStatic(method.getModifiers())) continue;
 			
-			if(method.getName().startsWith("set") && method.getName().length() > 3 && method.getParameterCount() == 1)
-			{
-				String getterName = "g" + method.getName().substring(1);
-				Method getter = ReflectionHelper.method(entity.getClass(), getterName);
-				if(getter == null || getter.getReturnType() != method.getParameterTypes()[0]){
-					// try boolean pattern setX/isX
-					getterName = "is" + method.getName().substring(3);
-					getter = ReflectionHelper.method(entity.getClass(), getterName);
+			if(annotationBased){
+				Editable editable = method.getAnnotation(Editable.class);
+				if(editable == null){
+					continue;
 				}
-				if(getter != null && getter.getReturnType() == method.getParameterTypes()[0]){
-					String name = method.getName().substring(3,4).toLowerCase() + method.getName().substring(4);
-					accessors.add(new MethodAccessor(entity, name, getter, method));
+				if(method.getReturnType() != void.class) continue;
+				if(method.getParameterCount() > 0) continue;
+				if(editable.value().isEmpty())
+					accessors.add(new VoidAccessor(entity, method));
+				else
+					accessors.add(new VoidAccessor(entity, method, editable.value()));
+			}
+			else
+			{
+				if(method.getName().startsWith("set") && method.getName().length() > 3 && method.getParameterCount() == 1)
+				{
+					String getterName = "g" + method.getName().substring(1);
+					Method getter = ReflectionHelper.method(entity.getClass(), getterName);
+					if(getter == null || getter.getReturnType() != method.getParameterTypes()[0]){
+						// try boolean pattern setX/isX
+						getterName = "is" + method.getName().substring(3);
+						getter = ReflectionHelper.method(entity.getClass(), getterName);
+					}
+					if(getter != null && getter.getReturnType() == method.getParameterTypes()[0]){
+						String name = method.getName().substring(3,4).toLowerCase() + method.getName().substring(4);
+						accessors.add(new MethodAccessor(entity, name, getter, method));
+					}
 				}
 			}
+			
 		}
 		
 		for(final Accessor accessor : accessors)

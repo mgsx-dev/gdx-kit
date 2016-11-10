@@ -13,8 +13,8 @@ import net.mgsx.game.plugins.boundary.BoundaryPlugin;
 import net.mgsx.game.plugins.box2d.Box2DPlugin;
 import net.mgsx.game.plugins.btree.BTreePlugin;
 import net.mgsx.game.plugins.fsm.StateMachinePlugin;
-import net.mgsx.game.plugins.g3d.G3DEditor;
-import net.mgsx.game.plugins.g3d.ModelPlugin;
+import net.mgsx.game.plugins.g3d.G3DEditorPlugin;
+import net.mgsx.game.plugins.g3d.G3DPlugin;
 import net.mgsx.game.plugins.parallax.ParallaxPlugin;
 import net.mgsx.game.plugins.particle2d.Particle2DEditorPlugin;
 import net.mgsx.game.plugins.particle2d.Particle2DPlugin;
@@ -33,14 +33,15 @@ public class PlatformerGameEditorLauncher {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		Editor editor = new Editor();
 
+		
 		// plugins configuration (order is important)
 		//
 		editor.registerPlugin(new ProfilerPlugin());
 		editor.registerPlugin(new SpritePlugin());
 		editor.registerPlugin(new ParallaxPlugin());
 		
-		editor.registerPlugin(new ModelPlugin());
-		editor.addGlobalEditor("G3D", new G3DEditor());
+		editor.registerPlugin(new G3DPlugin());
+		editor.registerPlugin(new G3DEditorPlugin());
 		
 		editor.registerPlugin(new SplinePlugin());
 		editor.registerPlugin(new SplineEditorPlugin());

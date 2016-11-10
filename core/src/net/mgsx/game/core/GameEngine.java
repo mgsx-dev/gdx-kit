@@ -16,9 +16,11 @@ import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.Json.Serializer;
 import com.badlogic.gdx.utils.ObjectMap;
 
+import net.mgsx.game.core.annotations.PluginDef;
 import net.mgsx.game.core.annotations.Storable;
 import net.mgsx.game.core.components.ProxyComponent;
 import net.mgsx.game.core.components.Transform2DComponent;
+import net.mgsx.game.core.helpers.ReflectionHelper;
 import net.mgsx.game.core.helpers.TypeMap;
 import net.mgsx.game.core.plugins.EditorPlugin;
 import net.mgsx.game.core.plugins.Plugin;
@@ -49,6 +51,12 @@ public class GameEngine extends ApplicationAdapter
 	public final ObjectMap<Class, Serializer> serializers = new ObjectMap<Class, Serializer>();
 	
 	public void registerPlugin(Plugin plugin) {
+		PluginDef def = plugin.getClass().getAnnotation(PluginDef.class);
+		if(def != null){
+			for(Class<? extends Plugin> dependency : def.dependencies()){
+				registerPlugin(ReflectionHelper.newInstance(dependency));
+			}
+		}
 		plugins.put(plugin.getClass(), plugin);
 	}
 

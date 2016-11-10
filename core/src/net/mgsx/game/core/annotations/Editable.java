@@ -1,6 +1,6 @@
 package net.mgsx.game.core.annotations;
 
-import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 import java.lang.annotation.Retention;
@@ -12,9 +12,12 @@ import java.lang.annotation.Target;
  *
  */
 @Retention(RUNTIME)
-@Target(TYPE)
-public @interface EditableSystem 
+@Target(FIELD)
+public @interface Editable 
 {
-	/** name in the editor */
+	/** name in the editor, default is field name */
 	String value() default "";
+	
+	/** editor group name, default is no group */
+	String group() default "";
 }

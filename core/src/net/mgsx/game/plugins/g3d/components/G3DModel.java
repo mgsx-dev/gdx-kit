@@ -1,4 +1,4 @@
-package net.mgsx.game.plugins.g3d;
+package net.mgsx.game.plugins.g3d.components;
 
 import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.ComponentMapper;
