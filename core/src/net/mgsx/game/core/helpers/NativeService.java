@@ -1,4 +1,4 @@
-package net.mgsx.game.core;
+package net.mgsx.game.core.helpers;
 
 import com.badlogic.gdx.files.FileHandle;
 

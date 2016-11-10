@@ -9,9 +9,9 @@ import com.badlogic.gdx.graphics.g3d.utils.AnimationController;
 import com.badlogic.gdx.math.Vector2;
 
 import net.mgsx.game.core.Editor;
-import net.mgsx.game.core.NativeService;
-import net.mgsx.game.core.NativeService.DialogCallback;
 import net.mgsx.game.core.components.Movable;
+import net.mgsx.game.core.helpers.NativeService;
+import net.mgsx.game.core.helpers.NativeService.DialogCallback;
 import net.mgsx.game.core.tools.Tool;
 import net.mgsx.game.plugins.g3d.components.G3DModel;
 

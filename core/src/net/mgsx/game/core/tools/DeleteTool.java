@@ -3,10 +3,10 @@ package net.mgsx.game.core.tools;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.utils.Array;
 
-import net.mgsx.game.core.ComponentFactory;
 import net.mgsx.game.core.Editor;
 import net.mgsx.game.core.Editor.EditorEntity;
 import net.mgsx.game.core.commands.Command;
+import net.mgsx.game.core.helpers.ComponentFactory;
 
 public class DeleteTool extends Tool {
 

@@ -5,7 +5,7 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 
 import net.mgsx.box2d.editor.desktop.DesktopNativeInterface;
 import net.mgsx.game.core.Editor;
-import net.mgsx.game.core.NativeService;
+import net.mgsx.game.core.helpers.NativeService;
 import net.mgsx.game.examples.platformer.core.PlatformerPlugin;
 import net.mgsx.game.examples.platformer.editor.PlatformerGameEditor;
 import net.mgsx.game.plugins.ashley.AshleyEditorPlugin;

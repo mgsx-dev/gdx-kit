@@ -1,4 +1,4 @@
-package net.mgsx.game.core;
+package net.mgsx.game.core.helpers;
 
 // TODO replaced by Entity Component : code specific AI in specific plugin : just require
 // entity to have several components, for instance :

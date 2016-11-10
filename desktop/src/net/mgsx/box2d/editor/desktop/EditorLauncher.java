@@ -4,7 +4,7 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 
 import net.mgsx.game.core.Editor;
-import net.mgsx.game.core.NativeService;
+import net.mgsx.game.core.helpers.NativeService;
 import net.mgsx.game.plugins.box2d.Box2DPlugin;
 import net.mgsx.game.plugins.btree.BTreePlugin;
 import net.mgsx.game.plugins.g3d.G3DPlugin;

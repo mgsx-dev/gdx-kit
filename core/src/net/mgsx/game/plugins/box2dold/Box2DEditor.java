@@ -22,8 +22,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Array;
 
 import net.mgsx.game.core.Editor;
-import net.mgsx.game.core.NativeService;
-import net.mgsx.game.core.NativeService.DialogCallback;
+import net.mgsx.game.core.helpers.NativeService;
+import net.mgsx.game.core.helpers.NativeService.DialogCallback;
 import net.mgsx.game.core.tools.Tool;
 import net.mgsx.game.core.tools.ToolGroup;
 import net.mgsx.game.core.ui.EntityEditor;

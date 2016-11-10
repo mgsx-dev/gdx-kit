@@ -8,9 +8,9 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
-import net.mgsx.game.core.AssetLookupCallback;
-import net.mgsx.game.core.ComponentFactory;
 import net.mgsx.game.core.Editor;
+import net.mgsx.game.core.helpers.AssetLookupCallback;
+import net.mgsx.game.core.helpers.ComponentFactory;
 import net.mgsx.game.core.tools.RectangleTool;
 
 public class AddSpriteTool extends RectangleTool 

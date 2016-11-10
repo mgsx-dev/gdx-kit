@@ -13,9 +13,9 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 
 import net.mgsx.game.core.Editor;
-import net.mgsx.game.core.NativeService;
-import net.mgsx.game.core.NativeService.DialogCallback;
 import net.mgsx.game.core.components.Movable;
+import net.mgsx.game.core.helpers.NativeService;
+import net.mgsx.game.core.helpers.NativeService.DialogCallback;
 import net.mgsx.game.core.plugins.EditorPlugin;
 import net.mgsx.game.core.storage.Storage;
 import net.mgsx.game.core.tools.Tool;

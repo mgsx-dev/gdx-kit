@@ -5,7 +5,7 @@ import java.io.File;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 
-import net.mgsx.game.core.NativeService;
+import net.mgsx.game.core.helpers.NativeService;
 import net.mgsx.game.plugins.box2dold.Box2DEditor;
 import net.mgsx.game.plugins.sprite.SpritePlugin;
 
