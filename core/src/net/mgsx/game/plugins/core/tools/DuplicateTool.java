@@ -1,4 +1,4 @@
-package net.mgsx.game.core.tools;
+package net.mgsx.game.plugins.core.tools;
 
 import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.Entity;

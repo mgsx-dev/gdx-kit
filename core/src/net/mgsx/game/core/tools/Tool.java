@@ -27,7 +27,7 @@ import net.mgsx.game.core.Editor;
  * 
  * See ToolGroup : exclusive tool (eg select + draw)
  */
-public class Tool extends InputAdapter
+abstract public class Tool extends InputAdapter
 {
 	final protected Editor editor;
 	ToolGroup group;

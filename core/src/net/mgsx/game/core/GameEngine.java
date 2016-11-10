@@ -25,6 +25,7 @@ import net.mgsx.game.core.helpers.TypeMap;
 import net.mgsx.game.core.plugins.EditorPlugin;
 import net.mgsx.game.core.plugins.Plugin;
 import net.mgsx.game.core.storage.Storage;
+import net.mgsx.game.plugins.core.CorePlugin;
 
 // TODO
 // shoulb be a screen (because of multi screen features or multi viewport ...
@@ -37,6 +38,11 @@ public class GameEngine extends ApplicationAdapter
 	protected TypeMap<EditorPlugin> editorPlugins = new TypeMap<EditorPlugin>();
 	protected TypeMap<Plugin> plugins = new TypeMap<Plugin>();
 	public PooledEngine entityEngine;
+	
+	public GameEngine() {
+		super();
+		registerPlugin(new CorePlugin());
+	}
 	
 	// TODO not really cool ...
 	public void remove(Entity entity, Class<? extends Component> type){

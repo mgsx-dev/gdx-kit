@@ -1,17 +1,12 @@
 package net.mgsx.game.core;
 
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
 import java.util.Map.Entry;
 
 import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntityListener;
-import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.assets.AssetLoaderParameters;
 import com.badlogic.gdx.assets.AssetManager;
@@ -24,7 +19,6 @@ import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -41,57 +35,30 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 import net.mgsx.game.core.annotations.EditableComponent;
-import net.mgsx.game.core.annotations.PluginDef;
 import net.mgsx.game.core.commands.Command;
 import net.mgsx.game.core.commands.CommandHistory;
-import net.mgsx.game.core.components.Movable;
-import net.mgsx.game.core.components.ProxyComponent;
 import net.mgsx.game.core.components.Transform2DComponent;
+import net.mgsx.game.core.editors.AnnotationBasedComponentEditor;
+import net.mgsx.game.core.helpers.AssetHelper;
 import net.mgsx.game.core.helpers.AssetLookupCallback;
-import net.mgsx.game.core.helpers.ComponentFactory;
 import net.mgsx.game.core.helpers.NativeService;
-import net.mgsx.game.core.helpers.ReflectionHelper;
 import net.mgsx.game.core.helpers.NativeService.DialogCallback;
 import net.mgsx.game.core.plugins.EditorPlugin;
 import net.mgsx.game.core.plugins.EntityEditorPlugin;
 import net.mgsx.game.core.plugins.GlobalEditorPlugin;
-import net.mgsx.game.core.plugins.Plugin;
 import net.mgsx.game.core.plugins.SelectorPlugin;
-import net.mgsx.game.core.storage.Storage;
-import net.mgsx.game.core.tools.ClickTool;
 import net.mgsx.game.core.tools.ComponentTool;
-import net.mgsx.game.core.tools.DeleteTool;
-import net.mgsx.game.core.tools.DuplicateTool;
-import net.mgsx.game.core.tools.FollowSelectionTool;
-import net.mgsx.game.core.tools.NoTool;
-import net.mgsx.game.core.tools.PanTool;
-import net.mgsx.game.core.tools.SelectTool;
-import net.mgsx.game.core.tools.SwitchModeTool;
 import net.mgsx.game.core.tools.Tool;
 import net.mgsx.game.core.tools.ToolGroup;
-import net.mgsx.game.core.tools.UndoTool;
-import net.mgsx.game.core.tools.ZoomTool;
-import net.mgsx.game.core.ui.EntityEditor;
 import net.mgsx.game.core.ui.TabPane;
+import net.mgsx.game.plugins.core.CoreEditorPlugin;
+import net.mgsx.game.plugins.core.tools.UndoTool;
 
 // TODO avoid complexity here : 
 // panel could be separated
 // editor could be a screen (to be used within a game or why not stacked on other screen !)
-// TODO default switch to toggle debug display and simple display (aka blender : show only render)
-// maybe move things to factory/plugin registry ...
-// just keep GUI and rendering inside
 //
-//
-// TODO rendering pipeline could be a SystemProcessor :
-// it has a predifiend and order stack
-// where plugins can attach things ...
-//
-// TODO storage considerations :
-// by default, a component is not saved, plugins have to register a serializer for it.
-// TODO concept of import/save/load/export : load/save is handled directly, import/export is throw plugins,
-// example : import a png, work on it and export it as png
-//
-public class Editor extends GameEngine
+public class Editor extends EditorRegistry
 {
 	public CommandHistory history;
 	protected Skin skin;
@@ -118,31 +85,13 @@ public class Editor extends GameEngine
 	/** tools displayed as button when selection change (contextual tools) */
 	private Array<Tool> mainTools = new Array<Tool>();
 	
-	private Map<String, GlobalEditorPlugin> globalEditors = new LinkedHashMap<String, GlobalEditorPlugin>();
-	
-	public void registerPlugin(EditorPlugin plugin) {
-		if(editorPlugins.containsKey(plugin.getClass())) return;
-		PluginDef def = plugin.getClass().getAnnotation(PluginDef.class);
-		if(def != null){
-			for(Class<? extends Plugin> dependency : def.dependencies()){
-				registerPlugin(ReflectionHelper.newInstance(dependency));
-			}
-		}
-		editorPlugins.put(plugin.getClass(), plugin);
-	}
-	
-	private final static EntityEditorPlugin defaultComponentEditor(final Class<? extends Component> type)
-	{
-		return new EntityEditorPlugin() {
-		
-			@Override
-			public Actor createEditor(Entity entity, Skin skin) {
-				return new EntityEditor(entity.getComponent(type), true, skin);
-			}
-		};
-	}
 	
 	private Array<Tool> autoTools = new Array<Tool>();
+	
+	public Editor() {
+		super();
+		registerPlugin(new CoreEditorPlugin());
+	}
 	
 	@Override
 	public void register(final Class<? extends Component> type) 
@@ -151,7 +100,7 @@ public class Editor extends GameEngine
 		
 		EditableComponent config = type.getAnnotation(EditableComponent.class);
 		if(config != null){
-			registerPlugin(type, defaultComponentEditor(type));
+			registerPlugin(type, new AnnotationBasedComponentEditor(type));
 			Family family = null;
 			if(config.all().length > 0 || config.one().length > 0 || config.exclude().length > 0){
 				family = Family.all(config.all()).one(config.one()).exclude(config.exclude()).get();
@@ -253,6 +202,14 @@ public class Editor extends GameEngine
 		}
 	}
 	
+	public void switchCameras()
+	{
+		if(camera == perspectiveCamera)
+			camera = gameCamera;
+		else
+			camera = perspectiveCamera;
+	}
+	
 	@Override
 	public void create() 
 	{
@@ -267,8 +224,7 @@ public class Editor extends GameEngine
 	
 		camera = perspectiveCamera;
 		
-		// XXX skin = SkinFactory.createSkin();
-		skin = loadAssetNow(editorAssets, "data/uiskin.json", Skin.class);
+		skin = AssetHelper.loadAssetNow(editorAssets, "data/uiskin.json", Skin.class);
 		
 		stage = new Stage(new ScreenViewport());
 		history = new CommandHistory();
@@ -286,52 +242,6 @@ public class Editor extends GameEngine
 		outline = new Table(skin); 
 		superGlobal = new Table(skin);
 		
-		TextButton btSave = new TextButton("Save", skin);
-		TextButton btOpen = new TextButton("Open", skin);
-		TextButton btReset = new TextButton("Reset", skin);
-		
-		superGlobal.add(btSave);
-		superGlobal.add(btOpen);
-		superGlobal.add(btReset);
-		
-		
-		btSave.addListener(new ChangeListener() {
-			@Override
-			public void changed(ChangeEvent event, Actor actor) {
-				NativeService.instance.openSaveDialog(new DialogCallback() {
-					@Override
-					public void selected(FileHandle file) {
-						Storage.save(entityEngine, assets, file, true, serializers); // TODO pretty configurable
-					}
-					@Override
-					public void cancel() {
-					}
-				});
-			}
-		});
-		btOpen.addListener(new ChangeListener() {
-			@Override
-			public void changed(ChangeEvent event, Actor actor) {
-				NativeService.instance.openSaveDialog(new DialogCallback() {
-					@Override
-					public void selected(FileHandle file) {
-						Storage.load(entityEngine, file, assets, serializers);
-						// TODO ? rebuild();
-					}
-					@Override
-					public void cancel() {
-					}
-				});
-			}
-		});
-		btReset.addListener(new ChangeListener() {
-			@Override
-			public void changed(ChangeEvent event, Actor actor) {
-				entityEngine.removeAllEntities();
-				selection.clear();
-				invalidateSelection();
-			}
-		});
 		
 		Table grp = new Table();
 		grp.add(buttons).fill().row();
@@ -358,99 +268,7 @@ public class Editor extends GameEngine
 		
 		mainToolGroup = createToolGroup();
 
-		addSuperTool(new NoTool("Select", this));;
-		
-		addSuperTool(new ClickTool("Import", this) {
-			private FileHandle file;
-			@Override
-			protected void activate() {
-				NativeService.instance.openSaveDialog(new DialogCallback() {
-					@Override
-					public void selected(FileHandle selectedFile) {
-						file = selectedFile;
-					}
-					@Override
-					public void cancel() {
-					}
-				});
-			}
-			@Override
-			protected void create(final Vector2 position) 
-			{
-				for(Entity entity : Storage.load(entityEngine, file, assets, serializers)){
-					Movable movable = entity.getComponent(Movable.class);
-					if(movable != null){
-						movable.move(entity, new Vector3(position.x, position.y, 0)); // sprite plan
-					}
-				}
-				// TODO update things in GUI ?
-				
-			}
-		});;
 
-		addSuperTool(new ClickTool("Proxy", this) {
-			private FileHandle file;
-			@Override
-			protected void activate() {
-				NativeService.instance.openSaveDialog(new DialogCallback() {
-					@Override
-					public void selected(FileHandle selectedFile) {
-						file = selectedFile;
-					}
-					@Override
-					public void cancel() {
-					}
-				});
-			}
-			@Override
-			protected void create(final Vector2 position) 
-			{
-				for(Entity entity : Storage.load(entityEngine, file, assets, serializers, true)){
-					// TODO add proxy component
-					Movable movable = entity.getComponent(Movable.class);
-					if(movable != null){
-						movable.move(entity, new Vector3(position.x, position.y, 0)); // sprite plan
-					}
-					ProxyComponent proxy = new ProxyComponent();
-					proxy.ref = file.path();
-					entity.add(proxy);
-				}
-				// TODO update things in GUI ?
-				
-			}
-		});;
-
-		// TODO create helper for these
-		registerPlugin(Transform2DComponent.class, new EntityEditorPlugin() {
-			@Override
-			public Actor createEditor(Entity entity, Skin skin) {
-				return new EntityEditor(entity.getComponent(Transform2DComponent.class), skin);
-			}
-		});
-		
-		addSuperTool(new DeleteTool("Delete", this));;
-
-		// order is very important !
-		addGlobalTool(new SelectTool(this));
-		addGlobalTool(new ZoomTool(this));
-		addGlobalTool(new PanTool(this));
-		addGlobalTool(new DuplicateTool(this));
-		addGlobalTool(new FollowSelectionTool(this));
-		addGlobalTool(new SwitchModeTool(this));
-		addGlobalTool(new Tool(this){
-			@Override
-			public boolean keyDown(int keycode) {
-				if(keycode == Input.Keys.NUMPAD_0 || keycode == Input.Keys.INSERT){
-					if(camera == perspectiveCamera)
-						camera = gameCamera;
-					else
-						camera = perspectiveCamera;
-					return true;
-				}
-				return super.keyDown(keycode);
-			}
-		});
-		
 		for(Tool tool : autoTools){
 			addTool(tool);
 		}
@@ -466,7 +284,6 @@ public class Editor extends GameEngine
 		for(Entry<String, GlobalEditorPlugin> entry : globalEditors.entrySet()){
 			global.addTab(entry.getKey(), entry.getValue().createEditor(this, skin));
 		}
-		// global.sett
 		
 		EntityListener selectionListener = new EntityListener() {
 			
@@ -491,28 +308,6 @@ public class Editor extends GameEngine
 		}
 		entityEngine.addEntityListener(selectionListener); // TODO maybe not the same listener
 		
-		// draw sleection
-		entityEngine.addSystem(new EntitySystem(GamePipeline.RENDER_OVER) {
-			
-			@Override
-			public void update(float deltaTime) {
-				Vector3 pos = new Vector3();
-				Vector2 s = Tool.pixelSize(camera).scl(5);
-				shapeRenderer.setProjectionMatrix(camera.combined); // XXX ortho
-				shapeRenderer.begin(ShapeType.Line);
-				for(Entity e : entityEngine.getEntitiesFor(Family.one(Movable.class).get())){
-					Movable movable = e.getComponent(Movable.class);
-					if(movable != null){
-						movable.getPosition(e, pos);
-						boolean inSelection = selection.contains(e, true);
-						if(inSelection) shapeRenderer.setColor(1, 1, 0, 1);
-						shapeRenderer.rect(pos.x-s.x, pos.y-s.y, 2*s.x, 2*s.y);
-						if(inSelection) shapeRenderer.setColor(1, 1, 1, 1);
-					}
-				}
-				shapeRenderer.end();
-			}
-		});
 		
 		// build GUI
 		updateSelection();
@@ -529,11 +324,6 @@ public class Editor extends GameEngine
 	{
 		ToolGroup g = createToolGroup();
 		g.setActiveTool(tool);
-	}
-	
-	public void reset(){
-//		toolDelegator.clear(); // XXX
-//		tools.clear();
 	}
 	
 	@Override
@@ -726,16 +516,9 @@ public class Editor extends GameEngine
 	}
 	
 	
-	private Map<Class, Array<EntityEditorPlugin>> editablePlugins = new HashMap<Class, Array<EntityEditorPlugin>>();
 	public Array<Entity> selection = new Array<Entity>();
 	public boolean selectionDirty;
 	public boolean displayEnabled = true; // true by default
-	public <T> void registerPlugin(Class<T> type, EntityEditorPlugin plugin) 
-	{
-		Array<EntityEditorPlugin> plugins = editablePlugins.get(type);
-		if(plugins == null) editablePlugins.put(type, plugins = new Array<EntityEditorPlugin>());
-		plugins.add(plugin);
-	}
 
 	public Entity currentEntity() 
 	{
@@ -751,7 +534,7 @@ public class Editor extends GameEngine
 		mainToolGroup.tools.add(tool);
 		mainTools.add(tool);
 	}
-	private void addSuperTool(Tool tool) {
+	public void addSuperTool(Tool tool) {
 		mainToolGroup.tools.add(tool);
 		superGlobal.add(createToolButton(tool));
 	}
@@ -759,8 +542,6 @@ public class Editor extends GameEngine
 	public void addSubTool(Tool tool) {
 		mainToolGroup.tools.add(tool);
 	}
-	
-	
 	
 	
 	public TextButton createToolButton(final Tool tool) 
@@ -791,26 +572,10 @@ public class Editor extends GameEngine
 	}
 
 	public <T> T loadAssetNow(String fileName, Class<T> type) {
-		return loadAssetNow(assets, fileName, type);
+		return AssetHelper.loadAssetNow(assets, fileName, type);
 	}
 	public <T> T loadAssetNow(String fileName, Class<T> type, AssetLoaderParameters<T> parameters) {
-		return loadAssetNow(assets, fileName, type, parameters);
-	}
-
-	public static <T> T loadAssetNow(AssetManager assets, String fileName, Class<T> type) {
-		assets.load(fileName, type);
-		assets.finishLoadingAsset(fileName);
-		return assets.get(fileName, type);
-	}
-	public static <T> T loadAssetNow(AssetManager assets, String fileName, Class<T> type, AssetLoaderParameters<T> parameters) {
-		assets.load(fileName, type, parameters);
-		assets.finishLoadingAsset(fileName);
-		return assets.get(fileName, type);
-	}
-
-	public void addGlobalEditor(String name, GlobalEditorPlugin plugin) 
-	{
-		globalEditors.put(name, plugin);
+		return AssetHelper.loadAssetNow(assets, fileName, type, parameters);
 	}
 
 	public Vector2 unproject(float screenX, float screenY) {
@@ -841,31 +606,8 @@ public class Editor extends GameEngine
 		});
 	}
 
-	
-	public void addComponent(final ComponentFactory factory) 
-	{
-		final Entity entity = currentEntity();
-		
-		history.add(new Command(){
-			// TODO maybe it overrides a component so need to store it but
-			// dont mess with pool, component object may be reused
-			private Class<? extends Component> type;
-			@Override
-			public void commit() {
-				Component component = factory.create(entity);
-				type = component.getClass();
-				entity.add(component);
-			}
-			@Override
-			public void rollback() {
-				entity.remove(type);
-			}
-		});
-		
-	}
-
 	public Entity createEntity() {
-		return entityEngine.createEntity(); // new Entity(); // TODO use pool
+		return entityEngine.createEntity();
 	}
 
 	public Entity createAndAddEntity() {
@@ -874,29 +616,9 @@ public class Editor extends GameEngine
 		return e;
 	}
 
-	public void toggleMode() 
-	{
-		displayEnabled = !displayEnabled;
-		for(EntitySystem system : entityEngine.getSystems())
-		{
-			if(system.priority == GamePipeline.RENDER_OVER) system.setProcessing(displayEnabled);
-		}
-	}
-	
-	public <T extends EditorPlugin> T getEditorPlugin(Class<T> type) {
-		return (T)editorPlugins.get(type);
-	}
-
 	public void performCommand(Command command) 
 	{
 		history.add(command);
 	}
 
-	
-
-	
-
-
-
 }
-// 937, goal 700

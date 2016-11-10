@@ -1,6 +1,7 @@
 package net.mgsx.game.core.components;
 
 import com.badlogic.ashley.core.Component;
+import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.math.Vector3;
 
@@ -24,6 +25,9 @@ import com.badlogic.gdx.math.Vector3;
 
 public class Movable implements Component
 {
+	
+	public static ComponentMapper<Movable> components = ComponentMapper.getFor(Movable.class);
+	
 	private Movable delegate;
 	public Movable(){}
 	public Movable(Movable delegate) {

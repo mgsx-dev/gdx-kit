@@ -1,4 +1,4 @@
-package net.mgsx.game.core.tools;
+package net.mgsx.game.plugins.core.tools;
 
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Input;
@@ -7,6 +7,7 @@ import com.badlogic.gdx.math.Vector3;
 
 import net.mgsx.game.core.Editor;
 import net.mgsx.game.core.components.Movable;
+import net.mgsx.game.core.tools.Tool;
 
 public class FollowSelectionTool extends Tool
 {

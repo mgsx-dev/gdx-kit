@@ -78,7 +78,6 @@ public class Box2DEditor extends Editor
 	}
 	
 	public void reset(){
-		super.reset();
 		worldItem.items.clear();
 		worldItem.world.dispose();
 		worldItem.world = new World(worldItem.settings.gravity, true);
@@ -87,7 +86,7 @@ public class Box2DEditor extends Editor
 	
 	private void rebuild()
 	{
-		super.reset();
+		reset();
 		
 		stage.clear();
 		

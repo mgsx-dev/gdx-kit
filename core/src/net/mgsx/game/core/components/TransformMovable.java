@@ -3,7 +3,8 @@ package net.mgsx.game.core.components;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.math.Vector3;
 
-// TODO delete this when movable will be clean, it's just a crossover Movable and Transform;
+// TODO delete this when movable will be clean, it's just a crossover Movable and Transform used only with
+// particle system but it should be updated by particles !
 public class TransformMovable extends Movable
 {
 	@Override

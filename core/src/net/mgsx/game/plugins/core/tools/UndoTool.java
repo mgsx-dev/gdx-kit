@@ -1,8 +1,9 @@
-package net.mgsx.game.core.tools;
+package net.mgsx.game.plugins.core.tools;
 
 import com.badlogic.gdx.Input;
 
 import net.mgsx.game.core.Editor;
+import net.mgsx.game.core.tools.Tool;
 
 public class UndoTool extends Tool
 {

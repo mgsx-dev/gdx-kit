@@ -1,7 +1,5 @@
 package net.mgsx.game.plugins.sprite;
 
-import com.badlogic.ashley.core.Component;
-import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -10,7 +8,6 @@ import com.badlogic.gdx.math.Vector2;
 
 import net.mgsx.game.core.Editor;
 import net.mgsx.game.core.helpers.AssetLookupCallback;
-import net.mgsx.game.core.helpers.ComponentFactory;
 import net.mgsx.game.core.tools.RectangleTool;
 
 public class AddSpriteTool extends RectangleTool 
@@ -53,15 +50,9 @@ public class AddSpriteTool extends RectangleTool
 	protected void create(Vector2 startPoint, Vector2 endPoint) {
 		
 		if(sprite != null){
-			final Sprite spriteSnapshot = new Sprite(sprite);
-			editor.addComponent(new ComponentFactory() {
-				@Override
-				public Component create(Entity entity) {
-					SpriteModel model = new SpriteModel();
-					model.sprite = spriteSnapshot;
-					return model;
-				}
-			});
+			SpriteModel component = new SpriteModel();
+			component.sprite = new Sprite(sprite);
+			editor.currentEntity().add(component);
 			sprite = null;
 		}
 	}

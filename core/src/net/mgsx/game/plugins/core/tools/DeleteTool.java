@@ -1,4 +1,4 @@
-package net.mgsx.game.core.tools;
+package net.mgsx.game.plugins.core.tools;
 
 import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.Entity;
@@ -8,11 +8,12 @@ import net.mgsx.game.core.Editor;
 import net.mgsx.game.core.commands.Command;
 import net.mgsx.game.core.helpers.ArrayHelper;
 import net.mgsx.game.core.plugins.Initializable;
+import net.mgsx.game.core.tools.Tool;
 
 public class DeleteTool extends Tool {
 
-	public DeleteTool(String name, Editor editor) {
-		super(name, editor);
+	public DeleteTool(Editor editor) {
+		super("Delete", editor);
 	}
 
 	@Override
