@@ -430,14 +430,6 @@ public class Editor extends GameEngine
 		
 		addSuperTool(new DeleteTool("Delete", this));;
 
-//		addGlobalTool(new SelectToolBase(this){
-//			@Override
-//			public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-//				setSelection(null);
-//				return super.touchDown(screenX, screenY, pointer, button);
-//			}
-//		});
-
 		// order is very important !
 		addGlobalTool(new SelectTool(this));
 		addGlobalTool(new ZoomTool(this));
@@ -465,11 +457,9 @@ public class Editor extends GameEngine
 		
 		// register listener after plugins creation to create filters on all possible components
 		// finally initiate plugins.
-		// TODO separate runtme plugin part (model, serialization, update, render) from editor part
 		for(EditorPlugin plugin : editorPlugins.values()){
 			plugin.initialize(this);
 		}
-		
 
 
 		global.addTab("Off", new Table(skin));
@@ -477,24 +467,6 @@ public class Editor extends GameEngine
 			global.addTab(entry.getKey(), entry.getValue().createEditor(this, skin));
 		}
 		// global.sett
-		
-		// TODO  maybe generalize as auto attach (Family) with a backed pool : pool.obtain, pool.release
-		
-		// listener added after : all entity add/remove can be rollback/restore
-		// TODO it mess with pool and is over complicated !
-		// should be done manual way (tools create commands !) :
-		// add component command, add entity command ...
-		entityEngine.addEntityListener(new EntityListener() {
-			@Override
-			public void entityRemoved(final Entity entity) {
-				entity.remove(EditorEntity.class);
-			}
-			@Override
-			public void entityAdded(final Entity entity) {
-				EditorEntity config = new EditorEntity(); // TODO maybe if not already have a component, TODO create an auto component listener which handle these cases ....
-				entity.add(config);
-			}
-		});
 		
 		EntityListener selectionListener = new EntityListener() {
 			
@@ -541,13 +513,6 @@ public class Editor extends GameEngine
 				shapeRenderer.end();
 			}
 		});
-		
-		
-		for(EntitySystem system : entityEngine.getSystems()){
-			if(system.priority == GamePipeline.RENDER_OVER) overSystems.add(system);
-		}
-		
-
 		
 		// build GUI
 		updateSelection();
@@ -638,12 +603,6 @@ public class Editor extends GameEngine
 	public void dispose () {
 	}
 
-	public static class EditorEntity implements Component
-	{
-		public Array<ComponentFactory> factories = new Array<ComponentFactory>();
-	}
-	
-	
 	private void updateSelection() 
 	{
 		final Entity entity = selection.size == 1 ? selection.first() : null;
@@ -886,7 +845,6 @@ public class Editor extends GameEngine
 	public void addComponent(final ComponentFactory factory) 
 	{
 		final Entity entity = currentEntity();
-		entity.getComponent(EditorEntity.class).factories.add(factory);
 		
 		history.add(new Command(){
 			// TODO maybe it overrides a component so need to store it but
@@ -916,17 +874,13 @@ public class Editor extends GameEngine
 		return e;
 	}
 
-	private Array<EntitySystem> overSystems = new Array<EntitySystem>();
-
-	public void toggleMode() {
-		if(displayEnabled){
-			for(EntitySystem system : overSystems) entityEngine.removeSystem(system);
-			displayEnabled = false;
-		}else{
-			for(EntitySystem system : overSystems) entityEngine.addSystem(system);
-			displayEnabled = true;
+	public void toggleMode() 
+	{
+		displayEnabled = !displayEnabled;
+		for(EntitySystem system : entityEngine.getSystems())
+		{
+			if(system.priority == GamePipeline.RENDER_OVER) system.setProcessing(displayEnabled);
 		}
-		
 	}
 	
 	public <T extends EditorPlugin> T getEditorPlugin(Class<T> type) {
@@ -945,3 +899,4 @@ public class Editor extends GameEngine
 
 
 }
+// 937, goal 700

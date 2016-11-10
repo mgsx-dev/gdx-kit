@@ -37,12 +37,12 @@ final public class GamePipeline
 	public static final int RENDER_TRANSPARENT = RENDER_OPAQUE + 1;
 	public static final int AFTER_RENDER = RENDER_TRANSPARENT + 1;
 	
+	// special render phase for tools (last render after any FBO process)
 	public static final int RENDER_DEBUG = AFTER_RENDER + 1;
 	
 	
 	public static final int RENDER = RENDER_OPAQUE; // alias
 	public static final int RENDER_OVER = RENDER_DEBUG; // alias
-	
 	
 	// 
 	public static final int LAST = RENDER_DEBUG + 1;
