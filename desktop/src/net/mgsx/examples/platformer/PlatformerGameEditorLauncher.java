@@ -8,6 +8,7 @@ import net.mgsx.game.core.Editor;
 import net.mgsx.game.core.NativeService;
 import net.mgsx.game.examples.platformer.core.PlatformerPlugin;
 import net.mgsx.game.examples.platformer.editor.PlatformerGameEditor;
+import net.mgsx.game.plugins.ashley.AshleyEditorPlugin;
 import net.mgsx.game.plugins.boundary.BoundaryEditorPlugin;
 import net.mgsx.game.plugins.boundary.BoundaryPlugin;
 import net.mgsx.game.plugins.box2d.Box2DPlugin;
@@ -34,8 +35,12 @@ public class PlatformerGameEditorLauncher {
 		Editor editor = new Editor();
 
 		
+		
 		// plugins configuration (order is important)
 		//
+		editor.registerPlugin(new AshleyEditorPlugin());
+
+		
 		editor.registerPlugin(new ProfilerPlugin());
 		editor.registerPlugin(new SpritePlugin());
 		editor.registerPlugin(new ParallaxPlugin());

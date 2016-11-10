@@ -12,7 +12,6 @@ import net.mgsx.game.core.Editor;
 import net.mgsx.game.core.NativeService;
 import net.mgsx.game.core.NativeService.DialogCallback;
 import net.mgsx.game.core.components.Movable;
-import net.mgsx.game.core.components.Transform2DComponent;
 import net.mgsx.game.core.tools.Tool;
 import net.mgsx.game.plugins.g3d.components.G3DModel;
 
@@ -44,10 +43,6 @@ public class AddModelTool extends Tool
 				
 				
 				entity.add(data);
-				
-				if(!Transform2DComponent.components.has(entity)){
-					entity.add(editor.entityEngine.createComponent(Transform2DComponent.class));
-				}
 				
 				// TODO not necessary, done in listener
 				entity.add(new Movable(new ModelMove(data)));

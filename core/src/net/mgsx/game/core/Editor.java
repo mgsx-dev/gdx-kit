@@ -31,7 +31,6 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -119,6 +118,7 @@ public class Editor extends GameEngine
 	private Map<String, GlobalEditorPlugin> globalEditors = new LinkedHashMap<String, GlobalEditorPlugin>();
 	
 	public void registerPlugin(EditorPlugin plugin) {
+		if(editorPlugins.containsKey(plugin.getClass())) return;
 		PluginDef def = plugin.getClass().getAnnotation(PluginDef.class);
 		if(def != null){
 			for(Class<? extends Plugin> dependency : def.dependencies()){
@@ -275,6 +275,8 @@ public class Editor extends GameEngine
 		Gdx.input.setInputProcessor(new InputMultiplexer(stage, toolDelegator));
 
 		panel = new Table(skin);
+		
+		
 		// TODO add menu
 		global = new TabPane(skin);
 		buttons = new Table(skin); buttons.setBackground(skin.getDrawable("default-rect"));
@@ -334,8 +336,13 @@ public class Editor extends GameEngine
 		
 		ScrollPane scroll = new ScrollPane(grp, skin, "light");
 		
-		panel.add(superGlobal).row();
-		panel.add(global).row();
+		Table globalBlock = new Table(skin);
+		globalBlock.setBackground(skin.getDrawable("default-window-body"));
+		
+		globalBlock.add(superGlobal).row();
+		globalBlock.add(global).row();
+		
+		panel.add(globalBlock).row();
 		panel.add(scroll).left().row();
 		
 		Table main = new Table();
@@ -449,9 +456,6 @@ public class Editor extends GameEngine
 			}
 		});
 		
-		addGlobalEditor("Ashley", new EntityGlobalEditorPlugin());
-		
-		
 		for(Tool tool : autoTools){
 			addTool(tool);
 		}
@@ -465,7 +469,7 @@ public class Editor extends GameEngine
 		
 
 
-		global.addTab("Off", new Label("", skin));
+		global.addTab("Off", new Table(skin));
 		for(Entry<String, GlobalEditorPlugin> entry : globalEditors.entrySet()){
 			global.addTab(entry.getKey(), entry.getValue().createEditor(this, skin));
 		}

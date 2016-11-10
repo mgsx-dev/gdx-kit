@@ -1,6 +1,6 @@
 package net.mgsx.game.core.helpers;
 
-import com.badlogic.gdx.utils.ObjectMap;
+import com.badlogic.gdx.utils.OrderedMap;
 
 /**
  * Map from one type (or any sub type) to an instance of this type.
@@ -10,7 +10,7 @@ import com.badlogic.gdx.utils.ObjectMap;
  *
  * @param <T>
  */
-public class TypeMap<T> extends ObjectMap<Class<? extends T>, T>
+public class TypeMap<T> extends OrderedMap<Class<? extends T>, T>
 {
 
 }

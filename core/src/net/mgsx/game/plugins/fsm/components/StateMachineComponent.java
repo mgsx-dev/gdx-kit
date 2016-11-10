@@ -4,8 +4,8 @@ import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.Json.Serializable;
-import com.badlogic.gdx.utils.Pool.Poolable;
 import com.badlogic.gdx.utils.JsonValue;
+import com.badlogic.gdx.utils.Pool.Poolable;
 
 import net.mgsx.game.core.components.Duplicable;
 import net.mgsx.game.core.helpers.ReflectionHelper;

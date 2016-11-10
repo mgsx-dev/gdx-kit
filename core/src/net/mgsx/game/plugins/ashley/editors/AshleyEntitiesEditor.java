@@ -1,4 +1,4 @@
-package net.mgsx.game.core;
+package net.mgsx.game.plugins.ashley.editors;
 
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntityListener;
@@ -13,9 +13,10 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 
+import net.mgsx.game.core.Editor;
 import net.mgsx.game.core.plugins.GlobalEditorPlugin;
 
-public class EntityGlobalEditorPlugin implements GlobalEditorPlugin
+public class AshleyEntitiesEditor implements GlobalEditorPlugin
 {
 	private static class EntityItem{
 		Entity entity;
@@ -36,7 +37,7 @@ public class EntityGlobalEditorPlugin implements GlobalEditorPlugin
 	@Override
 	public Actor createEditor(final Editor editor, Skin skin) 
 	{
-		final ObjectMap<Entity, EntityItem> map = new ObjectMap<Entity, EntityGlobalEditorPlugin.EntityItem>();
+		final ObjectMap<Entity, EntityItem> map = new ObjectMap<Entity, AshleyEntitiesEditor.EntityItem>();
 		
 		final Array<EntityItem> items = new Array<EntityItem>();
 

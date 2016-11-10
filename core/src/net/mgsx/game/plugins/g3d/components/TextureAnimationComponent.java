@@ -4,7 +4,9 @@ import com.badlogic.ashley.core.Component;
 
 import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.core.annotations.EditableComponent;
+import net.mgsx.game.core.annotations.Storable;
 
+@Storable("g3d.texAnim")
 @EditableComponent(all=G3DModel.class)
 public class TextureAnimationComponent implements Component
 {

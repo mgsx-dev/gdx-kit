@@ -11,5 +11,4 @@ import java.lang.annotation.Target;
 public @interface Storable 
 {
 	String value() default "";
-	String tag();
 }

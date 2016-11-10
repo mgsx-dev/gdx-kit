@@ -289,7 +289,14 @@ public class Storage
 	 */
 	public static void register(Class<? extends Component> storable, String name)
 	{
-		if(typeMap.containsKey(name)) throw new Error("type name " + name + " already registered for class " + typeMap.get(name).getName());
+		if(typeMap.containsKey(name)){
+			if(typeMap.get(name) == storable){
+				// use syout instead of GDX log because GdxLogger not enabled yet.
+				System.out.println("skip type name " + name + " already registered for the same type.");
+			}else{				
+				throw new Error("type name " + name + " already registered for class " + typeMap.get(name).getName());
+			}
+		}
 		typeMap.put(name, storable);
 		nameMap.put(storable, name);
 	}

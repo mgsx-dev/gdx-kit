@@ -16,18 +16,13 @@ public class G3DEditorPlugin extends EditorPlugin
 	@Override
 	public void initialize(Editor editor) 
 	{
-		// global editor
+		// tools
 		editor.addGlobalEditor("G3D", new G3DEditor());
-		
-		// loader tool
 		editor.addTool(new AddModelTool(editor));
-		
-		// model component editor
 		editor.registerPlugin(G3DModel.class, new G3DNodeEditor());
-		
-		// selector for models
 		editor.addSelector(new ModelSelector(editor));
 		
+		// systems
 		editor.entityEngine.addSystem(new G3DBoundaryDebugSystem(editor));
 	}
 }

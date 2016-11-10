@@ -5,6 +5,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -163,7 +164,7 @@ public class EntityEditor extends Table
 		}
 		
 	}
-	private static class MethodAccessor implements Accessor
+	public static class MethodAccessor implements Accessor
 	{
 		private Object object;
 		private String name;
@@ -171,6 +172,13 @@ public class EntityEditor extends Table
 		private Method setter;
 		
 		
+		public MethodAccessor(Object object, String name, String getter, String setter) {
+			super();
+			this.object = object;
+			this.name = name;
+			this.getter = ReflectionHelper.method(object.getClass(), getter);
+			this.setter = ReflectionHelper.method(object.getClass(), setter, this.getter.getReturnType());
+		}
 		public MethodAccessor(Object object, String name, Method getter, Method setter) {
 			super();
 			this.object = object;
@@ -281,105 +289,10 @@ public class EntityEditor extends Table
 		{
 			Label accessorLabel = new Label(accessor.getName(), table.getSkin());
 			table.add(accessorLabel).fill().left();
-			if(accessor.getType() == int.class){
-				// TODO slider
-				Table sub = new Table(table.getSkin());
-				final Label label = new Label("", getSkin());
-				TextButton btPlus = new TextButton("+", getSkin());
-				TextButton btMinus = new TextButton("-", getSkin());
-				sub.add(btMinus);
-				sub.add(label).pad(4);
-				sub.add(btPlus);
-				label.setText(String.valueOf(accessor.get()));
-				
-				table.add(sub).fill();
-				
-				btPlus.addListener(new ChangeListener() {
-					@Override
-					public void changed(ChangeEvent event, Actor actor) {
-						int value = 1 + (Integer)accessor.get();
-						accessor.set(value);
-						label.setText(String.valueOf(value));
-						fire(new EntityEvent(entity, accessor, value));
-					}
-				});
-				btMinus.addListener(new ChangeListener() {
-					@Override
-					public void changed(ChangeEvent event, Actor actor) {
-						int value = -1 + (Integer)accessor.get();
-						accessor.set(value);
-						label.setText(String.valueOf(value));
-						fire(new EntityEvent(entity, accessor, value));
-					}
-				});
-				
-			}else if(accessor.getType() == float.class){
-				
-				createSlider(table, entity, accessor, entity, accessor);
-				
-				
-			}else if(accessor.getType() == String.class){
-				
-				final TextField field = new TextField(String.valueOf(accessor.get()), getSkin());
-				table.add(field);
-				field.addListener(new ChangeListener(){
-					@Override
-					public void changed(ChangeEvent event, Actor actor) {
-						accessor.set(field.getText());
-					}
-				});
-				
-				field.addListener(new ClickListener(){
-					@Override
-					public void touchDragged(InputEvent event, float x, float y, int pointer) {
-						field.getStage().cancelTouchFocusExcept(field.getDefaultInputListener(), field);
-						super.touchDragged(event, x, y, pointer);
-					}
-					@Override
-					public boolean keyDown(InputEvent event, int keycode) {
-						if(keycode == Input.Keys.ENTER) field.getStage().setKeyboardFocus(null);
-						return super.keyDown(event, keycode);
-					}
-				});
-				
-			}else if(accessor.getType() == boolean.class){
-				final Button btCheck = createBoolean(getSkin(), (Boolean)accessor.get());
-				btCheck.addListener(new ChangeListener() {
-					
-					@Override
-					public void changed(ChangeEvent event, Actor actor) {
-						accessor.set(btCheck.isChecked());
-						fire(new EntityEvent(entity, accessor, btCheck.isChecked()));
-					}
-				});
-				table.add(btCheck);
-				
-			}else if(accessor.getType() == Vector2.class){
-				Vector2 v = (Vector2)accessor.get();
-				Table sub = new Table(table.getSkin());
-				sub.add("(");
-				createSlider(sub, entity, accessor, v, new FieldAccessor(v, "x"));
-				sub.add(",");
-				createSlider(sub, entity, accessor, v, new FieldAccessor(v, "y"));
-				sub.add(")");
-				table.add(sub);
-			}else if(accessor.getType() == Quaternion.class){
-				Quaternion q = (Quaternion)accessor.get();
-				createSlider2D(table, entity, accessor.getName(), q);
-			}else if(accessor.getType().isEnum()){
-				final SelectBox<Object> selector = new SelectBox<Object>(getSkin());
-				Array<Object> values = new Array<Object>();
-				for(Object o : accessor.getType().getEnumConstants()) values.add(o);
-				selector.setItems(values);
-				selector.setSelected(accessor.get());
-				selector.addListener(new ChangeListener() {
-					@Override
-					public void changed(ChangeEvent event, Actor actor) {
-						accessor.set(selector.getSelected());
-					}
-				});
-				table.add(selector);
-			}else{
+			
+			if(!createControl(table, entity, accessor))
+			{
+				// create recursively on missing type (object)
 				// TODO background ?
 				accessorLabel.setStyle(table.getSkin().get("tab-left", LabelStyle.class));
 				Table sub = new Table(getSkin());
@@ -387,11 +300,12 @@ public class EntityEditor extends Table
 				table.add(sub).expand().fill().left();
 				generate(accessor.get(), sub);
 			}
+			
 			table.row();
 		}
 	}
 	
-	private void createSlider2D(Table table, Object entity, String name, final Quaternion q) {
+	private static void createSlider2D(Table table, Object entity, String name, final Quaternion q) {
 		Label ctrl = new Label("CTRL", table.getSkin());
 		ctrl.addListener(new DragListener(){
 			Quaternion m = new Quaternion();
@@ -453,6 +367,127 @@ public class EntityEditor extends Table
 			}
 		});
 		return btCheck;
+	}
+	public static boolean createControl(final Table table, final Object entity, final Accessor accessor) 
+	{
+		Skin skin = table.getSkin();
+		
+		if(accessor.getType() == int.class){
+			// TODO slider
+			Table sub = new Table(skin);
+			final Label label = new Label("", skin);
+			final TextButton btPlus = new TextButton("+", skin);
+			final TextButton btMinus = new TextButton("-", skin);
+			sub.add(btMinus);
+			sub.add(label).pad(4);
+			sub.add(btPlus);
+			label.setText(String.valueOf(accessor.get()));
+			
+			table.add(sub).fill();
+			
+			btPlus.addListener(new ChangeListener() {
+				@Override
+				public void changed(ChangeEvent event, Actor actor) {
+					int value = 1 + (Integer)accessor.get();
+					accessor.set(value);
+					label.setText(String.valueOf(value));
+					btPlus.fire(new EntityEvent(entity, accessor, value));
+				}
+			});
+			btMinus.addListener(new ChangeListener() {
+				@Override
+				public void changed(ChangeEvent event, Actor actor) {
+					int value = -1 + (Integer)accessor.get();
+					accessor.set(value);
+					label.setText(String.valueOf(value));
+					btMinus.fire(new EntityEvent(entity, accessor, value));
+				}
+			});
+			
+		}else if(accessor.getType() == float.class){
+			
+			createSlider(table, entity, accessor, entity, accessor);
+			
+			
+		}else if(accessor.getType() == String.class){
+			
+			final TextField field = new TextField(String.valueOf(accessor.get()), skin);
+			table.add(field);
+			field.addListener(new ChangeListener(){
+				@Override
+				public void changed(ChangeEvent event, Actor actor) {
+					accessor.set(field.getText());
+				}
+			});
+			
+			field.addListener(new ClickListener(){
+				@Override
+				public void touchDragged(InputEvent event, float x, float y, int pointer) {
+					field.getStage().cancelTouchFocusExcept(field.getDefaultInputListener(), field);
+					super.touchDragged(event, x, y, pointer);
+				}
+				@Override
+				public boolean keyDown(InputEvent event, int keycode) {
+					if(keycode == Input.Keys.ENTER) field.getStage().setKeyboardFocus(null);
+					return super.keyDown(event, keycode);
+				}
+			});
+			
+		}else if(accessor.getType() == boolean.class){
+			final Button btCheck = createBoolean(skin, (Boolean)accessor.get());
+			btCheck.addListener(new ChangeListener() {
+				
+				@Override
+				public void changed(ChangeEvent event, Actor actor) {
+					accessor.set(btCheck.isChecked());
+					table.fire(new EntityEvent(entity, accessor, btCheck.isChecked()));
+				}
+			});
+			table.add(btCheck);
+			
+		}else if(accessor.getType() == Vector2.class){
+			Vector2 v = (Vector2)accessor.get();
+			Table sub = new Table(table.getSkin());
+			sub.add("(");
+			createSlider(sub, entity, accessor, v, new FieldAccessor(v, "x"));
+			sub.add(",");
+			createSlider(sub, entity, accessor, v, new FieldAccessor(v, "y"));
+			sub.add(")");
+			table.add(sub);
+		}else if(accessor.getType() == Quaternion.class){
+			Quaternion q = (Quaternion)accessor.get();
+			createSlider2D(table, entity, accessor.getName(), q);
+		}else if(accessor.getType() == Color.class){
+			Color c = (Color)accessor.get();
+			
+			Table sub = new Table(table.getSkin());
+			sub.add("(");
+			createSlider(sub, entity, accessor, c, new FieldAccessor(c, "r"));
+			sub.add(",");
+			createSlider(sub, entity, accessor, c, new FieldAccessor(c, "g"));
+			sub.add(",");
+			createSlider(sub, entity, accessor, c, new FieldAccessor(c, "b"));
+			sub.add(",");
+			createSlider(sub, entity, accessor, c, new FieldAccessor(c, "a"));
+			sub.add(")");
+			table.add(sub);
+		}else if(accessor.getType().isEnum()){
+			final SelectBox<Object> selector = new SelectBox<Object>(skin);
+			Array<Object> values = new Array<Object>();
+			for(Object o : accessor.getType().getEnumConstants()) values.add(o);
+			selector.setItems(values);
+			selector.setSelected(accessor.get());
+			selector.addListener(new ChangeListener() {
+				@Override
+				public void changed(ChangeEvent event, Actor actor) {
+					accessor.set(selector.getSelected());
+				}
+			});
+			table.add(selector);
+		}else{
+			return false;
+		}
+		return true;
 	}
 	
 }

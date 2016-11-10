@@ -6,6 +6,8 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
+import com.badlogic.ashley.core.Component;
+
 import net.mgsx.game.core.plugins.Plugin;
 
 /**
@@ -19,4 +21,5 @@ public @interface PluginDef
 {
 	String value() default "";
 	Class<? extends Plugin>[] dependencies() default {};
+	Class<? extends Component>[] components() default {};
 }

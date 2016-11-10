@@ -51,10 +51,14 @@ public class GameEngine extends ApplicationAdapter
 	public final ObjectMap<Class, Serializer> serializers = new ObjectMap<Class, Serializer>();
 	
 	public void registerPlugin(Plugin plugin) {
+		if(plugins.containsKey(plugin.getClass())) return;
 		PluginDef def = plugin.getClass().getAnnotation(PluginDef.class);
 		if(def != null){
 			for(Class<? extends Plugin> dependency : def.dependencies()){
 				registerPlugin(ReflectionHelper.newInstance(dependency));
+			}
+			for(Class<? extends Component> component : def.components()){
+				register(component);
 			}
 		}
 		plugins.put(plugin.getClass(), plugin);
@@ -68,7 +72,7 @@ public class GameEngine extends ApplicationAdapter
 		
 		Storable storable = type.getAnnotation(Storable.class);
 		if(storable != null){
-			Storage.register(type, storable.tag());
+			Storage.register(type, storable.value());
 		}
 		
 	}

@@ -8,7 +8,7 @@ import net.mgsx.game.plugins.fsm.components.StateComponent;
 
 @EditableComponent(name="Flying State")
 
-@Storable(tag="example.platformer.flying")
+@Storable("example.platformer.flying")
 
 public class FlyingState implements StateComponent
 {

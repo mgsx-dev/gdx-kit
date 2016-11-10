@@ -13,8 +13,12 @@ import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.Json.Serializable;
 import com.badlogic.gdx.utils.JsonValue;
 
+import net.mgsx.game.core.annotations.EditableComponent;
+import net.mgsx.game.core.annotations.Storable;
 import net.mgsx.game.core.components.Duplicable;
 
+@Storable("g3d")
+@EditableComponent
 public class G3DModel implements Component, Duplicable, Serializable
 {
 	public final static ComponentMapper<G3DModel> components = ComponentMapper.getFor(G3DModel.class);
