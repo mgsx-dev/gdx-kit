@@ -29,6 +29,7 @@ import net.mgsx.game.plugins.box2dold.tools.CreateEdgeTool;
 import net.mgsx.game.plugins.box2dold.tools.CreateLoopTool;
 import net.mgsx.game.plugins.box2dold.tools.CreatePolygonTool;
 import net.mgsx.game.plugins.box2dold.tools.CreateRectangleTool;
+import net.mgsx.game.plugins.box2dold.tools.EditBodyTool;
 import net.mgsx.game.plugins.box2dold.tools.JointDistanceTool;
 import net.mgsx.game.plugins.box2dold.tools.JointFrictionTool;
 import net.mgsx.game.plugins.box2dold.tools.JointGearTool;
@@ -64,6 +65,7 @@ public class Box2DEditorPlugin implements GlobalEditorPlugin {
 		final Array<Tool> shapeTools = new Array<Tool>();
 		
 		shapeTools.add(noTool);
+		shapeTools.add(new EditBodyTool(editor));
 		shapeTools.add(new CreateRectangleTool(editor, worldItem));
 		shapeTools.add(new CreatePolygonTool(editor, worldItem));
 		shapeTools.add(new CreateCircleTool(editor, worldItem));

@@ -16,6 +16,7 @@ import net.mgsx.game.core.storage.Storage;
 import net.mgsx.game.core.tools.ClickTool;
 import net.mgsx.game.core.tools.NoTool;
 import net.mgsx.game.core.tools.Tool;
+import net.mgsx.game.plugins.core.systems.PolygonRenderSystem;
 import net.mgsx.game.plugins.core.systems.SelectionRenderSystem;
 import net.mgsx.game.plugins.core.tools.DeleteTool;
 import net.mgsx.game.plugins.core.tools.DuplicateTool;
@@ -36,6 +37,7 @@ public class CoreEditorPlugin extends EditorPlugin
 	{
 		// systems
 		editor.entityEngine.addSystem(new SelectionRenderSystem(editor));
+		editor.entityEngine.addSystem(new PolygonRenderSystem(editor));
 		
 		// tools
 		// order is very important !
