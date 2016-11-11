@@ -1,4 +1,4 @@
-package net.mgsx.game.plugins.box2dold.model;
+package net.mgsx.game.plugins.box2d.components;
 
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
@@ -16,8 +16,8 @@ import net.mgsx.game.core.Editor;
 import net.mgsx.game.core.commands.Command;
 import net.mgsx.game.core.commands.CommandHistory;
 import net.mgsx.game.core.components.Transform2DComponent;
-import net.mgsx.game.plugins.box2d.model.Box2DBodyModel;
-import net.mgsx.game.plugins.box2d.model.Box2DJointModel;
+import net.mgsx.game.plugins.box2dold.model.EditorSettings;
+import net.mgsx.game.plugins.box2dold.model.Items;
 
 // TODO it is more an EditorContext (ctx) ...
 public class WorldItem 
@@ -28,7 +28,6 @@ public class WorldItem
 	public Items items = new Items();
 	private Items selection = new Items();
 	public Array<Actor> actors = new Array<Actor>();
-	public Array<SpriteItem> sprites = new Array<SpriteItem>();
 	
 	private Array<Box2DBodyModel> scheduledForDeletion = new Array<Box2DBodyModel>();
 	private Array<Runnable> scheduled= new Array<Runnable>();

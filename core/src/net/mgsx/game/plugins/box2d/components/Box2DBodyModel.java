@@ -1,4 +1,4 @@
-package net.mgsx.game.plugins.box2d.model;
+package net.mgsx.game.plugins.box2d.components;
 
 import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.ComponentMapper;
@@ -12,7 +12,6 @@ import com.badlogic.gdx.utils.Pool.Poolable;
 
 import net.mgsx.game.core.components.Duplicable;
 import net.mgsx.game.plugins.box2dold.behavior.BodyBehavior;
-import net.mgsx.game.plugins.box2dold.model.WorldItem;
 
 public class Box2DBodyModel implements Component, Duplicable, Poolable, Disposable
 {

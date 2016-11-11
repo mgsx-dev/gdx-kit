@@ -6,9 +6,9 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 
 import net.mgsx.game.core.Editor;
 import net.mgsx.game.core.tools.MultiClickTool;
-import net.mgsx.game.plugins.box2d.model.Box2DBodyModel;
+import net.mgsx.game.plugins.box2d.components.Box2DBodyModel;
+import net.mgsx.game.plugins.box2d.components.WorldItem;
 import net.mgsx.game.plugins.box2dold.commands.Box2DCommands;
-import net.mgsx.game.plugins.box2dold.model.WorldItem;
 
 public class CreateLoopTool extends MultiClickTool
 {

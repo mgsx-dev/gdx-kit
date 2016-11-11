@@ -28,9 +28,19 @@ import net.mgsx.game.core.components.Transform2DComponent;
 import net.mgsx.game.core.plugins.EditorPlugin;
 import net.mgsx.game.core.storage.ContextualSerializer;
 import net.mgsx.game.core.storage.Storage;
-import net.mgsx.game.plugins.box2d.model.Box2DBodyModel;
-import net.mgsx.game.plugins.box2d.model.Box2DJointModel;
-import net.mgsx.game.plugins.box2dold.model.WorldItem;
+import net.mgsx.game.plugins.box2d.components.Box2DBodyModel;
+import net.mgsx.game.plugins.box2d.components.Box2DJointModel;
+import net.mgsx.game.plugins.box2d.components.WorldItem;
+import net.mgsx.game.plugins.box2d.editors.Box2DBodyEditorPlugin;
+import net.mgsx.game.plugins.box2d.editors.Box2DJointEditorPlugin;
+import net.mgsx.game.plugins.box2d.listeners.Box2DListener;
+import net.mgsx.game.plugins.box2d.storage.Box2DJointSerializer;
+import net.mgsx.game.plugins.box2d.storage.Box2DModelSerializer;
+import net.mgsx.game.plugins.box2d.storage.Box2DShapesSerializers;
+import net.mgsx.game.plugins.box2d.tools.BodyMove;
+import net.mgsx.game.plugins.box2d.tools.Box2DBodySelector;
+import net.mgsx.game.plugins.box2d.tools.Box2DJointMovable;
+import net.mgsx.game.plugins.box2d.tools.Box2DParticleTool;
 
 public class Box2DPlugin extends EditorPlugin 
 {

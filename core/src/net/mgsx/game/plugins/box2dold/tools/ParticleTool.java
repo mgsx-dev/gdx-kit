@@ -9,9 +9,9 @@ import com.badlogic.gdx.utils.FlushablePool;
 
 import net.mgsx.game.core.Editor;
 import net.mgsx.game.core.tools.Tool;
-import net.mgsx.game.plugins.box2d.model.Box2DBodyModel;
+import net.mgsx.game.plugins.box2d.components.Box2DBodyModel;
+import net.mgsx.game.plugins.box2d.components.WorldItem;
 import net.mgsx.game.plugins.box2dold.Box2DPresets;
-import net.mgsx.game.plugins.box2dold.model.WorldItem;
 
 public class ParticleTool extends Tool
 {

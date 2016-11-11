@@ -21,11 +21,11 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
 
 import net.mgsx.game.core.storage.IgnoreSerializer;
-import net.mgsx.game.plugins.box2d.model.Box2DBodyModel;
-import net.mgsx.game.plugins.box2d.model.Box2DFixtureModel;
-import net.mgsx.game.plugins.box2d.model.Box2DJointModel;
+import net.mgsx.game.plugins.box2d.components.Box2DBodyModel;
+import net.mgsx.game.plugins.box2d.components.Box2DFixtureModel;
+import net.mgsx.game.plugins.box2d.components.Box2DJointModel;
+import net.mgsx.game.plugins.box2d.components.WorldItem;
 import net.mgsx.game.plugins.box2dold.model.EditorSettings;
-import net.mgsx.game.plugins.box2dold.model.WorldItem;
 
 public class Repository 
 {

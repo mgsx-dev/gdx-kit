@@ -13,7 +13,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.joints.PulleyJoint;
 
 import net.mgsx.game.core.GamePipeline;
-import net.mgsx.game.plugins.box2d.model.Box2DJointModel;
+import net.mgsx.game.plugins.box2d.components.Box2DJointModel;
 import net.mgsx.game.plugins.g3d.components.G3DModel;
 
 public class PulleySystem extends IteratingSystem

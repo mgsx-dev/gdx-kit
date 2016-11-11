@@ -1,4 +1,4 @@
-package net.mgsx.game.plugins.box2d;
+package net.mgsx.game.plugins.box2d.editors;
 
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -7,8 +7,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 
 import net.mgsx.game.core.plugins.EntityEditorPlugin;
 import net.mgsx.game.core.ui.EntityEditor;
-import net.mgsx.game.plugins.box2d.model.Box2DBodyModel;
-import net.mgsx.game.plugins.box2d.model.Box2DFixtureModel;
+import net.mgsx.game.plugins.box2d.components.Box2DBodyModel;
+import net.mgsx.game.plugins.box2d.components.Box2DFixtureModel;
 
 public class Box2DBodyEditorPlugin implements EntityEditorPlugin
 {

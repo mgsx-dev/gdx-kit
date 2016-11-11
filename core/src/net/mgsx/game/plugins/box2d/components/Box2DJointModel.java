@@ -1,4 +1,4 @@
-package net.mgsx.game.plugins.box2d.model;
+package net.mgsx.game.plugins.box2d.components;
 
 import com.badlogic.ashley.core.Component;
 import com.badlogic.gdx.physics.box2d.Joint;

@@ -15,11 +15,11 @@ import com.badlogic.gdx.physics.box2d.Fixture;
 import net.mgsx.game.core.components.LogicComponent;
 import net.mgsx.game.core.components.Transform2DComponent;
 import net.mgsx.game.core.plugins.Initializable;
-import net.mgsx.game.plugins.box2d.Box2DComponentListener;
-import net.mgsx.game.plugins.box2d.Box2DComponentTrigger;
-import net.mgsx.game.plugins.box2d.Box2DListener;
-import net.mgsx.game.plugins.box2d.Box2DMultiplexer;
-import net.mgsx.game.plugins.box2d.model.Box2DBodyModel;
+import net.mgsx.game.plugins.box2d.components.Box2DBodyModel;
+import net.mgsx.game.plugins.box2d.listeners.Box2DComponentListener;
+import net.mgsx.game.plugins.box2d.listeners.Box2DComponentTrigger;
+import net.mgsx.game.plugins.box2d.listeners.Box2DListener;
+import net.mgsx.game.plugins.box2d.listeners.Box2DMultiplexer;
 import net.mgsx.game.plugins.g3d.components.G3DModel;
 
 public class PlayerComponent implements Component, Initializable

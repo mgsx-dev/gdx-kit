@@ -1,12 +1,12 @@
-package net.mgsx.game.plugins.box2d;
+package net.mgsx.game.plugins.box2d.storage;
 
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.Json.Serializer;
 import com.badlogic.gdx.utils.JsonValue;
 
-import net.mgsx.game.plugins.box2d.model.Box2DBodyModel;
-import net.mgsx.game.plugins.box2d.model.Box2DFixtureModel;
-import net.mgsx.game.plugins.box2dold.model.WorldItem;
+import net.mgsx.game.plugins.box2d.components.Box2DBodyModel;
+import net.mgsx.game.plugins.box2d.components.Box2DFixtureModel;
+import net.mgsx.game.plugins.box2d.components.WorldItem;
 
 public class Box2DModelSerializer implements Serializer<Box2DBodyModel> {
 

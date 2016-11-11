@@ -1,4 +1,4 @@
-package net.mgsx.game.plugins.box2d;
+package net.mgsx.game.plugins.box2d.listeners;
 
 import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.Fixture;

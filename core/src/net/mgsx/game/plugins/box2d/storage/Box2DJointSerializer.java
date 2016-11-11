@@ -1,11 +1,11 @@
-package net.mgsx.game.plugins.box2d;
+package net.mgsx.game.plugins.box2d.storage;
 
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
 
 import net.mgsx.game.core.storage.ContextualSerializer;
-import net.mgsx.game.plugins.box2d.model.Box2DJointModel;
-import net.mgsx.game.plugins.box2dold.model.WorldItem;
+import net.mgsx.game.plugins.box2d.components.Box2DJointModel;
+import net.mgsx.game.plugins.box2d.components.WorldItem;
 
 public class Box2DJointSerializer extends ContextualSerializer<Box2DJointModel>
 {

@@ -2,8 +2,8 @@ package net.mgsx.game.plugins.box2dold.model;
 
 import com.badlogic.gdx.utils.Array;
 
-import net.mgsx.game.plugins.box2d.model.Box2DBodyModel;
-import net.mgsx.game.plugins.box2d.model.Box2DJointModel;
+import net.mgsx.game.plugins.box2d.components.Box2DBodyModel;
+import net.mgsx.game.plugins.box2d.components.Box2DJointModel;
 
 public class Items
 {

@@ -3,8 +3,8 @@ package net.mgsx.game.plugins.box2dold.behavior;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
 import net.mgsx.game.core.helpers.Behavior;
-import net.mgsx.game.plugins.box2d.model.Box2DBodyModel;
-import net.mgsx.game.plugins.box2dold.model.WorldItem;
+import net.mgsx.game.plugins.box2d.components.Box2DBodyModel;
+import net.mgsx.game.plugins.box2d.components.WorldItem;
 
 abstract public class BodyBehavior implements Behavior
 {

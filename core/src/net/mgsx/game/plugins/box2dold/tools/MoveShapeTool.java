@@ -6,9 +6,9 @@ import com.badlogic.gdx.physics.box2d.Fixture;
 
 import net.mgsx.game.core.Editor;
 import net.mgsx.game.core.tools.Tool;
-import net.mgsx.game.plugins.box2d.model.Box2DBodyModel;
-import net.mgsx.game.plugins.box2d.model.Box2DFixtureModel;
-import net.mgsx.game.plugins.box2dold.model.WorldItem;
+import net.mgsx.game.plugins.box2d.components.Box2DBodyModel;
+import net.mgsx.game.plugins.box2d.components.Box2DFixtureModel;
+import net.mgsx.game.plugins.box2d.components.WorldItem;
 
 public class MoveShapeTool extends Tool
 {

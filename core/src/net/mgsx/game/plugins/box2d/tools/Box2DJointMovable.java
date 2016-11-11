@@ -1,11 +1,11 @@
-package net.mgsx.game.plugins.box2d;
+package net.mgsx.game.plugins.box2d.tools;
 
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 
 import net.mgsx.game.core.components.Movable;
-import net.mgsx.game.plugins.box2d.model.Box2DJointModel;
+import net.mgsx.game.plugins.box2d.components.Box2DJointModel;
 
 public class Box2DJointMovable extends Movable
 {

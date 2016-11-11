@@ -8,7 +8,7 @@ import com.badlogic.gdx.math.Vector2;
 
 import net.mgsx.game.core.GamePipeline;
 import net.mgsx.game.examples.platformer.core.input.PlayerController;
-import net.mgsx.game.plugins.box2d.model.Box2DBodyModel;
+import net.mgsx.game.plugins.box2d.components.Box2DBodyModel;
 
 public class FlyingControlSystem extends IteratingSystem
 {

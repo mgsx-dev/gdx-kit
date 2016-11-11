@@ -1,4 +1,4 @@
-package net.mgsx.game.plugins.box2d;
+package net.mgsx.game.plugins.box2d.tools;
 
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.math.MathUtils;

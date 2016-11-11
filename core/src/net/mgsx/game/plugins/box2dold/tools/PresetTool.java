@@ -5,8 +5,8 @@ import com.badlogic.gdx.math.Vector2;
 
 import net.mgsx.game.core.Editor;
 import net.mgsx.game.core.tools.Tool;
+import net.mgsx.game.plugins.box2d.components.WorldItem;
 import net.mgsx.game.plugins.box2dold.Box2DPresets.Box2DPreset;
-import net.mgsx.game.plugins.box2dold.model.WorldItem;
 
 public class PresetTool extends Tool
 {

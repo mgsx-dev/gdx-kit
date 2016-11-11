@@ -1,4 +1,4 @@
-package net.mgsx.game.plugins.box2d;
+package net.mgsx.game.plugins.box2d.tools;
 
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.math.Vector2;
@@ -7,7 +7,7 @@ import com.badlogic.gdx.utils.Array;
 
 import net.mgsx.game.core.Editor;
 import net.mgsx.game.core.plugins.SelectorPlugin;
-import net.mgsx.game.plugins.box2dold.model.WorldItem;
+import net.mgsx.game.plugins.box2d.components.WorldItem;
 
 public class Box2DBodySelector extends SelectorPlugin
 {

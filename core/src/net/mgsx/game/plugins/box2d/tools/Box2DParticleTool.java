@@ -1,4 +1,4 @@
-package net.mgsx.game.plugins.box2d;
+package net.mgsx.game.plugins.box2d.tools;
 
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
@@ -11,7 +11,7 @@ import com.badlogic.gdx.utils.FlushablePool;
 
 import net.mgsx.game.core.Editor;
 import net.mgsx.game.core.tools.Tool;
-import net.mgsx.game.plugins.box2d.model.Box2DBodyModel;
+import net.mgsx.game.plugins.box2d.components.Box2DBodyModel;
 import net.mgsx.game.plugins.core.tools.DuplicateTool;
 
 // TODO could be generalized as PArticleTool ith a special Box2D implementtion which send speed at start ...

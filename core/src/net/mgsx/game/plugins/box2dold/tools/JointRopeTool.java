@@ -4,8 +4,8 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.joints.RopeJointDef;
 
 import net.mgsx.game.core.Editor;
-import net.mgsx.game.plugins.box2d.model.Box2DBodyModel;
-import net.mgsx.game.plugins.box2dold.model.WorldItem;
+import net.mgsx.game.plugins.box2d.components.Box2DBodyModel;
+import net.mgsx.game.plugins.box2d.components.WorldItem;
 
 public class JointRopeTool extends JointTool<RopeJointDef> {
 	public JointRopeTool(Editor editor, WorldItem worldItem) 
