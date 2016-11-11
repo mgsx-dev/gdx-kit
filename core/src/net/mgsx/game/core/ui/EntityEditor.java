@@ -323,7 +323,13 @@ public class EntityEditor extends Table
 		createSlider(table, entity, accessor, entity, accessor);
 	}	
 	static public void createSlider(final Table table, final Object rootEntity, final Accessor rootField, final Object entity, final Accessor accessor){
-		final Label label = new Label("", table.getSkin());
+		final Label label = new Label("", table.getSkin()){
+			@Override
+			public void act(float delta) {
+				super.act(delta);
+				setText(String.valueOf(accessor.get()));
+			}
+		};
 		label.setText(String.valueOf(accessor.get()));
 		table.add(label);
 		label.addListener(new DragListener(){

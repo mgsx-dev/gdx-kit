@@ -18,9 +18,7 @@ import com.badlogic.gdx.utils.ObjectMap;
 
 import net.mgsx.game.core.GameEngine;
 import net.mgsx.game.core.GamePipeline;
-import net.mgsx.game.core.components.Movable;
 import net.mgsx.game.core.components.Transform2DComponent;
-import net.mgsx.game.core.components.TransformMovable;
 import net.mgsx.game.core.plugins.Plugin;
 import net.mgsx.game.core.storage.AssetSerializer;
 import net.mgsx.game.core.storage.Storage;
@@ -94,8 +92,6 @@ public class Particle2DPlugin implements Plugin
 					model.effect = effect;
 					
 					effects.add(effect);
-					
-					if(entity.getComponent(Movable.class) == null) entity.add(new Movable(new TransformMovable()));
 				}
 			}
 		});

@@ -37,7 +37,6 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import net.mgsx.game.core.annotations.EditableComponent;
 import net.mgsx.game.core.commands.Command;
 import net.mgsx.game.core.commands.CommandHistory;
-import net.mgsx.game.core.components.Transform2DComponent;
 import net.mgsx.game.core.editors.AnnotationBasedComponentEditor;
 import net.mgsx.game.core.helpers.AssetHelper;
 import net.mgsx.game.core.helpers.AssetLookupCallback;
@@ -214,8 +213,6 @@ public class Editor extends EditorRegistry
 	public void create() 
 	{
 		super.create();
-		
-		register(Transform2DComponent.class);
 		
 		editorAssets = new AssetManager(new ClasspathFileHandleResolver());
 		

@@ -10,6 +10,7 @@ import com.badlogic.gdx.utils.Array;
 
 import net.mgsx.game.core.Editor;
 import net.mgsx.game.core.components.Movable;
+import net.mgsx.game.core.components.Transform2DComponent;
 import net.mgsx.game.core.plugins.SelectorPlugin;
 import net.mgsx.game.core.tools.Tool;
 
@@ -38,16 +39,20 @@ public class SelectTool extends Tool
 			// TODO select by knot only if not in selection ?
 			// then add selection for movables : TODO use engine query instead
 			for(Entity entity : editor.entityEngine.getEntities()){
+				Vector3 pos = new Vector3();
 				Movable movable = entity.getComponent(Movable.class);
+				Transform2DComponent transform = Transform2DComponent.components.get(entity);
 				if(movable != null){
-					
-					Vector3 pos = new Vector3();
 					movable.getPosition(entity, pos);
-					Vector2 s = new Vector2(5, 5); // size of displayed knot !
-					Vector3 v = editor.camera.project(pos);
-					if(new Rectangle(v.x-s.x, v.y-s.y, 2*s.x, 2*s.y).contains(screenX, Gdx.graphics.getHeight() - screenY)){
-						selection.add(entity);
-					}
+				}
+				else if(transform != null){
+					pos.set(transform.position.x, transform.position.y, 0);
+				}
+				else continue;
+				Vector2 s = new Vector2(5, 5); // size of displayed knot !
+				Vector3 v = editor.camera.project(pos);
+				if(new Rectangle(v.x-s.x, v.y-s.y, 2*s.x, 2*s.y).contains(screenX, Gdx.graphics.getHeight() - screenY)){
+					selection.add(entity);
 				}
 			}
 			
@@ -85,6 +90,12 @@ public class SelectTool extends Tool
 			for(Entity entity : editor.selection){
 				Movable movable = entity.getComponent(Movable.class);
 				if(movable != null) movable.move(entity, delta);
+				else{
+					Transform2DComponent transform = Transform2DComponent.components.get(entity);
+					if(transform != null){
+						transform.position.add(delta.x, delta.y);
+					}
+				}
 			}
 			prev.set(worldPos.x, worldPos.y);
 			return true; // catch event
