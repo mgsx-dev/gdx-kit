@@ -61,6 +61,13 @@ public class EntityEditor extends Table
 		setEntity(entity);
 	}
 	
+	private EntityEditor(Object entity, boolean annotationBased, Skin skin, Array<Object> stack) {
+		super(skin);
+		this.annotationBased = annotationBased;
+		this.stack = stack;
+		generate(entity, this);
+	}
+	
 	public void setEntity(Object entity)
 	{
 		stack.clear();
@@ -290,7 +297,7 @@ public class EntityEditor extends Table
 			Label accessorLabel = new Label(accessor.getName(), table.getSkin());
 			table.add(accessorLabel).fill().left();
 			
-			if(!createControl(table, entity, accessor))
+			if(!createControl(table, entity, accessor, stack))
 			{
 				// create recursively on missing type (object)
 				// TODO background ?
@@ -375,6 +382,10 @@ public class EntityEditor extends Table
 		return btCheck;
 	}
 	public static boolean createControl(final Table table, final Object entity, final Accessor accessor) 
+	{
+		return createControl(table, entity, accessor, new Array<Object>());
+	}
+	private static boolean createControl(final Table table, final Object entity, final Accessor accessor, Array<Object> stack) 
 	{
 		Skin skin = table.getSkin();
 		
@@ -492,7 +503,7 @@ public class EntityEditor extends Table
 			table.add(selector);
 		}else{
 			
-			table.add(new EntityEditor(accessor.get(), skin)).row();
+			table.add(new EntityEditor(accessor.get(), false, skin, stack)).row();
 			// XXX return false;
 		}
 		return true;
