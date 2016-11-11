@@ -1,14 +1,13 @@
 package net.mgsx.game.plugins.sprite;
 
 import com.badlogic.ashley.core.Entity;
-import com.badlogic.ashley.core.EntityListener;
 import com.badlogic.ashley.core.Family;
-import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import net.mgsx.game.core.Editor;
 import net.mgsx.game.core.GamePipeline;
-import net.mgsx.game.core.components.Movable;
+import net.mgsx.game.core.components.Transform2DComponent;
 import net.mgsx.game.core.helpers.systems.ComponentIteratingSystem;
 import net.mgsx.game.core.plugins.EditorPlugin;
 import net.mgsx.game.core.storage.Storage;
@@ -24,19 +23,16 @@ public class SpritePlugin extends EditorPlugin
 		
 		Storage.register(SpriteModel.class, "sprite");
 		
-		// plugin for editor only (movable)
-		editor.entityEngine.addEntityListener(Family.one(SpriteModel.class).get(), new EntityListener() {
+		editor.entityEngine.addSystem(new IteratingSystem(Family.all(SpriteModel.class, Transform2DComponent.class).get(), GamePipeline.BEFORE_RENDER) { // TODO use sorted instead
+			
 			@Override
-			public void entityRemoved(Entity entity) {
-				entity.remove(SpriteModel.class);
-				entity.remove(Movable.class);
-			}
-			@Override
-			public void entityAdded(Entity entity) {
-				if(entity.getComponent(Movable.class) == null){
-					Sprite sprite = entity.getComponent(SpriteModel.class).sprite;
-					entity.add(new Movable(new SpriteMove(sprite)));
-				}
+			protected void processEntity(Entity entity, float deltaTime) {
+				SpriteModel sprite = SpriteModel.components.get(entity);
+				Transform2DComponent transform = Transform2DComponent.components.get(entity);
+				// TODO enabled
+				sprite.sprite.setPosition(transform.position.x, transform.position.y);
+				sprite.sprite.setRotation(transform.angle);
+				sprite.sprite.setOrigin(transform.origin.x, transform.origin.y);
 			}
 		});
 		
@@ -58,44 +54,5 @@ public class SpritePlugin extends EditorPlugin
 		editor.addTool(new AddSpriteTool(editor));
 		editor.addSelector(new SpriteSelector(editor));
 	}
-/*
-	@Override
-	public void drawDebug() {
-		// TODO Auto-generated method stub
-		debug.begin(ShapeType.Line);
-		// TODO debug.rect(x, y, w, h);
-		debug.end();
-	}
-
-	// example of custom serialization
-	@Override
-	public void write(Json json, SpriteAspect object, Class knownType) {
-		json.writeObjectStart();
-		json.writeField(object.sprite, "x");
-		json.writeObjectEnd();
-		
-		// Note : example of writing DTO
-		// Dto dto = new Dto();
-		// dto.x = object.sprite.x;
-		// json.writeValue(dto);
-	}
-
-	@Override
-	public SpriteAspect read(Json json, JsonValue jsonData, Class type) {
-		SpriteAspect object = new SpriteAspect();
-		object.sprite = new Sprite();
-		json.readField(object.sprite, "x", jsonData);
-		return object;
-
-		// Note : example of reading DTO
-		// Dto dto = new Dto();
-		// dto.x = object.sprite.x;
-		// Dto dto = json.readValue(Dto.class, jsonData);
-		// SpriteAspect object = new SpriteAspect();
-		// object.sprite = new Sprite();
-		// object.sprite.setX(dto.x)
-	}
-*/
-
 	
 }

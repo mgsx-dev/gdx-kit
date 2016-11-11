@@ -9,7 +9,6 @@ import com.badlogic.gdx.graphics.g3d.utils.AnimationController;
 import com.badlogic.gdx.math.Vector2;
 
 import net.mgsx.game.core.Editor;
-import net.mgsx.game.core.components.Movable;
 import net.mgsx.game.core.helpers.NativeService;
 import net.mgsx.game.core.helpers.NativeService.DialogCallback;
 import net.mgsx.game.core.tools.Tool;
@@ -43,9 +42,6 @@ public class AddModelTool extends Tool
 				
 				
 				entity.add(data);
-				
-				// TODO not necessary, done in listener
-				entity.add(new Movable(new ModelMove(data)));
 			}
 			@Override
 			public void cancel() {

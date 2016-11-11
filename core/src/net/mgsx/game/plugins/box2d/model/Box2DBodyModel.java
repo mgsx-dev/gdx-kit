@@ -11,7 +11,6 @@ import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.Pool.Poolable;
 
 import net.mgsx.game.core.components.Duplicable;
-import net.mgsx.game.core.components.Movable;
 import net.mgsx.game.plugins.box2dold.behavior.BodyBehavior;
 import net.mgsx.game.plugins.box2dold.model.WorldItem;
 
@@ -26,8 +25,6 @@ public class Box2DBodyModel implements Component, Duplicable, Poolable, Disposab
 	public Array<Box2DFixtureModel> fixtures = new Array<Box2DFixtureModel>();
 	public BodyBehavior behavior;
 	public Entity entity;
-	public Movable slave;
-	public boolean slaveEnabled;
 	public WorldItem context;
 	
 	public Box2DBodyModel(){}

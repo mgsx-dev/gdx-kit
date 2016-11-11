@@ -1,5 +1,6 @@
 package net.mgsx.game.plugins.sprite;
 
+import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -50,9 +51,10 @@ public class AddSpriteTool extends RectangleTool
 	protected void create(Vector2 startPoint, Vector2 endPoint) {
 		
 		if(sprite != null){
+			Entity entity = editor.currentEntity();
 			SpriteModel component = new SpriteModel();
 			component.sprite = new Sprite(sprite);
-			editor.currentEntity().add(component);
+			entity.add(component);
 			sprite = null;
 		}
 	}

@@ -1,6 +1,5 @@
 package net.mgsx.game.plugins.box2d;
 
-import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntityListener;
 import com.badlogic.ashley.core.EntitySystem;
@@ -29,7 +28,6 @@ import net.mgsx.game.core.components.Transform2DComponent;
 import net.mgsx.game.core.plugins.EditorPlugin;
 import net.mgsx.game.core.storage.ContextualSerializer;
 import net.mgsx.game.core.storage.Storage;
-import net.mgsx.game.core.tools.ComponentTool;
 import net.mgsx.game.plugins.box2d.model.Box2DBodyModel;
 import net.mgsx.game.plugins.box2d.model.Box2DJointModel;
 import net.mgsx.game.plugins.box2dold.model.WorldItem;
@@ -131,19 +129,6 @@ public class Box2DPlugin extends EditorPlugin
 		});
 		
 		
-		// TODO just a workaround ... need to think deeper is this stuff !
-		editor.addTool(new ComponentTool("Attach to body", editor, Family.all(Box2DBodyModel.class).get()) {
-			
-			@Override
-			protected Component createComponent(Entity entity) {
-				Box2DBodyModel model = entity.getComponent(Box2DBodyModel.class);
-				if(model.slave != null){
-					model.slaveEnabled = true;
-				}
-				return null;
-			}
-		});
-		
 		// TODO activation create a body
 		//editor.addTool(new AddBox2DTool(editor, worldItem));
 		
@@ -198,17 +183,16 @@ public class Box2DPlugin extends EditorPlugin
 				Box2DBodyModel object = entity.getComponent(Box2DBodyModel.class);
 				object.body.setUserData(entity);
 				
-				// TODO why auto attach ? conceptually OK but ... many many drawbacks
-				object.slave =  entity.getComponent(Movable.class);
 				entity.add(new Movable(new BodyMove(object.body)));
 				
+				// TODO bah !
 				Transform2DComponent transform = entity.getComponent(Transform2DComponent.class);
 				
 				if(entity.getComponent(Transform2DComponent.class) == null) {
-					transform = new Transform2DComponent();
-					
-					transform.origin.set(object.body.getPosition());
-					entity.add(transform); 
+//					transform = new Transform2DComponent();
+//					
+//					transform.origin.set(object.body.getPosition());
+//					entity.add(transform); 
 					
 				// XXX auto attach again !? : body x/y
 				}else{ // case of loading ...
@@ -217,12 +201,11 @@ public class Box2DPlugin extends EditorPlugin
 			}
 		});
 		
-		// TODO it's not the right place, we should have a behavior component
 		editor.entityEngine.addSystem(new EntitySystem(GamePipeline.PHYSICS) {
 			
 			@Override
 			public void update(float deltaTime) {
-				worldItem.update(); // TODO move box 2D code here ?
+				worldItem.update();
 			}
 		});
 		editor.entityEngine.addSystem(new IteratingSystem(Family.all(Box2DBodyModel.class, Transform2DComponent.class).get(), GamePipeline.AFTER_PHYSICS) {
@@ -243,9 +226,6 @@ public class Box2DPlugin extends EditorPlugin
 				for(Entity e : editor.entityEngine.getEntitiesFor(Family.one(Box2DBodyModel.class).get())){
 					Box2DBodyModel bodyItem = e.getComponent(Box2DBodyModel.class);
 					if(bodyItem.behavior != null) bodyItem.behavior.act();
-					if(bodyItem.slaveEnabled && bodyItem.slave != null){
-						// TODO sync pos ...
-					}
 				}
 			}
 		});
@@ -255,15 +235,6 @@ public class Box2DPlugin extends EditorPlugin
 			@Override
 			public void update(float deltaTime) {
 				box2dRenderer.render(worldItem.world, editor.camera.combined);
-//				Vector2 s = Tool.pixelSize(editor.orthographicCamera).scl(3);
-//				renderer.setProjectionMatrix(editor.orthographicCamera.combined);
-//				renderer.begin(ShapeType.Line);
-//				for(Entity e : editor.entityEngine.getEntitiesFor(Family.one(Box2DBodyModel.class).get())){
-//					Box2DBodyModel item = e.getComponent(Box2DBodyModel.class);
-//					if(item.body != null)
-//					renderer.rect(item.body.getPosition().x-s.x, item.body.getPosition().y-s.y, 2*s.x, 2*s.y);
-//				}
-//				renderer.end();
 			}
 		});
 

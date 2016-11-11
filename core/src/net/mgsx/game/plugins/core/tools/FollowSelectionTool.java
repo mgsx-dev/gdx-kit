@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector3;
 
 import net.mgsx.game.core.Editor;
-import net.mgsx.game.core.components.Movable;
+import net.mgsx.game.core.components.Transform2DComponent;
 import net.mgsx.game.core.tools.Tool;
 
 public class FollowSelectionTool extends Tool
@@ -31,11 +31,11 @@ public class FollowSelectionTool extends Tool
 	{
 		if(track)
 		{
-			Entity selected = editor.getSelected();
-			if(selected != null){
-				Movable movable = selected.getComponent(Movable.class);
-				if(movable != null){
-					movable.getPosition(selected, target);
+			Entity entity = editor.getSelected();
+			if(entity != null){
+				Transform2DComponent transform = Transform2DComponent.components.get(entity);
+				if(transform != null){
+					target.set(transform.position, 0);
 					target.lerp(editor.camera.position, 0.97f); // track smooth
 					editor.camera.position.x = target.x;
 					editor.camera.position.y = target.y; // XXX TODO + 0.05f shift should be configurable

@@ -15,8 +15,6 @@ public class SpriteMove extends Movable
 		this.sprite = sprite;
 	}
 
-
-
 	@Override
 	public void move(Entity entity, Vector3 deltaWorld) 
 	{

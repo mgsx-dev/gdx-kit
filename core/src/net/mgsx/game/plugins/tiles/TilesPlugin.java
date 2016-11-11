@@ -13,7 +13,6 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 
 import net.mgsx.game.core.Editor;
-import net.mgsx.game.core.components.Movable;
 import net.mgsx.game.core.helpers.NativeService;
 import net.mgsx.game.core.helpers.NativeService.DialogCallback;
 import net.mgsx.game.core.plugins.EditorPlugin;
@@ -60,7 +59,7 @@ public class TilesPlugin extends EditorPlugin
 							FileHandle file = mapFile.parent().parent().child("library").child(name + ".json");
 							for(Entity entity : Storage.load(editor.entityEngine, file, editor.assets, editor.serializers))
 							{
-								entity.getComponent(Movable.class).move(entity, new Vector3(x * res, y * res, 0));
+								editor.getMovable(entity).move(entity, new Vector3(x * res, y * res, 0));
 								BoundaryComponent b = entity.getComponent(BoundaryComponent.class);
 								if(b != null){
 									b.box.mul(new Matrix4().setTranslation(new Vector3(x * res, y * res, 0)));
