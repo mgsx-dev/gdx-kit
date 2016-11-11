@@ -1,4 +1,4 @@
-package net.mgsx.game.plugins.sprite;
+package net.mgsx.game.plugins.g2d.tools;
 
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
@@ -7,6 +7,7 @@ import com.badlogic.gdx.utils.Array;
 
 import net.mgsx.game.core.Editor;
 import net.mgsx.game.core.plugins.SelectorPlugin;
+import net.mgsx.game.plugins.g2d.components.SpriteModel;
 
 public class SpriteSelector extends SelectorPlugin
 {

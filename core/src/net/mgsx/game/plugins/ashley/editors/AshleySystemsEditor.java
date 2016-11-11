@@ -5,6 +5,7 @@ import java.lang.reflect.Field;
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -52,6 +53,7 @@ public class AshleySystemsEditor implements GlobalEditorPlugin
 		table.add("Priority");
 		table.add("Entities");
 		table.add("Processing").height(Value.percentHeight(1.5f));
+		table.add("Edition");
 		table.row();
 		
 		
@@ -60,13 +62,8 @@ public class AshleySystemsEditor implements GlobalEditorPlugin
 			Integer priority = (Integer)ReflectionHelper.get(null, field);
 			if(priority != null) pipelineLegend.put(priority, field.getName());
 		}
-		for(EntitySystem system : editor.entityEngine.getSystems())
+		for(final EntitySystem system : editor.entityEngine.getSystems())
 		{
-			String systemName = system.getClass().getSimpleName();
-			if(system.getClass().getEnclosingClass() != null){
-				systemName = system.getClass().getEnclosingClass().getSimpleName();
-			}
-			
 			String priorityName = pipelineLegend.get(system.priority);
 			if(priorityName == null) priorityName = "undefined (" + String.valueOf(system.priority) + ")";
 			
@@ -78,7 +75,21 @@ public class AshleySystemsEditor implements GlobalEditorPlugin
 				description = "-";
 			}
 			
-			table.add(systemName).left();
+			Actor edit;
+			EditableSystem config = system.getClass().getAnnotation(EditableSystem.class);
+			if(config != null){
+				edit = new TextButton("edit", skin);
+				edit.addListener(new ChangeListener(){
+					@Override
+					public void changed(ChangeEvent event, Actor actor) {
+						buildView(editor, table, skin, system);
+					}
+				});
+			}else{
+				edit = new Label("-", skin);
+			}
+			
+			table.add(name(system)).left();
 			table.add(priorityName);
 			table.add(description);
 			
@@ -86,8 +97,48 @@ public class AshleySystemsEditor implements GlobalEditorPlugin
 				EntityEditor.createControl(table, system, new EntityEditor.MethodAccessor(system, "processing", "checkProcessing", "setProcessing"));
 			else
 				table.add(String.valueOf(system.checkProcessing()));
+			table.add(edit);
 			table.row();
 		}
+	}
+	
+	private String name(EntitySystem system){
+		String systemName;
+		EditableSystem config = system.getClass().getAnnotation(EditableSystem.class);
+		if(config == null || config.value().isEmpty()){
+			systemName = system.getClass().getSimpleName();
+			if(system.getClass().getEnclosingClass() != null){
+				systemName = system.getClass().getEnclosingClass().getSimpleName();
+			}
+		}else{
+			systemName = config.value();
+		}
+		return systemName;
+	}
+
+	protected void buildView(final Editor editor, final Table table, final Skin skin, final EntitySystem system) 
+	{
+		
+		
+		table.clearChildren();
+		
+		TextButton btBack = new TextButton("Show all systems", skin);
+		
+		table.add(btBack).row();
+		
+		btBack.addListener(new ChangeListener() {
+			
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				rebuildUI(editor, table, skin);
+			}
+		});
+		
+		// TODO refactor things to have name, priority ... table.add(config.value())
+		table.add(name(system));
+		
+		table.add(new EntityEditor(system, true, skin)).row();
+		
 	}
 
 }

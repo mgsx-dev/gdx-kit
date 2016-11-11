@@ -1,4 +1,4 @@
-package net.mgsx.game.plugins.g2d;
+package net.mgsx.game.plugins.g2d.components;
 
 import com.badlogic.ashley.core.Component;
 import com.badlogic.gdx.graphics.g2d.Animation;

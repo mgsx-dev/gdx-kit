@@ -7,7 +7,7 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 
 import net.mgsx.game.core.helpers.NativeService;
 import net.mgsx.game.plugins.box2dold.Box2DEditor;
-import net.mgsx.game.plugins.sprite.SpritePlugin;
+import net.mgsx.game.plugins.g2d.G2DEditorPlugin;
 
 public class DesktopLauncher 
 {
@@ -33,7 +33,7 @@ public class DesktopLauncher
 		
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		Box2DEditor editor = new Box2DEditor(file.getAbsolutePath());
-		editor.registerPlugin(new SpritePlugin());
+		editor.registerPlugin(new G2DEditorPlugin());
 		new LwjglApplication(editor, config);
 	}
 }

@@ -15,7 +15,7 @@ import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.ObjectMap;
 
 import net.mgsx.game.core.storage.Storage;
-import net.mgsx.game.plugins.sprite.SpriteModel;
+import net.mgsx.game.plugins.g2d.components.SpriteModel;
 
 public class SerialTest {
 

@@ -15,7 +15,8 @@ public class BoundaryEditorPlugin extends EditorPlugin
 	@Override
 	public void initialize(final Editor editor) 
 	{
-		editor.addTool(new RectangleTool("Boundary", editor) {
+		
+		editor.addTool(new RectangleTool("Manual Boundary", editor) {
 			
 			@Override
 			protected void create(Vector2 startPoint, Vector2 endPoint) {

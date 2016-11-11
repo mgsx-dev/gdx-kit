@@ -1,4 +1,4 @@
-package net.mgsx.game.plugins.sprite;
+package net.mgsx.game.plugins.g2d.tools;
 
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.graphics.g2d.Sprite;

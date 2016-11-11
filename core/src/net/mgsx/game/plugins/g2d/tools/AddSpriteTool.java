@@ -1,4 +1,4 @@
-package net.mgsx.game.plugins.sprite;
+package net.mgsx.game.plugins.g2d.tools;
 
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.graphics.Texture;
@@ -10,6 +10,7 @@ import com.badlogic.gdx.math.Vector2;
 import net.mgsx.game.core.Editor;
 import net.mgsx.game.core.helpers.AssetLookupCallback;
 import net.mgsx.game.core.tools.RectangleTool;
+import net.mgsx.game.plugins.g2d.components.SpriteModel;
 
 public class AddSpriteTool extends RectangleTool 
 {

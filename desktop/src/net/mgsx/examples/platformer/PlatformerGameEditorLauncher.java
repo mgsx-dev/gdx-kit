@@ -14,6 +14,7 @@ import net.mgsx.game.plugins.boundary.BoundaryPlugin;
 import net.mgsx.game.plugins.box2d.Box2DPlugin;
 import net.mgsx.game.plugins.btree.BTreePlugin;
 import net.mgsx.game.plugins.fsm.StateMachinePlugin;
+import net.mgsx.game.plugins.g2d.G2DEditorPlugin;
 import net.mgsx.game.plugins.g3d.G3DEditorPlugin;
 import net.mgsx.game.plugins.g3d.G3DPlugin;
 import net.mgsx.game.plugins.parallax.ParallaxPlugin;
@@ -22,7 +23,6 @@ import net.mgsx.game.plugins.particle2d.Particle2DPlugin;
 import net.mgsx.game.plugins.profiling.ProfilerPlugin;
 import net.mgsx.game.plugins.spline.SplineEditorPlugin;
 import net.mgsx.game.plugins.spline.SplinePlugin;
-import net.mgsx.game.plugins.sprite.SpritePlugin;
 import net.mgsx.game.plugins.tiles.TilesPlugin;
 
 public class PlatformerGameEditorLauncher {
@@ -42,7 +42,7 @@ public class PlatformerGameEditorLauncher {
 
 		
 		editor.registerPlugin(new ProfilerPlugin());
-		editor.registerPlugin(new SpritePlugin());
+		editor.registerPlugin(new G2DEditorPlugin());
 		editor.registerPlugin(new ParallaxPlugin());
 		
 		editor.registerPlugin(new G3DPlugin());

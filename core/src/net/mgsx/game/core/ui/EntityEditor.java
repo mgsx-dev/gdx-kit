@@ -491,7 +491,9 @@ public class EntityEditor extends Table
 			});
 			table.add(selector);
 		}else{
-			return false;
+			
+			table.add(new EntityEditor(accessor.get(), skin)).row();
+			// XXX return false;
 		}
 		return true;
 	}

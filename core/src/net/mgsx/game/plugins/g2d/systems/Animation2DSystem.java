@@ -1,4 +1,4 @@
-package net.mgsx.game.plugins.g2d;
+package net.mgsx.game.plugins.g2d.systems;
 
 import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
@@ -6,6 +6,7 @@ import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
 
 import net.mgsx.game.core.GamePipeline;
+import net.mgsx.game.plugins.g2d.components.Animation2DComponent;
 
 public class Animation2DSystem extends IteratingSystem
 {
