@@ -1,4 +1,4 @@
-package net.mgsx.game.plugins.box2dold.tools;
+package net.mgsx.game.plugins.box2d.tools;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;

@@ -1,21 +1,21 @@
-package net.mgsx.game.plugins.box2dold.tools;
+package net.mgsx.game.plugins.box2d.tools.joints;
 
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.joints.RopeJointDef;
+import com.badlogic.gdx.physics.box2d.joints.RevoluteJointDef;
 
 import net.mgsx.game.core.Editor;
 import net.mgsx.game.plugins.box2d.components.Box2DBodyModel;
 import net.mgsx.game.plugins.box2d.components.WorldItem;
 
-public class JointRopeTool extends JointTool<RopeJointDef> {
-	public JointRopeTool(Editor editor, WorldItem worldItem) 
+public class JointRevoluteTool extends JointTool<RevoluteJointDef> {
+	public JointRevoluteTool(Editor editor, WorldItem worldItem) 
 	{
-		super("Rope", editor, worldItem, 2);
+		super("Revolute", editor, worldItem, 2);
 	}
 	@Override
-	protected RopeJointDef createJoint(Box2DBodyModel bodyA, Box2DBodyModel bodyB) {
+	protected RevoluteJointDef createJoint(Box2DBodyModel bodyA, Box2DBodyModel bodyB) {
 		
-		RopeJointDef def = new RopeJointDef();
+		RevoluteJointDef def = new RevoluteJointDef();
 		def.bodyA = bodyA.body;
 		def.bodyB = bodyB.body;
 		def.collideConnected = true;

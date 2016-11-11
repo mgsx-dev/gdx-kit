@@ -1,4 +1,4 @@
-package net.mgsx.game.plugins.box2dold.tools;
+package net.mgsx.game.plugins.box2d.tools;
 
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector2;

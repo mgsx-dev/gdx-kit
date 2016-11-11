@@ -1,21 +1,21 @@
-package net.mgsx.game.plugins.box2dold.tools;
+package net.mgsx.game.plugins.box2d.tools.joints;
 
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.joints.WheelJointDef;
+import com.badlogic.gdx.physics.box2d.joints.WeldJointDef;
 
 import net.mgsx.game.core.Editor;
 import net.mgsx.game.plugins.box2d.components.Box2DBodyModel;
 import net.mgsx.game.plugins.box2d.components.WorldItem;
 
-public class JointWheelTool extends JointTool<WheelJointDef> {
-	public JointWheelTool(Editor editor, WorldItem worldItem) {
-		super("Wheel", editor, worldItem, 2);
+public class JointWeldTool extends JointTool<WeldJointDef> {
+	public JointWeldTool(Editor editor, WorldItem worldItem) {
+		super("Weld", editor, worldItem, 2);
 	}
 
 	@Override
-	protected WheelJointDef createJoint(Box2DBodyModel bodyA, Box2DBodyModel bodyB) {
+	protected WeldJointDef createJoint(Box2DBodyModel bodyA, Box2DBodyModel bodyB) {
 
-		WheelJointDef def = new WheelJointDef();
+		WeldJointDef def = new WeldJointDef();
 		def.bodyA = bodyA.body;
 		def.bodyB = bodyB.body;
 		def.collideConnected = true;

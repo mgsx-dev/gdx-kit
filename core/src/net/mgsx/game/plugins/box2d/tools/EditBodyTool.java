@@ -1,4 +1,4 @@
-package net.mgsx.game.plugins.box2dold.tools;
+package net.mgsx.game.plugins.box2d.tools;
 
 import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.ComponentMapper;
