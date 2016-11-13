@@ -25,9 +25,6 @@ public class G3DBoundaryDebugSystem extends IteratingSystem
 	@Editable
 	public boolean nodeBoudaryBox = false;
 	
-	@Editable
-	public boolean cameraFrustum = true;
-	
 	public G3DBoundaryDebugSystem(EditorScreen editor) 
 	{
 		super(Family.all(G3DModel.class).get(), GamePipeline.RENDER_OVER);
@@ -43,13 +40,6 @@ public class G3DBoundaryDebugSystem extends IteratingSystem
 		
 		super.update(deltaTime);
 		
-		if(cameraFrustum)
-		{
-			editor.getCullingCamera().update(true);
-			editor.shapeRenderer.setColor(0, 0, 1, 1f);
-			RenderDebugHelper.frustum(editor.shapeRenderer, editor.getCullingCamera().frustum);
-			
-		}
 		editor.shapeRenderer.end();
 	}
 

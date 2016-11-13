@@ -10,6 +10,7 @@ import net.mgsx.game.core.plugins.EditorPlugin;
 import net.mgsx.game.core.tools.Tool;
 import net.mgsx.game.plugins.camera.components.CameraComponent;
 import net.mgsx.game.plugins.camera.components.CullingComponent;
+import net.mgsx.game.plugins.camera.systems.CameraDebugSystem;
 
 @PluginDef(dependencies={CameraPlugin.class})
 public class CameraEditorPlugin extends EditorPlugin
@@ -42,7 +43,7 @@ public class CameraEditorPlugin extends EditorPlugin
 			}
 		});
 		
-		// TODO draw frustum system here
+		editor.entityEngine.addSystem(new CameraDebugSystem(editor));
 	}
 
 }

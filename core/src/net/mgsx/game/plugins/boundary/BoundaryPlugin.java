@@ -13,7 +13,7 @@ public class BoundaryPlugin implements Plugin
 	@Override
 	public void initialize(GameScreen engine) 
 	{
-		engine.entityEngine.addSystem(new BoundarySystem(engine));
+		engine.entityEngine.addSystem(new BoundarySystem());
 	}
 
 }

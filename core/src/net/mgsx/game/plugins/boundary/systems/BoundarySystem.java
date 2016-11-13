@@ -1,28 +1,42 @@
 package net.mgsx.game.plugins.boundary.systems;
 
+import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
+import com.badlogic.ashley.utils.ImmutableArray;
 
 import net.mgsx.game.core.GamePipeline;
-import net.mgsx.game.core.GameScreen;
 import net.mgsx.game.plugins.boundary.components.BoundaryComponent;
+import net.mgsx.game.plugins.camera.components.CameraComponent;
+import net.mgsx.game.plugins.camera.components.CullingComponent;
 
 public class BoundarySystem extends IteratingSystem
 {
-	private GameScreen engine;
+	private ImmutableArray<Entity> cullingCameras;
 	
-	public BoundarySystem(GameScreen engine) 
+	public BoundarySystem() 
 	{
 		super(Family.one(BoundaryComponent.class).get(), GamePipeline.BEFORE_LOGIC);
-		this.engine = engine;
 	}
+	
+	@Override
+	public void addedToEngine(Engine engine) {
+		super.addedToEngine(engine);
+		cullingCameras = engine.getEntitiesFor(Family.all(CameraComponent.class, CullingComponent.class).get());
+	}
+	
 	@Override
 	protected void processEntity(Entity entity, float deltaTime) 
 	{
 		BoundaryComponent boundary = BoundaryComponent.components.get(entity);
 		boundary.justInside = boundary.justOutside = false;
-		boolean inside = engine.getCullingCamera().frustum.boundsInFrustum(boundary.box);
+		boolean inside = false;
+		for(Entity cullingCamera : cullingCameras){
+			CameraComponent camera = CameraComponent.components.get(cullingCamera);
+			inside = inside || camera.camera.frustum.boundsInFrustum(boundary.box);
+		}
+		
 		if(inside && !boundary.inside){
 			boundary.justInside = true;
 		}

@@ -15,6 +15,7 @@ import net.mgsx.game.examples.platformer.components.EnvComponent;
 import net.mgsx.game.examples.platformer.components.PlayerComponent;
 import net.mgsx.game.plugins.g3d.components.G3DModel;
 
+// TODO player tracker component / system
 public class EnvSystem extends IteratingSystem
 {
 	private GameScreen gameEngine;

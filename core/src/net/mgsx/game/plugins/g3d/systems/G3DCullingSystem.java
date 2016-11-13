@@ -28,12 +28,6 @@ public class G3DCullingSystem extends IteratingSystem
 		this.engine = engine;
 	}
 
-	@Override
-	public void update(float deltaTime) {
-		engine.getCullingCamera().update(true); // TODO necessary ? if not use frustum only ... instead of camera
-		super.update(deltaTime);
-	}
-
 	private void scan(Array<NodeBoundary> bounds, Iterable<Node> nodes){
 		if(nodes == null) return;
 		for(Node node : nodes){
