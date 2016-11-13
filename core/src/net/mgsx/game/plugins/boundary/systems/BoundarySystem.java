@@ -4,8 +4,8 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
 
-import net.mgsx.game.core.GameScreen;
 import net.mgsx.game.core.GamePipeline;
+import net.mgsx.game.core.GameScreen;
 import net.mgsx.game.plugins.boundary.components.BoundaryComponent;
 
 public class BoundarySystem extends IteratingSystem
@@ -22,7 +22,7 @@ public class BoundarySystem extends IteratingSystem
 	{
 		BoundaryComponent boundary = BoundaryComponent.components.get(entity);
 		boundary.justInside = boundary.justOutside = false;
-		boolean inside = engine.gameCamera.frustum.boundsInFrustum(boundary.box);
+		boolean inside = engine.getCullingCamera().frustum.boundsInFrustum(boundary.box);
 		if(inside && !boundary.inside){
 			boundary.justInside = true;
 		}

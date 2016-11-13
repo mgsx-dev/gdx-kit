@@ -5,8 +5,8 @@ import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-import net.mgsx.game.core.GameScreen;
 import net.mgsx.game.core.GamePipeline;
+import net.mgsx.game.core.GameScreen;
 import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.core.annotations.EditableSystem;
 import net.mgsx.game.core.components.Hidden;
@@ -27,7 +27,7 @@ public class G2DRenderSystem extends IteratingSystem {
 
 	@Override
 	public void update(float deltaTime) {
-		batch.setProjectionMatrix(engine.camera.combined);
+		batch.setProjectionMatrix(engine.getRenderCamera().combined);
 		batch.begin();
 		super.update(deltaTime);
 		batch.end();

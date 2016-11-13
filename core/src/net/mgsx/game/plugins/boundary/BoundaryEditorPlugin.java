@@ -5,11 +5,13 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 
 import net.mgsx.game.core.EditorScreen;
+import net.mgsx.game.core.annotations.PluginDef;
 import net.mgsx.game.core.plugins.EditorPlugin;
 import net.mgsx.game.core.tools.RectangleTool;
 import net.mgsx.game.plugins.boundary.components.BoundaryComponent;
 import net.mgsx.game.plugins.boundary.systems.BoundaryDebugSystem;
 
+@PluginDef(dependencies={BoundaryPlugin.class})
 public class BoundaryEditorPlugin extends EditorPlugin
 {
 	@Override

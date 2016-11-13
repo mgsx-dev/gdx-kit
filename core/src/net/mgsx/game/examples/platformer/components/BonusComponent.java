@@ -8,10 +8,10 @@ import com.badlogic.gdx.graphics.g3d.utils.AnimationController.AnimationDesc;
 import net.mgsx.game.core.annotations.EditableComponent;
 import net.mgsx.game.core.annotations.Storable;
 import net.mgsx.game.core.components.Duplicable;
-import net.mgsx.game.core.components.Transform2DComponent;
 import net.mgsx.game.core.helpers.AnimationAdapter;
 import net.mgsx.game.core.plugins.Initializable;
 import net.mgsx.game.plugins.box2d.components.Box2DBodyModel;
+import net.mgsx.game.plugins.core.components.Transform2DComponent;
 import net.mgsx.game.plugins.g3d.components.G3DModel;
 
 @Storable("example.platformer.bonus")

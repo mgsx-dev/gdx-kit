@@ -53,7 +53,7 @@ public class GameRegistry {
 		serializers.put(type, serializer);
 	}
 	
-	public void register(Class<? extends Component> type){
+	private void register(Class<? extends Component> type){
 		
 		Storable storable = type.getAnnotation(Storable.class);
 		if(storable != null){
@@ -64,10 +64,6 @@ public class GameRegistry {
 		
 	}
 	
-	public <T extends Plugin> T getPlugin(Class<T> type) {
-		return (T)plugins.get(type);
-	}
-
 	public void init(GameScreen screen) {
 		for(Plugin plugin : plugins.values()){
 			plugin.initialize(screen);

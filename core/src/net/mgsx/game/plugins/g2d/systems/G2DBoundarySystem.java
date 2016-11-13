@@ -10,8 +10,8 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 
 import net.mgsx.game.core.GamePipeline;
-import net.mgsx.game.core.components.Transform2DComponent;
 import net.mgsx.game.plugins.boundary.components.BoundaryComponent;
+import net.mgsx.game.plugins.core.components.Transform2DComponent;
 import net.mgsx.game.plugins.g2d.components.SpriteModel;
 
 public class G2DBoundarySystem extends IteratingSystem

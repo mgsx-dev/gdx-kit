@@ -7,7 +7,7 @@ import com.badlogic.gdx.math.MathUtils;
 
 import net.mgsx.game.core.GamePipeline;
 import net.mgsx.game.core.components.Hidden;
-import net.mgsx.game.core.components.Transform2DComponent;
+import net.mgsx.game.plugins.core.components.Transform2DComponent;
 import net.mgsx.game.plugins.g3d.components.G3DModel;
 
 public class G3DTransformSystem extends IteratingSystem {

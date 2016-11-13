@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import com.badlogic.ashley.core.Component;
 import com.badlogic.gdx.utils.Array;
 
 import net.mgsx.game.core.helpers.TypeMap;
@@ -50,11 +49,4 @@ public class EditorRegistry extends GameRegistry
 		}
 	}
 	
-	@Override
-	public void register(Class<? extends Component> type) 
-	{
-		super.register(type);
-		
-	}
-
 }

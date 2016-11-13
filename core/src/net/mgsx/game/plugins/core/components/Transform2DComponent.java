@@ -1,4 +1,4 @@
-package net.mgsx.game.core.components;
+package net.mgsx.game.plugins.core.components;
 
 import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.ComponentMapper;
@@ -7,6 +7,8 @@ import com.badlogic.gdx.math.Vector2;
 import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.core.annotations.EditableComponent;
 import net.mgsx.game.core.annotations.Storable;
+import net.mgsx.game.core.components.Duplicable;
+import net.mgsx.game.core.components.OverrideProxy;
 
 @Storable("2d")
 @EditableComponent(name="2D Transform")

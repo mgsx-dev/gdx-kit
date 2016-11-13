@@ -15,8 +15,8 @@ import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.JsonValue.JsonIterator;
 
 import net.mgsx.game.core.components.OverrideProxy;
-import net.mgsx.game.core.components.ProxyComponent;
 import net.mgsx.game.core.helpers.ReflectionHelper;
+import net.mgsx.game.plugins.core.components.ProxyComponent;
 
 public class EntityGroupSerializer implements Json.Serializer<EntityGroup>
 {

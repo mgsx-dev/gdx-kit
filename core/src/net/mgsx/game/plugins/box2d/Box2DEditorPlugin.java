@@ -11,7 +11,6 @@ import net.mgsx.game.core.EditorScreen;
 import net.mgsx.game.core.GamePipeline;
 import net.mgsx.game.core.annotations.PluginDef;
 import net.mgsx.game.core.components.Movable;
-import net.mgsx.game.core.components.Transform2DComponent;
 import net.mgsx.game.core.plugins.EditorPlugin;
 import net.mgsx.game.plugins.box2d.components.Box2DBodyModel;
 import net.mgsx.game.plugins.box2d.components.Box2DJointModel;
@@ -21,6 +20,7 @@ import net.mgsx.game.plugins.box2d.editors.Box2DWorldEditorPlugin;
 import net.mgsx.game.plugins.box2d.tools.BodyMove;
 import net.mgsx.game.plugins.box2d.tools.Box2DBodySelector;
 import net.mgsx.game.plugins.box2d.tools.Box2DParticleTool;
+import net.mgsx.game.plugins.core.components.Transform2DComponent;
 
 @PluginDef(dependencies={Box2DPlugin.class})
 public class Box2DEditorPlugin extends EditorPlugin 

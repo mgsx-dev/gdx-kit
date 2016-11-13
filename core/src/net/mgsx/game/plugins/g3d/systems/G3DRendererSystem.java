@@ -17,8 +17,8 @@ import com.badlogic.gdx.graphics.g3d.utils.ShaderProvider;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
 
-import net.mgsx.game.core.GameScreen;
 import net.mgsx.game.core.GamePipeline;
+import net.mgsx.game.core.GameScreen;
 import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.core.annotations.EditableSystem;
 import net.mgsx.game.core.components.Hidden;
@@ -104,7 +104,7 @@ public class G3DRendererSystem extends IteratingSystem
 		light.color.set(diffuse);
 		light.direction.set(direction.transform(new Vector3(0,0,1)));
 		
-		modelBatch.begin(engine.camera);
+		modelBatch.begin(engine.getRenderCamera());
 		super.update(deltaTime);
 	    modelBatch.end();
 	}

@@ -1,6 +1,5 @@
 package net.mgsx.game.core;
 
-import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.gdx.Gdx;
@@ -14,6 +13,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.Json.Serializer;
 
 import net.mgsx.game.core.storage.Storage;
+import net.mgsx.game.plugins.camera.systems.CameraSystem;
 
 /**
  * Base screen for managed game scene.
@@ -36,8 +36,9 @@ public class GameScreen extends ScreenAdapter
 		init();
 	}
 	
-	public Camera camera, gameCamera; // TODO game camera and editor camera !
+	Camera camera, gameCamera; // TODO game camera and editor camera !
 	
+	protected CameraSystem cameraSystem;
 	
 	private void init()
 	{
@@ -59,6 +60,26 @@ public class GameScreen extends ScreenAdapter
 		gameCamera.near = 1f;
 		gameCamera.far = 3000f;
 		gameCamera.update();
+		
+		cameraSystem = entityEngine.getSystem(CameraSystem.class);
+	}
+	
+	public Camera getRenderCamera()
+	{
+		return camera;
+		// TODO when camera is entity
+//		Entity cameraEntity = cameraSystem.getRenderCamera();
+//		CameraComponent camera = CameraComponent.components.get(cameraEntity);
+//		return camera.camera;
+	}
+	
+	public Camera getCullingCamera()
+	{
+		return gameCamera;
+		// TODO when camera is entity
+//		Entity cameraEntity = cameraSystem.getCullingCamera();
+//		CameraComponent camera = CameraComponent.components.get(cameraEntity);
+//		return camera.camera;
 	}
 	
 	
@@ -83,11 +104,6 @@ public class GameScreen extends ScreenAdapter
 		camera.viewportWidth = Gdx.graphics.getWidth();
 		camera.viewportHeight = Gdx.graphics.getHeight();
 		camera.update(true);
-	}
-
-
-	public void register(Class<? extends Component> type) {
-		registry.register(type);
 	}
 
 

@@ -20,10 +20,10 @@ import com.badlogic.gdx.utils.ObjectMap;
 
 import net.mgsx.game.core.GamePipeline;
 import net.mgsx.game.core.GameScreen;
-import net.mgsx.game.core.components.Transform2DComponent;
 import net.mgsx.game.core.plugins.Plugin;
 import net.mgsx.game.core.storage.AssetSerializer;
 import net.mgsx.game.core.storage.Storage;
+import net.mgsx.game.plugins.core.components.Transform2DComponent;
 
 public class Particle2DPlugin implements Plugin
 {
@@ -144,7 +144,7 @@ public class Particle2DPlugin implements Plugin
 			public void update(float deltaTime) 
 			{
 				Gdx.gl.glEnable(GL20.GL_DEPTH_TEST);
-				batch.setProjectionMatrix(engine.camera.combined);
+				batch.setProjectionMatrix(engine.getRenderCamera().combined);
 				batch.begin();
 				for (int i = effects.size - 1; i >= 0; i--) {
 				    PooledEffect effect = effects.get(i);

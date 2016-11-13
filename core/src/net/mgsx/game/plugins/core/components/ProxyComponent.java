@@ -1,8 +1,9 @@
-package net.mgsx.game.core.components;
+package net.mgsx.game.plugins.core.components;
 
 import com.badlogic.ashley.core.Component;
 
 import net.mgsx.game.core.annotations.Storable;
+import net.mgsx.game.core.components.Duplicable;
 
 @Storable("proxy")
 public class ProxyComponent implements Component, Duplicable

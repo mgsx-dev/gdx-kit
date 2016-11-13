@@ -22,7 +22,7 @@ public class G3DPlugin implements Plugin
 		
 		engine.entityEngine.addSystem(new G3DAnimationSystem());
 		engine.entityEngine.addSystem(new G3DTransformSystem());
-		engine.entityEngine.addSystem(new G3DCullingSystem(engine.gameCamera));
+		engine.entityEngine.addSystem(new G3DCullingSystem(engine));
 		engine.entityEngine.addSystem(new G3DRendererSystem(engine));
 		engine.entityEngine.addSystem(new G3DTextureAnimationSystem());
 	}

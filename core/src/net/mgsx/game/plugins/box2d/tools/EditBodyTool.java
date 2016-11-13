@@ -9,11 +9,11 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.utils.Array;
 
 import net.mgsx.game.core.EditorScreen;
-import net.mgsx.game.core.components.Transform2DComponent;
 import net.mgsx.game.core.tools.ComponentTool;
 import net.mgsx.game.plugins.box2d.components.Box2DBodyModel;
 import net.mgsx.game.plugins.box2d.components.Box2DFixtureModel;
 import net.mgsx.game.plugins.core.components.PolygonComponent;
+import net.mgsx.game.plugins.core.components.Transform2DComponent;
 
 // TODO generalize shape / box2D shape conversion
 // TODO support all shapes ! ShapeAccessor ???

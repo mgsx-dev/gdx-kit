@@ -15,9 +15,9 @@ import com.badlogic.gdx.utils.Array;
 import net.mgsx.game.core.EditorScreen;
 import net.mgsx.game.core.commands.Command;
 import net.mgsx.game.core.commands.CommandHistory;
-import net.mgsx.game.core.components.Transform2DComponent;
 import net.mgsx.game.plugins.box2dold.model.EditorSettings;
 import net.mgsx.game.plugins.box2dold.model.Items;
+import net.mgsx.game.plugins.core.components.Transform2DComponent;
 
 // TODO it is more an EditorContext (ctx) ...
 public class WorldItem 

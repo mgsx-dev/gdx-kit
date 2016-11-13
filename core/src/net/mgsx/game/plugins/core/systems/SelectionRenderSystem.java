@@ -10,8 +10,8 @@ import com.badlogic.gdx.math.Vector3;
 import net.mgsx.game.core.EditorScreen;
 import net.mgsx.game.core.GamePipeline;
 import net.mgsx.game.core.components.Movable;
-import net.mgsx.game.core.components.Transform2DComponent;
 import net.mgsx.game.core.tools.Tool;
+import net.mgsx.game.plugins.core.components.Transform2DComponent;
 
 public class SelectionRenderSystem extends IteratingSystem {
 	final private EditorScreen editor;

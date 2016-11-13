@@ -15,13 +15,13 @@ import com.badlogic.gdx.physics.box2d.Fixture;
 import net.mgsx.game.core.annotations.EditableComponent;
 import net.mgsx.game.core.annotations.Storable;
 import net.mgsx.game.core.components.LogicComponent;
-import net.mgsx.game.core.components.Transform2DComponent;
 import net.mgsx.game.core.plugins.Initializable;
 import net.mgsx.game.plugins.box2d.components.Box2DBodyModel;
 import net.mgsx.game.plugins.box2d.listeners.Box2DComponentListener;
 import net.mgsx.game.plugins.box2d.listeners.Box2DComponentTrigger;
 import net.mgsx.game.plugins.box2d.listeners.Box2DListener;
 import net.mgsx.game.plugins.box2d.listeners.Box2DMultiplexer;
+import net.mgsx.game.plugins.core.components.Transform2DComponent;
 import net.mgsx.game.plugins.g3d.components.G3DModel;
 
 @Storable("example.platformer.player")

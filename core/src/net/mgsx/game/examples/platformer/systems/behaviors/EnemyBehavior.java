@@ -7,11 +7,11 @@ import com.badlogic.gdx.math.collision.BoundingBox;
 
 import net.mgsx.game.core.components.Hidden;
 import net.mgsx.game.core.components.LogicBehavior;
-import net.mgsx.game.core.components.Transform2DComponent;
 import net.mgsx.game.core.plugins.Initializable;
 import net.mgsx.game.examples.platformer.components.EnemyComponent;
 import net.mgsx.game.plugins.boundary.components.BoundaryComponent;
 import net.mgsx.game.plugins.box2d.components.Box2DBodyModel;
+import net.mgsx.game.plugins.core.components.Transform2DComponent;
 import net.mgsx.game.plugins.g3d.components.G3DModel;
 
 public class EnemyBehavior implements LogicBehavior, Initializable

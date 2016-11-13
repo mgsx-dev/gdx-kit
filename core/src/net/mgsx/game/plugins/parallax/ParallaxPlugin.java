@@ -9,9 +9,9 @@ import com.badlogic.gdx.math.Vector3;
 import net.mgsx.game.core.EditorScreen;
 import net.mgsx.game.core.GamePipeline;
 import net.mgsx.game.core.annotations.PluginDef;
-import net.mgsx.game.core.components.Transform2DComponent;
 import net.mgsx.game.core.plugins.EditorPlugin;
 import net.mgsx.game.core.tools.ComponentTool;
+import net.mgsx.game.plugins.core.components.Transform2DComponent;
 
 /**
  * TODO change parallax to sprite group / layers ...
