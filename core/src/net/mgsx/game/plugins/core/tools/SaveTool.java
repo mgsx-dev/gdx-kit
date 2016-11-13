@@ -2,7 +2,7 @@ package net.mgsx.game.plugins.core.tools;
 
 import com.badlogic.gdx.files.FileHandle;
 
-import net.mgsx.game.core.Editor;
+import net.mgsx.game.core.EditorScreen;
 import net.mgsx.game.core.helpers.NativeService;
 import net.mgsx.game.core.helpers.NativeService.DialogCallback;
 import net.mgsx.game.core.storage.Storage;
@@ -11,7 +11,7 @@ import net.mgsx.game.core.tools.Tool;
 public class SaveTool extends Tool
 {
 
-	public SaveTool(Editor editor) {
+	public SaveTool(EditorScreen editor) {
 		super("Save", editor);
 	}
 	

@@ -7,7 +7,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
-import net.mgsx.game.core.Editor;
+import net.mgsx.game.core.EditorScreen;
 import net.mgsx.game.core.helpers.AssetLookupCallback;
 import net.mgsx.game.core.tools.RectangleTool;
 import net.mgsx.game.plugins.g2d.components.SpriteModel;
@@ -17,7 +17,7 @@ public class AddSpriteTool extends RectangleTool
 	private Sprite sprite;
 	private TextureRegion region;
 	
-	public AddSpriteTool(Editor editor) {
+	public AddSpriteTool(EditorScreen editor) {
 		super("Sprite", editor);
 	}
 	

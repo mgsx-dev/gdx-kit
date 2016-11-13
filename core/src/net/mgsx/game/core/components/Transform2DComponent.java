@@ -6,7 +6,9 @@ import com.badlogic.gdx.math.Vector2;
 
 import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.core.annotations.EditableComponent;
+import net.mgsx.game.core.annotations.Storable;
 
+@Storable("2d")
 @EditableComponent(name="2D Transform")
 public class Transform2DComponent implements Component, Duplicable, OverrideProxy
 {

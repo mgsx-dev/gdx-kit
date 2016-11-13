@@ -94,56 +94,59 @@ public class EntityGroupSerializer implements Json.Serializer<EntityGroup>
 	{
 		EntityGroup object = this.object = new EntityGroup();
 		object.entities = new Array<Entity>();
-		
-		for(JsonIterator i = jsonData.get("assets").iterator() ; i.hasNext() ; ){
-			JsonValue asset = i.next();
-			Class assetType = ReflectionHelper.forName(asset.get("type").asString());
-			String name = asset.get("name").asString();
-			if(assetType == Texture.class){
-				TextureParameter p = new TextureParameter();
-				p.wrapU = TextureWrap.Repeat;
-				p.wrapV = TextureWrap.Repeat; // XXX hack for reapeat texture always !
-				p.magFilter = TextureFilter.MipMapLinearLinear;
-				p.minFilter = TextureFilter.MipMapLinearLinear;
-				p.genMipMaps = true; // XXX hack again ...
-				assets.load(name, Texture.class, p);
-			}else if(assetType == Model.class){
-				ModelParameters mp = new ModelParameters();
-				TextureParameter p = mp.textureParameter;
-				p.wrapU = TextureWrap.Repeat;
-				p.wrapV = TextureWrap.Repeat; // XXX hack for reapeat texture always !
-				p.magFilter = TextureFilter.MipMapLinearLinear;
-				p.minFilter = TextureFilter.MipMapLinearLinear;
-				p.genMipMaps = true; // XXX hack again ...
-				assets.load(name, Model.class, mp);
-			}else assets.load(name, assetType);
+		if(jsonData.has("assets")){
+			for(JsonIterator i = jsonData.get("assets").iterator() ; i.hasNext() ; ){
+				JsonValue asset = i.next();
+				Class assetType = ReflectionHelper.forName(asset.get("type").asString());
+				String name = asset.get("name").asString();
+				if(assetType == Texture.class){
+					TextureParameter p = new TextureParameter();
+					p.wrapU = TextureWrap.Repeat;
+					p.wrapV = TextureWrap.Repeat; // XXX hack for reapeat texture always !
+					p.magFilter = TextureFilter.MipMapLinearLinear;
+					p.minFilter = TextureFilter.MipMapLinearLinear;
+					p.genMipMaps = true; // XXX hack again ...
+					assets.load(name, Texture.class, p);
+				}else if(assetType == Model.class){
+					ModelParameters mp = new ModelParameters();
+					TextureParameter p = mp.textureParameter;
+					p.wrapU = TextureWrap.Repeat;
+					p.wrapV = TextureWrap.Repeat; // XXX hack for reapeat texture always !
+					p.magFilter = TextureFilter.MipMapLinearLinear;
+					p.minFilter = TextureFilter.MipMapLinearLinear;
+					p.genMipMaps = true; // XXX hack again ...
+					assets.load(name, Model.class, mp);
+				}else assets.load(name, assetType);
+			}
+			
+			assets.finishLoading(); // XXX remove this when go for EntityGroupLoader
 		}
 		
-		assets.finishLoading(); // XXX remove this when go for EntityGroupLoader
-		
-		for(JsonIterator entityIteractor = jsonData.get("entities").iterator() ; entityIteractor.hasNext() ; ){
-			JsonValue value = entityIteractor.next();
-			Entity entity = new Entity();
-			object.entities.add(entity);
-			for(JsonIterator i = value.iterator() ; i.hasNext() ; ){
-				JsonValue cvalue = i.next();
-				String typeName = cvalue.name;
-				if("id".equals(typeName)) continue; // skip id tag
-				Class<? extends Component> componentType = Storage.typeMap.get(typeName);
-				if(componentType != null)
-				{
-					Component component = json.readValue(componentType, cvalue);
-					// special case where no type given TODO try with knownType (3 args)
-					if(component == null){
-						component = ReflectionHelper.newInstance(componentType);
+		if(jsonData.has("entities")){
+			for(JsonIterator entityIteractor = jsonData.get("entities").iterator() ; entityIteractor.hasNext() ; ){
+				JsonValue value = entityIteractor.next();
+				Entity entity = new Entity();
+				object.entities.add(entity);
+				for(JsonIterator i = value.iterator() ; i.hasNext() ; ){
+					JsonValue cvalue = i.next();
+					String typeName = cvalue.name;
+					if("id".equals(typeName)) continue; // skip id tag
+					Class<? extends Component> componentType = Storage.typeMap.get(typeName);
+					if(componentType != null)
+					{
+						Component component = json.readValue(componentType, cvalue);
+						// special case where no type given TODO try with knownType (3 args)
+						if(component == null){
+							component = ReflectionHelper.newInstance(componentType);
+						}
+						entity.add(component);
 					}
-					entity.add(component);
+					else
+					{
+						throw new Error("type name not registered : " + String.valueOf(typeName));
+					}
+					
 				}
-				else
-				{
-					throw new Error("type name not registered : " + String.valueOf(typeName));
-				}
-				
 			}
 		}
 		

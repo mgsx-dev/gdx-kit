@@ -6,7 +6,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 
-import net.mgsx.game.core.Editor;
+import net.mgsx.game.core.EditorScreen;
 import net.mgsx.game.core.tools.RectangleTool;
 import net.mgsx.game.plugins.box2d.components.Box2DBodyModel;
 import net.mgsx.game.plugins.box2d.components.WorldItem;
@@ -17,7 +17,7 @@ public class CreateCircleTool extends RectangleTool {
 	private WorldItem worldItem;
 	
 	
-	public CreateCircleTool(Editor editor, WorldItem worldItem) {
+	public CreateCircleTool(EditorScreen editor, WorldItem worldItem) {
 		super("Circle", editor);
 		this.worldItem = worldItem;
 	}

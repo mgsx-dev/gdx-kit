@@ -5,15 +5,15 @@ import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 
-import net.mgsx.game.core.Editor;
+import net.mgsx.game.core.EditorScreen;
 import net.mgsx.game.core.GamePipeline;
 import net.mgsx.game.plugins.core.components.PolygonComponent;
 
 public class PolygonRenderSystem extends IteratingSystem
 {
-	private Editor editor;
+	private EditorScreen editor;
 
-	public PolygonRenderSystem(Editor editor) {
+	public PolygonRenderSystem(EditorScreen editor) {
 		super(Family.all(PolygonComponent.class).get(), GamePipeline.RENDER_DEBUG);
 		this.editor = editor;
 	}

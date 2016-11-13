@@ -4,15 +4,15 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
 
-import net.mgsx.game.core.GameEngine;
+import net.mgsx.game.core.GameScreen;
 import net.mgsx.game.core.GamePipeline;
 import net.mgsx.game.plugins.boundary.components.BoundaryComponent;
 
 public class BoundarySystem extends IteratingSystem
 {
-	private GameEngine engine;
+	private GameScreen engine;
 	
-	public BoundarySystem(GameEngine engine) 
+	public BoundarySystem(GameScreen engine) 
 	{
 		super(Family.one(BoundaryComponent.class).get(), GamePipeline.BEFORE_LOGIC);
 		this.engine = engine;

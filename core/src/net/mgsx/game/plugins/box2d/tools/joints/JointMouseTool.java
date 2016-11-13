@@ -2,12 +2,12 @@ package net.mgsx.game.plugins.box2d.tools.joints;
 
 import com.badlogic.gdx.physics.box2d.joints.MouseJointDef;
 
-import net.mgsx.game.core.Editor;
+import net.mgsx.game.core.EditorScreen;
 import net.mgsx.game.plugins.box2d.components.Box2DBodyModel;
 import net.mgsx.game.plugins.box2d.components.WorldItem;
 
 public class JointMouseTool extends JointTool<MouseJointDef> {
-	public JointMouseTool(Editor editor, WorldItem worldItem) {
+	public JointMouseTool(EditorScreen editor, WorldItem worldItem) {
 		super("Mouse", editor, worldItem, 2);
 	}
 

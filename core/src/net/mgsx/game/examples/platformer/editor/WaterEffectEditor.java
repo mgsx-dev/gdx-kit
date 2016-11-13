@@ -6,15 +6,15 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 
-import net.mgsx.game.core.Editor;
+import net.mgsx.game.core.EditorScreen;
 import net.mgsx.game.core.plugins.GlobalEditorPlugin;
 import net.mgsx.game.core.ui.EntityEditor;
-import net.mgsx.game.examples.platformer.core.PlatformerPlugin;
+import net.mgsx.game.examples.platformer.PlatformerPlugin;
 
 public class WaterEffectEditor implements GlobalEditorPlugin
 {
 	@Override
-	public Actor createEditor(final Editor editor, Skin skin) 
+	public Actor createEditor(final EditorScreen editor, Skin skin) 
 	{
 		Table table = new Table(skin);
 		EntityEditor e = new EntityEditor(skin);

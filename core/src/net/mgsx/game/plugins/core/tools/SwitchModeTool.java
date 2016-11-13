@@ -3,7 +3,7 @@ package net.mgsx.game.plugins.core.tools;
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.gdx.Input;
 
-import net.mgsx.game.core.Editor;
+import net.mgsx.game.core.EditorScreen;
 import net.mgsx.game.core.GamePipeline;
 import net.mgsx.game.core.tools.Tool;
 
@@ -12,7 +12,7 @@ public class SwitchModeTool extends Tool
 {
 	private boolean displayEnabled = true;
 
-	public SwitchModeTool(Editor editor) {
+	public SwitchModeTool(EditorScreen editor) {
 		super(editor);
 	}
 	

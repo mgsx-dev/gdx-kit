@@ -14,7 +14,7 @@ import net.mgsx.SplineTest.BlenderBezierPoint;
 import net.mgsx.SplineTest.BlenderCurve;
 import net.mgsx.SplineTest.BlenderNURBSCurve;
 import net.mgsx.SplineTest.CubicBezierCurve;
-import net.mgsx.game.core.Editor;
+import net.mgsx.game.core.EditorScreen;
 import net.mgsx.game.core.GamePipeline;
 import net.mgsx.game.core.helpers.NativeService;
 import net.mgsx.game.core.helpers.NativeService.DialogCallback;
@@ -25,7 +25,7 @@ import net.mgsx.game.core.tools.Tool;
 public class SplineEditorPlugin extends EditorPlugin
 {
 	@Override
-	public void initialize(final Editor editor) 
+	public void initialize(final EditorScreen editor) 
 	{
 		editor.addTool(new Tool("Import Spline", editor){
 			@Override

@@ -8,7 +8,7 @@ import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.utils.AnimationController;
 import com.badlogic.gdx.math.Vector2;
 
-import net.mgsx.game.core.Editor;
+import net.mgsx.game.core.EditorScreen;
 import net.mgsx.game.core.helpers.NativeService;
 import net.mgsx.game.core.helpers.NativeService.DialogCallback;
 import net.mgsx.game.core.tools.Tool;
@@ -18,7 +18,7 @@ public class AddModelTool extends Tool
 {
 	private ModelInstance modelInstance;
 	
-	public AddModelTool(Editor editor) {
+	public AddModelTool(EditorScreen editor) {
 		super("3D Model", editor);
 	}
 	

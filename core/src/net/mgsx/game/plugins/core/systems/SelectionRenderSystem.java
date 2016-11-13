@@ -7,17 +7,17 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 
-import net.mgsx.game.core.Editor;
+import net.mgsx.game.core.EditorScreen;
 import net.mgsx.game.core.GamePipeline;
 import net.mgsx.game.core.components.Movable;
 import net.mgsx.game.core.components.Transform2DComponent;
 import net.mgsx.game.core.tools.Tool;
 
 public class SelectionRenderSystem extends IteratingSystem {
-	final private Editor editor;
+	final private EditorScreen editor;
 	final private Vector3 pos = new Vector3();
 	
-	public SelectionRenderSystem(Editor editor) {
+	public SelectionRenderSystem(EditorScreen editor) {
 		super(Family.one(Movable.class, Transform2DComponent.class).get(), GamePipeline.RENDER_OVER);
 		this.editor = editor;
 	}

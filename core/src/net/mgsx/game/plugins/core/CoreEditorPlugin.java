@@ -6,7 +6,8 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 
-import net.mgsx.game.core.Editor;
+import net.mgsx.game.core.EditorScreen;
+import net.mgsx.game.core.annotations.PluginDef;
 import net.mgsx.game.core.components.Movable;
 import net.mgsx.game.core.components.ProxyComponent;
 import net.mgsx.game.core.helpers.NativeService;
@@ -29,11 +30,12 @@ import net.mgsx.game.plugins.core.tools.SelectTool;
 import net.mgsx.game.plugins.core.tools.SwitchModeTool;
 import net.mgsx.game.plugins.core.tools.ZoomTool;
 
+@PluginDef(dependencies={CorePlugin.class})
 public class CoreEditorPlugin extends EditorPlugin
 {
 
 	@Override
-	public void initialize(Editor editor) 
+	public void initialize(EditorScreen editor) 
 	{
 		// systems
 		editor.entityEngine.addSystem(new SelectionRenderSystem(editor));

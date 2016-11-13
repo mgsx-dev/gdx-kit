@@ -7,13 +7,13 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 
-import net.mgsx.game.core.Editor;
+import net.mgsx.game.core.EditorScreen;
 import net.mgsx.game.core.components.Duplicable;
 import net.mgsx.game.core.plugins.Initializable;
 
 public class DuplicateTool extends SelectTool
 {
-	public DuplicateTool(Editor editor) {
+	public DuplicateTool(EditorScreen editor) {
 		super("Duplicate", editor);
 	}
 
@@ -48,7 +48,7 @@ public class DuplicateTool extends SelectTool
 		return false;
 	}
 	
-	public static Entity duplicateEntity(Editor editor, Entity base){
+	public static Entity duplicateEntity(EditorScreen editor, Entity base){
 		Entity newEntity = editor.createEntity();
 		editor.entityEngine.addEntity(newEntity);
 		for(Component component : base.getComponents()){

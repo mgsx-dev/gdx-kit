@@ -6,7 +6,7 @@ import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 
-import net.mgsx.game.core.GameEngine;
+import net.mgsx.game.core.EditorScreen;
 import net.mgsx.game.core.GamePipeline;
 import net.mgsx.game.core.helpers.RenderDebugHelper;
 import net.mgsx.game.plugins.boundary.components.BoundaryComponent;
@@ -14,27 +14,27 @@ import net.mgsx.game.plugins.boundary.components.BoundaryComponent;
 
 public class BoundaryDebugSystem extends IteratingSystem
 {
-	private GameEngine engine;
+	private EditorScreen editor;
 	
-	public BoundaryDebugSystem(GameEngine engine) 
+	public BoundaryDebugSystem(EditorScreen editor) 
 	{
 		super(Family.one(BoundaryComponent.class).get(), GamePipeline.RENDER_DEBUG);
-		this.engine = engine;
+		this.editor = editor;
 	}
 	
 	@Override
 	public void update(float deltaTime) {
-		engine.shapeRenderer.begin(ShapeType.Line);
+		editor.shapeRenderer.begin(ShapeType.Line);
 		super.update(deltaTime);
-		engine.shapeRenderer.end();
+		editor.shapeRenderer.end();
 	}
 	
 	@Override
 	protected void processEntity(Entity entity, float deltaTime) 
 	{
 		BoundaryComponent boundary = BoundaryComponent.components.get(entity);
-		engine.shapeRenderer.setColor(boundary.inside ? Color.RED : Color.GRAY);
-		RenderDebugHelper.box(engine.shapeRenderer, boundary.box);
+		editor.shapeRenderer.setColor(boundary.inside ? Color.RED : Color.GRAY);
+		RenderDebugHelper.box(editor.shapeRenderer, boundary.box);
 	}
 
 }

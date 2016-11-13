@@ -6,11 +6,10 @@ import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.math.Vector3;
 
-import net.mgsx.game.core.Editor;
+import net.mgsx.game.core.EditorScreen;
 import net.mgsx.game.core.GamePipeline;
 import net.mgsx.game.core.components.Transform2DComponent;
 import net.mgsx.game.core.plugins.EditorPlugin;
-import net.mgsx.game.core.storage.Storage;
 import net.mgsx.game.core.tools.ComponentTool;
 
 /**
@@ -22,9 +21,9 @@ public class ParallaxPlugin extends EditorPlugin {
 	private Vector3 pos = new Vector3();
 	
 	@Override
-	public void initialize(final Editor editor) 
+	public void initialize(final EditorScreen editor) 
 	{
-		Storage.register(ParallaxModel.class, "parallax");
+		editor.register(ParallaxModel.class);
 		
 		editor.addTool(new ComponentTool("Parallax", editor, Transform2DComponent.class) {
 			@Override
@@ -55,6 +54,5 @@ public class ParallaxPlugin extends EditorPlugin {
 			}
 		});
 		
-		editor.registerPlugin(ParallaxModel.class, new ParallaxEditor());
 	}
 }

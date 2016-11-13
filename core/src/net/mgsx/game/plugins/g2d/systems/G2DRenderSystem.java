@@ -5,7 +5,7 @@ import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-import net.mgsx.game.core.GameEngine;
+import net.mgsx.game.core.GameScreen;
 import net.mgsx.game.core.GamePipeline;
 import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.core.annotations.EditableSystem;
@@ -15,12 +15,12 @@ import net.mgsx.game.plugins.g2d.components.SpriteModel;
 
 @EditableSystem("G2D Render")
 public class G2DRenderSystem extends IteratingSystem {
-	private final GameEngine engine;
+	private final GameScreen engine;
 	private SpriteBatch batch = new SpriteBatch();
 
 	@Editable public boolean culling = false;
 	
-	public G2DRenderSystem(GameEngine engine) {
+	public G2DRenderSystem(GameScreen engine) {
 		super(Family.all(SpriteModel.class).exclude(Hidden.class).get(), GamePipeline.RENDER);
 		this.engine = engine;
 	}

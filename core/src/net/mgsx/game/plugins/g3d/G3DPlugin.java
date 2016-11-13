@@ -1,6 +1,6 @@
 package net.mgsx.game.plugins.g3d;
 
-import net.mgsx.game.core.GameEngine;
+import net.mgsx.game.core.GameScreen;
 import net.mgsx.game.core.annotations.PluginDef;
 import net.mgsx.game.core.plugins.Plugin;
 import net.mgsx.game.plugins.g3d.components.G3DModel;
@@ -16,7 +16,7 @@ import net.mgsx.game.plugins.g3d.systems.G3DTransformSystem;
 public class G3DPlugin implements Plugin
 {
 	@Override
-	public void initialize(final GameEngine engine) 
+	public void initialize(final GameScreen engine) 
 	{
 		// systems
 		

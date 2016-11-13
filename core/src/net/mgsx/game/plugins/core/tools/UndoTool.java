@@ -2,12 +2,12 @@ package net.mgsx.game.plugins.core.tools;
 
 import com.badlogic.gdx.Input;
 
-import net.mgsx.game.core.Editor;
+import net.mgsx.game.core.EditorScreen;
 import net.mgsx.game.core.tools.Tool;
 
 public class UndoTool extends Tool
 {
-	public UndoTool(Editor editor) {
+	public UndoTool(EditorScreen editor) {
 		super("undo redo", editor);
 	}
 

@@ -13,7 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 
-import net.mgsx.game.core.Editor;
+import net.mgsx.game.core.EditorScreen;
 import net.mgsx.game.core.plugins.GlobalEditorPlugin;
 
 public class AshleyEntitiesEditor implements GlobalEditorPlugin
@@ -35,7 +35,7 @@ public class AshleyEntitiesEditor implements GlobalEditorPlugin
 	}
 
 	@Override
-	public Actor createEditor(final Editor editor, Skin skin) 
+	public Actor createEditor(final EditorScreen editor, Skin skin) 
 	{
 		final ObjectMap<Entity, EntityItem> map = new ObjectMap<Entity, AshleyEntitiesEditor.EntityItem>();
 		

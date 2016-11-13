@@ -1,12 +1,12 @@
 package net.mgsx.game.plugins.core.tools;
 
-import net.mgsx.game.core.Editor;
+import net.mgsx.game.core.EditorScreen;
 import net.mgsx.game.core.tools.Tool;
 
 public class ResetTool extends Tool
 {
 
-	public ResetTool(Editor editor) {
+	public ResetTool(EditorScreen editor) {
 		super("Reset", editor);
 	}
 	

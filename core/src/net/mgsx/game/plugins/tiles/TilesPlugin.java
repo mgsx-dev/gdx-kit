@@ -12,7 +12,7 @@ import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 
-import net.mgsx.game.core.Editor;
+import net.mgsx.game.core.EditorScreen;
 import net.mgsx.game.core.helpers.NativeService;
 import net.mgsx.game.core.helpers.NativeService.DialogCallback;
 import net.mgsx.game.core.plugins.EditorPlugin;
@@ -24,7 +24,7 @@ public class TilesPlugin extends EditorPlugin
 {
 
 	@Override
-	public void initialize(Editor editor) {
+	public void initialize(EditorScreen editor) {
 		
 		editor.addTool(new Tool("Import Tiles", editor){
 			@Override
@@ -45,7 +45,7 @@ public class TilesPlugin extends EditorPlugin
 		
 	}
 	
-	private void importMap(TiledMap map, FileHandle mapFile, Editor editor){
+	private void importMap(TiledMap map, FileHandle mapFile, EditorScreen editor){
 		float res = 2;
 		for(MapLayer layer : map.getLayers()){
 			if(layer instanceof TiledMapTileLayer){

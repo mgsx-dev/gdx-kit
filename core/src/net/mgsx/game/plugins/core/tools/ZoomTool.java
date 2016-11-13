@@ -4,7 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector2;
 
-import net.mgsx.game.core.Editor;
+import net.mgsx.game.core.EditorScreen;
 import net.mgsx.game.core.tools.Tool;
 
 // TODO choose between ortho and perspective ... should be synchronized in some way ...
@@ -12,7 +12,7 @@ public class ZoomTool extends Tool
 {
 	private Vector2 prev; //, originScreen; //, originWorld;
 	
-	public ZoomTool(Editor editor) {
+	public ZoomTool(EditorScreen editor) {
 		super("Pan", editor);
 	}
 	

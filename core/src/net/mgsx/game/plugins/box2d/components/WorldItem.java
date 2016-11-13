@@ -12,7 +12,7 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.Array;
 
-import net.mgsx.game.core.Editor;
+import net.mgsx.game.core.EditorScreen;
 import net.mgsx.game.core.commands.Command;
 import net.mgsx.game.core.commands.CommandHistory;
 import net.mgsx.game.core.components.Transform2DComponent;
@@ -24,7 +24,7 @@ public class WorldItem
 {
 	public EditorSettings settings = new EditorSettings();
 	public World world;
-	public Editor editor;
+	public EditorScreen editor;
 	public Items items = new Items();
 	private Items selection = new Items();
 	public Array<Actor> actors = new Array<Actor>();

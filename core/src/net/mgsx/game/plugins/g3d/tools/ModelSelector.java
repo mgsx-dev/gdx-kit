@@ -13,7 +13,7 @@ import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.utils.Array;
 
-import net.mgsx.game.core.Editor;
+import net.mgsx.game.core.EditorScreen;
 import net.mgsx.game.core.plugins.SelectorPlugin;
 import net.mgsx.game.plugins.g3d.components.G3DModel;
 
@@ -28,7 +28,7 @@ public class ModelSelector  extends SelectorPlugin
 	private BoundingBox box;
 	private Vector3 intersection = new Vector3();
 	
-	public ModelSelector(Editor editor) {
+	public ModelSelector(EditorScreen editor) {
 		super(editor);
 	}
 

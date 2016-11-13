@@ -17,7 +17,7 @@ import com.badlogic.gdx.graphics.g3d.utils.ShaderProvider;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
 
-import net.mgsx.game.core.GameEngine;
+import net.mgsx.game.core.GameScreen;
 import net.mgsx.game.core.GamePipeline;
 import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.core.annotations.EditableSystem;
@@ -55,10 +55,10 @@ public class G3DRendererSystem extends IteratingSystem
 	
 	public ShaderProvider [] shaderProviders;
 
-	private GameEngine engine;
+	private GameScreen engine;
 
 
-	public G3DRendererSystem(GameEngine engine) {
+	public G3DRendererSystem(GameScreen engine) {
 		super(Family.all(G3DModel.class).exclude(Hidden.class).get(), GamePipeline.RENDER);
 		this.engine = engine;
 		

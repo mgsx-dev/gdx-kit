@@ -4,59 +4,38 @@ import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
-import net.mgsx.game.core.Editor;
+import net.mgsx.game.core.EditorScreen;
+import net.mgsx.game.core.annotations.PluginDef;
 import net.mgsx.game.core.components.LogicComponent;
 import net.mgsx.game.core.plugins.EditorPlugin;
-import net.mgsx.game.core.plugins.EntityEditorPlugin;
 import net.mgsx.game.core.tools.ComponentTool;
 import net.mgsx.game.core.tools.Tool;
-import net.mgsx.game.core.ui.EntityEditor;
-import net.mgsx.game.examples.platformer.core.BonusComponent;
-import net.mgsx.game.examples.platformer.core.CavernComponent;
-import net.mgsx.game.examples.platformer.core.ClimbZone;
-import net.mgsx.game.examples.platformer.core.EnemyComponent;
-import net.mgsx.game.examples.platformer.core.EnemyZone;
-import net.mgsx.game.examples.platformer.core.EnvComponent;
-import net.mgsx.game.examples.platformer.core.LianaZone;
-import net.mgsx.game.examples.platformer.core.PlatformComponent;
-import net.mgsx.game.examples.platformer.core.PlayerComponent;
-import net.mgsx.game.examples.platformer.core.PulleyComponent;
-import net.mgsx.game.examples.platformer.core.SpiderComponent;
-import net.mgsx.game.examples.platformer.core.TreeComponent;
-import net.mgsx.game.examples.platformer.core.WaterZone;
-import net.mgsx.game.examples.platformer.core.input.KeyboardController;
-import net.mgsx.game.examples.platformer.core.input.PlayerController;
+import net.mgsx.game.examples.platformer.PlatformerPlugin;
+import net.mgsx.game.examples.platformer.components.BonusComponent;
+import net.mgsx.game.examples.platformer.components.CavernComponent;
+import net.mgsx.game.examples.platformer.components.ClimbZone;
+import net.mgsx.game.examples.platformer.components.EnemyComponent;
+import net.mgsx.game.examples.platformer.components.EnvComponent;
+import net.mgsx.game.examples.platformer.components.LianaZone;
+import net.mgsx.game.examples.platformer.components.PlatformComponent;
+import net.mgsx.game.examples.platformer.components.PlayerComponent;
+import net.mgsx.game.examples.platformer.components.PulleyComponent;
+import net.mgsx.game.examples.platformer.components.SpiderComponent;
+import net.mgsx.game.examples.platformer.components.TreeComponent;
+import net.mgsx.game.examples.platformer.components.WaterZone;
+import net.mgsx.game.examples.platformer.systems.input.KeyboardController;
+import net.mgsx.game.examples.platformer.systems.input.PlayerController;
 import net.mgsx.game.plugins.box2d.components.Box2DBodyModel;
 import net.mgsx.game.plugins.box2d.components.Box2DJointModel;
 import net.mgsx.game.plugins.g3d.components.G3DModel;
 
+@PluginDef(dependencies={PlatformerPlugin.class})
 public class PlatformerGameEditor extends EditorPlugin {
 
 	@Override
-	public void initialize(final Editor editor) 
+	public void initialize(final EditorScreen editor) 
 	{
-//		editor.addTool(new ClickTool("Player", editor) {
-//			@Override
-//			protected void create(Vector2 position) 
-//			{
-//				Entity player = editor.createEntity();
-//				editor.entityEngine.addEntity(player);
-//				
-//				G3DModel model = new G3DModel();
-//				model.modelInstance = new ModelInstance(editor.assets.get("player.g3dj", Model.class));
-//				model.animationController = new AnimationController(model.modelInstance);
-//				player.add(model);
-//				
-//				// TODO add Box2D shape ?
-//				
-//				PlayerComponent logic = new PlayerComponent();
-//				logic.initialize(player);
-//				player.add(logic);
-//			}
-//		});
 		editor.addTool(new ComponentTool("Player Logic", editor, Family.all(G3DModel.class, Box2DBodyModel.class).get()) {
 			
 			@Override
@@ -112,15 +91,6 @@ public class PlatformerGameEditor extends EditorPlugin {
 			}
 		});
 
-		editor.addTool(new ComponentTool("Enemy Zone", editor, Family.all(Box2DBodyModel.class).get()) {
-			
-			@Override
-			protected Component createComponent(Entity entity) 
-			{
-				return new EnemyZone();
-			}
-		});
-		
 		editor.addTool(new ComponentTool("Climb Zone", editor, Family.all(Box2DBodyModel.class).get()) {
 			
 			@Override
@@ -211,14 +181,6 @@ public class PlatformerGameEditor extends EditorPlugin {
 //			}
 //		});
 
-		editor.registerPlugin(EnvComponent.class, new EntityEditorPlugin() {
-			
-			@Override
-			public Actor createEditor(Entity entity, Skin skin) {
-				return new EntityEditor(entity.getComponent(EnvComponent.class), skin);
-			}
-		});
-		
 		
 		
 		editor.addGlobalEditor("Water Effect", new WaterEffectEditor());

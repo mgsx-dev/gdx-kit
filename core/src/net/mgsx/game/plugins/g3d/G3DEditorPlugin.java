@@ -1,6 +1,6 @@
 package net.mgsx.game.plugins.g3d;
 
-import net.mgsx.game.core.Editor;
+import net.mgsx.game.core.EditorScreen;
 import net.mgsx.game.core.annotations.PluginDef;
 import net.mgsx.game.core.plugins.EditorPlugin;
 import net.mgsx.game.plugins.g3d.components.G3DModel;
@@ -14,7 +14,7 @@ import net.mgsx.game.plugins.g3d.tools.ModelSelector;
 public class G3DEditorPlugin extends EditorPlugin
 {
 	@Override
-	public void initialize(Editor editor) 
+	public void initialize(EditorScreen editor) 
 	{
 		// tools
 		editor.addGlobalEditor("G3D", new G3DEditor());

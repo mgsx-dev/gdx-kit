@@ -3,7 +3,7 @@ package net.mgsx.game.core.plugins;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.utils.Array;
 
-import net.mgsx.game.core.Editor;
+import net.mgsx.game.core.EditorScreen;
 
 /**
  * Plugin that handle entity selection by a specific component
@@ -12,9 +12,9 @@ import net.mgsx.game.core.Editor;
  */
 abstract public class SelectorPlugin {
 
-	protected Editor editor;
+	protected EditorScreen editor;
 	
-	public SelectorPlugin(Editor editor) {
+	public SelectorPlugin(EditorScreen editor) {
 		super();
 		this.editor = editor;
 	}

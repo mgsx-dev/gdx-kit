@@ -5,7 +5,7 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.math.Vector2;
 
-import net.mgsx.game.core.Editor;
+import net.mgsx.game.core.EditorScreen;
 import net.mgsx.game.core.components.Transform2DComponent;
 import net.mgsx.game.core.helpers.NativeService;
 import net.mgsx.game.core.helpers.NativeService.DialogCallback;
@@ -16,7 +16,7 @@ public class Particle2DEditorPlugin extends EditorPlugin
 {
 
 	@Override
-	public void initialize(Editor editor) 
+	public void initialize(EditorScreen editor) 
 	{
 		editor.addTool(new ClickTool("Add particles", editor){
 			String fileName;

@@ -6,11 +6,11 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 
-import net.mgsx.game.core.Editor;
+import net.mgsx.game.core.EditorScreen;
 
 abstract public class RectangleTool extends Tool
 {
-	public RectangleTool(String name, Editor editor) {
+	public RectangleTool(String name, EditorScreen editor) {
 		super(name, editor);
 	}
 	protected Vector2 startPoint, endPoint;

@@ -2,7 +2,7 @@ package net.mgsx.game.plugins.fsm;
 
 import com.badlogic.gdx.utils.Pool;
 
-import net.mgsx.game.core.GameEngine;
+import net.mgsx.game.core.GameScreen;
 import net.mgsx.game.core.plugins.Plugin;
 import net.mgsx.game.core.storage.Storage;
 import net.mgsx.game.plugins.fsm.components.EntityStateMachine;
@@ -19,7 +19,7 @@ public class StateMachinePlugin implements Plugin
 	};
 
 	@Override
-	public void initialize(GameEngine engine) 
+	public void initialize(GameScreen engine) 
 	{
 		Storage.register(StateMachineComponent.class, "fsm");
 		

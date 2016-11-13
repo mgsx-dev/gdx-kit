@@ -9,7 +9,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.FlushablePool;
 
-import net.mgsx.game.core.Editor;
+import net.mgsx.game.core.EditorScreen;
 import net.mgsx.game.core.tools.Tool;
 import net.mgsx.game.plugins.box2d.components.Box2DBodyModel;
 import net.mgsx.game.plugins.core.tools.DuplicateTool;
@@ -35,7 +35,7 @@ public class Box2DParticleTool  extends Tool
 	private FlushablePool<Particle> pool;
 	private Entity base;
 	
-	public Box2DParticleTool(Editor editor) {
+	public Box2DParticleTool(EditorScreen editor) {
 		super("Particle", editor);
 		activator = Family.all(Box2DBodyModel.class).get();
 		

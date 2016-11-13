@@ -10,7 +10,7 @@ import com.badlogic.gdx.physics.box2d.Joint;
 import com.badlogic.gdx.physics.box2d.JointDef;
 import com.badlogic.gdx.physics.box2d.World;
 
-import net.mgsx.game.core.Editor;
+import net.mgsx.game.core.EditorScreen;
 import net.mgsx.game.core.commands.Command;
 import net.mgsx.game.plugins.box2d.components.Box2DBodyModel;
 import net.mgsx.game.plugins.box2d.components.Box2DFixtureModel;
@@ -91,7 +91,7 @@ public class Box2DCommands {
 			}
 		};
 	}
-	public static Command addJoint(final Editor editor, final World world, final String name, final JointDef def){
+	public static Command addJoint(final EditorScreen editor, final World world, final String name, final JointDef def){
 		return new Command(){
 			@Override
 			public void commit() {

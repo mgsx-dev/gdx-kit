@@ -7,7 +7,7 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.FlushablePool;
 
-import net.mgsx.game.core.Editor;
+import net.mgsx.game.core.EditorScreen;
 import net.mgsx.game.core.tools.Tool;
 import net.mgsx.game.plugins.box2d.components.Box2DBodyModel;
 import net.mgsx.game.plugins.box2d.components.WorldItem;
@@ -32,7 +32,7 @@ public class ParticleTool extends Tool
 	private Array<Particle> particles = new Array<ParticleTool.Particle>();
 	private FlushablePool<Particle> pool;
 	
-	public ParticleTool(Editor editor, WorldItem worldItem) {
+	public ParticleTool(EditorScreen editor, WorldItem worldItem) {
 		super("Particle", editor);
 		this.worldItem = worldItem;
 		pool = new FlushablePool<ParticleTool.Particle>(){

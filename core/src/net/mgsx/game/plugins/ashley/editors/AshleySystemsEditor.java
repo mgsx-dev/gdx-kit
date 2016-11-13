@@ -13,7 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Value;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.ObjectMap;
 
-import net.mgsx.game.core.Editor;
+import net.mgsx.game.core.EditorScreen;
 import net.mgsx.game.core.GamePipeline;
 import net.mgsx.game.core.annotations.EditableSystem;
 import net.mgsx.game.core.helpers.ReflectionHelper;
@@ -23,7 +23,7 @@ import net.mgsx.game.core.ui.EntityEditor;
 public class AshleySystemsEditor implements GlobalEditorPlugin
 {
 	@Override
-	public Actor createEditor(final Editor editor, final Skin skin) 
+	public Actor createEditor(final EditorScreen editor, final Skin skin) 
 	{
 		Table table = new Table(skin);
 		table.setBackground(skin.getDrawable("default-window-body-right"));
@@ -33,7 +33,7 @@ public class AshleySystemsEditor implements GlobalEditorPlugin
 		return table;
 	}
 	
-	private void rebuildUI(final Editor editor, final Table table, final Skin skin) 
+	private void rebuildUI(final EditorScreen editor, final Table table, final Skin skin) 
 	{
 		table.clearChildren();
 		
@@ -116,7 +116,7 @@ public class AshleySystemsEditor implements GlobalEditorPlugin
 		return systemName;
 	}
 
-	protected void buildView(final Editor editor, final Table table, final Skin skin, final EntitySystem system) 
+	protected void buildView(final EditorScreen editor, final Table table, final Skin skin, final EntitySystem system) 
 	{
 		
 		

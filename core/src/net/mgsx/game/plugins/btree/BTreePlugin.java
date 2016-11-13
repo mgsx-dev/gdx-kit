@@ -5,7 +5,7 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.ai.btree.LeafTask;
 import com.badlogic.gdx.ai.btree.Task;
 
-import net.mgsx.game.core.Editor;
+import net.mgsx.game.core.EditorScreen;
 import net.mgsx.game.core.plugins.EditorPlugin;
 import net.mgsx.game.core.storage.Storage;
 
@@ -49,7 +49,7 @@ public class BTreePlugin extends EditorPlugin
 	
 	
 	@Override
-	public void initialize(Editor editor) 
+	public void initialize(EditorScreen editor) 
 	{
 		Storage.register(BTreeModel.class, "btree");
 	}

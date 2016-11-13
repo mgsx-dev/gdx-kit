@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 
-import net.mgsx.game.core.Editor;
+import net.mgsx.game.core.EditorScreen;
 
 /**
  * This tool is used as follow :
@@ -23,10 +23,10 @@ abstract public class MultiClickTool extends Tool
 	protected abstract void complete();
 	protected void abort(){}
 	
-	public MultiClickTool(String name, Editor editor) {
+	public MultiClickTool(String name, EditorScreen editor) {
 		this(name, editor, -1);
 	}
-	public MultiClickTool(String name, Editor editor, int maxPoints) {
+	public MultiClickTool(String name, EditorScreen editor, int maxPoints) {
 		super(name, editor);
 		this.maxPoints = maxPoints;
 	}

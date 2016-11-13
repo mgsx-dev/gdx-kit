@@ -1,6 +1,6 @@
 package net.mgsx.game.plugins.g2d;
 
-import net.mgsx.game.core.GameEngine;
+import net.mgsx.game.core.GameScreen;
 import net.mgsx.game.core.plugins.Plugin;
 import net.mgsx.game.plugins.g2d.components.Animation2DComponent;
 import net.mgsx.game.plugins.g2d.components.SpriteModel;
@@ -13,7 +13,7 @@ public class G2DPlugin implements Plugin
 {
 
 	@Override
-	public void initialize(GameEngine engine) 
+	public void initialize(GameScreen engine) 
 	{
 		engine.register(SpriteModel.class);
 		engine.register(Animation2DComponent.class);

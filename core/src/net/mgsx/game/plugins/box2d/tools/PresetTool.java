@@ -3,7 +3,7 @@ package net.mgsx.game.plugins.box2d.tools;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector2;
 
-import net.mgsx.game.core.Editor;
+import net.mgsx.game.core.EditorScreen;
 import net.mgsx.game.core.tools.Tool;
 import net.mgsx.game.plugins.box2d.components.WorldItem;
 import net.mgsx.game.plugins.box2dold.Box2DPresets.Box2DPreset;
@@ -13,7 +13,7 @@ public class PresetTool extends Tool
 	private WorldItem worldItem;
 	private Box2DPreset preset;
 	
-	public PresetTool(String name, Editor editor, WorldItem worldItem, Box2DPreset preset) {
+	public PresetTool(String name, EditorScreen editor, WorldItem worldItem, Box2DPreset preset) {
 		super(name, editor);
 		this.worldItem = worldItem;
 		this.preset = preset;

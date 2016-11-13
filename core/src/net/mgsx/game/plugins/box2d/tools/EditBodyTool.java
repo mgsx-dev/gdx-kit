@@ -8,7 +8,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.utils.Array;
 
-import net.mgsx.game.core.Editor;
+import net.mgsx.game.core.EditorScreen;
 import net.mgsx.game.core.components.Transform2DComponent;
 import net.mgsx.game.core.tools.ComponentTool;
 import net.mgsx.game.plugins.box2d.components.Box2DBodyModel;
@@ -23,7 +23,7 @@ public class EditBodyTool extends ComponentTool
 	private Array<Entity> shapeEntities;
 	private Array<Entity> vertexEntities;
 
-	public EditBodyTool(Editor editor) {
+	public EditBodyTool(EditorScreen editor) {
 		super("Edit body", editor, Family.all(Box2DBodyModel.class).get());
 	}
 	

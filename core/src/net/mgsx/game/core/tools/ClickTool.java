@@ -3,12 +3,12 @@ package net.mgsx.game.core.tools;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector2;
 
-import net.mgsx.game.core.Editor;
+import net.mgsx.game.core.EditorScreen;
 
 abstract public class ClickTool extends Tool
 {
 
-	public ClickTool(String name, Editor editor) {
+	public ClickTool(String name, EditorScreen editor) {
 		super(name, editor);
 	}
 

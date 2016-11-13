@@ -5,7 +5,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector3;
 
-import net.mgsx.game.core.Editor;
+import net.mgsx.game.core.EditorScreen;
 import net.mgsx.game.core.components.Transform2DComponent;
 import net.mgsx.game.core.tools.Tool;
 
@@ -13,7 +13,7 @@ public class FollowSelectionTool extends Tool
 {
 	private boolean track = false;
 	private Vector3 target = new Vector3();
-	public FollowSelectionTool(Editor editor) {
+	public FollowSelectionTool(EditorScreen editor) {
 		super(editor);
 	}
 	

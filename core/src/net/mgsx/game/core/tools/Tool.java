@@ -10,7 +10,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 
-import net.mgsx.game.core.Editor;
+import net.mgsx.game.core.EditorScreen;
 
 /**
  * A tool may be active in an editor.
@@ -29,15 +29,15 @@ import net.mgsx.game.core.Editor;
  */
 abstract public class Tool extends InputAdapter
 {
-	final protected Editor editor;
+	final protected EditorScreen editor;
 	ToolGroup group;
 	
 	public Family activator;
 	
-	public Tool(Editor editor) {
+	public Tool(EditorScreen editor) {
 		this("no name", editor);
 	}
-	public Tool(String name, Editor editor) {
+	public Tool(String name, EditorScreen editor) {
 		super();
 		this.editor = editor;
 		this.name = name;

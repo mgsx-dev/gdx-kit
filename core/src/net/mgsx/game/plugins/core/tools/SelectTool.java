@@ -8,7 +8,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 
-import net.mgsx.game.core.Editor;
+import net.mgsx.game.core.EditorScreen;
 import net.mgsx.game.core.components.Movable;
 import net.mgsx.game.core.components.Transform2DComponent;
 import net.mgsx.game.core.plugins.SelectorPlugin;
@@ -20,11 +20,11 @@ public class SelectTool extends Tool
 	protected Vector2 prev;
 	protected boolean moving = false;
 	
-	public SelectTool(Editor editor) {
+	public SelectTool(EditorScreen editor) {
 		super("Select", editor);
 	}
 	
-	protected SelectTool(String name, Editor editor) {
+	protected SelectTool(String name, EditorScreen editor) {
 		super(name, editor);
 	}
 	

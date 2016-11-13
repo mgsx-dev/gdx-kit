@@ -1,6 +1,6 @@
 package net.mgsx.game.core.plugins;
 
-import net.mgsx.game.core.GameEngine;
+import net.mgsx.game.core.GameScreen;
 import net.mgsx.game.core.storage.Storage;
 
 /**
@@ -11,7 +11,7 @@ public interface Plugin {
 	/**
 	 * Good place to :
 	 * <br>
-	 * {@link GameEngine#addSerializer(Class, com.badlogic.gdx.utils.Json.Serializer)}
+	 * {@link GameScreen#addSerializer(Class, com.badlogic.gdx.utils.Json.Serializer)}
 	 * <br>
 	 * A good place to configure storage :
 	 * {@link Storage#register(Class, String)}
@@ -22,5 +22,5 @@ public interface Plugin {
 	 * 
 	 * @param engine on which initialize plugin.
 	 */
-	public void initialize(GameEngine engine);
+	public void initialize(GameScreen engine);
 }

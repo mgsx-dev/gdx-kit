@@ -4,7 +4,7 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 
-import net.mgsx.game.core.Editor;
+import net.mgsx.game.core.EditorScreen;
 import net.mgsx.game.core.plugins.EditorPlugin;
 import net.mgsx.game.core.tools.RectangleTool;
 import net.mgsx.game.plugins.boundary.components.BoundaryComponent;
@@ -13,7 +13,7 @@ import net.mgsx.game.plugins.boundary.systems.BoundaryDebugSystem;
 public class BoundaryEditorPlugin extends EditorPlugin
 {
 	@Override
-	public void initialize(final Editor editor) 
+	public void initialize(final EditorScreen editor) 
 	{
 		
 		editor.addTool(new RectangleTool("Manual Boundary", editor) {

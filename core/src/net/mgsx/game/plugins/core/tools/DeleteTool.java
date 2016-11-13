@@ -4,7 +4,7 @@ import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.utils.Array;
 
-import net.mgsx.game.core.Editor;
+import net.mgsx.game.core.EditorScreen;
 import net.mgsx.game.core.commands.Command;
 import net.mgsx.game.core.helpers.ArrayHelper;
 import net.mgsx.game.core.plugins.Initializable;
@@ -12,7 +12,7 @@ import net.mgsx.game.core.tools.Tool;
 
 public class DeleteTool extends Tool {
 
-	public DeleteTool(Editor editor) {
+	public DeleteTool(EditorScreen editor) {
 		super("Delete", editor);
 	}
 

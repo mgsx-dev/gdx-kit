@@ -23,7 +23,7 @@ import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.ObjectMap.Entries;
 import com.badlogic.gdx.utils.ObjectMap.Entry;
 
-import net.mgsx.game.core.GameEngine;
+import net.mgsx.game.core.GameScreen;
 import net.mgsx.game.core.components.OverrideProxy;
 import net.mgsx.game.core.components.ProxyComponent;
 import net.mgsx.game.core.exceptions.NotSupportedEntityGroupException;
@@ -53,7 +53,7 @@ import net.mgsx.game.core.plugins.Initializable;
  * 
  * or you can register a serializer :
  * 
- * {@link GameEngine#addSerializer(Class, Serializer)} :
+ * {@link GameScreen#addSerializer(Class, Serializer)} :
  * <pre>
  * GameEngine.addSerializer(MyType.class, new MySerializer());
  * </pre>

@@ -6,7 +6,7 @@ import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.collision.BoundingBox;
 
-import net.mgsx.game.core.Editor;
+import net.mgsx.game.core.EditorScreen;
 import net.mgsx.game.core.GamePipeline;
 import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.core.annotations.EditableSystem;
@@ -17,7 +17,7 @@ import net.mgsx.game.plugins.g3d.components.NodeBoundary;
 @EditableSystem
 public class G3DBoundaryDebugSystem extends IteratingSystem 
 {
-	private final Editor editor;
+	private final EditorScreen editor;
 	
 	@Editable
 	public boolean boudaryBox = false;
@@ -28,7 +28,7 @@ public class G3DBoundaryDebugSystem extends IteratingSystem
 	@Editable
 	public boolean cameraFrustum = true;
 	
-	public G3DBoundaryDebugSystem(Editor editor) 
+	public G3DBoundaryDebugSystem(EditorScreen editor) 
 	{
 		super(Family.all(G3DModel.class).get(), GamePipeline.RENDER_OVER);
 		this.editor = editor;

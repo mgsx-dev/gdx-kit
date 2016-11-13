@@ -4,7 +4,7 @@ import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.profiling.GLProfiler;
 
-import net.mgsx.game.core.Editor;
+import net.mgsx.game.core.EditorScreen;
 import net.mgsx.game.core.GamePipeline;
 import net.mgsx.game.core.plugins.EditorPlugin;
 
@@ -13,7 +13,7 @@ public class ProfilerPlugin extends EditorPlugin
 	static ProfilerModel model = new ProfilerModel();
 	
 	@Override
-	public void initialize(Editor editor) 
+	public void initialize(EditorScreen editor) 
 	{
 		editor.addGlobalEditor("Profiler", new ProfilerPanel());
 		

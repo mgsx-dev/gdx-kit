@@ -4,14 +4,14 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector2;
 
-import net.mgsx.game.core.Editor;
+import net.mgsx.game.core.EditorScreen;
 import net.mgsx.game.core.tools.Tool;
 
 public class PanTool extends Tool
 {
 	private Vector2 prev;
 	
-	public PanTool(Editor editor) {
+	public PanTool(EditorScreen editor) {
 		super("Pan", editor);
 	}
 	

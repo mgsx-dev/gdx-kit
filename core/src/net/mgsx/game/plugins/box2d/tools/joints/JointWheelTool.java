@@ -3,12 +3,12 @@ package net.mgsx.game.plugins.box2d.tools.joints;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.joints.WheelJointDef;
 
-import net.mgsx.game.core.Editor;
+import net.mgsx.game.core.EditorScreen;
 import net.mgsx.game.plugins.box2d.components.Box2DBodyModel;
 import net.mgsx.game.plugins.box2d.components.WorldItem;
 
 public class JointWheelTool extends JointTool<WheelJointDef> {
-	public JointWheelTool(Editor editor, WorldItem worldItem) {
+	public JointWheelTool(EditorScreen editor, WorldItem worldItem) {
 		super("Wheel", editor, worldItem, 2);
 	}
 

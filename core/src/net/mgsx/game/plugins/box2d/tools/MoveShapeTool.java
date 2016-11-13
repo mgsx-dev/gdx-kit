@@ -4,7 +4,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Fixture;
 
-import net.mgsx.game.core.Editor;
+import net.mgsx.game.core.EditorScreen;
 import net.mgsx.game.core.tools.Tool;
 import net.mgsx.game.plugins.box2d.components.Box2DBodyModel;
 import net.mgsx.game.plugins.box2d.components.Box2DFixtureModel;
@@ -18,7 +18,7 @@ public class MoveShapeTool extends Tool
 	private Vector2 prev;
 	private Box2DBodyModel originalBody;
 	
-	public MoveShapeTool(Editor editor, WorldItem worldItem) {
+	public MoveShapeTool(EditorScreen editor, WorldItem worldItem) {
 		super("Move", editor);
 		this.worldItem = worldItem;
 	}

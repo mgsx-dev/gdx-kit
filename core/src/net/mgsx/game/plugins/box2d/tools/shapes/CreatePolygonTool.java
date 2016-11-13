@@ -4,7 +4,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 
-import net.mgsx.game.core.Editor;
+import net.mgsx.game.core.EditorScreen;
 import net.mgsx.game.core.tools.MultiClickTool;
 import net.mgsx.game.plugins.box2d.components.Box2DBodyModel;
 import net.mgsx.game.plugins.box2d.components.WorldItem;
@@ -14,7 +14,7 @@ public class CreatePolygonTool extends MultiClickTool
 {
 	private WorldItem worldItem;
 	
-	public CreatePolygonTool(Editor editor, WorldItem worldItem) {
+	public CreatePolygonTool(EditorScreen editor, WorldItem worldItem) {
 		super("Polygon", editor);
 		this.worldItem = worldItem;
 	}

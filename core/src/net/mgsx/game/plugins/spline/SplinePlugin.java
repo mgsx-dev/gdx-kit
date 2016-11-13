@@ -12,7 +12,7 @@ import com.badlogic.gdx.utils.Json;
 import net.mgsx.SplineTest.BlenderCurve;
 import net.mgsx.SplineTest.BlenderNURBSCurve;
 import net.mgsx.SplineTest.CubicBezierCurve;
-import net.mgsx.game.core.GameEngine;
+import net.mgsx.game.core.GameScreen;
 import net.mgsx.game.core.plugins.Plugin;
 import net.mgsx.game.core.storage.AssetSerializer;
 import net.mgsx.game.core.storage.Storage;
@@ -21,7 +21,7 @@ public class SplinePlugin implements Plugin
 {
 
 	@Override
-	public void initialize(GameEngine engine) 
+	public void initialize(GameScreen engine) 
 	{
 		// TODO use an asset loader ??
 		engine.assets.setLoader(BlenderCurve.class, new SynchronousAssetLoader<BlenderCurve, AssetLoaderParameters<BlenderCurve>>(new InternalFileHandleResolver()) {
