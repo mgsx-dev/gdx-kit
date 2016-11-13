@@ -4,11 +4,15 @@ import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.gdx.graphics.Camera;
 
+import net.mgsx.game.core.annotations.Editable;
+import net.mgsx.game.core.annotations.EditableComponent;
+
+@EditableComponent
 public class CameraComponent implements Component
 {
 	
 	public static ComponentMapper<CameraComponent> components = ComponentMapper.getFor(CameraComponent.class);
 	
-	public Camera camera;
+	@Editable public Camera camera;
 	public boolean frustumDirty;
 }

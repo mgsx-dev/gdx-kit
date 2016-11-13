@@ -1,5 +1,6 @@
 package net.mgsx.game.core.tools;
 
+import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -45,6 +46,11 @@ abstract public class Tool extends InputAdapter
 
 	final protected void end(){
 		group.end(this);
+	}
+	
+	public Engine getEngine()
+	{
+		return editor.entityEngine;
 	}
 
 	protected void activate(){}

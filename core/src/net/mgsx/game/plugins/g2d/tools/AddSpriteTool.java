@@ -31,6 +31,8 @@ public class AddSpriteTool extends RectangleTool
 			}});
 	}
 	
+	
+	
 	@Override
 	public void render(Batch batch) 
 	{

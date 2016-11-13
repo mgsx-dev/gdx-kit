@@ -49,7 +49,7 @@ public class DuplicateTool extends SelectTool
 	}
 	
 	public static Entity duplicateEntity(EditorScreen editor, Entity base){
-		Entity newEntity = editor.createEntity();
+		Entity newEntity = editor.entityEngine.createEntity();
 		editor.entityEngine.addEntity(newEntity);
 		for(Component component : base.getComponents()){
 			if(component instanceof Duplicable)

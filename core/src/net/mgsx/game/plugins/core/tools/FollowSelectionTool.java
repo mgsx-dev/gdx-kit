@@ -9,6 +9,7 @@ import net.mgsx.game.core.EditorScreen;
 import net.mgsx.game.core.tools.Tool;
 import net.mgsx.game.plugins.core.components.Transform2DComponent;
 
+// TODO add component track on camera toward selection !
 public class FollowSelectionTool extends Tool
 {
 	private boolean track = false;

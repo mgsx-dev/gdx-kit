@@ -10,7 +10,7 @@ public class AshleyEditorPlugin extends EditorPlugin
 	@Override
 	public void initialize(EditorScreen editor) 
 	{
-		editor.addGlobalEditor("Entities", new AshleyEntitiesEditor());
-		editor.addGlobalEditor("Systems", new AshleySystemsEditor());
+		editor.registry.addGlobalEditor("Entities", new AshleyEntitiesEditor());
+		editor.registry.addGlobalEditor("Systems", new AshleySystemsEditor());
 	}
 }

@@ -15,7 +15,7 @@ public class ProfilerPlugin extends EditorPlugin
 	@Override
 	public void initialize(EditorScreen editor) 
 	{
-		editor.addGlobalEditor("Profiler", new ProfilerPanel());
+		editor.registry.addGlobalEditor("Profiler", new ProfilerPanel());
 		
 		// reset counter before processing to prevent editor drawing statistics.
 		editor.entityEngine.addSystem(new EntitySystem(GamePipeline.FIRST) {

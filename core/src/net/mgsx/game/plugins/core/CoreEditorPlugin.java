@@ -53,7 +53,7 @@ public class CoreEditorPlugin extends EditorPlugin
 			@Override
 			public boolean keyDown(int keycode) {
 				if(keycode == Input.Keys.NUMPAD_0 || keycode == Input.Keys.INSERT){
-					editor.switchCameras();
+					editor.getEditorCamera().switchCameras();
 					return true;
 				}
 				return super.keyDown(keycode);

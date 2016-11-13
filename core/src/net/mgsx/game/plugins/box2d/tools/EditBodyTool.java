@@ -47,7 +47,7 @@ public class EditBodyTool extends ComponentTool
 		
 		for(Box2DFixtureModel fixture : body.fixtures)
 		{
-			Entity fixtureEntity = editor.createAndAddEntity();
+			Entity fixtureEntity = getEngine().createEntity();
 			ShapeComponent shapeComponent = editor.entityEngine.createComponent(ShapeComponent.class);
 			fixtureEntity.add(shapeComponent);
 			shapeComponent.fixture = fixture;
@@ -56,7 +56,7 @@ public class EditBodyTool extends ComponentTool
 				polygon.loop = true;
 				PolygonShape shape = ((PolygonShape)fixture.def.shape);
 				for(int i=0 ; i<shape.getVertexCount() ; i++){
-					Entity vertexEntity = editor.createAndAddEntity();
+					Entity vertexEntity = getEngine().createEntity();
 					Transform2DComponent transform = editor.entityEngine.createComponent(Transform2DComponent.class);
 					shape.getVertex(i, transform.position);
 					vertexEntity.add(transform);
@@ -64,10 +64,14 @@ public class EditBodyTool extends ComponentTool
 					
 					transform.position.add(body.body.getPosition());
 					polygon.vertex.add(transform.position);
+					
+					getEngine().addEntity(vertexEntity);
 				}
 			}
 			fixtureEntity.add(polygon);
 			shapeEntities.add(fixtureEntity);
+			
+			getEngine().addEntity(fixtureEntity);
 		}
 		
 	}

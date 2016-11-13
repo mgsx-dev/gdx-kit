@@ -28,7 +28,7 @@ public class SwitchModeTool extends Tool
 		}
 		else if(keycode == Input.Keys.F3)
 		{
-			editor.switchCamera();
+			editor.getEditorCamera().switchCamera();
 		}
 		return super.keyDown(keycode);
 	}

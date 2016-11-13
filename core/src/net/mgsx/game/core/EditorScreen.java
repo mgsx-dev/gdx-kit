@@ -15,16 +15,12 @@ import com.badlogic.gdx.assets.loaders.TextureLoader.TextureParameter;
 import com.badlogic.gdx.assets.loaders.resolvers.ClasspathFileHandleResolver;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
@@ -56,9 +52,6 @@ import net.mgsx.game.core.tools.ComponentTool;
 import net.mgsx.game.core.tools.Tool;
 import net.mgsx.game.core.tools.ToolGroup;
 import net.mgsx.game.core.ui.TabPane;
-import net.mgsx.game.plugins.camera.components.CameraComponent;
-import net.mgsx.game.plugins.camera.components.RenderingComponent;
-import net.mgsx.game.plugins.camera.systems.CameraSystem;
 import net.mgsx.game.plugins.core.tools.UndoTool;
 
 /**
@@ -71,6 +64,7 @@ import net.mgsx.game.plugins.core.tools.UndoTool;
 public class EditorScreen extends ScreenDelegate implements EditorContext
 {
 	public CommandHistory history;
+	
 	protected Skin skin;
 	protected Stage stage;
 	protected Table panel;
@@ -81,12 +75,9 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 	
 	private SpriteBatch editorBatch;
 	
-	private EditorRegistry registry;
+	public EditorRegistry registry;
 	
 	private AssetManager editorAssets;
-	
-	private OrthographicCamera orthographicCamera;
-	private PerspectiveCamera perspectiveCamera;
 	
 	public Array<SelectorPlugin> selectors = new Array<SelectorPlugin>();
 	
@@ -104,14 +95,13 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 	public ShapeRenderer shapeRenderer;
 	private GameScreen game;
 	
-	private boolean orthoMode;
+	private EditorCamera editorCamera;
 	
 	final public AssetManager assets;
 	final public Engine entityEngine;
 	
 	public final ObjectMap<Class, Serializer> serializers;
 
-	private Entity gameCamera, editorCamera;
 	
 	public EditorScreen(EditorConfiguration config, GameScreen screen) {
 		super();
@@ -123,147 +113,9 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 		this.registry = config.registry;
 		this.current = this.game;
 		
+		this.editorCamera = new EditorCamera(entityEngine);
+		
 		init();
-		
-		createCamera();
-	}
-	
-	private void createCamera()
-	{
-		gameCamera = entityEngine.getSystem(CameraSystem.class).getRenderCamera();
-		
-		editorCamera = entityEngine.createEntity();
-		
-		CameraComponent camera = entityEngine.createComponent(CameraComponent.class);
-		RenderingComponent render = entityEngine.createComponent(RenderingComponent.class);
-		
-		PerspectiveCamera pc = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		pc.position.set(0, 0, 10);
-		pc.up.set(0,1,0);
-		pc.lookAt(0,0,0);
-		pc.near = 1f;
-		pc.far = 3000f;
-		pc.update();
-		camera.camera = pc;
-		
-		perspectiveCamera = pc;
-		
-		orthographicCamera = new OrthographicCamera();
-		
-		editorCamera.add(camera);
-		editorCamera.add(render);
-		
-		entityEngine.addEntity(editorCamera);
-	}
-	
-	public void zoom(float rate) {
-		
-		rate *= Tool.pixelSize(perspectiveCamera).x * Gdx.graphics.getWidth(); // 100 world unit per pixel TODO pixelSize !!
-		
-		if(orthoMode){
-			perspectiveCamera.position.set(orthographicCamera.position);
-			perspectiveCamera.translate(0, 0, -rate);
-			perspectiveCamera.update(false);
-			syncOrtho(true);
-			
-		}else{
-			perspectiveCamera.translate(0, 0, -rate);
-		}
-	}
-	
-	public void fov(float rate) 
-	{
-		rate *= 360; // degree scale
-		
-		syncPerspective(false);
-		
-		// translate camera according to FOV changes (keep sprite plan unchanged !)
-		
-		float oldFOV = perspectiveCamera.fieldOfView * MathUtils.degreesToRadians * 0.5f;
-		
-		float hWorld = (float)Math.tan(oldFOV) * getRenderCamera().position.z;
-		
-		perspectiveCamera.fieldOfView += rate;
-		perspectiveCamera.update(true);
-		
-		float newFOV = perspectiveCamera.fieldOfView * MathUtils.degreesToRadians * 0.5f;
-		
-		float distWorld = hWorld / (float)Math.tan(newFOV);
-		
-		float deltaZ = distWorld - getRenderCamera().position.z;
-		perspectiveCamera.translate(0, 0, deltaZ);
-		perspectiveCamera.update(false);
-		
-		
-		syncOrtho(false);
-	}
-	
-	private void syncPerspective(boolean force)
-	{
-		if(orthoMode || force){
-			perspectiveCamera.position.set(orthographicCamera.position);
-			perspectiveCamera.update(true);
-		}
-	}
-	private void syncOrtho(boolean force)
-	{
-		if(!orthoMode || force)
-		{
-			// sync sprite plan for ortho (working !)
-			Vector3 objectDepth = perspectiveCamera.project(new Vector3());
-			
-			Vector3 a = perspectiveCamera.unproject(new Vector3(0, 0, objectDepth.z));
-			Vector3 b = perspectiveCamera.unproject(new Vector3(1, 1, objectDepth.z));
-			b.sub(a);
-			
-			float w = Math.abs(b.x) * Gdx.graphics.getWidth();
-			float h = Math.abs(b.y) * Gdx.graphics.getHeight();
-			
-			orthographicCamera.setToOrtho(false, w, h);
-			orthographicCamera.position.set(perspectiveCamera.position);
-			
-			orthographicCamera.update(true);
-		}
-	}
-
-	public void switchCamera()
-	{
-		CameraComponent camera = CameraComponent.components.get(editorCamera);
-		if(!orthoMode)
-		{
-			syncOrtho(true);
-			
-			
-			camera.camera = orthographicCamera;
-			orthoMode = true;
-		}
-		else
-		{
-			syncPerspective(true);
-			
-			camera.camera = perspectiveCamera;
-			orthoMode = false;
-		}
-	}
-	
-	public void switchCameras()
-	{
-		Entity currentCamera = entityEngine.getSystem(CameraSystem.class).getRenderCamera();
-		currentCamera.remove(RenderingComponent.class);
-		
-		if(currentCamera == editorCamera)
-		{
-			currentCamera = gameCamera;
-		}else{
-			currentCamera = editorCamera;
-		}
-		currentCamera.add(entityEngine.createComponent(RenderingComponent.class));
-	}
-	
-	public Movable getMovable(Entity entity)
-	{
-		// temporarily use Movable component ... for now
-		return Movable.components.get(entity);
 	}
 	
 	private void init()
@@ -323,7 +175,7 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 		for(final Class<? extends Component> type : registry.components){
 			EditableComponent config = type.getAnnotation(EditableComponent.class);
 			if(config != null){
-				registerPlugin(type, new AnnotationBasedComponentEditor(type));
+				registry.registerPlugin(type, new AnnotationBasedComponentEditor(type));
 				Family family = null;
 				if(config.all().length > 0 || config.one().length > 0 || config.exclude().length > 0){
 					family = Family.all(config.all()).one(config.one()).exclude(config.exclude()).get();
@@ -353,11 +205,9 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 			
 			@Override
 			public void entityRemoved(Entity entity) {
-				if(entity == getSelected()){
-					if(!entityEngine.getEntities().contains(entity, true)){
-						selection.removeValue(entity, true);
-					}
-					invalidateSelection(); // TODO or contains ?
+				if(selection.contains(entity, true)){
+					selection.removeValue(entity, true);
+					invalidateSelection();
 				}
 			}
 			
@@ -370,6 +220,7 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 		for(Class<? extends Component> type : registry.editablePlugins.keySet()){
 			entityEngine.addEntityListener(Family.one(type).get(), selectionListener);
 		}
+		
 		entityEngine.addEntityListener(selectionListener); // TODO maybe not the same listener
 		
 		
@@ -393,18 +244,13 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 	@Override
 	public void render(float deltaTime) 
 	{
-		getRenderCamera().update(true);
-		if(selectionDirty){
+		if(selectionDirty)
+		{
 			selectionDirty = false;
 			updateSelection();
 		}
 		
 		shapeRenderer.setProjectionMatrix(getRenderCamera().combined);
-		
-		// TODO some code should be placed in engine ...
-//		batch.setProjectionMatrix(camera.combined);
-//		batch.enableBlending();
-//		batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 		
 		current.render(deltaTime);
 
@@ -433,6 +279,16 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 		
 	}
 	
+	public Movable getMovable(Entity entity)
+	{
+		// temporarily use Movable component ... for now
+		return Movable.components.get(entity);
+	}
+	
+	public EditorCamera getEditorCamera() {
+		return editorCamera;
+	}
+	
 	public Camera getCullingCamera(){
 		return game.getCullingCamera();
 	}
@@ -443,13 +299,7 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 	{
 		super.resize(width, height);
 		
-		syncPerspective(false);
-		
-		perspectiveCamera.viewportWidth = Gdx.graphics.getWidth();
-		perspectiveCamera.viewportHeight = Gdx.graphics.getHeight();
-		perspectiveCamera.update(true);
-
-		syncOrtho(false);
+		editorCamera.resize(width, height);
 		
 		stage.getViewport().update(width, height, true);
 	}
@@ -589,7 +439,7 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 	public Entity currentEntity() 
 	{
 		if(selection.size <= 0){
-			Entity entity = createEntity();
+			Entity entity = entityEngine.createEntity();
 			entityEngine.addEntity(entity);
 			return entity;
 		}
@@ -672,27 +522,9 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 		});
 	}
 
-	public Entity createEntity() {
-		return entityEngine.createEntity();
-	}
-
-	public Entity createAndAddEntity() {
-		Entity e = createEntity();
-		entityEngine.addEntity(e);
-		return e;
-	}
-
 	public void performCommand(Command command) 
 	{
 		history.add(command);
-	}
-
-	public void addGlobalEditor(String name, GlobalEditorPlugin plugin) {
-		registry.addGlobalEditor(name, plugin);
-	}
-
-	public void registerPlugin(Class<? extends Component> type, EntityEditorPlugin plugin) {
-		registry.registerPlugin(type, plugin);
 	}
 
 	public Camera getRenderCamera() {

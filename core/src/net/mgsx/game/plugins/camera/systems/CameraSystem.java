@@ -45,6 +45,7 @@ public class CameraSystem extends IteratingSystem
 		if(camera.frustumDirty){
 			camera.camera.update(true);
 		}
+		camera.camera.update(true); // XXX for editors
 		camera.frustumDirty = false;
 	}
 

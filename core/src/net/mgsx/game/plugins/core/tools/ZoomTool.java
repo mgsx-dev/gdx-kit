@@ -41,9 +41,9 @@ public class ZoomTool extends Tool
 			if(!ctrl() && shift()){
 				editor.getRenderCamera().rotate(rate * 360, 0, 1, 0);
 			}else if(ctrl() && shift())
-				editor.fov(rate);
+				editor.getEditorCamera().fov(rate);
 			else if(ctrl())
-				editor.zoom(rate);
+				editor.getEditorCamera().zoom(rate);
 			else
 				return false;
 			

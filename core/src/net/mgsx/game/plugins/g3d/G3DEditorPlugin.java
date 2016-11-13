@@ -17,9 +17,9 @@ public class G3DEditorPlugin extends EditorPlugin
 	public void initialize(EditorScreen editor) 
 	{
 		// tools
-		editor.addGlobalEditor("G3D", new G3DEditor());
+		editor.registry.addGlobalEditor("G3D", new G3DEditor());
 		editor.addTool(new AddModelTool(editor));
-		editor.registerPlugin(G3DModel.class, new G3DNodeEditor());
+		editor.registry.registerPlugin(G3DModel.class, new G3DNodeEditor());
 		editor.addSelector(new ModelSelector(editor));
 		
 		// systems

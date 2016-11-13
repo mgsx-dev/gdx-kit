@@ -48,7 +48,7 @@ public class Box2DEditorPlugin extends EditorPlugin
 		box2dRenderer = new Box2DDebugRenderer();
 		
 		
-		editor.addGlobalEditor("Box2D", new Box2DWorldEditorPlugin(Box2DPlugin.worldItem));
+		editor.registry.addGlobalEditor("Box2D", new Box2DWorldEditorPlugin(Box2DPlugin.worldItem));
 		
 		editor.addTool(new Box2DParticleTool(editor));
 		
@@ -128,8 +128,8 @@ public class Box2DEditorPlugin extends EditorPlugin
 		});
 
 		// TODO type should be configured in editor (activation function !)
-		editor.registerPlugin(Box2DBodyModel.class, new Box2DBodyEditorPlugin());
-		editor.registerPlugin(Box2DJointModel.class, new Box2DJointEditorPlugin());
+		editor.registry.registerPlugin(Box2DBodyModel.class, new Box2DBodyEditorPlugin());
+		editor.registry.registerPlugin(Box2DJointModel.class, new Box2DJointEditorPlugin());
 		
 	}
 }
