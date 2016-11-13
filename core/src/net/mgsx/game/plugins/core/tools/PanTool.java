@@ -22,8 +22,8 @@ public class PanTool extends Tool
 			//
 			Vector2 worldPos = new Vector2(screenX, screenY);
 			Vector2 delta = new Vector2(worldPos).sub(prev).scl(pixelSize()); // XXX why 10 ?
-			editor.camera.translate(-delta.x, -delta.y, 0); 
-			editor.camera.update(true);
+			editor.getRenderCamera().translate(-delta.x, -delta.y, 0); 
+			editor.getRenderCamera().update(true);
 			prev = worldPos;
 			return true;
 		}

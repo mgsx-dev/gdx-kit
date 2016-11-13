@@ -26,7 +26,7 @@ public class SelectionRenderSystem extends IteratingSystem {
 	public void update(float deltaTime) {
 		
 		
-		editor.shapeRenderer.setProjectionMatrix(editor.camera.combined);
+		editor.shapeRenderer.setProjectionMatrix(editor.getRenderCamera().combined);
 		editor.shapeRenderer.begin(ShapeType.Line);
 		
 		super.update(deltaTime);
@@ -43,7 +43,7 @@ public class SelectionRenderSystem extends IteratingSystem {
 		if(movable != null) movable.getPosition(entity, pos);
 		else pos.set(transform.position.x, transform.position.y, 0);
 		
-		Vector2 s = Tool.pixelSize(editor.camera).scl(5);
+		Vector2 s = Tool.pixelSize(editor.getRenderCamera()).scl(5);
 		boolean inSelection = editor.selection.contains(entity, true);
 		if(inSelection) editor.shapeRenderer.setColor(1, 1, 0, 1);
 		editor.shapeRenderer.rect(pos.x-s.x, pos.y-s.y, 2*s.x, 2*s.y);

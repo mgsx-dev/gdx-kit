@@ -56,6 +56,9 @@ import net.mgsx.game.core.tools.ComponentTool;
 import net.mgsx.game.core.tools.Tool;
 import net.mgsx.game.core.tools.ToolGroup;
 import net.mgsx.game.core.ui.TabPane;
+import net.mgsx.game.plugins.camera.components.CameraComponent;
+import net.mgsx.game.plugins.camera.components.RenderingComponent;
+import net.mgsx.game.plugins.camera.systems.CameraSystem;
 import net.mgsx.game.plugins.core.tools.UndoTool;
 
 /**
@@ -101,19 +104,19 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 	public ShapeRenderer shapeRenderer;
 	private GameScreen game;
 	
-	final public Camera gameCamera;
-	public Camera camera;
+	private boolean orthoMode;
 	
 	final public AssetManager assets;
 	final public Engine entityEngine;
 	
 	public final ObjectMap<Class, Serializer> serializers;
 
+	private Entity gameCamera, editorCamera;
+	
 	public EditorScreen(EditorConfiguration config, GameScreen screen) {
 		super();
 		this.game = screen;
 		this.game.registry = config.registry;
-		this.gameCamera = game.gameCamera;
 		this.entityEngine = game.entityEngine;
 		this.assets = game.assets;
 		this.serializers = config.registry.serializers;
@@ -122,14 +125,42 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 		
 		init();
 		
+		createCamera();
+	}
+	
+	private void createCamera()
+	{
+		gameCamera = entityEngine.getSystem(CameraSystem.class).getRenderCamera();
 		
+		editorCamera = entityEngine.createEntity();
+		
+		CameraComponent camera = entityEngine.createComponent(CameraComponent.class);
+		RenderingComponent render = entityEngine.createComponent(RenderingComponent.class);
+		
+		PerspectiveCamera pc = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		pc.position.set(0, 0, 10);
+		pc.up.set(0,1,0);
+		pc.lookAt(0,0,0);
+		pc.near = 1f;
+		pc.far = 3000f;
+		pc.update();
+		camera.camera = pc;
+		
+		perspectiveCamera = pc;
+		
+		orthographicCamera = new OrthographicCamera();
+		
+		editorCamera.add(camera);
+		editorCamera.add(render);
+		
+		entityEngine.addEntity(editorCamera);
 	}
 	
 	public void zoom(float rate) {
 		
 		rate *= Tool.pixelSize(perspectiveCamera).x * Gdx.graphics.getWidth(); // 100 world unit per pixel TODO pixelSize !!
 		
-		if(camera == orthographicCamera){
+		if(orthoMode){
 			perspectiveCamera.position.set(orthographicCamera.position);
 			perspectiveCamera.translate(0, 0, -rate);
 			perspectiveCamera.update(false);
@@ -150,7 +181,7 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 		
 		float oldFOV = perspectiveCamera.fieldOfView * MathUtils.degreesToRadians * 0.5f;
 		
-		float hWorld = (float)Math.tan(oldFOV) * camera.position.z;
+		float hWorld = (float)Math.tan(oldFOV) * getRenderCamera().position.z;
 		
 		perspectiveCamera.fieldOfView += rate;
 		perspectiveCamera.update(true);
@@ -159,7 +190,7 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 		
 		float distWorld = hWorld / (float)Math.tan(newFOV);
 		
-		float deltaZ = distWorld - camera.position.z;
+		float deltaZ = distWorld - getRenderCamera().position.z;
 		perspectiveCamera.translate(0, 0, deltaZ);
 		perspectiveCamera.update(false);
 		
@@ -169,14 +200,14 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 	
 	private void syncPerspective(boolean force)
 	{
-		if(camera == orthographicCamera || force){
+		if(orthoMode || force){
 			perspectiveCamera.position.set(orthographicCamera.position);
 			perspectiveCamera.update(true);
 		}
 	}
 	private void syncOrtho(boolean force)
 	{
-		if(camera == perspectiveCamera || force)
+		if(!orthoMode || force)
 		{
 			// sync sprite plan for ortho (working !)
 			Vector3 objectDepth = perspectiveCamera.project(new Vector3());
@@ -195,27 +226,38 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 		}
 	}
 
-	public void switchCamera(){
-		if(camera == perspectiveCamera)
+	public void switchCamera()
+	{
+		CameraComponent camera = CameraComponent.components.get(editorCamera);
+		if(!orthoMode)
 		{
 			syncOrtho(true);
 			
-			camera = game.camera = orthographicCamera;
+			
+			camera.camera = orthographicCamera;
+			orthoMode = true;
 		}
 		else
 		{
 			syncPerspective(true);
 			
-			camera = game.camera = perspectiveCamera;
+			camera.camera = perspectiveCamera;
+			orthoMode = false;
 		}
 	}
 	
 	public void switchCameras()
 	{
-		if(camera != game.gameCamera)
-			game.camera = camera = game.gameCamera;
-		else
-			game.camera = camera = perspectiveCamera;
+		Entity currentCamera = entityEngine.getSystem(CameraSystem.class).getRenderCamera();
+		currentCamera.remove(RenderingComponent.class);
+		
+		if(currentCamera == editorCamera)
+		{
+			currentCamera = gameCamera;
+		}else{
+			currentCamera = editorCamera;
+		}
+		currentCamera.add(entityEngine.createComponent(RenderingComponent.class));
 	}
 	
 	public Movable getMovable(Entity entity)
@@ -226,17 +268,12 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 	
 	private void init()
 	{
-		
-		camera = perspectiveCamera = (PerspectiveCamera)game.camera;
-		
 		editorBatch = new SpriteBatch();
 		
 		shapeRenderer = new ShapeRenderer();
 		
 		editorAssets = new AssetManager(new ClasspathFileHandleResolver());
 		
-		orthographicCamera = new OrthographicCamera();
-	
 		skin = AssetHelper.loadAssetNow(editorAssets, "data/uiskin.json", Skin.class);
 		
 		stage = new Stage(new ScreenViewport());
@@ -356,14 +393,13 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 	@Override
 	public void render(float deltaTime) 
 	{
-		game.gameCamera.update(true);
-		camera.update(true);
+		getRenderCamera().update(true);
 		if(selectionDirty){
 			selectionDirty = false;
 			updateSelection();
 		}
 		
-		shapeRenderer.setProjectionMatrix(camera.combined);
+		shapeRenderer.setProjectionMatrix(getRenderCamera().combined);
 		
 		// TODO some code should be placed in engine ...
 //		batch.setProjectionMatrix(camera.combined);
@@ -377,7 +413,7 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 		
 		// TODO use systems instead (used by sprite tools ...)
 		
-		editorBatch.setProjectionMatrix(camera.combined);
+		editorBatch.setProjectionMatrix(getRenderCamera().combined);
 		editorBatch.begin();
 		for(ToolGroup g : tools){
 			g.render(editorBatch);
@@ -397,6 +433,11 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 		
 	}
 	
+	public Camera getCullingCamera(){
+		return game.getCullingCamera();
+	}
+	
+	
 	@Override
 	public void resize(int width, int height) 
 	{
@@ -408,10 +449,6 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 		perspectiveCamera.viewportHeight = Gdx.graphics.getHeight();
 		perspectiveCamera.update(true);
 
-		gameCamera.viewportWidth = Gdx.graphics.getWidth();
-		gameCamera.viewportHeight = Gdx.graphics.getHeight();
-		gameCamera.update(true);
-		
 		syncOrtho(false);
 		
 		stage.getViewport().update(width, height, true);
@@ -608,7 +645,7 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 	}
 
 	public Vector2 unproject(float screenX, float screenY) {
-		return Tool.unproject(camera, screenX, screenY);
+		return Tool.unproject(getRenderCamera(), screenX, screenY);
 	}
 
 	public void addSelector(SelectorPlugin selector) {
@@ -656,6 +693,10 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 
 	public void registerPlugin(Class<? extends Component> type, EntityEditorPlugin plugin) {
 		registry.registerPlugin(type, plugin);
+	}
+
+	public Camera getRenderCamera() {
+		return game.getRenderCamera();
 	}
 
 }

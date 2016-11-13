@@ -1,6 +1,8 @@
 package net.mgsx.game.core;
 
+import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.Engine;
+import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
@@ -13,6 +15,9 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.Json.Serializer;
 
 import net.mgsx.game.core.storage.Storage;
+import net.mgsx.game.plugins.camera.components.CameraComponent;
+import net.mgsx.game.plugins.camera.components.CullingComponent;
+import net.mgsx.game.plugins.camera.components.RenderingComponent;
 import net.mgsx.game.plugins.camera.systems.CameraSystem;
 
 /**
@@ -28,6 +33,9 @@ public class GameScreen extends ScreenAdapter
 	
 	final public Engine entityEngine;
 	public GameRegistry registry;
+	private Entity camera;
+	
+	private CameraSystem cameraSystem;
 	
 	public GameScreen() {
 		super();
@@ -36,58 +44,58 @@ public class GameScreen extends ScreenAdapter
 		init();
 	}
 	
-	Camera camera, gameCamera; // TODO game camera and editor camera !
 	
-	protected CameraSystem cameraSystem;
+	protected <T extends Component> T addComponent(Entity entity, Class<T> type){
+		T component = entityEngine.createComponent(type);
+		entity.add(component);
+		return component;
+	}
 	
 	private void init()
 	{
 		assets = new AssetManager(); // TODO resolver maybe different for game and editor ?
 		Texture.setAssetManager(assets);
 		
-		camera = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		camera.position.set(0, 0, 10);
-		camera.up.set(0,1,0);
-		camera.lookAt(0,0,0);
-		camera.near = 1f;
-		camera.far = 3000f;
-		camera.update();
 		
-		gameCamera = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		Camera gameCamera = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		gameCamera.position.set(0, 0, 10);
 		gameCamera.up.set(0,1,0);
 		gameCamera.lookAt(0,0,0);
 		gameCamera.near = 1f;
 		gameCamera.far = 3000f;
-		gameCamera.update();
+		gameCamera.update(true);
 		
+		camera = entityEngine.createEntity();
+		addComponent(camera, CameraComponent.class).camera = gameCamera;
+		addComponent(camera, RenderingComponent.class);
+		addComponent(camera, CullingComponent.class);
+		entityEngine.addEntity(camera);
+	}
+	
+	@Override
+	public void show() {
+		super.show();
 		cameraSystem = entityEngine.getSystem(CameraSystem.class);
 	}
 	
 	public Camera getRenderCamera()
 	{
-		return camera;
-		// TODO when camera is entity
-//		Entity cameraEntity = cameraSystem.getRenderCamera();
-//		CameraComponent camera = CameraComponent.components.get(cameraEntity);
-//		return camera.camera;
+		Entity cameraEntity = cameraSystem.getRenderCamera();
+		CameraComponent camera = CameraComponent.components.get(cameraEntity);
+		return camera.camera;
 	}
 	
 	public Camera getCullingCamera()
 	{
-		return gameCamera;
-		// TODO when camera is entity
-//		Entity cameraEntity = cameraSystem.getCullingCamera();
-//		CameraComponent camera = CameraComponent.components.get(cameraEntity);
-//		return camera.camera;
+		Entity cameraEntity = cameraSystem.getCullingCamera();
+		CameraComponent camera = CameraComponent.components.get(cameraEntity);
+		return camera.camera;
 	}
 	
 	
 	// TODO remove ?
 	@Override
 	public void render(float delta) {
-		
-		camera.update(true);
 		
 		// TODO in systems
 		Gdx.gl.glClearColor(.7f, .9f, 1f, 1);
@@ -101,9 +109,11 @@ public class GameScreen extends ScreenAdapter
 	public void resize(int width, int height) 
 	{
 		super.resize(width, height);
-		camera.viewportWidth = Gdx.graphics.getWidth();
-		camera.viewportHeight = Gdx.graphics.getHeight();
-		camera.update(true);
+		
+		CameraComponent c = CameraComponent.components.get(camera);
+		c.camera.viewportWidth = Gdx.graphics.getWidth();
+		c.camera.viewportHeight = Gdx.graphics.getHeight();
+		c.camera.update(true);
 	}
 
 

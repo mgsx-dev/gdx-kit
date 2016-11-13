@@ -30,7 +30,7 @@ public class ParallaxPlugin extends EditorPlugin {
 			protected Component createComponent(Entity entity) {
 				Transform2DComponent transform = Transform2DComponent.components.get(entity);
 				ParallaxModel model = new ParallaxModel();
-				model.cameraOrigin.set(editor.camera.position);
+				model.cameraOrigin.set(editor.getRenderCamera().position);
 				model.objectOrigin.set(transform.position.x, transform.position.y, 0);
 				return model;
 			}
@@ -43,7 +43,7 @@ public class ParallaxPlugin extends EditorPlugin {
 				ParallaxModel parallax = ParallaxModel.components.get(entity);
 				Transform2DComponent transform = Transform2DComponent.components.get(entity);
 				
-				camPos.set(editor.camera.position);
+				camPos.set(editor.getRenderCamera().position);
 				pos
 				.set(parallax.cameraOrigin)
 				.sub(camPos)

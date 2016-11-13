@@ -123,7 +123,7 @@ public class Box2DEditorPlugin extends EditorPlugin
 			
 			@Override
 			public void update(float deltaTime) {
-				box2dRenderer.render(Box2DPlugin.worldItem.world, editor.camera.combined);
+				box2dRenderer.render(Box2DPlugin.worldItem.world, editor.getRenderCamera().combined);
 			}
 		});
 

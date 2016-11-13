@@ -77,7 +77,7 @@ public class ModelSelector  extends SelectorPlugin
 	
 	@Override
 	public int getSelection(Array<Entity> entities, float screenX, float screenY) {
-		Ray baseRay = editor.camera.getPickRay(screenX, screenY);
+		Ray baseRay = editor.getRenderCamera().getPickRay(screenX, screenY);
 		Ray ray = new Ray();
 		int count = 0;
 		for(Entity entity : editor.entityEngine.getEntitiesFor(Family.one(G3DModel.class).get())){

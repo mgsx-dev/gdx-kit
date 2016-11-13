@@ -36,9 +36,9 @@ public class FollowSelectionTool extends Tool
 				Transform2DComponent transform = Transform2DComponent.components.get(entity);
 				if(transform != null){
 					target.set(transform.position, 0);
-					target.lerp(editor.camera.position, 0.97f); // track smooth
-					editor.camera.position.x = target.x;
-					editor.camera.position.y = target.y; // XXX TODO + 0.05f shift should be configurable
+					target.lerp(editor.getRenderCamera().position, 0.97f); // track smooth
+					editor.getRenderCamera().position.x = target.x;
+					editor.getRenderCamera().position.y = target.y; // XXX TODO + 0.05f shift should be configurable
 				}
 			}
 			

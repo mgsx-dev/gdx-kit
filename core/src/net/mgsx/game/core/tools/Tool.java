@@ -70,7 +70,7 @@ abstract public class Tool extends InputAdapter
 	}
 
 	protected Vector2 unproject(float screenX, float screenY) {
-		return unproject(editor.camera, screenX, screenY);
+		return unproject(editor.getRenderCamera(), screenX, screenY);
 	}
 	public static Vector2 unproject(Camera camera, float screenX, float screenY) {
 		Vector3 base = camera.project(new Vector3());
@@ -81,7 +81,7 @@ abstract public class Tool extends InputAdapter
 		return unproject(screenPosition.x, screenPosition.y);
 	}
 	protected Vector2 project(Vector2 worldPosition) {
-		Vector3 v = editor.camera.project(new Vector3(worldPosition.x, worldPosition.y, 0));
+		Vector3 v = editor.getRenderCamera().project(new Vector3(worldPosition.x, worldPosition.y, 0));
 		return new Vector2(v.x, v.y);
 	}
 	
@@ -99,7 +99,7 @@ abstract public class Tool extends InputAdapter
 	 */
 	protected Vector2 pixelSize()
 	{
-		return pixelSize(editor.camera);
+		return pixelSize(editor.getRenderCamera());
 	}
 	public static Vector2 pixelSize(Camera camera)
 	{

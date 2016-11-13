@@ -38,16 +38,16 @@ public class G3DBoundaryDebugSystem extends IteratingSystem
 	public void update(float deltaTime) {
 		// TODO mode fill switchable : Gdx.gl.glEnable(GL20.GL_BLEND); and editor.shapeRenderer.begin(ShapeType.Filled);
 		editor.shapeRenderer.setColor(1, 1, 1, 0.1f);
-		editor.shapeRenderer.setProjectionMatrix(editor.camera.combined);
+		editor.shapeRenderer.setProjectionMatrix(editor.getRenderCamera().combined);
 		editor.shapeRenderer.begin(ShapeType.Line);
 		
 		super.update(deltaTime);
 		
 		if(cameraFrustum)
 		{
-			editor.gameCamera.update(true);
+			editor.getCullingCamera().update(true);
 			editor.shapeRenderer.setColor(0, 0, 1, 1f);
-			RenderDebugHelper.frustum(editor.shapeRenderer, editor.gameCamera.frustum);
+			RenderDebugHelper.frustum(editor.shapeRenderer, editor.getCullingCamera().frustum);
 			
 		}
 		editor.shapeRenderer.end();

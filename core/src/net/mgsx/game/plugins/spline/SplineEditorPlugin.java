@@ -86,7 +86,7 @@ public class SplineEditorPlugin extends EditorPlugin
 						
 						editor.shapeRenderer.setColor(Color.RED);
 						
-						Vector2 s = Tool.pixelSize(editor.camera).scl(10);
+						Vector2 s = Tool.pixelSize(editor.getRenderCamera()).scl(10);
 						for(int i=0 ; i<nurbs.points.length ; i++){
 							Vector3 p1 = nurbs.points[i];
 							// Vector3 p2 = nurbs.points[i+1];
