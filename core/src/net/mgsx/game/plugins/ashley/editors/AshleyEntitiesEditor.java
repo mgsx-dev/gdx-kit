@@ -1,5 +1,6 @@
 package net.mgsx.game.plugins.ashley.editors;
 
+import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntityListener;
 import com.badlogic.gdx.Input;
@@ -8,12 +9,15 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.List;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
+import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 
 import net.mgsx.game.core.EditorScreen;
+import net.mgsx.game.core.annotations.EditableComponent;
 import net.mgsx.game.core.plugins.GlobalEditorPlugin;
 
 public class AshleyEntitiesEditor implements GlobalEditorPlugin
@@ -34,6 +38,20 @@ public class AshleyEntitiesEditor implements GlobalEditorPlugin
 		}
 	}
 
+	private static class ComponentFilter{
+		public String name;
+		public Class<? extends Component> type;
+		public ComponentFilter(String name, Class<? extends Component> type) {
+			super();
+			this.name = name;
+			this.type = type;
+		}
+		@Override
+		public String toString() {
+			return name;
+		}
+	}
+	
 	@Override
 	public Actor createEditor(final EditorScreen editor, Skin skin) 
 	{
@@ -43,23 +61,6 @@ public class AshleyEntitiesEditor implements GlobalEditorPlugin
 
 		final List<EntityItem> selector = new List<EntityItem>(skin);
 		
-		editor.entityEngine.addEntityListener(new EntityListener() {
-			
-			@Override
-			public void entityRemoved(Entity entity) {
-				EntityItem item = map.remove(entity);
-				items.removeValue(item, true);
-				selector.setItems(items);
-			}
-			
-			@Override
-			public void entityAdded(Entity entity) {
-				EntityItem item = new EntityItem(entity, editor.entityEngine.getEntities().indexOf(entity, true));
-				map.put(entity, item);
-				items.add(item);
-				selector.setItems(items);
-			}
-		});
 		
 		
 		for(int i=0 ; i<editor.entityEngine.getEntities().size() ; i++){
@@ -104,7 +105,61 @@ public class AshleyEntitiesEditor implements GlobalEditorPlugin
 			}
 		});
 		
-		return new ScrollPane(selector, skin);
+		Array<ComponentFilter> filters = new Array<ComponentFilter>();
+		filters.add(new ComponentFilter("", null));
+		for(Class<? extends Component> type : editor.registry.components){
+			EditableComponent meta = type.getAnnotation(EditableComponent.class);
+			String name = meta == null || meta.name().isEmpty() ? type.getSimpleName() : meta.name();
+			filters.add(new ComponentFilter(name, type));
+		}
+		
+		final SelectBox<ComponentFilter> filter = new SelectBox<AshleyEntitiesEditor.ComponentFilter>(skin);
+		filter.setItems(filters);
+		
+		filter.addListener(new ChangeListener(){
+
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				items.clear();
+				for(int i=0 ; i<editor.entityEngine.getEntities().size() ; i++){
+					Entity entity = editor.entityEngine.getEntities().get(i);
+					
+					if(filter.getSelected().type == null || entity.getComponent(filter.getSelected().type)!=null){
+						EntityItem item = new EntityItem(entity, i);
+						map.put(entity, item);
+						items.add(item);
+					}
+				}
+				
+				selector.setItems(items);
+			}
+		});
+		editor.entityEngine.addEntityListener(new EntityListener() {
+			
+			@Override
+			public void entityRemoved(Entity entity) {
+				EntityItem item = map.remove(entity);
+				items.removeValue(item, true);
+				selector.setItems(items);
+			}
+			
+			@Override
+			public void entityAdded(Entity entity) {
+				if(filter.getSelected().type == null || entity.getComponent(filter.getSelected().type)!=null){
+					
+					EntityItem item = new EntityItem(entity, editor.entityEngine.getEntities().indexOf(entity, true));
+					map.put(entity, item);
+					items.add(item);
+					selector.setItems(items);
+				}
+			}
+		});
+		
+		Table table = new Table(skin);
+		table.add(filter).row();
+		table.add(new ScrollPane(selector, skin));
+		
+		return table;
 	}
 
 }
