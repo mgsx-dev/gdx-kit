@@ -8,6 +8,7 @@ import com.badlogic.gdx.math.Vector3;
 
 import net.mgsx.game.core.EditorScreen;
 import net.mgsx.game.core.GamePipeline;
+import net.mgsx.game.core.annotations.PluginDef;
 import net.mgsx.game.core.components.Transform2DComponent;
 import net.mgsx.game.core.plugins.EditorPlugin;
 import net.mgsx.game.core.tools.ComponentTool;
@@ -15,6 +16,7 @@ import net.mgsx.game.core.tools.ComponentTool;
 /**
  * TODO change parallax to sprite group / layers ...
  */
+@PluginDef(components={ParallaxModel.class})
 public class ParallaxPlugin extends EditorPlugin {
 
 	private Vector3 camPos = new Vector3();
@@ -23,8 +25,6 @@ public class ParallaxPlugin extends EditorPlugin {
 	@Override
 	public void initialize(final EditorScreen editor) 
 	{
-		editor.register(ParallaxModel.class);
-		
 		editor.addTool(new ComponentTool("Parallax", editor, Transform2DComponent.class) {
 			@Override
 			protected Component createComponent(Entity entity) {

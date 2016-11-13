@@ -51,7 +51,6 @@ import net.mgsx.game.core.helpers.NativeService.DialogCallback;
 import net.mgsx.game.core.helpers.ScreenDelegate;
 import net.mgsx.game.core.plugins.EntityEditorPlugin;
 import net.mgsx.game.core.plugins.GlobalEditorPlugin;
-import net.mgsx.game.core.plugins.Plugin;
 import net.mgsx.game.core.plugins.SelectorPlugin;
 import net.mgsx.game.core.tools.ComponentTool;
 import net.mgsx.game.core.tools.Tool;
@@ -66,7 +65,7 @@ import net.mgsx.game.plugins.core.tools.UndoTool;
  * @author mgsx
  *
  */
-public class EditorScreen extends ScreenDelegate
+public class EditorScreen extends ScreenDelegate implements EditorContext
 {
 	public CommandHistory history;
 	protected Skin skin;
@@ -655,17 +654,8 @@ public class EditorScreen extends ScreenDelegate
 		registry.addGlobalEditor(name, plugin);
 	}
 
-	public void register(Class<? extends Component> type) 
-	{
-		registry.register(type);
-	}
-
 	public void registerPlugin(Class<? extends Component> type, EntityEditorPlugin plugin) {
 		registry.registerPlugin(type, plugin);
-	}
-
-	public <T extends Plugin> T getPlugin(Class<T> type) {
-		return registry.getPlugin(type);
 	}
 
 }

@@ -7,7 +7,7 @@ import net.mgsx.game.core.annotations.EditableComponent;
 import net.mgsx.game.core.annotations.Storable;
 
 @Storable("example.platformer.platform")
-@EditableComponent
+@EditableComponent(name="Platform")
 public class PlatformComponent implements Component
 {
 	public float time = 0;

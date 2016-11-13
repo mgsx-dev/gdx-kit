@@ -389,7 +389,16 @@ public class EntityEditor extends Table
 	{
 		Skin skin = table.getSkin();
 		
-		if(accessor.getType() == int.class){
+		if(accessor.getType() == void.class){
+			TextButton bt = new TextButton(accessor.getName(), skin);
+			table.add(bt);
+			bt.addListener(new ChangeListener() {
+				@Override
+				public void changed(ChangeEvent event, Actor actor) {
+					accessor.get();
+				}
+			});
+		}else if(accessor.getType() == int.class){
 			// TODO slider
 			Table sub = new Table(skin);
 			final Label label = new Label("", skin);

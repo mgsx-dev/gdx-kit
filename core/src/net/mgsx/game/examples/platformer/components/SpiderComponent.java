@@ -8,7 +8,7 @@ import net.mgsx.game.core.annotations.EditableComponent;
 import net.mgsx.game.core.annotations.Storable;
 
 @Storable("example.platformer.spider")
-@EditableComponent
+@EditableComponent(name="Spider Logic")
 public class SpiderComponent implements Component
 {
 	public boolean init;

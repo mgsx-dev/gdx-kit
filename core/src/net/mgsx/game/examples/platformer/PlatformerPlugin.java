@@ -27,6 +27,7 @@ import net.mgsx.game.examples.platformer.components.TreeComponent;
 import net.mgsx.game.examples.platformer.components.WaterZone;
 import net.mgsx.game.examples.platformer.systems.CavernSystem;
 import net.mgsx.game.examples.platformer.systems.EnvSystem;
+import net.mgsx.game.examples.platformer.systems.PixelEffectBindSystem;
 import net.mgsx.game.examples.platformer.systems.PlatformerPostProcessing;
 import net.mgsx.game.examples.platformer.systems.PulleySystem;
 import net.mgsx.game.examples.platformer.systems.SpiderSystem;
@@ -68,13 +69,16 @@ import net.mgsx.game.plugins.spline.PathComponent;
 public class PlatformerPlugin implements Plugin, DefaultPlugin
 {
 	public GameScreen engine;
-	public PlatformerPostProcessing ppp;
 	
 	@Override
 	public void initialize(GameScreen engine) 
 	{
 		this.engine = engine;
 		
+		PlatformerPostProcessing effects = new PlatformerPostProcessing(engine);
+		
+		engine.entityEngine.addSystem(effects);
+		engine.entityEngine.addSystem(new PixelEffectBindSystem(effects));
 		
 		// add a processor for player
 		// TODO could be automated with a generic component and abstract behavior attached to it ?
@@ -151,7 +155,6 @@ public class PlatformerPlugin implements Plugin, DefaultPlugin
 		engine.entityEngine.addSystem(new KeyboardControllerSystem());
 		engine.entityEngine.addSystem(new FlyingControlSystem());
 		
-		ppp = new PlatformerPostProcessing(engine);
 		
 	}
 

@@ -23,13 +23,16 @@ import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 
-import net.mgsx.game.core.GameScreen;
-import net.mgsx.game.examples.platformer.components.WaterZone;
 import net.mgsx.game.core.GamePipeline;
+import net.mgsx.game.core.GameScreen;
+import net.mgsx.game.core.annotations.Editable;
+import net.mgsx.game.core.annotations.EditableSystem;
+import net.mgsx.game.examples.platformer.components.WaterZone;
 import net.mgsx.game.plugins.g3d.components.G3DModel;
 
 // TODO refactor things up here ... FBO ... shaders ...
-public class PlatformerPostProcessing
+@EditableSystem("Post Processing Effects")
+public class PlatformerPostProcessing extends EntitySystem
 {
 	private FrameBuffer fbo, fbo2, blurA, blurB;
 	private Sprite screenSprite;
@@ -45,8 +48,17 @@ public class PlatformerPostProcessing
 	private ModelBatch modelBatch;
 	Renderable renderable = new Renderable();
 	Shader flatShader;
+	private GameScreen engine;
 	
+	public PlatformerPostProcessing(GameScreen engine) {
+		super(GamePipeline.AFTER_RENDER);
+		loadShaders();
+		this.engine = engine;
+	}
 	
+	public FrameBuffer getMainTarget(){
+		return fbo;
+	}
 	
 	
 	private Family waterEntity = Family.all(G3DModel.class, WaterZone.class).get();
@@ -55,168 +67,140 @@ public class PlatformerPostProcessing
 //	private Array<ModelInstance> waterModels = new Array<ModelInstance>();
 //	private Array<ModelInstance> nonWaterModels = new Array<ModelInstance>();
 	
-	public class Settings{
-		public float speed = 1.5f;
-		public float frequency = 100f;
-		public float rate = 0.01f;
-		public boolean enabled = false;
-		public boolean blur = true;
-		public float nearStart = -3;
-		public float nearEnd = -5;
-		public float farStart = 13;
-		public float farEnd = 17f;
-		
-		public boolean debugDepth;
-		public boolean debugConfusion;
-		public boolean debugLimits;
-		
-	}
 	
-	public Settings settings = new Settings();
-	
-	public PlatformerPostProcessing(final GameScreen engine) 
+	public class Settings
 	{
+		@Editable public float speed = 1.5f;
+		@Editable public float frequency = 100f;
+		@Editable public float rate = 0.01f;
+		@Editable public boolean enabled = false;
+		@Editable public boolean blur = true;
+		@Editable public float nearStart = -3;
+		@Editable public float nearEnd = -5;
+		@Editable public float farStart = 13;
+		@Editable public float farEnd = 17f;
 		
-		loadShaders();
+		@Editable public boolean debugDepth;
+		@Editable public boolean debugConfusion;
+		@Editable public boolean debugLimits;
 		
-//		engine.entityEngine.addEntityListener(Family.all(G3DModel.class).get(), new EntityListener() {
-//			@Override
-//			public void entityRemoved(Entity entity) {
-//				waterModels.removeValue(entity.getComponent(G3DModel.class).modelInstance, true);
-//			}
-//			@Override
-//			public void entityAdded(Entity entity) {
-//				waterModels.add(entity.getComponent(G3DModel.class).modelInstance);
-//			}
-//		});
-		
-		engine.entityEngine.addSystem(new EntitySystem(GamePipeline.BEFORE_RENDER) {
-			@Override
-			public void update(float deltaTime) 
-			{
-				if(!settings.enabled) return;
-				validate();
-				
-				fbo.begin();
-				Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
-			}
-		});
-		engine.entityEngine.addSystem(new EntitySystem(GamePipeline.AFTER_RENDER) {
-			@Override
-			public void update(float deltaTime) 
-			{
-				if(!settings.enabled) return;
-				
-				fbo.end();
-				
-				// TODO find a way to see FBO (FBO stack ? push/pop/bind ... etc ...
-				if(!settings.debugDepth)
-					fbo2.begin();
-				
-				Gdx.gl.glClearColor(0,0,0,0);
-				Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
-				
-				modelBatch.begin(engine.camera);
-				Gdx.gl.glEnable(GL20.GL_DEPTH_TEST);
-				Gdx.gl.glDepthMask(true);
-				
-				flatProgram.begin();
-				flatProgram.setUniformf("waterFactor", 1.f);
-				
-				
-				for(Entity e : getEngine().getEntitiesFor(waterEntity)){
-					modelBatch.render(e.getComponent(G3DModel.class).modelInstance, flatShader);
-				}
-				engine.camera.near = 1f;
-				engine.camera.far = 200.f;
-				modelBatch.flush();
-				flatProgram.end();
-				flatProgram.begin();
-				
-				//
-				//modelBatch.render(waterModels);
-				flatProgram.setUniformf("waterFactor", 0.0f);
-				//modelBatch.render(nonWaterModels);
-				for(Entity e : getEngine().getEntitiesFor(nonwaterEntity)){
-					modelBatch.render(e.getComponent(G3DModel.class).modelInstance, flatShader);
-				}
-				flatProgram.end();
-				modelBatch.end();
-				
-				if(!settings.debugDepth)
-					fbo2.end();
-				
-				if(settings.debugDepth){
-					return;
-				}
-				
-				Gdx.gl.glEnable(GL20.GL_DEPTH_TEST);
-				if(settings.blur )
-				{
-					blurA.begin();
-					batch.setShader(blurXProgram);
-					batch.begin();
-					blurXProgram.setUniformf("dir", new Vector2(1.5f / (float)Gdx.graphics.getWidth(),0));
-					batch.draw(fbo.getColorBufferTexture(), 0, 0);
-					batch.end();
-					blurA.end();
-					
-					blurB.begin();
-					batch.setShader(blurXProgram);
-					batch.begin();
-					blurXProgram.setUniformf("dir", new Vector2(0, 1.5f / (float)Gdx.graphics.getHeight()));
-					batch.draw(blurA.getColorBufferTexture(), 0, 0);
-					batch.end();
-					blurB.end();
-				}
-				
-				time += deltaTime * settings.speed;
-				
-				float d = engine.camera.unproject(new Vector3()).z;
-				d = 4;
-				Vector3 v = engine.camera.project(new Vector3(0,0,d));
-				world.set(-v.x / Gdx.graphics.getWidth(), -v.y / Gdx.graphics.getHeight());
-				
-				batch.setShader(postProcessShader);
-				batch.disableBlending();
-				batch.begin();
-				Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
-				
-				Gdx.gl.glActiveTexture(GL20.GL_TEXTURE0);
-				blurA.getColorBufferTexture().bind(GL20.GL_TEXTURE0);
-				Gdx.gl.glActiveTexture(GL20.GL_TEXTURE1);
-				fbo2.getColorBufferTexture().bind(GL20.GL_TEXTURE1);
-				Gdx.gl.glActiveTexture(GL20.GL_TEXTURE2);
-				blurB.getColorBufferTexture().bind(GL20.GL_TEXTURE2);
-				Gdx.gl.glActiveTexture(GL20.GL_TEXTURE0);
-				
-				
-				Vector2 near = new Vector2(
-						(settings.nearStart + engine.camera.position.z - engine.camera.near) / (engine.camera.far - engine.camera.near),
-						(settings.nearEnd + engine.camera.position.z - engine.camera.near) / (engine.camera.far - engine.camera.near));
-				Vector2 far = new Vector2(
-						(settings.farStart + engine.camera.position.z - engine.camera.near) / (engine.camera.far - engine.camera.near),
-					//	new Vector3(0, 0, settings.farStart).prj(engine.camera.projection).z,
-						//new Vector3(0, 0, 0).prj(engine.camera.combined).z,
-						(settings.farEnd + engine.camera.position.z - engine.camera.near) / (engine.camera.far - engine.camera.near));
-				
-				
-				postProcessShader.setUniformf("focusNear", near);
-				postProcessShader.setUniformf("focusFar", far);
-				postProcessShader.setUniformi(texture1Location, 1);
-				postProcessShader.setUniformi(texture2Location, 2);
-				postProcessShader.setUniformf(timeLocation, time);
-				postProcessShader.setUniformf(worldLocation, world);
-				postProcessShader.setUniformf(frequencyLocation, settings.frequency);
-				postProcessShader.setUniformf(rateLocation, settings.rate);
-				screenSprite.draw(batch);
-				batch.end();
-				
-			}
-		});
 	}
 	
-	private void validate()
+	@Editable public Settings settings = new Settings();
+	
+	@Override
+	public void update(float deltaTime) 
+	{
+		if(!settings.enabled) return;
+		
+		fbo.end();
+		
+		// TODO find a way to see FBO (FBO stack ? push/pop/bind ... etc ...
+		if(!settings.debugDepth)
+			fbo2.begin();
+		
+		Gdx.gl.glClearColor(0,0,0,0);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
+		
+		modelBatch.begin(engine.camera);
+		Gdx.gl.glEnable(GL20.GL_DEPTH_TEST);
+		Gdx.gl.glDepthMask(true);
+		
+		flatProgram.begin();
+		flatProgram.setUniformf("waterFactor", 1.f);
+		
+		
+		for(Entity e : getEngine().getEntitiesFor(waterEntity)){
+			modelBatch.render(e.getComponent(G3DModel.class).modelInstance, flatShader);
+		}
+		engine.camera.near = 1f;
+		engine.camera.far = 200.f;
+		modelBatch.flush();
+		flatProgram.end();
+		flatProgram.begin();
+		
+		//
+		//modelBatch.render(waterModels);
+		flatProgram.setUniformf("waterFactor", 0.0f);
+		//modelBatch.render(nonWaterModels);
+		for(Entity e : getEngine().getEntitiesFor(nonwaterEntity)){
+			modelBatch.render(e.getComponent(G3DModel.class).modelInstance, flatShader);
+		}
+		flatProgram.end();
+		modelBatch.end();
+		
+		if(!settings.debugDepth)
+			fbo2.end();
+		
+		if(settings.debugDepth){
+			return;
+		}
+		
+		Gdx.gl.glEnable(GL20.GL_DEPTH_TEST);
+		if(settings.blur )
+		{
+			blurA.begin();
+			batch.setShader(blurXProgram);
+			batch.begin();
+			blurXProgram.setUniformf("dir", new Vector2(1.5f / (float)Gdx.graphics.getWidth(),0));
+			batch.draw(fbo.getColorBufferTexture(), 0, 0);
+			batch.end();
+			blurA.end();
+			
+			blurB.begin();
+			batch.setShader(blurXProgram);
+			batch.begin();
+			blurXProgram.setUniformf("dir", new Vector2(0, 1.5f / (float)Gdx.graphics.getHeight()));
+			batch.draw(blurA.getColorBufferTexture(), 0, 0);
+			batch.end();
+			blurB.end();
+		}
+		
+		time += deltaTime * settings.speed;
+		
+		float d = engine.camera.unproject(new Vector3()).z;
+		d = 4;
+		Vector3 v = engine.camera.project(new Vector3(0,0,d));
+		world.set(-v.x / Gdx.graphics.getWidth(), -v.y / Gdx.graphics.getHeight());
+		
+		batch.setShader(postProcessShader);
+		batch.disableBlending();
+		batch.begin();
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
+		
+		Gdx.gl.glActiveTexture(GL20.GL_TEXTURE0);
+		blurA.getColorBufferTexture().bind(GL20.GL_TEXTURE0);
+		Gdx.gl.glActiveTexture(GL20.GL_TEXTURE1);
+		fbo2.getColorBufferTexture().bind(GL20.GL_TEXTURE1);
+		Gdx.gl.glActiveTexture(GL20.GL_TEXTURE2);
+		blurB.getColorBufferTexture().bind(GL20.GL_TEXTURE2);
+		Gdx.gl.glActiveTexture(GL20.GL_TEXTURE0);
+		
+		
+		Vector2 near = new Vector2(
+				(settings.nearStart + engine.camera.position.z - engine.camera.near) / (engine.camera.far - engine.camera.near),
+				(settings.nearEnd + engine.camera.position.z - engine.camera.near) / (engine.camera.far - engine.camera.near));
+		Vector2 far = new Vector2(
+				(settings.farStart + engine.camera.position.z - engine.camera.near) / (engine.camera.far - engine.camera.near),
+			//	new Vector3(0, 0, settings.farStart).prj(engine.camera.projection).z,
+				//new Vector3(0, 0, 0).prj(engine.camera.combined).z,
+				(settings.farEnd + engine.camera.position.z - engine.camera.near) / (engine.camera.far - engine.camera.near));
+		
+		
+		postProcessShader.setUniformf("focusNear", near);
+		postProcessShader.setUniformf("focusFar", far);
+		postProcessShader.setUniformi(texture1Location, 1);
+		postProcessShader.setUniformi(texture2Location, 2);
+		postProcessShader.setUniformf(timeLocation, time);
+		postProcessShader.setUniformf(worldLocation, world);
+		postProcessShader.setUniformf(frequencyLocation, settings.frequency);
+		postProcessShader.setUniformf(rateLocation, settings.rate);
+		screenSprite.draw(batch);
+		batch.end();
+		
+	}
+	
+	void validate()
 	{
 		int w = Gdx.graphics.getWidth();
 		int h = Gdx.graphics.getHeight();
@@ -259,6 +243,7 @@ public class PlatformerPostProcessing
 		return code;
 	}
 
+	@Editable
 	public void loadShaders() 
 	{
 		// TODO unload before ...

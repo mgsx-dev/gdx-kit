@@ -8,7 +8,7 @@ import net.mgsx.game.core.annotations.EditableComponent;
 import net.mgsx.game.core.annotations.Storable;
 
 @Storable("example.platformer.env")
-@EditableComponent
+@EditableComponent(name="Env Logic")
 public class EnvComponent implements Component {
 
 	@Editable public Vector3 cameraOffset = new Vector3();

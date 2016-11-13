@@ -10,7 +10,7 @@ import net.mgsx.game.core.annotations.EditableComponent;
 import net.mgsx.game.core.annotations.Storable;
 
 @Storable("example.platformer.cavern")
-@EditableComponent
+@EditableComponent(name="Cavern Logic")
 public class CavernComponent implements Component
 {
 	public float time;

@@ -15,7 +15,7 @@ import net.mgsx.game.plugins.box2d.components.Box2DBodyModel;
 import net.mgsx.game.plugins.g3d.components.G3DModel;
 
 @Storable("example.platformer.bonus")
-@EditableComponent
+@EditableComponent(all={G3DModel.class, Box2DBodyModel.class})
 public class BonusComponent implements Component, Initializable, Duplicable
 {
 	private Entity entity;

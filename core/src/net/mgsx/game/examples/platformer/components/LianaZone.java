@@ -6,7 +6,7 @@ import net.mgsx.game.core.annotations.EditableComponent;
 import net.mgsx.game.core.annotations.Storable;
 
 @Storable("example.platformer.liana-zone")
-@EditableComponent
+@EditableComponent(name="Liana Zone")
 public class LianaZone implements Component
 {
 
