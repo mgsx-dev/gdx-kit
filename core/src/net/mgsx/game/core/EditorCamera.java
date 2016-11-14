@@ -3,6 +3,7 @@ package net.mgsx.game.core;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.math.MathUtils;
@@ -172,5 +173,20 @@ public class EditorCamera
 		perspectiveCamera.update(true);
 
 		syncOrtho(false);
+	}
+
+	public Camera camera() {
+		if(orthoMode)
+		{
+			return orthographicCamera;
+		}
+		else
+		{
+			return perspectiveCamera;
+		}
+	}
+
+	public void reset() {
+		createCamera();
 	}
 }

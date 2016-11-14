@@ -8,7 +8,7 @@ import net.mgsx.game.core.annotations.EditableComponent;
 import net.mgsx.game.core.annotations.Storable;
 
 @Storable("core.2d.rotation")
-@EditableComponent
+@EditableComponent(all={Transform2DComponent.class})
 public class Rotate2DAnimation implements Component {
 	
 	public static ComponentMapper<Rotate2DAnimation> components = ComponentMapper.getFor(Rotate2DAnimation.class);

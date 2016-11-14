@@ -12,9 +12,7 @@ public class ResetTool extends Tool
 	
 	@Override
 	protected void activate() {
-		editor.entityEngine.removeAllEntities();
-		editor.selection.clear();
-		editor.invalidateSelection();
+		editor.reset();
 		end();
 	}
 

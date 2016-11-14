@@ -7,7 +7,7 @@ import com.badlogic.gdx.graphics.Camera;
 import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.core.annotations.EditableComponent;
 
-@EditableComponent
+@EditableComponent(autoTool=false)
 public class CameraComponent implements Component
 {
 	

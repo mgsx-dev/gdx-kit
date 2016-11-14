@@ -9,7 +9,7 @@ import com.badlogic.gdx.utils.Pool.Poolable;
 import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.core.annotations.EditableComponent;
 
-@EditableComponent
+@EditableComponent(autoTool=false)
 public class PolygonComponent implements Component, Poolable
 {
 	public static ComponentMapper<PolygonComponent> components = ComponentMapper.getFor(PolygonComponent.class);

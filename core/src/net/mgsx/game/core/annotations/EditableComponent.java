@@ -18,4 +18,7 @@ public @interface EditableComponent
 	Class<? extends Component>[] all() default {};
 	Class<? extends Component>[] one() default {};
 	Class<? extends Component>[] exclude() default {};
+	
+	/** whether to create a tool to add component (default is true) */
+	boolean autoTool() default true;
 }

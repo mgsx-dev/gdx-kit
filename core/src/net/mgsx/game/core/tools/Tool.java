@@ -107,26 +107,25 @@ abstract public class Tool extends InputAdapter
 	{
 		return pixelSize(editor.getRenderCamera());
 	}
+	
+	private static Vector3 worldDepth = new Vector3();
+	private static Vector3 worldSpace1 = new Vector3();
+	private static Vector3 worldSpace2 = new Vector3();
+	private static Vector2 pixelSpace = new Vector2();
+	
 	public static Vector2 pixelSize(Camera camera)
 	{
 		// that was the old method for orthographic camera
 		// TODO do the same for perspective as well.
 		
-		Vector3 base = camera.project(new Vector3());
+		camera.project(worldDepth.setZero());
 		
-		Vector3 a = camera.unproject(new Vector3(0,0,base.z));
-		Vector3 b = camera.unproject(new Vector3(1,1,base.z));
-		b.sub(a);
+		camera.unproject(worldSpace1.set(0,0,worldDepth.z));
+		camera.unproject(worldSpace2.set(1,1,worldDepth.z));
+		worldSpace2.sub(worldSpace1);
 		
 		
-//		Vector3 scale = camera.combined.getScale(new Vector3());
-//		return new Vector2(scale.x, scale.y).scl(1);
-//		return new Vector2(Gdx.graphics.getWidth() * scale.x, scale.y / Gdx.graphics.getHeight());
-		return new Vector2(b.x, b.y);
-		
-//		Vector3 scale = camera.combined.getScale(new Vector3()).scl(0.5f); // TODO why 2 ?
-//		return new Vector2(1.f / (scale.x * Gdx.graphics.getWidth()), 1.f/(scale.y * Gdx.graphics.getHeight()));
-		
+		return pixelSpace.set(worldSpace2.x, worldSpace2.y);
 	}
 	
 	

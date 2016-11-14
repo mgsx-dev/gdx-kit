@@ -56,20 +56,7 @@ public class GameScreen extends ScreenAdapter
 		assets = new AssetManager(); // TODO resolver maybe different for game and editor ?
 		Texture.setAssetManager(assets);
 		
-		
-		Camera gameCamera = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		gameCamera.position.set(0, 0, 10);
-		gameCamera.up.set(0,1,0);
-		gameCamera.lookAt(0,0,0);
-		gameCamera.near = 1f;
-		gameCamera.far = 3000f;
-		gameCamera.update(true);
-		
-		camera = entityEngine.createEntity();
-		addComponent(camera, CameraComponent.class).camera = gameCamera;
-		addComponent(camera, RenderingComponent.class);
-		addComponent(camera, CullingComponent.class);
-		entityEngine.addEntity(camera);
+		createCamera();
 	}
 	
 	@Override
@@ -85,6 +72,24 @@ public class GameScreen extends ScreenAdapter
 		return camera.camera;
 	}
 	
+	void createCamera() 
+	{
+		Camera gameCamera = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		gameCamera.position.set(0, 0, 10);
+		gameCamera.up.set(0,1,0);
+		gameCamera.lookAt(0,0,0);
+		gameCamera.near = 1f;
+		gameCamera.far = 3000f;
+		gameCamera.update(true);
+		
+		camera = entityEngine.createEntity();
+		addComponent(camera, CameraComponent.class).camera = gameCamera;
+		addComponent(camera, RenderingComponent.class);
+		addComponent(camera, CullingComponent.class);
+		entityEngine.addEntity(camera);
+	}
+
+
 	public Camera getCullingCamera()
 	{
 		Entity cameraEntity = cameraSystem.getCullingCamera();

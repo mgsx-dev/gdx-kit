@@ -175,18 +175,19 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 			EditableComponent config = type.getAnnotation(EditableComponent.class);
 			if(config != null){
 				registry.registerPlugin(type, new AnnotationBasedComponentEditor(type));
-				Family family = null;
-				if(config.all().length > 0 || config.one().length > 0 || config.exclude().length > 0){
-					family = Family.all(config.all()).one(config.one()).exclude(config.exclude()).get();
-				}
-				String name = config.name().isEmpty() ? type.getSimpleName() : config.name();
-				autoTools.add(new ComponentTool(name, this, family){
-					@Override
-					protected Component createComponent(Entity entity) {
-						return entityEngine.createComponent(type);
+				if(config.autoTool()){
+					Family family = null;
+					if(config.all().length > 0 || config.one().length > 0 || config.exclude().length > 0){
+						family = Family.all(config.all()).one(config.one()).exclude(config.exclude()).get();
 					}
-				});
-				
+					String name = config.name().isEmpty() ? type.getSimpleName() : config.name();
+					autoTools.add(new ComponentTool(name, this, family){
+						@Override
+						protected Component createComponent(Entity entity) {
+							return entityEngine.createComponent(type);
+						}
+					});
+				}
 			}
 		}
 		
@@ -528,7 +529,21 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 	}
 
 	public Camera getRenderCamera() {
-		return game.getRenderCamera();
+		Camera camera = game.getRenderCamera();
+		if(camera == null) return editorCamera.camera();
+		return camera;
+	}
+
+	public void reset() 
+	{
+		entityEngine.removeAllEntities();
+		game.createCamera();
+		
+		editorCamera.reset();
+		
+		selection.clear();
+		invalidateSelection();
+		
 	}
 
 }
