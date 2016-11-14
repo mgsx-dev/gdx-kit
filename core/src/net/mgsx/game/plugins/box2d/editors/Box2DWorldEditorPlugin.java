@@ -13,7 +13,7 @@ import net.mgsx.game.core.plugins.GlobalEditorPlugin;
 import net.mgsx.game.core.tools.NoTool;
 import net.mgsx.game.core.tools.Tool;
 import net.mgsx.game.core.ui.EntityEditor;
-import net.mgsx.game.core.ui.TabPane;
+import net.mgsx.game.core.ui.widgets.TabPane;
 import net.mgsx.game.plugins.box2d.components.Box2DBodyModel;
 import net.mgsx.game.plugins.box2d.components.WorldItem;
 import net.mgsx.game.plugins.box2d.tools.EditBodyTool;

@@ -1,4 +1,4 @@
-package net.mgsx.game.core.ui;
+package net.mgsx.game.core.ui.widgets;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
@@ -21,10 +21,11 @@ public class TabPane extends Table
 		super(skin);
 		
 		stack = new Stack();
+		setBackground(skin.getDrawable("default-window-body"));
 		buttons = new ButtonGroup<Button>();
 		tabs = new Table(skin);
-		add(tabs).row();
-		add(stack).row(); // let caller add footer
+		add(tabs).left().row();
+		add(stack).left().row(); // let caller add footer
 	}
 	
 	public Button addTab(String title, final Actor page){

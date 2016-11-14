@@ -10,7 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 
 import net.mgsx.game.core.EditorScreen;
 import net.mgsx.game.core.plugins.GlobalEditorPlugin;
-import net.mgsx.game.core.ui.ToggleButton;
+import net.mgsx.game.core.ui.widgets.ToggleButton;
 
 public class ProfilerPanel implements GlobalEditorPlugin
 {

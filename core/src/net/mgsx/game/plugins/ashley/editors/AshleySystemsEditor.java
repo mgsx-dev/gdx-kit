@@ -6,10 +6,10 @@ import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.Value;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.ObjectMap;
 
@@ -31,7 +31,7 @@ public class AshleySystemsEditor implements GlobalEditorPlugin
 		
 		rebuildUI(editor, table, skin);
 		
-		return table;
+		return new ScrollPane(table, skin, "light");
 	}
 	
 	private void rebuildUI(final EditorScreen editor, final Table table, final Skin skin) 
@@ -40,7 +40,7 @@ public class AshleySystemsEditor implements GlobalEditorPlugin
 		
 		TextButton btRefresh = new TextButton("refresh", skin);
 		
-		table.add(btRefresh).colspan(3).row();
+		table.add(btRefresh).colspan(5).row();
 		
 		btRefresh.addListener(new ChangeListener() {
 			
@@ -53,10 +53,11 @@ public class AshleySystemsEditor implements GlobalEditorPlugin
 		table.add("System");
 		table.add("Priority");
 		table.add("Entities");
-		table.add("Processing").height(Value.percentHeight(1.5f));
+		table.add("Processing");
 		table.add("Edition");
 		table.row();
-		
+		table.add().height(10);
+		table.row();
 		
 		ObjectMap<Integer, String> pipelineLegend = new ObjectMap<Integer, String>();
 		for(Field field : GamePipeline.class.getFields()){

@@ -51,7 +51,7 @@ import net.mgsx.game.core.plugins.SelectorPlugin;
 import net.mgsx.game.core.tools.ComponentTool;
 import net.mgsx.game.core.tools.Tool;
 import net.mgsx.game.core.tools.ToolGroup;
-import net.mgsx.game.core.ui.TabPane;
+import net.mgsx.game.core.ui.widgets.TabPane;
 import net.mgsx.game.plugins.core.tools.UndoTool;
 
 /**
@@ -118,6 +118,14 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 		init();
 	}
 	
+	private Table createMainTable()
+	{
+		Table table = new Table(skin);
+		table.add(panel).expand().left().top();
+		// table.add(scroll).expand().right().top();
+		return table;
+	}
+	
 	private void init()
 	{
 		editorBatch = new SpriteBatch();
@@ -145,24 +153,15 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 		superGlobal = new Table(skin);
 		
 		
-		Table grp = new Table();
-		grp.add(buttons).fill().row();
-		grp.add(outline).fill().row();
-		
-		ScrollPane scroll = new ScrollPane(grp, skin, "light");
-		
 		Table globalBlock = new Table(skin);
-		globalBlock.setBackground(skin.getDrawable("default-window-body"));
+		// globalBlock.setBackground(skin.getDrawable("default-window-body"));
 		
-		globalBlock.add(superGlobal).row();
-		globalBlock.add(global).row();
+		globalBlock.add(superGlobal).left().row();
+		globalBlock.add(global).left().row();
 		
-		panel.add(globalBlock).row();
-		panel.add(scroll).left().row();
+		panel.add(globalBlock);
 		
-		Table main = new Table();
-		main.add(panel).expand().left().top();
-		
+		Table main = createMainTable();
 		main.setFillParent(true);
 		stage.addActor(main);
 		
@@ -195,8 +194,9 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 			addTool(tool);
 		}
 		
-
-		global.addTab("Off", new Table(skin));
+		
+		global.addTab("Tools", buttons);
+		global.addTab("Components", new ScrollPane(outline, skin, "light"));
 		for(Entry<String, GlobalEditorPlugin> entry : registry.globalEditors.entrySet()){
 			global.addTab(entry.getKey(), entry.getValue().createEditor(this, skin));
 		}
