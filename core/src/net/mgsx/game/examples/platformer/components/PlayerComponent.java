@@ -249,7 +249,7 @@ public class PlayerComponent implements Component, Initializable
 		if(vel.x < -limit) vel.x = -limit;
 		if(vel.y > limity) vel.y = limity;
 		if(vel.y < -limity) vel.y = -limity;
-		body.setLinearVelocity(vel);
+		body.setLinearVelocity(vel); // TODO this causing sliding on moving objects instead of sticking ...
 	}
 	
 	public void update(float deltaTime)

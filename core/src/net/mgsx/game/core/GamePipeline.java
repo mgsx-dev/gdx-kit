@@ -7,44 +7,50 @@ import com.badlogic.ashley.core.EntitySystem;
  */
 final public class GamePipeline 
 {
-	// never used this is the default value.
-	public static final int FIRST = -1;
+	// num slot (increment) between stages
+	private static final int SLOTS = 1;
 	
+	// never used this is the default value.
 	public static final int DEFAULT = 0;
+	public static final int FIRST = DEFAULT + SLOTS;
+	
 	
 	
 	// first analyse input and interact with game (physics/logic)
-	public static final int INPUT = 1;
+	public static final int BEFORE_INPUT = FIRST + SLOTS;
+	public static final int INPUT = BEFORE_INPUT + SLOTS;
+	public static final int AFTER_INPUT = INPUT + SLOTS;
 	
 	// then update phyisics (check collision to get a status)
-	public static final int BEFORE_PHYSICS = INPUT; // alias
-	public static final int PHYSICS = BEFORE_PHYSICS + 1;
+	public static final int BEFORE_PHYSICS = AFTER_INPUT + SLOTS;
+	public static final int PHYSICS = BEFORE_PHYSICS + SLOTS;
 	
 	// good place to update logic from physics (position, angle ...)
-	public static final int AFTER_PHYSICS = PHYSICS + 1;
+	public static final int AFTER_PHYSICS = PHYSICS + SLOTS;
 			
 	
 	// then logic (responding to physic and input analysis)
-	public static final int BEFORE_LOGIC = AFTER_PHYSICS; // alias
-	public static final int LOGIC = BEFORE_LOGIC + 1;
+	public static final int BEFORE_LOGIC = AFTER_PHYSICS + SLOTS;
+	public static final int LOGIC = BEFORE_LOGIC + SLOTS;;
 	
 	// after logic could be matrix updates
-	public static final int AFTER_LOGIC = LOGIC + 1;
+	public static final int AFTER_LOGIC = LOGIC + SLOTS;
 
 	// then render (normal rendering and over rendering (debug, tools, ... always on top)
-	public static final int BEFORE_RENDER = AFTER_LOGIC; // alias
-	public static final int RENDER_OPAQUE = BEFORE_RENDER + 1;
-	public static final int RENDER_TRANSPARENT = RENDER_OPAQUE + 1;
-	public static final int AFTER_RENDER = RENDER_TRANSPARENT + 1;
+	public static final int BEFORE_RENDER = AFTER_LOGIC + SLOTS; // alias
+	public static final int RENDER_OPAQUE = BEFORE_RENDER + SLOTS;
+	public static final int RENDER_TRANSPARENT = RENDER_OPAQUE + SLOTS;
+	public static final int AFTER_RENDER = RENDER_TRANSPARENT + SLOTS;
 	
 	// special render phase for tools (last render after any FBO process)
-	public static final int RENDER_DEBUG = AFTER_RENDER + 1;
-	
-	
-	public static final int RENDER = RENDER_OPAQUE; // alias
-	public static final int RENDER_OVER = RENDER_DEBUG; // alias
+	public static final int RENDER_DEBUG = AFTER_RENDER + SLOTS;
 	
 	// 
-	public static final int LAST = RENDER_DEBUG + 1;
+	public static final int LAST = RENDER_DEBUG + SLOTS;
+	
+	// some alias
+	public static final int RENDER = RENDER_OPAQUE;
+	public static final int RENDER_OVER = RENDER_DEBUG;
+	
 	
 }

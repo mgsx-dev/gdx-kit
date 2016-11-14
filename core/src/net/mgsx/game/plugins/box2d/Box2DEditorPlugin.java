@@ -5,6 +5,7 @@ import com.badlogic.ashley.core.EntityListener;
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 
 import net.mgsx.game.core.EditorScreen;
@@ -20,6 +21,7 @@ import net.mgsx.game.plugins.box2d.editors.Box2DWorldEditorPlugin;
 import net.mgsx.game.plugins.box2d.tools.BodyMove;
 import net.mgsx.game.plugins.box2d.tools.Box2DBodySelector;
 import net.mgsx.game.plugins.box2d.tools.Box2DParticleTool;
+import net.mgsx.game.plugins.core.components.SlavePhysics;
 import net.mgsx.game.plugins.core.components.Transform2DComponent;
 
 @PluginDef(dependencies={Box2DPlugin.class})
@@ -97,14 +99,28 @@ public class Box2DEditorPlugin extends EditorPlugin
 				Box2DPlugin.worldItem.update();
 			}
 		});
-		editor.entityEngine.addSystem(new IteratingSystem(Family.all(Box2DBodyModel.class, Transform2DComponent.class).get(), GamePipeline.AFTER_PHYSICS) {
+		editor.entityEngine.addSystem(new IteratingSystem(Family.all(Box2DBodyModel.class, Transform2DComponent.class).exclude(SlavePhysics.class).get(), GamePipeline.AFTER_PHYSICS) {
 			@Override
 			public void processEntity(Entity entity, float deltaTime) {
 				Box2DBodyModel physic = entity.getComponent(Box2DBodyModel.class);
+				Transform2DComponent t = entity.getComponent(Transform2DComponent.class);
 				if(physic.body != null){
-					Transform2DComponent t = entity.getComponent(Transform2DComponent.class);
 					t.position.set(physic.body.getPosition());
 					t.angle = physic.body.getAngle();
+				}
+			}
+		});
+		editor.entityEngine.addSystem(new IteratingSystem(Family.all(Box2DBodyModel.class, Transform2DComponent.class, SlavePhysics.class).get(), GamePipeline.AFTER_LOGIC) {
+			@Override
+			public void processEntity(Entity entity, float deltaTime) {
+				Box2DBodyModel physic = entity.getComponent(Box2DBodyModel.class);
+				Transform2DComponent t = entity.getComponent(Transform2DComponent.class);
+				if(physic.body != null){
+					physic.body.setLinearVelocity(t.position.cpy().sub(physic.body.getPosition()));
+					float a1 = t.angle * MathUtils.degreesToRadians;
+					float a2 = physic.body.getAngle();
+					float delta = a2 - a1; // TODO not good !
+					physic.body.setAngularVelocity(delta);
 				}
 			}
 		});
