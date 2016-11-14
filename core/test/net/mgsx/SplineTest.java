@@ -5,6 +5,7 @@ import java.io.FileReader;
 
 import com.badlogic.gdx.math.BSpline;
 import com.badlogic.gdx.math.Bezier;
+import com.badlogic.gdx.math.Path;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
@@ -12,10 +13,36 @@ import com.badlogic.gdx.utils.Json;
 public class SplineTest {
 
 	// TODO use Blender name and Blender model
-	public static class BlenderCurve
+	public static class BlenderCurve implements Path<Vector3>
 	{
 		public String name;
 		public Array<AbstractBlenderCurve> splines;
+		
+		@Override
+		public Vector3 derivativeAt(Vector3 out, float t) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+		@Override
+		public Vector3 valueAt(Vector3 out, float t) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+		@Override
+		public float approximate(Vector3 v) {
+			// TODO Auto-generated method stub
+			return 0;
+		}
+		@Override
+		public float locate(Vector3 v) {
+			// TODO Auto-generated method stub
+			return 0;
+		}
+		@Override
+		public float approxLength(int samples) {
+			// TODO Auto-generated method stub
+			return 0;
+		}
 	}
 	
 	public static class AbstractBlenderCurve{

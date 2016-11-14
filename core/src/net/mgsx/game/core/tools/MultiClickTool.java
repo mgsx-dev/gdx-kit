@@ -40,6 +40,7 @@ abstract public class MultiClickTool extends Tool
 		if(button == Input.Buttons.LEFT){
 			Vector2 worldPosition = unproject(screenX, screenY);
 			dots.add(worldPosition);
+			onNewDot(worldPosition);
 			running = true;
 			if(maxPoints >= 0 && dots.size >= maxPoints){
 				running = false;
@@ -59,6 +60,8 @@ abstract public class MultiClickTool extends Tool
 		}
 		return super.touchDown(screenX, screenY, pointer, button);
 	}
+	
+	protected void onNewDot(Vector2 worldPosition) {}
 	
 	@Override
 	public boolean keyDown(int keycode) {

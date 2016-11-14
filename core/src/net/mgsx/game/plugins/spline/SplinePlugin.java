@@ -17,6 +17,7 @@ import net.mgsx.game.core.annotations.PluginDef;
 import net.mgsx.game.core.plugins.Plugin;
 import net.mgsx.game.core.storage.AssetSerializer;
 import net.mgsx.game.core.storage.Storage;
+import net.mgsx.game.plugins.spline.components.PathComponent;
 
 @PluginDef(components={PathComponent.class})
 public class SplinePlugin implements Plugin

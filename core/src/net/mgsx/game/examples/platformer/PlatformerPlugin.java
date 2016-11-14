@@ -5,7 +5,6 @@ import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.math.Vector3;
 
-import net.mgsx.SplineTest.BlenderNURBSCurve;
 import net.mgsx.game.core.GamePipeline;
 import net.mgsx.game.core.GameScreen;
 import net.mgsx.game.core.annotations.PluginDef;
@@ -40,7 +39,7 @@ import net.mgsx.game.plugins.boundary.components.BoundaryComponent;
 import net.mgsx.game.plugins.boundary.systems.BoundaryLogicSystem;
 import net.mgsx.game.plugins.box2d.components.Box2DBodyModel;
 import net.mgsx.game.plugins.g3d.components.G3DModel;
-import net.mgsx.game.plugins.spline.PathComponent;
+import net.mgsx.game.plugins.spline.components.PathComponent;
 
 /**
  * 
@@ -109,8 +108,7 @@ public class PlatformerPlugin implements Plugin, DefaultPlugin
 				PlatformComponent pc = entity.getComponent(PlatformComponent.class);
 				Box2DBodyModel bc = entity.getComponent(Box2DBodyModel.class);
 				PathComponent sc = entity.getComponent(PathComponent.class);
-				if(((BlenderNURBSCurve)sc.path.splines.get(0)).bs == null) return;
-				Vector3 derivative =((BlenderNURBSCurve)sc.path.splines.get(0)).bs.derivativeAt(new Vector3(), pc.time);
+				Vector3 derivative = sc.path.derivativeAt(new Vector3(), pc.time);
 				float dLength = derivative.len();
 				if(dLength < 0.1f) dLength = 0.1f;
 				if(dLength > 0)
@@ -119,7 +117,7 @@ public class PlatformerPlugin implements Plugin, DefaultPlugin
 					pc.time += deltaTime * pc.speed * 0.1f;
 				if(pc.time > 1){ pc.time = 1 ; pc.speed = -0.5f; }
 				if(pc.time < 0){ pc.time = 0 ; pc.speed = 0.5f; }
-				Vector3 position =((BlenderNURBSCurve)sc.path.splines.get(0)).bs.valueAt(new Vector3(), pc.time);
+				Vector3 position = sc.path.valueAt(new Vector3(), pc.time);
 				// update body position
 				
 				// bc.body.setAwake(true);

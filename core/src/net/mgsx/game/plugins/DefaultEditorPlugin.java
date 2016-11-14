@@ -8,7 +8,9 @@ import net.mgsx.game.plugins.camera.CameraEditorPlugin;
 import net.mgsx.game.plugins.core.CoreEditorPlugin;
 import net.mgsx.game.plugins.g2d.G2DEditorPlugin;
 import net.mgsx.game.plugins.g3d.G3DEditorPlugin;
+import net.mgsx.game.plugins.particle2d.Particle2DEditorPlugin;
 import net.mgsx.game.plugins.profiling.ProfilerPlugin;
+import net.mgsx.game.plugins.spline.SplineEditorPlugin;
 
 /**
  *  Default plugin configuration, import all "built-in" editor plugins and core plugins
@@ -24,7 +26,9 @@ import net.mgsx.game.plugins.profiling.ProfilerPlugin;
 	G2DEditorPlugin.class,
 	G3DEditorPlugin.class,
 	ProfilerPlugin.class,
-	CameraEditorPlugin.class
+	CameraEditorPlugin.class,
+	SplineEditorPlugin.class,
+	Particle2DEditorPlugin.class
 })
 public interface DefaultEditorPlugin extends DefaultPlugin {
 
