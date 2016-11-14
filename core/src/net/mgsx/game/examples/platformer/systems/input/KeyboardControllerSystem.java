@@ -6,6 +6,8 @@ import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.Gdx;
 
 import net.mgsx.game.core.GamePipeline;
+import net.mgsx.game.examples.platformer.components.KeyboardController;
+import net.mgsx.game.examples.platformer.components.PlayerController;
 
 public class KeyboardControllerSystem extends IteratingSystem
 {
