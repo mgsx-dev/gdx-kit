@@ -1,6 +1,8 @@
 package net.mgsx.game.core;
 
-import net.mgsx.game.core.plugins.EditorPlugin;
+import com.badlogic.gdx.utils.Array;
+
+import net.mgsx.game.core.plugins.Plugin;
 
 public class EditorConfiguration 
 {
@@ -19,5 +21,5 @@ public class EditorConfiguration
 	/**
 	 * Plugin to boot up.
 	 */
-	public EditorPlugin plugin;
+	final public Array<Plugin> plugins = new Array<Plugin>();
 }

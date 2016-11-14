@@ -95,7 +95,7 @@ public class AshleySystemsEditor implements GlobalEditorPlugin
 			table.add(priorityName);
 			table.add(description);
 			
-			if(system.getClass().getAnnotation(EditableSystem.class) != null)
+			if(config == null || config.allowSetProcessing())
 				EntityEditor.createControl(table, system, new MethodAccessor(system, "processing", "checkProcessing", "setProcessing"));
 			else
 				table.add(String.valueOf(system.checkProcessing()));

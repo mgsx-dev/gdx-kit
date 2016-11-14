@@ -15,6 +15,8 @@ import java.lang.annotation.Target;
 @Target(TYPE)
 public @interface EditableSystem 
 {
+	boolean allowSetProcessing() default true;
+
 	/** name in the editor */
 	String value() default "";
 }

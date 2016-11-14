@@ -3,6 +3,8 @@ package net.mgsx.game.core;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 
+import net.mgsx.game.core.plugins.Plugin;
+
 public class EditorApplication extends Game
 {
 	final private EditorConfiguration config;
@@ -15,7 +17,9 @@ public class EditorApplication extends Game
 	@Override
 	public void create() 
 	{
-		config.registry.registerPlugin(config.plugin);
+		for(Plugin plugin : config.plugins){
+			config.registry.registerPlugin(plugin);
+		}
 		
 		GameScreen screen = new GameScreen();
 

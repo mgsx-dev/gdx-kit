@@ -18,6 +18,7 @@ public class ToolGroup extends InputMultiplexer
 	
 	public ToolGroup() {
 		group = new ButtonGroup<Button>();
+		group.setMinCheckCount(0);
 	}
 	
 	public void setDefaultTool(Tool defaultTool) {

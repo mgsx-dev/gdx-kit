@@ -10,8 +10,6 @@ import net.mgsx.game.core.tools.Tool;
 // TODO separate switch mode and camera ? add a GUI for it ?
 public class SwitchModeTool extends Tool
 {
-	private boolean displayEnabled = true;
-
 	public SwitchModeTool(EditorScreen editor) {
 		super(editor);
 	}
@@ -19,10 +17,10 @@ public class SwitchModeTool extends Tool
 	@Override
 	public boolean keyDown(int keycode) {
 		if(keycode == Input.Keys.TAB){
-			displayEnabled  = !displayEnabled;
+			editor.displayEnabled  = !editor.displayEnabled;
 			for(EntitySystem system : editor.entityEngine.getSystems())
 			{
-				if(system.priority == GamePipeline.RENDER_OVER) system.setProcessing(displayEnabled);
+				if(system.priority == GamePipeline.RENDER_OVER) system.setProcessing(editor.displayEnabled);
 			}
 			return true;
 		}
