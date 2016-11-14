@@ -18,6 +18,7 @@ import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
 
 import net.mgsx.game.core.GameScreen;
+import net.mgsx.game.core.annotations.PluginDef;
 import net.mgsx.game.core.commands.CommandHistory;
 import net.mgsx.game.core.components.Movable;
 import net.mgsx.game.core.plugins.Plugin;
@@ -32,6 +33,7 @@ import net.mgsx.game.plugins.box2d.storage.Box2DModelSerializer;
 import net.mgsx.game.plugins.box2d.storage.Box2DShapesSerializers;
 import net.mgsx.game.plugins.box2d.tools.Box2DJointMovable;
 
+@PluginDef(components={Box2DBodyModel.class, Box2DJointModel.class})
 public class Box2DPlugin implements Plugin
 {
 	public static WorldItem worldItem;
@@ -39,9 +41,6 @@ public class Box2DPlugin implements Plugin
 	@Override
 	public void initialize(final GameScreen engine) 
 	{
-		Storage.register(Box2DBodyModel.class, "box2d");
-		Storage.register(Box2DJointModel.class, "box2d.joint");
-
 		CommandHistory commandHistory = new CommandHistory(); // XXX fake
 		worldItem = new WorldItem(commandHistory);
 		worldItem.initialize();

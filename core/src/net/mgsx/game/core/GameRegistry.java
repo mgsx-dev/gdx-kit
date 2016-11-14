@@ -15,10 +15,15 @@ import net.mgsx.game.core.storage.Storage;
 
 public class GameRegistry {
 
-	public TypeMap<Plugin> plugins = new TypeMap<Plugin>();
+	private TypeMap<Plugin> plugins = new TypeMap<Plugin>();
 	public final ObjectMap<Class, Serializer> serializers = new ObjectMap<Class, Serializer>();
 	public Array<Class<? extends Component>> components = new Array<Class<? extends Component>>();
 
+	
+	public void registerPlugin(Class plugin) 
+	{
+		scan(plugin);
+	}
 	
 	public void registerPlugin(Plugin plugin) 
 	{

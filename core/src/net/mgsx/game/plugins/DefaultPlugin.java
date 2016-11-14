@@ -34,7 +34,8 @@ import net.mgsx.game.plugins.tiles.TilesPlugin;
 	Particle2DPlugin.class,
 	SplinePlugin.class,
 	TilesPlugin.class,
-	CameraPlugin.class
+	CameraPlugin.class,
+	BTreePlugin.class
 })
 public interface DefaultPlugin {
 

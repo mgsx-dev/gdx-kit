@@ -10,9 +10,11 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.Pool.Poolable;
 
+import net.mgsx.game.core.annotations.Storable;
 import net.mgsx.game.core.components.Duplicable;
 import net.mgsx.game.plugins.box2dold.behavior.BodyBehavior;
 
+@Storable("box2d")
 public class Box2DBodyModel implements Component, Duplicable, Poolable, Disposable
 {
 	

@@ -20,11 +20,13 @@ import com.badlogic.gdx.utils.ObjectMap;
 
 import net.mgsx.game.core.GamePipeline;
 import net.mgsx.game.core.GameScreen;
+import net.mgsx.game.core.annotations.PluginDef;
 import net.mgsx.game.core.plugins.Plugin;
 import net.mgsx.game.core.storage.AssetSerializer;
 import net.mgsx.game.core.storage.Storage;
 import net.mgsx.game.plugins.core.components.Transform2DComponent;
 
+@PluginDef(components={Particle2DComponent.class})
 public class Particle2DPlugin implements Plugin
 {
 	
@@ -34,8 +36,6 @@ public class Particle2DPlugin implements Plugin
 	@Override
 	public void initialize(final GameScreen engine) 
 	{
-		Storage.register(Particle2DComponent.class, "p2d");
-		
 		Storage.register(new AssetSerializer<ParticleEffect>(ParticleEffect.class));
 		
 		// just serialize reference (TODO use annotations for this kind of things)

@@ -11,7 +11,7 @@ import net.mgsx.game.plugins.g3d.G3DEditorPlugin;
 import net.mgsx.game.plugins.profiling.ProfilerPlugin;
 
 /**
- *  Default plugin configuration, import all "built-in" editor plugins
+ *  Default plugin configuration, import all "built-in" editor plugins and core plugins
  * 
  * @author mgsx
  *
@@ -26,6 +26,6 @@ import net.mgsx.game.plugins.profiling.ProfilerPlugin;
 	ProfilerPlugin.class,
 	CameraEditorPlugin.class
 })
-public interface DefaultEditorPlugin {
+public interface DefaultEditorPlugin extends DefaultPlugin {
 
 }

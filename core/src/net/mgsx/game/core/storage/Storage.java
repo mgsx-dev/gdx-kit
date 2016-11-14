@@ -281,6 +281,8 @@ public class Storage
 	public static final ObjectMap<String, Class<? extends Component>> typeMap = new ObjectMap<String, Class<? extends Component>>();
 	public static final ObjectMap<Class<? extends Component>, String> nameMap = new ObjectMap<Class<? extends Component>, String>();
 	
+	
+	
 	/**
 	 * Register a type to be persisted (saved and loaded within game file)
 	 * @param storable type to store

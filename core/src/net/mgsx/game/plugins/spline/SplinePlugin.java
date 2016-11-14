@@ -13,10 +13,12 @@ import net.mgsx.SplineTest.BlenderCurve;
 import net.mgsx.SplineTest.BlenderNURBSCurve;
 import net.mgsx.SplineTest.CubicBezierCurve;
 import net.mgsx.game.core.GameScreen;
+import net.mgsx.game.core.annotations.PluginDef;
 import net.mgsx.game.core.plugins.Plugin;
 import net.mgsx.game.core.storage.AssetSerializer;
 import net.mgsx.game.core.storage.Storage;
 
+@PluginDef(components={PathComponent.class})
 public class SplinePlugin implements Plugin
 {
 
@@ -42,15 +44,6 @@ public class SplinePlugin implements Plugin
 		});
 		
 		Storage.register(new AssetSerializer<BlenderCurve>(BlenderCurve.class));
-		
-		//(BlenderCurve.class, new AsynchronousAssetLoader<BlenderCurve, AssetLoaderParameters<BlenderCurve>>() {
-		
-				
-		Storage.register(PathComponent.class, "spline");
-		
-//		Storage.addClassTag("BEZIER", CubicBezierCurve.class);
-//		Storage.addClassTag("NURBS", BlenderNURBSCurve.class);
-		
 	}
 
 }

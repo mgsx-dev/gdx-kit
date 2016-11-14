@@ -4,6 +4,9 @@ import com.badlogic.ashley.core.Component;
 import com.badlogic.gdx.physics.box2d.Joint;
 import com.badlogic.gdx.physics.box2d.JointDef;
 
+import net.mgsx.game.core.annotations.Storable;
+
+@Storable("box2d.joint")
 public class Box2DJointModel implements Component
 {
 	public String id;

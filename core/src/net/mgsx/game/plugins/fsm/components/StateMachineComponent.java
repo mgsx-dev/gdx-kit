@@ -7,10 +7,12 @@ import com.badlogic.gdx.utils.Json.Serializable;
 import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.Pool.Poolable;
 
+import net.mgsx.game.core.annotations.Storable;
 import net.mgsx.game.core.components.Duplicable;
 import net.mgsx.game.core.helpers.ReflectionHelper;
 import net.mgsx.game.plugins.fsm.StateMachinePlugin;
 
+@Storable("fsm")
 public class StateMachineComponent implements Component, Duplicable, Serializable, Poolable
 {
 	public static ComponentMapper<StateMachineComponent> components = ComponentMapper.getFor(StateMachineComponent.class);
