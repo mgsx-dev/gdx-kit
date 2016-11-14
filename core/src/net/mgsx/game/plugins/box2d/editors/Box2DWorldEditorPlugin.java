@@ -3,8 +3,6 @@ package net.mgsx.game.plugins.box2d.editors;
 import java.lang.reflect.Field;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Event;
-import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
 import com.badlogic.gdx.utils.Array;
@@ -106,18 +104,6 @@ public class Box2DWorldEditorPlugin implements GlobalEditorPlugin {
 		// remaining...
 		EntityEditor worldEditor = new EntityEditor(skin);
 		worldEditor.setEntity(worldItem.settings);
-		worldEditor.addListener(new EventListener() {
-			
-			@Override
-			public boolean handle(Event event) {
-				if(event instanceof EntityEditor.EntityEvent){
-					worldItem.world.setGravity(worldItem.settings.gravity);
-					// TODO update others ...
-					return true;
-				}
-				return false;
-			}
-		});
 		
 		// convert to tools
 		VerticalGroup presetTable = new VerticalGroup();

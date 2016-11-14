@@ -19,6 +19,7 @@ import net.mgsx.game.core.annotations.EditableSystem;
 import net.mgsx.game.core.helpers.ReflectionHelper;
 import net.mgsx.game.core.plugins.GlobalEditorPlugin;
 import net.mgsx.game.core.ui.EntityEditor;
+import net.mgsx.game.core.ui.accessors.MethodAccessor;
 
 public class AshleySystemsEditor implements GlobalEditorPlugin
 {
@@ -94,7 +95,7 @@ public class AshleySystemsEditor implements GlobalEditorPlugin
 			table.add(description);
 			
 			if(system.getClass().getAnnotation(EditableSystem.class) != null)
-				EntityEditor.createControl(table, system, new EntityEditor.MethodAccessor(system, "processing", "checkProcessing", "setProcessing"));
+				EntityEditor.createControl(table, system, new MethodAccessor(system, "processing", "checkProcessing", "setProcessing"));
 			else
 				table.add(String.valueOf(system.checkProcessing()));
 			table.add(edit);

@@ -1,15 +1,10 @@
 package net.mgsx.game.core.ui;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -24,25 +19,15 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
 import com.badlogic.gdx.utils.Array;
 
-import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.core.annotations.EditableComponent;
 import net.mgsx.game.core.annotations.EditableSystem;
-import net.mgsx.game.core.helpers.ReflectionHelper;
+import net.mgsx.game.core.ui.accessors.Accessor;
+import net.mgsx.game.core.ui.accessors.AccessorScanner;
+import net.mgsx.game.core.ui.accessors.FieldAccessor;
+import net.mgsx.game.core.ui.widgets.FloatWidget;
 
 public class EntityEditor extends Table
 {
-	public static class EntityEvent extends Event
-	{
-		public Object entity;
-		public Accessor accessor;
-		public Object value;
-		public EntityEvent(Object entity, Accessor accessor, Object value) {
-			super();
-			this.entity = entity;
-			this.accessor = accessor;
-			this.value = value;
-		}
-	}
 	private Array<Object> stack = new Array<Object>();
 	private final boolean annotationBased;
 	
@@ -80,142 +65,6 @@ public class EntityEditor extends Table
 		}
 	}
 	
-	public static interface Accessor
-	{
-		public Object get();
-		public void set(Object value);
-		public String getName();
-		public Class getType();
-	}
-	
-	private static class VoidAccessor implements Accessor
-	{
-		private final Object object;
-		private final Method method;
-		private final String name;
-		
-		public VoidAccessor(Object object, Method method) {
-			this(object, method, method.getName());
-		}
-		
-		public VoidAccessor(Object object, Method method, String name) {
-			super();
-			this.object = object;
-			this.method = method;
-			this.name = name;
-		}
-
-		@Override
-		public Object get() {
-			ReflectionHelper.invoke(object, method);
-			return null;
-		}
-
-		@Override
-		public void set(Object value) {
-		}
-
-		@Override
-		public String getName() {
-			return name;
-		}
-
-		@Override
-		public Class getType() {
-			return void.class;
-		}
-		
-	}
-	
-	private static class FieldAccessor implements Accessor
-	{
-		private Object object;
-		private Field field;
-		private String label;
-		
-		public FieldAccessor(Object object, Field field, String labelName) {
-			super();
-			this.object = object;
-			this.field = field;
-			this.label = labelName;
-		}
-		public FieldAccessor(Object object, Field field) {
-			super();
-			this.object = object;
-			this.field = field;
-			this.label = field.getName();
-		}
-		public FieldAccessor(Object object, String fieldName) {
-			super();
-			this.object = object;
-			this.field = ReflectionHelper.field(object, fieldName);
-			this.label = fieldName;
-		}
-
-		@Override
-		public Object get() {
-			return ReflectionHelper.get(object, field);
-		}
-
-		@Override
-		public void set(Object value) {
-			ReflectionHelper.set(object, field, value);
-		}
-		@Override
-		public String getName() {
-			return label;
-		}
-		@Override
-		public Class getType() {
-			return field.getType();
-		}
-		
-	}
-	public static class MethodAccessor implements Accessor
-	{
-		private Object object;
-		private String name;
-		private Method getter;
-		private Method setter;
-		
-		
-		public MethodAccessor(Object object, String name, String getter, String setter) {
-			super();
-			this.object = object;
-			this.name = name;
-			this.getter = ReflectionHelper.method(object.getClass(), getter);
-			this.setter = ReflectionHelper.method(object.getClass(), setter, this.getter.getReturnType());
-		}
-		public MethodAccessor(Object object, String name, Method getter, Method setter) {
-			super();
-			this.object = object;
-			this.name = name;
-			this.getter = getter;
-			this.setter = setter;
-		}
-
-		@Override
-		public Object get() {
-			return ReflectionHelper.invoke(object, getter);
-		}
-
-		@Override
-		public void set(Object value) {
-			ReflectionHelper.invoke(object, setter, value);
-		}
-
-		@Override
-		public String getName() {
-			return name;
-		}
-
-		@Override
-		public Class getType() {
-			return getter.getReturnType();
-		}
-		
-	}
-	
 	public void generate(final Object entity, final Table table)
 	{
 		// prevent cycles
@@ -231,68 +80,8 @@ public class EntityEditor extends Table
 			if(!match) return;
 		}
 		
-		// first scan class to get all accessors
-		Array<Accessor> accessors = new Array<Accessor>();
-		
-		// scan fields
-		for(Field field : entity.getClass().getFields())
-		{
-			if(Modifier.isStatic(field.getModifiers())) continue;
-			
-			if(annotationBased){
-				Editable editable = field.getAnnotation(Editable.class);
-				if(editable == null){
-					continue;
-				}
-				if(editable.value().isEmpty())
-					accessors.add(new FieldAccessor(entity, field));
-				else
-					accessors.add(new FieldAccessor(entity, field, editable.value()));
-			}
-			else
-			{
-				accessors.add(new FieldAccessor(entity, field));
-			}
-		}
-		
-		// scan getter/setter pattern
-		for(Method method : entity.getClass().getMethods())
-		{
-			if(Modifier.isStatic(method.getModifiers())) continue;
-			
-			if(annotationBased){
-				Editable editable = method.getAnnotation(Editable.class);
-				if(editable == null){
-					continue;
-				}
-				if(method.getReturnType() != void.class) continue;
-				if(method.getParameterCount() > 0) continue;
-				if(editable.value().isEmpty())
-					accessors.add(new VoidAccessor(entity, method));
-				else
-					accessors.add(new VoidAccessor(entity, method, editable.value()));
-			}
-			else
-			{
-				if(method.getName().startsWith("set") && method.getName().length() > 3 && method.getParameterCount() == 1)
-				{
-					String getterName = "g" + method.getName().substring(1);
-					Method getter = ReflectionHelper.method(entity.getClass(), getterName);
-					if(getter == null || getter.getReturnType() != method.getParameterTypes()[0]){
-						// try boolean pattern setX/isX
-						getterName = "is" + method.getName().substring(3);
-						getter = ReflectionHelper.method(entity.getClass(), getterName);
-					}
-					if(getter != null && getter.getReturnType() == method.getParameterTypes()[0]){
-						String name = method.getName().substring(3,4).toLowerCase() + method.getName().substring(4);
-						accessors.add(new MethodAccessor(entity, name, getter, method));
-					}
-				}
-			}
-			
-		}
-		
-		for(final Accessor accessor : accessors)
+		// scan class to get all accessors
+		for(final Accessor accessor : AccessorScanner.scan(entity, annotationBased))
 		{
 			Label accessorLabel = new Label(accessor.getName(), table.getSkin());
 			table.add(accessorLabel).fill().left();
@@ -326,48 +115,9 @@ public class EntityEditor extends Table
 		});
 		table.add(ctrl);
 	}
-	static public void createSlider(final Table table, final Object entity, final Accessor accessor){
-		createSlider(table, entity, accessor, entity, accessor);
-	}	
-	static public void createSlider(final Table table, final Object rootEntity, final Accessor rootField, final Object entity, final Accessor accessor){
-		final Label label = new Label("", table.getSkin()){
-			@Override
-			public void act(float delta) {
-				super.act(delta);
-				setText(String.valueOf(accessor.get()));
-			}
-		};
-		label.setText(String.valueOf(accessor.get()));
+	static private void createSlider(final Table table, final Object rootEntity, final Accessor rootField, final Object entity, final Accessor accessor){
+		final Label label = new FloatWidget(accessor, true, table.getSkin());
 		table.add(label);
-		label.addListener(new DragListener(){
-			@Override
-			public void drag(InputEvent event, float x, float y,
-					int pointer) {
-				float value = (Float)accessor.get();
-				value += value == 0 ? 0.1f : -getDeltaX() * value * 0.01;
-				accessor.set(value);
-				label.setText(String.valueOf(value));
-				
-				table.fire(new EntityEvent(rootEntity, rootField, rootField.get()));
-				
-				 // prevent other widget (like ScrollPane) to act during dragging value
-				label.getStage().cancelTouchFocusExcept(this, label);
-			}
-			@Override
-			public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-				if(button == Input.Buttons.RIGHT){
-					float value = (Float)accessor.get();
-					value = -value;
-					accessor.set(value);
-					label.setText(String.valueOf(value));
-					
-					table.fire(new EntityEvent(rootEntity, rootField, rootField.get()));
-
-					return true;
-				}
-				return super.touchDown(event, x, y, pointer, button);
-			}
-		});
 	}
 	public static Button createBoolean(Skin skin, boolean value) 
 	{
@@ -417,7 +167,7 @@ public class EntityEditor extends Table
 					int value = 1 + (Integer)accessor.get();
 					accessor.set(value);
 					label.setText(String.valueOf(value));
-					btPlus.fire(new EntityEvent(entity, accessor, value));
+					// XXX btPlus.fire(new EntityEvent(entity, accessor, value));
 				}
 			});
 			btMinus.addListener(new ChangeListener() {
@@ -426,7 +176,7 @@ public class EntityEditor extends Table
 					int value = -1 + (Integer)accessor.get();
 					accessor.set(value);
 					label.setText(String.valueOf(value));
-					btMinus.fire(new EntityEvent(entity, accessor, value));
+					// XXX btMinus.fire(new EntityEvent(entity, accessor, value));
 				}
 			});
 			
@@ -466,7 +216,7 @@ public class EntityEditor extends Table
 				@Override
 				public void changed(ChangeEvent event, Actor actor) {
 					accessor.set(btCheck.isChecked());
-					table.fire(new EntityEvent(entity, accessor, btCheck.isChecked()));
+					// XXX table.fire(new EntityEvent(entity, accessor, btCheck.isChecked()));
 				}
 			});
 			table.add(btCheck);
