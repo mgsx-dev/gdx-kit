@@ -7,7 +7,7 @@ import com.badlogic.gdx.math.Vector2;
 
 import net.mgsx.game.core.EditorScreen;
 import net.mgsx.game.core.helpers.NativeService;
-import net.mgsx.game.core.helpers.NativeService.DialogCallback;
+import net.mgsx.game.core.helpers.NativeService.DefaultCallback;
 import net.mgsx.game.core.plugins.EditorPlugin;
 import net.mgsx.game.core.tools.ClickTool;
 import net.mgsx.game.plugins.core.components.Transform2DComponent;
@@ -22,14 +22,19 @@ public class Particle2DEditorPlugin extends EditorPlugin
 			String fileName;
 			@Override
 			protected void activate() {
-				NativeService.instance.openLoadDialog(new DialogCallback() {
+				NativeService.instance.openLoadDialog(new DefaultCallback() {
 					@Override
 					public void selected(FileHandle file) {
 						fileName = file.path();
 						editor.loadAssetNow(fileName, ParticleEffect.class);
 					}
 					@Override
-					public void cancel() {
+					public boolean match(FileHandle file) {
+						return file.extension().equals("p");
+					}
+					@Override
+					public String description() {
+						return "Particle files (p)";
 					}
 				});
 			}

@@ -6,7 +6,7 @@ import com.badlogic.gdx.math.Vector3;
 
 import net.mgsx.game.core.annotations.EditableComponent;
 
-@EditableComponent
+@EditableComponent(name="Spline Debug")
 public class SplineDebugComponent implements Component
 {
 	

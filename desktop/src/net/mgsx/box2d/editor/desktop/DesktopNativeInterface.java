@@ -4,6 +4,7 @@ import java.io.File;
 
 import javax.swing.JApplet;
 import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileFilter;
 
 import com.badlogic.gdx.Gdx;
 
@@ -19,6 +20,16 @@ public class DesktopNativeInterface implements NativeServiceInterface
 	private void openDialog(final DialogCallback callback, boolean save){
 		JApplet applet = new JApplet(); // TODO fail safe
 		final JFileChooser fc = new JFileChooser(new File(path));
+		fc.setFileFilter(new FileFilter() {
+			@Override
+			public String getDescription() {
+				return callback.description();
+			}
+			@Override
+			public boolean accept(File f) {
+				return f.isDirectory() || callback.match(Gdx.files.absolute(f.getAbsolutePath()));
+			}
+		});
 		int r = save ? fc.showSaveDialog(applet) : fc.showOpenDialog(applet);
 		if(r == JFileChooser.APPROVE_OPTION){
 			final File file = fc.getSelectedFile();

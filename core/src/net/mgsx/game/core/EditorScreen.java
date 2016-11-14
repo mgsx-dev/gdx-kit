@@ -1,5 +1,6 @@
 package net.mgsx.game.core;
 
+import java.util.Comparator;
 import java.util.Map.Entry;
 
 import com.badlogic.ashley.core.Component;
@@ -43,7 +44,7 @@ import net.mgsx.game.core.editors.AnnotationBasedComponentEditor;
 import net.mgsx.game.core.helpers.AssetHelper;
 import net.mgsx.game.core.helpers.AssetLookupCallback;
 import net.mgsx.game.core.helpers.NativeService;
-import net.mgsx.game.core.helpers.NativeService.DialogCallback;
+import net.mgsx.game.core.helpers.NativeService.DefaultCallback;
 import net.mgsx.game.core.helpers.ScreenDelegate;
 import net.mgsx.game.core.plugins.EntityEditorPlugin;
 import net.mgsx.game.core.plugins.GlobalEditorPlugin;
@@ -326,6 +327,16 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 		{
 			// Display all tools
 			buttons.add("Tools").expandX().center().row();
+			
+			// TODO maybe not at each time ... ?
+			mainTools.sort(new Comparator<Tool>() {
+
+				@Override
+				public int compare(Tool o1, Tool o2) {
+					return o1.name.compareTo(o2.name);
+				}
+			});
+			
 			for(Tool tool : mainTools)
 			{
 				
@@ -506,7 +517,7 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 	{
 		// TODO open texture region selector if any registered
 		// else auto open import window
-		NativeService.instance.openLoadDialog(new DialogCallback() {
+		NativeService.instance.openLoadDialog(new DefaultCallback() {
 			@Override
 			public void selected(FileHandle file) 
 			{
@@ -518,7 +529,13 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 				callback.selected(tex);
 			}
 			@Override
-			public void cancel() {
+			public boolean match(FileHandle file) {
+				// TODO others ?
+				return file.extension().equals("png") || file.extension().equals("jpg") || file.extension().equals("bmp");
+			}
+			@Override
+			public String description() {
+				return "Pixel files (png, jpg, bmp)";
 			}
 		});
 	}

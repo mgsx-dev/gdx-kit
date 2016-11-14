@@ -7,12 +7,13 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector3;
 
+import net.mgsx.SplineTest.AbstractBlenderCurve;
 import net.mgsx.SplineTest.BlenderCurve;
 import net.mgsx.game.core.EditorScreen;
 import net.mgsx.game.core.GamePipeline;
 import net.mgsx.game.core.annotations.PluginDef;
 import net.mgsx.game.core.helpers.NativeService;
-import net.mgsx.game.core.helpers.NativeService.DialogCallback;
+import net.mgsx.game.core.helpers.NativeService.DefaultCallback;
 import net.mgsx.game.core.plugins.EditorPlugin;
 import net.mgsx.game.core.tools.Tool;
 import net.mgsx.game.plugins.spline.components.PathComponent;
@@ -21,7 +22,7 @@ import net.mgsx.game.plugins.spline.tools.BSplineTool;
 import net.mgsx.game.plugins.spline.tools.BezierTool;
 import net.mgsx.game.plugins.spline.tools.CatmullRomTool;
 
-@PluginDef()
+@PluginDef(components=SplineDebugComponent.class)
 public class SplineEditorPlugin extends EditorPlugin
 {
 	@Override
@@ -30,19 +31,25 @@ public class SplineEditorPlugin extends EditorPlugin
 		editor.addTool(new Tool("Import Spline", editor){
 			@Override
 			protected void activate() {
-				NativeService.instance.openLoadDialog(new DialogCallback() {
+				NativeService.instance.openLoadDialog(new DefaultCallback() {
 					@Override
-					public void selected(FileHandle file) {
+					public void selected(FileHandle file) 
+					{
 						BlenderCurve curve = editor.loadAssetNow(file.path(), BlenderCurve.class);
-						// BlenderCurve curve = Storage.load(file, BlenderCurve.class);
-						PathComponent path = new PathComponent();
-						path.path = curve;
-						Entity entity = editor.currentEntity();
-						entity.add(path);
+						for(AbstractBlenderCurve c : curve.splines){
+							PathComponent path = new PathComponent();
+							path.path = c.toPath();
+							editor.entityEngine.addEntity(editor.entityEngine.createEntity().add(path));
+						}
 						end();
 					}
 					@Override
-					public void cancel() {
+					public boolean match(FileHandle file) {
+						return file.extension().equals("json");
+					}
+					@Override
+					public String description() {
+						return "Spline files (json)";
 					}
 				});
 			}

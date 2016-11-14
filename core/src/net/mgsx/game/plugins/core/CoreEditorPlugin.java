@@ -10,7 +10,7 @@ import net.mgsx.game.core.EditorScreen;
 import net.mgsx.game.core.annotations.PluginDef;
 import net.mgsx.game.core.components.Movable;
 import net.mgsx.game.core.helpers.NativeService;
-import net.mgsx.game.core.helpers.NativeService.DialogCallback;
+import net.mgsx.game.core.helpers.NativeService.DefaultCallback;
 import net.mgsx.game.core.plugins.EditorPlugin;
 import net.mgsx.game.core.storage.Storage;
 import net.mgsx.game.core.tools.ClickTool;
@@ -73,13 +73,18 @@ public class CoreEditorPlugin extends EditorPlugin
 			private FileHandle file;
 			@Override
 			protected void activate() {
-				NativeService.instance.openSaveDialog(new DialogCallback() {
+				NativeService.instance.openSaveDialog(new DefaultCallback() {
 					@Override
 					public void selected(FileHandle selectedFile) {
 						file = selectedFile;
 					}
 					@Override
-					public void cancel() {
+					public boolean match(FileHandle file) {
+						return file.extension().equals("json");
+					}
+					@Override
+					public String description() {
+						return "Patch files (json)";
 					}
 				});
 			}
@@ -101,13 +106,18 @@ public class CoreEditorPlugin extends EditorPlugin
 			private FileHandle file;
 			@Override
 			protected void activate() {
-				NativeService.instance.openSaveDialog(new DialogCallback() {
+				NativeService.instance.openSaveDialog(new DefaultCallback() {
 					@Override
 					public void selected(FileHandle selectedFile) {
 						file = selectedFile;
 					}
 					@Override
-					public void cancel() {
+					public boolean match(FileHandle file) {
+						return file.extension().equals("json");
+					}
+					@Override
+					public String description() {
+						return "Patch files (json)";
 					}
 				});
 			}

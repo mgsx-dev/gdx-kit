@@ -4,7 +4,7 @@ public class CubicBezierCurve<T extends Vector<T>> implements Path<T>
 {
 	private T tmp;
 	
-	private T [] controls;
+	public T [] controls;
 	
 	public CubicBezierCurve(T [] controls) 
 	{

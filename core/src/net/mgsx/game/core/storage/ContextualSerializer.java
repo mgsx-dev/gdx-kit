@@ -5,7 +5,7 @@ import com.badlogic.gdx.utils.Json;
 
 public abstract class ContextualSerializer<T> implements Json.Serializer<T> 
 {
-	EntityGroupSerializer context;
+	protected EntityGroupSerializer context;
 	private Class<T> type;
 
 	

@@ -13,39 +13,17 @@ import com.badlogic.gdx.utils.Json;
 public class SplineTest {
 
 	// TODO use Blender name and Blender model
-	public static class BlenderCurve implements Path<Vector3>
+	public static class BlenderCurve
 	{
 		public String name;
 		public Array<AbstractBlenderCurve> splines;
 		
-		@Override
-		public Vector3 derivativeAt(Vector3 out, float t) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-		@Override
-		public Vector3 valueAt(Vector3 out, float t) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-		@Override
-		public float approximate(Vector3 v) {
-			// TODO Auto-generated method stub
-			return 0;
-		}
-		@Override
-		public float locate(Vector3 v) {
-			// TODO Auto-generated method stub
-			return 0;
-		}
-		@Override
-		public float approxLength(int samples) {
-			// TODO Auto-generated method stub
-			return 0;
-		}
+		
+		
 	}
 	
-	public static class AbstractBlenderCurve{
+	public abstract static class AbstractBlenderCurve{
+		abstract public Path<Vector3> toPath();
 	}
 	
 	public static class BlenderBezierPoint
@@ -58,6 +36,10 @@ public class SplineTest {
 	{
 		public Vector3[] points;
 		public BSpline<Vector3> bs;
+		@Override
+		public Path<Vector3> toPath() {
+			return new BSpline<Vector3>(points, 3, false);
+		}
 	}
 	
 	// TODO could be generalized as Path
@@ -104,6 +86,19 @@ public class SplineTest {
 			float localT = (offset - p.offset) / (p2.offset - p.offset);
 			
 			return Bezier.cubic(result, localT, p.co, p.hr, p2.hl, p2.co, tmp);
+		}
+
+		@Override
+		public Path<Vector3> toPath() {
+			Vector3 [] controls = new Vector3[(points.size-1)*3+1];
+			for(int i=0, j=0; i<points.size ; i++){
+				if(i>0)
+					controls[j++] = points.get(i).hl;
+				controls[j++] = points.get(i).co;
+				if(i<points.size-1)
+					controls[j++] = points.get(i).hr;
+			}
+			return new com.badlogic.gdx.math.CubicBezierCurve<Vector3>(controls);
 		}
 	}
 	

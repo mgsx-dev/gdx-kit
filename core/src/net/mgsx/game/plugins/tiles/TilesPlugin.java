@@ -14,7 +14,7 @@ import com.badlogic.gdx.math.Vector3;
 
 import net.mgsx.game.core.EditorScreen;
 import net.mgsx.game.core.helpers.NativeService;
-import net.mgsx.game.core.helpers.NativeService.DialogCallback;
+import net.mgsx.game.core.helpers.NativeService.DefaultCallback;
 import net.mgsx.game.core.plugins.EditorPlugin;
 import net.mgsx.game.core.storage.Storage;
 import net.mgsx.game.core.tools.Tool;
@@ -29,7 +29,7 @@ public class TilesPlugin extends EditorPlugin
 		editor.addTool(new Tool("Import Tiles", editor){
 			@Override
 			protected void activate() {
-				NativeService.instance.openLoadDialog(new DialogCallback() {
+				NativeService.instance.openLoadDialog(new DefaultCallback() {
 					@Override
 					public void selected(FileHandle file) {
 						TiledMap map = new TmxMapLoader(new AbsoluteFileHandleResolver()).load(file.path());
@@ -37,7 +37,12 @@ public class TilesPlugin extends EditorPlugin
 						end();
 					}
 					@Override
-					public void cancel() {
+					public boolean match(FileHandle file) {
+						return file.extension().equals("json");
+					}
+					@Override
+					public String description() {
+						return "Patch files (json)";
 					}
 				});
 			}

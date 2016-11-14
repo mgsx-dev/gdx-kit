@@ -10,7 +10,7 @@ import com.badlogic.gdx.math.Vector2;
 
 import net.mgsx.game.core.EditorScreen;
 import net.mgsx.game.core.helpers.NativeService;
-import net.mgsx.game.core.helpers.NativeService.DialogCallback;
+import net.mgsx.game.core.helpers.NativeService.DefaultCallback;
 import net.mgsx.game.core.tools.Tool;
 import net.mgsx.game.plugins.g3d.components.G3DModel;
 
@@ -28,7 +28,7 @@ public class AddModelTool extends Tool
 		// TODO open texture region selector if any registered
 		
 		// else auto open import window
-		NativeService.instance.openLoadDialog(new DialogCallback() {
+		NativeService.instance.openLoadDialog(new DefaultCallback() {
 			@Override
 			public void selected(FileHandle file) {
 				Model model = editor.loadAssetNow(file.path(), Model.class);
@@ -44,7 +44,12 @@ public class AddModelTool extends Tool
 				entity.add(data);
 			}
 			@Override
-			public void cancel() {
+			public boolean match(FileHandle file) {
+				return file.extension().equals("g3dj") || file.extension().equals("g3db");
+			}
+			@Override
+			public String description() {
+				return "Model files (g3dj, g3db)";
 			}
 		});
 	}

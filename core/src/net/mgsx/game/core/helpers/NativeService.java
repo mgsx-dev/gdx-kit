@@ -7,8 +7,30 @@ public class NativeService {
 	public static NativeServiceInterface instance;
 	public static interface DialogCallback
 	{
+		public boolean match(FileHandle file);
 		public void cancel();
 		public void selected(FileHandle file);
+		public String description();
+	}
+	public static class DefaultCallback implements DialogCallback
+	{
+		@Override
+		public boolean match(FileHandle file) {
+			return true;
+		}
+
+		@Override
+		public void cancel() {
+		}
+
+		@Override
+		public void selected(FileHandle file) {
+		}
+
+		@Override
+		public String description() {
+			return "";
+		}
 	}
 	public static interface NativeServiceInterface
 	{
