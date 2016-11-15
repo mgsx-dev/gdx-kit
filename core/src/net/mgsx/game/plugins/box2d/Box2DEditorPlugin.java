@@ -96,6 +96,7 @@ public class Box2DEditorPlugin extends EditorPlugin
 			
 			@Override
 			public void update(float deltaTime) {
+				Box2DPlugin.worldItem.world.setGravity(Box2DPlugin.worldItem.settings.gravity);
 				Box2DPlugin.worldItem.update();
 			}
 		});

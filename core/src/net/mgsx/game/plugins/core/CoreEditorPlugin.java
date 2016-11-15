@@ -22,6 +22,7 @@ import net.mgsx.game.plugins.core.systems.PolygonRenderSystem;
 import net.mgsx.game.plugins.core.systems.SelectionRenderSystem;
 import net.mgsx.game.plugins.core.tools.DeleteTool;
 import net.mgsx.game.plugins.core.tools.DuplicateTool;
+import net.mgsx.game.plugins.core.tools.EntityEmitterTool;
 import net.mgsx.game.plugins.core.tools.FollowSelectionTool;
 import net.mgsx.game.plugins.core.tools.OpenTool;
 import net.mgsx.game.plugins.core.tools.PanTool;
@@ -41,6 +42,8 @@ public class CoreEditorPlugin extends EditorPlugin
 		// systems
 		editor.entityEngine.addSystem(new SelectionRenderSystem(editor));
 		editor.entityEngine.addSystem(new PolygonRenderSystem(editor));
+		
+		editor.addTool(new EntityEmitterTool(editor));
 		
 		// order is very important !
 		editor.addGlobalTool(new SelectTool(editor));
