@@ -1,41 +1,39 @@
 package net.mgsx.game.plugins.particle2d;
 
-import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntityListener;
-import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.ashley.core.Family;
-import com.badlogic.ashley.systems.IteratingSystem;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.ParticleEffectPool;
 import com.badlogic.gdx.graphics.g2d.ParticleEffectPool.PooledEffect;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.Json.Serializer;
 import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.ObjectMap;
 
-import net.mgsx.game.core.GamePipeline;
 import net.mgsx.game.core.GameScreen;
 import net.mgsx.game.core.annotations.PluginDef;
 import net.mgsx.game.core.plugins.Plugin;
 import net.mgsx.game.core.storage.AssetSerializer;
 import net.mgsx.game.core.storage.Storage;
-import net.mgsx.game.plugins.core.components.Transform2DComponent;
+import net.mgsx.game.plugins.particle2d.components.Particle2DComponent;
+import net.mgsx.game.plugins.particle2d.systems.P2DBoundarySystem;
+import net.mgsx.game.plugins.particle2d.systems.P2DCullingSystem;
+import net.mgsx.game.plugins.particle2d.systems.P2DRenderSystem;
+import net.mgsx.game.plugins.particle2d.systems.P2DTransformSystem;
+import net.mgsx.game.plugins.particle2d.systems.P2DUpdateSystem;
 
 @PluginDef(components={Particle2DComponent.class})
 public class Particle2DPlugin implements Plugin
 {
-	
-	protected ObjectMap<String, ParticleEffectPool> pools = new ObjectMap<String, ParticleEffectPool>();
-	protected Array<PooledEffect> effects = new Array<PooledEffect>();
+	// shared model accross systems
+	final public ObjectMap<String, ParticleEffectPool> pools = new ObjectMap<String, ParticleEffectPool>();
+	// final public Array<PooledEffect> effects = new Array<PooledEffect>();
 	
 	@Override
 	public void initialize(final GameScreen engine) 
 	{
+		// serialize ParticleEffect type as asset reference.
 		Storage.register(new AssetSerializer<ParticleEffect>(ParticleEffect.class));
 		
 		// just serialize reference (TODO use annotations for this kind of things)
@@ -67,7 +65,7 @@ public class Particle2DPlugin implements Plugin
 				if(model != null){
 					// remove emitters (live particles!)
 					model.effect.free();
-					effects.removeValue(model.effect, true);
+					//effects.removeValue(model.effect, true);
 					model.effect = null;
 				}
 			}
@@ -93,68 +91,18 @@ public class Particle2DPlugin implements Plugin
 					}
 					PooledEffect effect = pool.obtain();
 					model.effect = effect;
-					
-					effects.add(effect);
+					model.effect.setPosition(model.position.x, model.position.y);
+					// effects.add(effect);
 				}
 			}
 		});
 		
-		// update all emitters
-		engine.entityEngine.addSystem(new IteratingSystem(Family.all(Transform2DComponent.class, Particle2DComponent.class).get(), GamePipeline.AFTER_PHYSICS) {
-			@Override
-			public void update(float deltaTime) 
-			{
-				super.update(deltaTime);
-				
-				for (int i = effects.size - 1; i >= 0; i--) {
-				    PooledEffect effect = effects.get(i);
-				    effect.update(deltaTime);
-				    if (effect.isComplete()) {
-				        effect.free();
-				        effects.removeIndex(i);
-				    }
-				}
-				for(ParticleEffect effect : effects){
-					effect.update(deltaTime);
-				}
-				
-				super.update(deltaTime);
-			}
-
-			@Override
-			protected void processEntity(Entity entity, float deltaTime) {
-				Transform2DComponent t = entity.getComponent(Transform2DComponent.class);
-				Particle2DComponent p = entity.getComponent(Particle2DComponent.class);
-				p.effect.setPosition(t.position.x, t.position.y);
-			}
-		});
-		engine.entityEngine.addSystem(new EntitySystem(GamePipeline.RENDER_TRANSPARENT) {
-			private SpriteBatch batch;
-			@Override
-			public void addedToEngine(Engine engine) {
-				super.addedToEngine(engine);
-				batch = new SpriteBatch();
-			}
-			@Override
-			public void removedFromEngine(Engine engine) {
-				batch.dispose();
-				batch = null;
-				super.removedFromEngine(engine);
-			}
-			@Override
-			public void update(float deltaTime) 
-			{
-				Gdx.gl.glEnable(GL20.GL_DEPTH_TEST);
-				batch.setProjectionMatrix(engine.getRenderCamera().combined);
-				batch.begin();
-				for (int i = effects.size - 1; i >= 0; i--) {
-				    PooledEffect effect = effects.get(i);
-				    effect.draw(batch);
-				}
-				batch.end();
-				Gdx.gl.glDisable(GL20.GL_DEPTH_TEST);
-			}
-		});
+		// systems
+		engine.entityEngine.addSystem(new P2DTransformSystem());
+		engine.entityEngine.addSystem(new P2DBoundarySystem());
+		engine.entityEngine.addSystem(new P2DCullingSystem());
+		engine.entityEngine.addSystem(new P2DUpdateSystem());
+		engine.entityEngine.addSystem(new P2DRenderSystem(engine));
 	}
 	
 }

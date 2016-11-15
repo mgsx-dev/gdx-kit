@@ -4,6 +4,7 @@ import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
 
 import net.mgsx.game.core.helpers.EditorAssetManager;
 import net.mgsx.game.core.plugins.Plugin;
@@ -24,6 +25,8 @@ public class EditorApplication extends Game
 	public void create() 
 	{
 		assetManager = new EditorAssetManager();
+		
+		Texture.setAssetManager(assetManager);
 		
 		engine = new PooledEngine(); // TODO maybe not : pol can mess with some editor workflow (history undo)
 		

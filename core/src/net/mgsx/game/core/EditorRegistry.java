@@ -48,5 +48,5 @@ public class EditorRegistry extends GameRegistry
 			plugin.initialize(editor);
 		}
 	}
-	
+
 }

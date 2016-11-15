@@ -25,6 +25,10 @@ public class GameRegistry {
 		scan(plugin);
 	}
 	
+	public <T extends Plugin> T getPlugin(Class<T> type) {
+		return (T)plugins.get(type);
+	}
+	
 	public void registerPlugin(Plugin plugin) 
 	{
 		if(plugins.containsKey(plugin.getClass())) return;

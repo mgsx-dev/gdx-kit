@@ -10,7 +10,6 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.Json.Serializer;
 
 import net.mgsx.game.core.storage.Storage;
@@ -28,7 +27,7 @@ import net.mgsx.game.plugins.camera.systems.CameraSystem;
  */
 public class GameScreen extends ScreenAdapter
 {
-	public AssetManager assets;
+	final public AssetManager assets;
 	
 	final public Engine entityEngine;
 	public GameRegistry registry;
@@ -52,9 +51,6 @@ public class GameScreen extends ScreenAdapter
 	
 	private void init()
 	{
-		assets = new AssetManager(); // TODO resolver maybe different for game and editor ?
-		Texture.setAssetManager(assets);
-		
 		createCamera();
 	}
 	

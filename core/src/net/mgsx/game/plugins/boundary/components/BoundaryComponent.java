@@ -15,6 +15,8 @@ public class BoundaryComponent implements Component, OverrideProxy
 {
 	public static final ComponentMapper<BoundaryComponent> components = ComponentMapper.getFor(BoundaryComponent.class);
 
+	// TODO handle local and global boundary : global will be automatically updated with only one system
+	// other component are responsible to set local boundary only.
 	@Editable public BoundingBox box = new BoundingBox();
 	public boolean inside, justInside, justOutside;
 }

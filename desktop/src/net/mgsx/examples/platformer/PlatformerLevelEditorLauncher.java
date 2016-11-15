@@ -18,7 +18,8 @@ public class PlatformerLevelEditorLauncher {
 
 	public static void main (String[] args) 
 	{
-		NativeService.instance = new DesktopNativeInterface(); 
+		DesktopNativeInterface nativeService = new DesktopNativeInterface(); 
+		NativeService.instance = nativeService; 
 		
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		
@@ -26,6 +27,8 @@ public class PlatformerLevelEditorLauncher {
 		editConfig.plugins.add(new PlatformerEditorPlugin());
 		editConfig.root = args.length > 0 ? args[0] : null;
 		editConfig.path = args.length > 1 ? args[1] : null;
+		
+		if(editConfig.root != null) nativeService.path = editConfig.root;
 		
 		new LwjglApplication(new EditorApplication(editConfig), config);
 	}
