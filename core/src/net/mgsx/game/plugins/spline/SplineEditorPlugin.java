@@ -63,10 +63,6 @@ public class SplineEditorPlugin extends EditorPlugin
 		
 		editor.entityEngine.addSystem(new IteratingSystem(Family.all(PathComponent.class, SplineDebugComponent.class).get(), GamePipeline.RENDER_DEBUG) {
 			
-			private Vector3 tmp = new Vector3();
-			private Vector3 out = new Vector3();
-			private Vector3 prev = new Vector3();
-			
 			@Override
 			protected void processEntity(Entity entity, float deltaTime) 
 			{
@@ -90,67 +86,6 @@ public class SplineEditorPlugin extends EditorPlugin
 					editor.shapeRenderer.line(debug.vertices[i-1], debug.vertices[i]);
 
 				
-//				Vector2 s = Tool.pixelSize(editor.getRenderCamera()).scl(10);
-//				
-//				for(Vector3 point : debug.vertices){
-//					editor.shapeRenderer.rect(point.x-s.x/2, point.y-s.y/2, s.x, s.y);
-//				}
-				
-//				for(AbstractBlenderCurve path : component.path.splines){
-//					if(path instanceof BlenderNURBSCurve){
-//						BlenderNURBSCurve nurbs = (BlenderNURBSCurve)path;
-//						
-//						// XXX patch
-//						if(nurbs.bs == null){
-//							Vector3 [] cpy = new Vector3[nurbs.points.length+4];
-//							for(int i=0 ; i<cpy.length ; i++)
-//								if(i < 2) cpy[i] = nurbs.points[0];
-//								else if(i > cpy.length-3) cpy[i] = nurbs.points[nurbs.points.length-1];
-//								else cpy[i] = nurbs.points[i-2];
-//							
-//							nurbs.bs = new BSpline<Vector3>(cpy, 3, false);
-//						}
-//						
-//						editor.shapeRenderer.setColor(Color.YELLOW);
-//						
-//						int steps = 30; // TODO
-//						for(int i=0 ; i<steps ; i++){
-//							float t = (float)(i) / (float)(steps-1);
-//							// BSpline.calculate(out, t, nurbs.points, 3, false, tmp); // continuous == loop ! TODO get it from blender ?
-//							nurbs.bs.valueAt(out, t);
-//							if(i>0)  editor.shapeRenderer.line(prev, out);
-//							prev.set(out);
-//						}
-//						
-//						editor.shapeRenderer.setColor(Color.RED);
-//						
-//						Vector2 s = Tool.pixelSize(editor.getRenderCamera()).scl(10);
-//						for(int i=0 ; i<nurbs.points.length ; i++){
-//							Vector3 p1 = nurbs.points[i];
-//							// Vector3 p2 = nurbs.points[i+1];
-//							// editor.shapeRenderer.line(p1, p2);
-//							editor.shapeRenderer.box(p1.x-s.x/2, p1.y-s.y/2, p1.z-s.y/2, s.x, s.y, s.y);
-//						}
-//					}
-//					else if(path instanceof CubicBezierCurve){
-//						CubicBezierCurve c = (CubicBezierCurve)path;
-//						
-//						editor.shapeRenderer.setColor(Color.GREEN);
-//						
-//						BlenderBezierPoint p = null, p2 = null;
-//						for(int i=0 ; i<c.points.size-1 ; i++){
-//							p = c.points.get(i);
-//							p2 = c.points.get(i+1);
-//							int steps = 5; // TODO
-//							for(int j=0 ; j<steps ; j++){
-//								float t = (float)j / (float)(steps-1);
-//								Bezier.cubic(out, t, p.co, p.hr, p2.hl, p2.co, tmp);
-//								if(j>0)  editor.shapeRenderer.line(prev, out);
-//								prev.set(out);
-//							}
-//						}
-//					}
-//				}
 				editor.shapeRenderer.end();
 			}
 		});
