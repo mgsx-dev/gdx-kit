@@ -18,6 +18,8 @@ public class Particle2DEditorPlugin extends EditorPlugin
 	@Override
 	public void initialize(EditorScreen editor) 
 	{
+		editor.assets.addReloadListener(Particle2DComponent.class, new Particle2DReloader(editor.entityEngine));
+		
 		editor.addTool(new ClickTool("Add particles", editor){
 			String fileName;
 			@Override

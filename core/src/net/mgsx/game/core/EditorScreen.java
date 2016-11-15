@@ -43,6 +43,7 @@ import net.mgsx.game.core.components.Movable;
 import net.mgsx.game.core.editors.AnnotationBasedComponentEditor;
 import net.mgsx.game.core.helpers.AssetHelper;
 import net.mgsx.game.core.helpers.AssetLookupCallback;
+import net.mgsx.game.core.helpers.EditorAssetManager;
 import net.mgsx.game.core.helpers.NativeService;
 import net.mgsx.game.core.helpers.NativeService.DefaultCallback;
 import net.mgsx.game.core.helpers.ScreenDelegate;
@@ -94,22 +95,22 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 	
 	private Array<Tool> autoTools = new Array<Tool>();
 	public ShapeRenderer shapeRenderer;
-	private GameScreen game;
+	public GameScreen game;
 	
 	private EditorCamera editorCamera;
 	
-	final public AssetManager assets;
+	final public EditorAssetManager assets;
 	final public Engine entityEngine;
 	
 	public final ObjectMap<Class, Serializer> serializers;
 
 	
-	public EditorScreen(EditorConfiguration config, GameScreen screen) {
+	public EditorScreen(EditorConfiguration config, GameScreen screen, EditorAssetManager assets, Engine engine) {
 		super();
 		this.game = screen;
 		this.game.registry = config.registry;
-		this.entityEngine = game.entityEngine;
-		this.assets = game.assets;
+		this.entityEngine = engine;
+		this.assets = assets;
 		this.serializers = config.registry.serializers;
 		this.registry = config.registry;
 		this.current = this.game;

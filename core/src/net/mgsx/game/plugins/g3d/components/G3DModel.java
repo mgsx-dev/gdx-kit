@@ -18,7 +18,7 @@ import net.mgsx.game.core.annotations.Storable;
 import net.mgsx.game.core.components.Duplicable;
 
 @Storable("g3d")
-@EditableComponent
+@EditableComponent(autoTool=false)
 public class G3DModel implements Component, Duplicable, Serializable
 {
 	public final static ComponentMapper<G3DModel> components = ComponentMapper.getFor(G3DModel.class);

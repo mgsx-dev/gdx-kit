@@ -42,7 +42,6 @@ public class CoreEditorPlugin extends EditorPlugin
 		editor.entityEngine.addSystem(new SelectionRenderSystem(editor));
 		editor.entityEngine.addSystem(new PolygonRenderSystem(editor));
 		
-		// tools
 		// order is very important !
 		editor.addGlobalTool(new SelectTool(editor));
 		editor.addGlobalTool(new ZoomTool(editor));

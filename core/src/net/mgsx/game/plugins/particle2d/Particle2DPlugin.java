@@ -62,6 +62,7 @@ public class Particle2DPlugin implements Plugin
 			@Override
 			public void entityRemoved(Entity entity) 
 			{
+				// TODO doesn't work !
 				Particle2DComponent model = (Particle2DComponent)entity.remove(Particle2DComponent.class);
 				if(model != null){
 					// remove emitters (live particles!)

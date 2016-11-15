@@ -2,6 +2,7 @@ package net.mgsx.game.plugins;
 
 import net.mgsx.game.core.annotations.PluginDef;
 import net.mgsx.game.plugins.ashley.AshleyEditorPlugin;
+import net.mgsx.game.plugins.assets.AssetsEditorPlugin;
 import net.mgsx.game.plugins.boundary.BoundaryEditorPlugin;
 import net.mgsx.game.plugins.box2d.Box2DEditorPlugin;
 import net.mgsx.game.plugins.camera.CameraEditorPlugin;
@@ -28,7 +29,8 @@ import net.mgsx.game.plugins.spline.SplineEditorPlugin;
 	ProfilerPlugin.class,
 	CameraEditorPlugin.class,
 	SplineEditorPlugin.class,
-	Particle2DEditorPlugin.class
+	Particle2DEditorPlugin.class,
+	AssetsEditorPlugin.class
 })
 public interface DefaultEditorPlugin extends DefaultPlugin {
 

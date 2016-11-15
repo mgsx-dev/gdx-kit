@@ -3,7 +3,6 @@ package net.mgsx.game.core;
 import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
-import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.assets.AssetManager;
@@ -37,10 +36,10 @@ public class GameScreen extends ScreenAdapter
 	
 	private CameraSystem cameraSystem;
 	
-	public GameScreen() {
+	public GameScreen(AssetManager assets, Engine engine) {
 		super();
-		entityEngine = new PooledEngine();
-		
+		this.assets = assets;
+		this.entityEngine = engine;
 		init();
 	}
 	
