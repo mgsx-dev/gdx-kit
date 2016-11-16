@@ -3,6 +3,7 @@ package net.mgsx.game.plugins.core.components;
 import com.badlogic.ashley.core.Component;
 
 import net.mgsx.game.core.annotations.DuplicableComponent;
+import net.mgsx.game.core.annotations.EditableComponent;
 
 /**
  * This component type tag an entity as physics controlled by logic.
@@ -17,6 +18,7 @@ import net.mgsx.game.core.annotations.DuplicableComponent;
  *
  */
 @DuplicableComponent
+@EditableComponent
 public class SlavePhysics implements Component {
 	
 }

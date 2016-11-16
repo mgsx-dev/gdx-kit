@@ -117,7 +117,7 @@ public class Box2DEditorPlugin extends EditorPlugin
 				Box2DBodyModel physic = entity.getComponent(Box2DBodyModel.class);
 				Transform2DComponent t = entity.getComponent(Transform2DComponent.class);
 				if(physic.body != null){
-					physic.body.setLinearVelocity(t.position.cpy().sub(physic.body.getPosition()));
+					physic.body.setLinearVelocity(t.position.cpy().sub(physic.body.getPosition()).scl(1.f / deltaTime));
 					float a1 = t.angle * MathUtils.degreesToRadians;
 					float a2 = physic.body.getAngle();
 					float delta = a2 - a1; // TODO not good !

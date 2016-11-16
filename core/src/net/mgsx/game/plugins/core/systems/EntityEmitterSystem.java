@@ -19,7 +19,7 @@ public class EntityEmitterSystem extends IteratingSystem
 	@Override
 	protected void processEntity(Entity entity, float deltaTime) {
 		EntityEmitter emitter = EntityEmitter.components.get(entity);
-		if(emitter.current < emitter.max || emitter.max < 0){
+		if(emitter.running && (emitter.current < emitter.max || emitter.max < 0)){
 			emitter.time += deltaTime;
 			if(emitter.time > emitter.wait){
 				emitter.time -= emitter.wait;

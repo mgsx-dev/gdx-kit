@@ -23,5 +23,8 @@ public class EntityEmitter implements Component
 	@Editable public float time;
 
 	@Editable public int current;
+	
+	@Editable public boolean running;
+	
 
 }

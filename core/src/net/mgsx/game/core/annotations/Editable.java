@@ -21,4 +21,6 @@ public @interface Editable
 	
 	/** editor group name, default is no group */
 	String group() default "";
+	
+	EnumType type() default EnumType.AUTO;
 }
