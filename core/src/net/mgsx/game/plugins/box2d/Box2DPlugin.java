@@ -31,6 +31,7 @@ import net.mgsx.game.plugins.box2d.listeners.Box2DListener;
 import net.mgsx.game.plugins.box2d.storage.Box2DJointSerializer;
 import net.mgsx.game.plugins.box2d.storage.Box2DModelSerializer;
 import net.mgsx.game.plugins.box2d.storage.Box2DShapesSerializers;
+import net.mgsx.game.plugins.box2d.systems.Box2DWorldSystem;
 import net.mgsx.game.plugins.box2d.tools.Box2DJointMovable;
 
 @PluginDef(components={Box2DBodyModel.class, Box2DJointModel.class})
@@ -41,6 +42,8 @@ public class Box2DPlugin implements Plugin
 	@Override
 	public void initialize(final GameScreen engine) 
 	{
+		engine.entityEngine.addSystem(new Box2DWorldSystem());
+		
 		CommandHistory commandHistory = new CommandHistory(); // XXX fake
 		worldItem = new WorldItem(commandHistory);
 		worldItem.initialize();

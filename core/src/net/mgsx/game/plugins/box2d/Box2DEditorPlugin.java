@@ -92,14 +92,6 @@ public class Box2DEditorPlugin extends EditorPlugin
 			}
 		});
 		
-		editor.entityEngine.addSystem(new EntitySystem(GamePipeline.PHYSICS) {
-			
-			@Override
-			public void update(float deltaTime) {
-				Box2DPlugin.worldItem.world.setGravity(Box2DPlugin.worldItem.settings.gravity);
-				Box2DPlugin.worldItem.update();
-			}
-		});
 		editor.entityEngine.addSystem(new IteratingSystem(Family.all(Box2DBodyModel.class, Transform2DComponent.class).exclude(SlavePhysics.class).get(), GamePipeline.AFTER_PHYSICS) {
 			@Override
 			public void processEntity(Entity entity, float deltaTime) {

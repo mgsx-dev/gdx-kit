@@ -564,4 +564,11 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 		
 	}
 
+	// TODO externalize selection : editor.selection.set/clear/add...etc invalidating is done in it
+	public void setSelection(Entity entity) {
+		selection.clear();
+		selection.add(entity);
+		invalidateSelection();
+	}
+
 }

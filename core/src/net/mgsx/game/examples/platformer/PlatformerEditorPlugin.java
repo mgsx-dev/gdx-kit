@@ -16,6 +16,7 @@ import net.mgsx.game.examples.platformer.components.KeyboardController;
 import net.mgsx.game.examples.platformer.components.PlayerComponent;
 import net.mgsx.game.examples.platformer.components.PlayerController;
 import net.mgsx.game.examples.platformer.components.TreeComponent;
+import net.mgsx.game.examples.platformer.tools.PlayerDebugTool;
 import net.mgsx.game.plugins.DefaultEditorPlugin;
 import net.mgsx.game.plugins.box2d.components.Box2DBodyModel;
 import net.mgsx.game.plugins.g3d.components.G3DModel;
@@ -27,6 +28,8 @@ public class PlatformerEditorPlugin extends EditorPlugin implements DefaultEdito
 	@Override
 	public void initialize(EditorScreen editor) 
 	{
+		editor.addTool(new PlayerDebugTool(editor));
+		
 		editor.addTool(new ComponentTool("Player Logic", editor, Family.all(G3DModel.class, Box2DBodyModel.class).get()) {
 			
 			@Override

@@ -42,6 +42,7 @@ public class LiquidSystem extends AbstractBox2DSystem
 				float force = MathUtils.lerp(0, 11, pressureFactor);
 				float limit = delta < 0  ? pressureFactor * pressureFactor: 1;
 				other.getBody().applyForceToCenter(0, limit * densityFactor * other.getBody().getMass() * (force + speedFactor) * pressureFactor, true);
+				other.getBody().applyForceToCenter(other.getBody().getMass() * 10 * -other.getBody().getLinearVelocity().x, 0, true);
 			}
 		};
 		// register listener on all no sensor fixtures
