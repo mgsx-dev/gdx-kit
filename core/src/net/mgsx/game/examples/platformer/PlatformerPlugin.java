@@ -18,6 +18,7 @@ import net.mgsx.game.examples.platformer.components.EnemyComponent;
 import net.mgsx.game.examples.platformer.components.EnvComponent;
 import net.mgsx.game.examples.platformer.components.FlyingState;
 import net.mgsx.game.examples.platformer.components.LianaZone;
+import net.mgsx.game.examples.platformer.components.LiquidComponent;
 import net.mgsx.game.examples.platformer.components.OneWay;
 import net.mgsx.game.examples.platformer.components.PlatformComponent;
 import net.mgsx.game.examples.platformer.components.PlayerComponent;
@@ -28,6 +29,7 @@ import net.mgsx.game.examples.platformer.components.TreeComponent;
 import net.mgsx.game.examples.platformer.components.WaterZone;
 import net.mgsx.game.examples.platformer.systems.CavernSystem;
 import net.mgsx.game.examples.platformer.systems.EnvSystem;
+import net.mgsx.game.examples.platformer.systems.LiquidSystem;
 import net.mgsx.game.examples.platformer.systems.OneWaySystem;
 import net.mgsx.game.examples.platformer.systems.PixelEffectBindSystem;
 import net.mgsx.game.examples.platformer.systems.PlatformerPostProcessing;
@@ -69,7 +71,8 @@ import net.mgsx.game.plugins.spline.components.PathComponent;
 		FlyingState.class,
 		EatState.class,
 		SpeedWalk.class,
-		OneWay.class
+		OneWay.class,
+		LiquidComponent.class
 })
 public class PlatformerPlugin implements Plugin, DefaultPlugin
 {
@@ -86,6 +89,7 @@ public class PlatformerPlugin implements Plugin, DefaultPlugin
 		engine.entityEngine.addSystem(new PixelEffectBindSystem(effects));
 		engine.entityEngine.addSystem(new SpeedWalkSystem());
 		engine.entityEngine.addSystem(new OneWaySystem());
+		engine.entityEngine.addSystem(new LiquidSystem());
 		
 		// add a processor for player
 		// TODO could be automated with a generic component and abstract behavior attached to it ?
