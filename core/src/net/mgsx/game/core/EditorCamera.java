@@ -35,6 +35,7 @@ public class EditorCamera
 	private void createCamera()
 	{
 		gameCamera = entityEngine.getSystem(CameraSystem.class).getRenderCamera();
+		gameCamera.remove(RenderingComponent.class);
 		
 		editorCamera = entityEngine.createEntity();
 		

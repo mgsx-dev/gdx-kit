@@ -44,6 +44,9 @@ public class CameraEditorPlugin extends EditorPlugin
 		});
 		
 		editor.entityEngine.addSystem(new CameraDebugSystem(editor));
+		
+		// disable by default
+		editor.entityEngine.getSystem(CameraDebugSystem.class).setProcessing(false);
 	}
 
 }
