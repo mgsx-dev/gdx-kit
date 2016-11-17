@@ -72,22 +72,24 @@ public class Box2DEditorPlugin extends EditorPlugin
 			@Override
 			public void entityAdded(Entity entity) {
 				Box2DBodyModel object = entity.getComponent(Box2DBodyModel.class);
-				object.body.setUserData(entity);
+				if(object != null && object.body != null){
+					object.body.setUserData(entity);
 				
-				entity.add(new Movable(new BodyMove(object.body)));
+					entity.add(new Movable(new BodyMove(object.body)));
 				
-				// TODO bah !
-				Transform2DComponent transform = entity.getComponent(Transform2DComponent.class);
-				
-				if(entity.getComponent(Transform2DComponent.class) == null) {
-//					transform = new Transform2DComponent();
-//					
-//					transform.origin.set(object.body.getPosition());
-//					entity.add(transform); 
+					// TODO bah !
+					Transform2DComponent transform = entity.getComponent(Transform2DComponent.class);
 					
-				// XXX auto attach again !? : body x/y
-				}else{ // case of loading ...
-					object.body.setTransform(transform.position, transform.angle);
+					if(entity.getComponent(Transform2DComponent.class) == null) {
+	//					transform = new Transform2DComponent();
+	//					
+	//					transform.origin.set(object.body.getPosition());
+	//					entity.add(transform); 
+						
+					// XXX auto attach again !? : body x/y
+					}else{ // case of loading ...
+						object.body.setTransform(transform.position, transform.angle);
+					}
 				}
 			}
 		});
