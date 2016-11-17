@@ -33,6 +33,13 @@ public class WalkingSystem extends IteratingSystem
 			if(velocity.y < 0) velocity.y = -0.2f;
 		}
 		physics.body.setLinearVelocity(velocity);
+		
+		if(player.grab){
+		}else{
+			if(physics.body.getJointList().size > 0){
+				physics.context.world.destroyJoint(physics.body.getJointList().get(0).joint);
+			}
+		}
 	}
 
 }

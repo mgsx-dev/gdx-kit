@@ -11,7 +11,7 @@ import com.badlogic.gdx.physics.box2d.Manifold;
  * is not bound to an entity.
  * @author mgsx
  */
-public abstract class Box2DEntityListener implements Box2DListener
+public class Box2DEntityListener implements Box2DListener
 {
 	@Override
 	public void beginContact(Contact contact, Fixture self, Fixture other) {
@@ -22,7 +22,7 @@ public abstract class Box2DEntityListener implements Box2DListener
 		}
 	}
 
-	protected abstract void beginContact(Contact contact, Fixture self, Fixture other, Entity otherEntity);
+	protected void beginContact(Contact contact, Fixture self, Fixture other, Entity otherEntity){}
 	
 	@Override
 	public void endContact(Contact contact, Fixture self, Fixture other) {
@@ -33,7 +33,7 @@ public abstract class Box2DEntityListener implements Box2DListener
 		}
 	}
 	
-	protected abstract void endContact(Contact contact, Fixture self, Fixture other, Entity otherEntity);
+	protected void endContact(Contact contact, Fixture self, Fixture other, Entity otherEntity){}
 
 	@Override
 	public void preSolve(Contact contact, Fixture self, Fixture other, Manifold oldManifold) {
@@ -44,7 +44,7 @@ public abstract class Box2DEntityListener implements Box2DListener
 		}
 	}
 	
-	protected abstract void preSolve(Contact contact, Fixture self, Fixture other, Entity otherEntity, Manifold oldManifold);
+	protected void preSolve(Contact contact, Fixture self, Fixture other, Entity otherEntity, Manifold oldManifold){}
 
 	
 	@Override
@@ -56,7 +56,7 @@ public abstract class Box2DEntityListener implements Box2DListener
 		}
 	}
 
-	protected abstract void postSolve(Contact contact, Fixture self, Fixture other, Entity otherEntity, ContactImpulse impulse);
+	protected void postSolve(Contact contact, Fixture self, Fixture other, Entity otherEntity, ContactImpulse impulse){}
 	
 
 	
