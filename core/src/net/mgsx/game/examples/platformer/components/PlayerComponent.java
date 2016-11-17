@@ -17,6 +17,7 @@ import net.mgsx.game.core.annotations.Storable;
 import net.mgsx.game.core.components.LogicComponent;
 import net.mgsx.game.core.plugins.Initializable;
 import net.mgsx.game.plugins.box2d.components.Box2DBodyModel;
+import net.mgsx.game.plugins.box2d.listeners.Box2DAdapter;
 import net.mgsx.game.plugins.box2d.listeners.Box2DComponentListener;
 import net.mgsx.game.plugins.box2d.listeners.Box2DComponentTrigger;
 import net.mgsx.game.plugins.box2d.listeners.Box2DListener;
@@ -67,7 +68,7 @@ public class PlayerComponent implements Component, Initializable
 		
 		physics = entity.getComponent(Box2DBodyModel.class);
 		
-		physics.fixtures.get(1).fixture.setUserData(new Box2DListener() { // XXX hard coded sensor index 1
+		physics.fixtures.get(1).fixture.setUserData(new Box2DAdapter() { // XXX hard coded sensor index 1
 			@Override
 			public void endContact(Contact contact, Fixture self, Fixture other) {
 				if(other.isSensor()) return;

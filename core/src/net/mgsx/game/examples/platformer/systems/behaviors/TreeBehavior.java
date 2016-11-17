@@ -15,7 +15,7 @@ import net.mgsx.game.core.plugins.Initializable;
 import net.mgsx.game.examples.platformer.components.BonusComponent;
 import net.mgsx.game.examples.platformer.components.PlayerComponent;
 import net.mgsx.game.plugins.box2d.components.Box2DBodyModel;
-import net.mgsx.game.plugins.box2d.listeners.Box2DListener;
+import net.mgsx.game.plugins.box2d.listeners.Box2DAdapter;
 import net.mgsx.game.plugins.core.components.Transform2DComponent;
 import net.mgsx.game.plugins.g3d.components.G3DModel;
 
@@ -38,7 +38,7 @@ public class TreeBehavior implements LogicBehavior, Initializable
 		this.entity = entity;
 		body = entity.getComponent(Box2DBodyModel.class);
 		model = entity.getComponent(G3DModel.class);
-		body.fixtures.get(1).fixture.setUserData(new Box2DListener() { // XXX sensor
+		body.fixtures.get(1).fixture.setUserData(new Box2DAdapter() { // XXX sensor
 			
 			@Override
 			public void endContact(Contact contact, Fixture self, Fixture other) {

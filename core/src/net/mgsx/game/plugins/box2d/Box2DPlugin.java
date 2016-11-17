@@ -49,14 +49,34 @@ public class Box2DPlugin implements Plugin
 			
 			@Override
 			public void preSolve(Contact contact, Manifold oldManifold) {
-				// TODO Auto-generated method stub
+				Fixture fixtureA = contact.getFixtureA();
+				Fixture fixtureB = contact.getFixtureB();
 				
+				Object dataA = fixtureA.getUserData();
+				Object dataB = fixtureB.getUserData();
+				
+				if(dataA instanceof Box2DListener){
+					((Box2DListener) dataA).preSolve(contact, fixtureA, fixtureB, oldManifold);
+				}
+				if(dataB instanceof Box2DListener){
+					((Box2DListener) dataB).preSolve(contact, fixtureB, fixtureA, oldManifold);
+				}
 			}
 			
 			@Override
 			public void postSolve(Contact contact, ContactImpulse impulse) {
-				// TODO Auto-generated method stub
+				Fixture fixtureA = contact.getFixtureA();
+				Fixture fixtureB = contact.getFixtureB();
 				
+				Object dataA = fixtureA.getUserData();
+				Object dataB = fixtureB.getUserData();
+				
+				if(dataA instanceof Box2DListener){
+					((Box2DListener) dataA).postSolve(contact, fixtureA, fixtureB, impulse);
+				}
+				if(dataB instanceof Box2DListener){
+					((Box2DListener) dataB).postSolve(contact, fixtureB, fixtureA, impulse);
+				}
 			}
 			
 			@Override
