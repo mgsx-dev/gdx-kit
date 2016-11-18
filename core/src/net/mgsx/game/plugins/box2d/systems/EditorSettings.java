@@ -1,4 +1,4 @@
-package net.mgsx.game.plugins.box2dold.model;
+package net.mgsx.game.plugins.box2d.systems;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;

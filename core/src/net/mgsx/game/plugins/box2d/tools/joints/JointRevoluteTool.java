@@ -5,10 +5,10 @@ import com.badlogic.gdx.physics.box2d.joints.RevoluteJointDef;
 
 import net.mgsx.game.core.EditorScreen;
 import net.mgsx.game.plugins.box2d.components.Box2DBodyModel;
-import net.mgsx.game.plugins.box2d.components.WorldItem;
+import net.mgsx.game.plugins.box2d.systems.Box2DWorldContext;
 
 public class JointRevoluteTool extends JointTool<RevoluteJointDef> {
-	public JointRevoluteTool(EditorScreen editor, WorldItem worldItem) 
+	public JointRevoluteTool(EditorScreen editor, Box2DWorldContext worldItem) 
 	{
 		super("Revolute", editor, worldItem, 2);
 	}

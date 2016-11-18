@@ -5,10 +5,10 @@ import com.badlogic.gdx.physics.box2d.joints.PrismaticJointDef;
 
 import net.mgsx.game.core.EditorScreen;
 import net.mgsx.game.plugins.box2d.components.Box2DBodyModel;
-import net.mgsx.game.plugins.box2d.components.WorldItem;
+import net.mgsx.game.plugins.box2d.systems.Box2DWorldContext;
 
 public class JointPrismaticTool extends JointTool<PrismaticJointDef> {
-	public JointPrismaticTool(EditorScreen editor, WorldItem worldItem) 
+	public JointPrismaticTool(EditorScreen editor, Box2DWorldContext worldItem) 
 	{
 		super("Prismatic", editor, worldItem, 2);
 	}

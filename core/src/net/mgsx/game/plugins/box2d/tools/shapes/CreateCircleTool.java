@@ -9,15 +9,15 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import net.mgsx.game.core.EditorScreen;
 import net.mgsx.game.core.tools.RectangleTool;
 import net.mgsx.game.plugins.box2d.components.Box2DBodyModel;
-import net.mgsx.game.plugins.box2d.components.WorldItem;
-import net.mgsx.game.plugins.box2dold.commands.Box2DCommands;
+import net.mgsx.game.plugins.box2d.systems.Box2DWorldContext;
+import net.mgsx.game.plugins.box2d.tools.Box2DCommands;
 
 public class CreateCircleTool extends RectangleTool {
 
-	private WorldItem worldItem;
+	private Box2DWorldContext worldItem;
 	
 	
-	public CreateCircleTool(EditorScreen editor, WorldItem worldItem) {
+	public CreateCircleTool(EditorScreen editor, Box2DWorldContext worldItem) {
 		super("Circle", editor);
 		this.worldItem = worldItem;
 	}
@@ -36,7 +36,7 @@ public class CreateCircleTool extends RectangleTool {
 		FixtureDef fix = worldItem.settings.fixture();
 		fix.shape = shape;
 		
-		worldItem.performCommand(Box2DCommands.addShape(worldItem, bodyItem, fix));
+		editor.performCommand(Box2DCommands.addShape(worldItem, bodyItem, fix));
 	}
 	
 	@Override

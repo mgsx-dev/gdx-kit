@@ -5,10 +5,10 @@ import com.badlogic.gdx.physics.box2d.joints.PulleyJointDef;
 
 import net.mgsx.game.core.EditorScreen;
 import net.mgsx.game.plugins.box2d.components.Box2DBodyModel;
-import net.mgsx.game.plugins.box2d.components.WorldItem;
+import net.mgsx.game.plugins.box2d.systems.Box2DWorldContext;
 
 public class JointPulleyTool extends JointTool<PulleyJointDef> {
-	public JointPulleyTool(EditorScreen editor, WorldItem worldItem) 
+	public JointPulleyTool(EditorScreen editor, Box2DWorldContext worldItem) 
 	{
 		super("Pulley", editor, worldItem, 4);
 	}

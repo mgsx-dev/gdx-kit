@@ -1,5 +1,6 @@
 package net.mgsx.game.plugins.box2d.systems;
 
+import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -17,11 +18,42 @@ public class Box2DWorldSystem extends EntitySystem {
 	public Box2DWorldSystem() {
 		super(GamePipeline.PHYSICS);
 	}
+	
+	@Override
+	public void addedToEngine(Engine engine) 
+	{
+		super.addedToEngine(engine);
+		
+		Box2DPlugin.worldItem.world.setContactListener(new Box2DWorldContactListener());
+	}
 
 	@Override
 	public void update(float deltaTime) {
 		Box2DPlugin.worldItem.world.setGravity(Box2DPlugin.worldItem.settings.gravity);
 		Box2DPlugin.worldItem.update();
+		
+		
+		
+		// update physics
+		if(Box2DPlugin.worldItem.settings.runSimulation)
+		{
+			Box2DPlugin.worldItem.world.step(
+					Box2DPlugin.worldItem.settings.timeStep, 
+					Box2DPlugin.worldItem.settings.velocityIterations, 
+					Box2DPlugin.worldItem.settings.positionIterations);
+			
+			for(Runnable runnable : Box2DPlugin.worldItem.scheduled){
+				runnable.run();
+			}
+			Box2DPlugin.worldItem.scheduled.clear();
+			
+			for(Box2DBodyModel body : Box2DPlugin.worldItem.scheduledForDeletion)
+			{
+				body.dispose();
+			}
+			Box2DPlugin.worldItem.scheduledForDeletion.clear();
+		}
+		
 	}
 	
 	public Box2DBodyModel create(Entity entity) {

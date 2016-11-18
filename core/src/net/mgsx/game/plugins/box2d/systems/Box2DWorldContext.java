@@ -1,7 +1,6 @@
-package net.mgsx.game.plugins.box2d.components;
+package net.mgsx.game.plugins.box2d.systems;
 
 import com.badlogic.ashley.core.Entity;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -9,35 +8,24 @@ import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.QueryCallback;
 import com.badlogic.gdx.physics.box2d.RayCastCallback;
 import com.badlogic.gdx.physics.box2d.World;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.Array;
 
 import net.mgsx.game.core.EditorScreen;
-import net.mgsx.game.core.commands.Command;
-import net.mgsx.game.core.commands.CommandHistory;
-import net.mgsx.game.plugins.box2dold.model.EditorSettings;
-import net.mgsx.game.plugins.box2dold.model.Items;
+import net.mgsx.game.plugins.box2d.components.Box2DBodyModel;
 import net.mgsx.game.plugins.core.components.Transform2DComponent;
 
 // TODO it is more an EditorContext (ctx) ...
-public class WorldItem 
+public class Box2DWorldContext 
 {
 	public EditorSettings settings = new EditorSettings();
 	public World world;
 	public EditorScreen editor;
-	public Items items = new Items();
-	private Items selection = new Items();
-	public Array<Actor> actors = new Array<Actor>();
 	
-	private Array<Box2DBodyModel> scheduledForDeletion = new Array<Box2DBodyModel>();
-	private Array<Runnable> scheduled= new Array<Runnable>();
-	private final CommandHistory commandHistory;
+	public Array<Box2DBodyModel> scheduledForDeletion = new Array<Box2DBodyModel>();
+	public Array<Runnable> scheduled= new Array<Runnable>();
 	
-	
-	
-	public WorldItem(CommandHistory commandHistory) {
+	public Box2DWorldContext() {
 		super();
-		this.commandHistory = commandHistory;
 	}
 	
 	public void initialize() {
@@ -46,26 +34,6 @@ public class WorldItem
 		}
 	}
 	
-	public void dispose() {
-		items.clear();
-		selection.clear();
-		if(world != null) world.dispose();
-	}
-
-	
-	
-	public void addAll(Items items) {
-		this.items.addAll(items);
-	}
-	public void destroy(Items items) 
-	{
-		for(Box2DJointModel joint : items.joints)
-			world.destroyJoint(joint.joint);
-		for(Box2DBodyModel body : items.bodies)
-			world.destroyBody(body.body);
-		this.items.joints.removeAll(items.joints, true);
-		this.items.bodies.removeAll(items.bodies, true);
-	}
 	public Body queryFirstBody(Vector2 pos, Vector2 scl) 
 	{
 		final Array<Body> bodies = new Array<Body>();
@@ -98,34 +66,7 @@ public class WorldItem
 	}
 	public void update()
 	{
-		// update logic
-		for(Actor actor : actors){
-			actor.act(Gdx.graphics.getDeltaTime());
-		}
-		for(Box2DBodyModel bodyItem : items.bodies)
-		{
-			if(bodyItem.behavior != null) bodyItem.behavior.act();
-		}
 		
-		// update physics
-		if(settings.runSimulation)
-		{
-			world.step(
-					settings.timeStep, 
-					settings.velocityIterations, 
-					settings.positionIterations);
-			
-			for(Runnable runnable : scheduled){
-				runnable.run();
-			}
-			scheduled.clear();
-			
-			for(Box2DBodyModel body : scheduledForDeletion)
-			{
-				body.dispose();
-			}
-			scheduledForDeletion.clear();
-		}
 		
 		
 	}
@@ -209,12 +150,6 @@ public class WorldItem
 		};
 		world.rayCast(callback, start, end);
 		return found[0];
-	}
-	public void performCommand(Command command) 
-	{
-		// TODO add to history ... 
-		commandHistory.add(command);
-		
 	}
 
 	public void scheduleRemove(Entity entity, Box2DBodyModel body) 

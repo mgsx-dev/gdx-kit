@@ -5,10 +5,10 @@ import com.badlogic.gdx.physics.box2d.joints.WheelJointDef;
 
 import net.mgsx.game.core.EditorScreen;
 import net.mgsx.game.plugins.box2d.components.Box2DBodyModel;
-import net.mgsx.game.plugins.box2d.components.WorldItem;
+import net.mgsx.game.plugins.box2d.systems.Box2DWorldContext;
 
 public class JointWheelTool extends JointTool<WheelJointDef> {
-	public JointWheelTool(EditorScreen editor, WorldItem worldItem) {
+	public JointWheelTool(EditorScreen editor, Box2DWorldContext worldItem) {
 		super("Wheel", editor, worldItem, 2);
 	}
 

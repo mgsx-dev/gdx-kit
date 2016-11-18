@@ -5,15 +5,15 @@ import com.badlogic.gdx.utils.JsonValue;
 
 import net.mgsx.game.core.storage.ContextualSerializer;
 import net.mgsx.game.plugins.box2d.components.Box2DJointModel;
-import net.mgsx.game.plugins.box2d.components.WorldItem;
+import net.mgsx.game.plugins.box2d.systems.Box2DWorldContext;
 
 public class Box2DJointSerializer extends ContextualSerializer<Box2DJointModel>
 {
 
-	private WorldItem context;
+	private Box2DWorldContext context;
 	
 	
-	public Box2DJointSerializer(WorldItem context) 
+	public Box2DJointSerializer(Box2DWorldContext context) 
 	{
 		super(Box2DJointModel.class);
 		this.context = context;

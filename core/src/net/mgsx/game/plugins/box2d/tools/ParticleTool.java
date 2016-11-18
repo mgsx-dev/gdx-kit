@@ -1,17 +1,18 @@
 package net.mgsx.game.plugins.box2d.tools;
 
+import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.FlushablePool;
 
 import net.mgsx.game.core.EditorScreen;
 import net.mgsx.game.core.tools.Tool;
 import net.mgsx.game.plugins.box2d.components.Box2DBodyModel;
-import net.mgsx.game.plugins.box2d.components.WorldItem;
-import net.mgsx.game.plugins.box2dold.Box2DPresets;
+import net.mgsx.game.plugins.box2d.systems.Box2DWorldContext;
 
 public class ParticleTool extends Tool
 {
@@ -19,9 +20,11 @@ public class ParticleTool extends Tool
 	public float rate = 4;
 	private float time;
 	
-	private WorldItem worldItem;
+	private Box2DWorldContext worldItem;
 	private Vector2 position;
 	private Vector2 direction;
+	
+	private BodyDef def;
 
 	private static class Particle
 	{
@@ -32,7 +35,7 @@ public class ParticleTool extends Tool
 	private Array<Particle> particles = new Array<ParticleTool.Particle>();
 	private FlushablePool<Particle> pool;
 	
-	public ParticleTool(EditorScreen editor, WorldItem worldItem) {
+	public ParticleTool(EditorScreen editor, Box2DWorldContext worldItem) {
 		super("Particle", editor);
 		this.worldItem = worldItem;
 		pool = new FlushablePool<ParticleTool.Particle>(){
@@ -43,6 +46,21 @@ public class ParticleTool extends Tool
 				return p;
 			}
 		};
+	}
+	
+	@Override
+	protected void activate() 
+	{
+		super.activate();
+		Entity entity = editor.getSelected();
+		if(entity != null){
+			Box2DBodyModel physics = Box2DBodyModel.components.get(entity);
+			if(physics != null){
+				def = physics.def;
+				return;
+			}
+		}
+		end(); // end if no body def selected
 	}
 	
 	@Override
@@ -78,8 +96,8 @@ public class ParticleTool extends Tool
 				Particle p = pool.obtain();
 				p.life = life;
 				if(p.body == null){
-					Box2DBodyModel item = Box2DPresets.ball(ParticleTool.this.worldItem.world, 0.1f, position.x, position.y);
-					p.body = item.body;
+					def.position.set(position);
+					p.body = this.worldItem.world.createBody(def);
 				}
 				particles.add(p);
 				p.body.setTransform(position, 0);

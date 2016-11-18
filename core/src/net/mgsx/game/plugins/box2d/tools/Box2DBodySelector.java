@@ -7,13 +7,13 @@ import com.badlogic.gdx.utils.Array;
 
 import net.mgsx.game.core.EditorScreen;
 import net.mgsx.game.core.plugins.SelectorPlugin;
-import net.mgsx.game.plugins.box2d.components.WorldItem;
+import net.mgsx.game.plugins.box2d.systems.Box2DWorldContext;
 
 public class Box2DBodySelector extends SelectorPlugin
 {
-	private WorldItem worldItem;
+	private Box2DWorldContext worldItem;
 	
-	public Box2DBodySelector(EditorScreen editor, WorldItem worldItem) {
+	public Box2DBodySelector(EditorScreen editor, Box2DWorldContext worldItem) {
 		super(editor);
 		this.worldItem = worldItem;
 	}

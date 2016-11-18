@@ -12,7 +12,7 @@ import com.badlogic.gdx.utils.Pool.Poolable;
 
 import net.mgsx.game.core.annotations.Storable;
 import net.mgsx.game.core.components.Duplicable;
-import net.mgsx.game.plugins.box2dold.behavior.BodyBehavior;
+import net.mgsx.game.plugins.box2d.systems.Box2DWorldContext;
 
 @Storable("box2d")
 public class Box2DBodyModel implements Component, Duplicable, Poolable, Disposable
@@ -24,12 +24,11 @@ public class Box2DBodyModel implements Component, Duplicable, Poolable, Disposab
 	public BodyDef def;
 	public Body body;
 	public Array<Box2DFixtureModel> fixtures = new Array<Box2DFixtureModel>();
-	public BodyBehavior behavior;
 	public Entity entity;
-	public WorldItem context;
+	public Box2DWorldContext context;
 	
 	public Box2DBodyModel(){}
-	public Box2DBodyModel(WorldItem context, Entity entity, String id, BodyDef def, Body body) {
+	public Box2DBodyModel(Box2DWorldContext context, Entity entity, String id, BodyDef def, Body body) {
 		super();
 		this.id = id;
 		this.def = def;

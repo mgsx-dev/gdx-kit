@@ -1,5 +1,6 @@
 package net.mgsx.game.plugins.box2d.tools;
 
+import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Fixture;
@@ -8,17 +9,17 @@ import net.mgsx.game.core.EditorScreen;
 import net.mgsx.game.core.tools.Tool;
 import net.mgsx.game.plugins.box2d.components.Box2DBodyModel;
 import net.mgsx.game.plugins.box2d.components.Box2DFixtureModel;
-import net.mgsx.game.plugins.box2d.components.WorldItem;
+import net.mgsx.game.plugins.box2d.systems.Box2DWorldContext;
 
 public class MoveShapeTool extends Tool
 {
-	private WorldItem worldItem;
+	private Box2DWorldContext worldItem;
 	private Box2DFixtureModel fixtureItem;
 	private Body body;
 	private Vector2 prev;
 	private Box2DBodyModel originalBody;
 	
-	public MoveShapeTool(EditorScreen editor, WorldItem worldItem) {
+	public MoveShapeTool(EditorScreen editor, Box2DWorldContext worldItem) {
 		super("Move", editor);
 		this.worldItem = worldItem;
 	}
@@ -60,7 +61,7 @@ public class MoveShapeTool extends Tool
 		if(fixture != null)
 		{
 			fixtureItem = (Box2DFixtureModel)fixture.getUserData();
-			originalBody = fixtureItem.getBodyItem();
+			originalBody = Box2DBodyModel.components.get(((Entity)fixture.getBody().getUserData()));
 			
 			// TODO option copy / move
 			originalBody.body.destroyFixture(fixture);

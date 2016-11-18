@@ -6,14 +6,14 @@ import com.badlogic.gdx.utils.JsonValue;
 
 import net.mgsx.game.plugins.box2d.components.Box2DBodyModel;
 import net.mgsx.game.plugins.box2d.components.Box2DFixtureModel;
-import net.mgsx.game.plugins.box2d.components.WorldItem;
+import net.mgsx.game.plugins.box2d.systems.Box2DWorldContext;
 
 public class Box2DModelSerializer implements Serializer<Box2DBodyModel> {
 
-	private WorldItem context;
+	private Box2DWorldContext context;
 	
 	
-	public Box2DModelSerializer(WorldItem context) {
+	public Box2DModelSerializer(Box2DWorldContext context) {
 		super();
 		this.context = context;
 	}

@@ -5,14 +5,14 @@ import com.badlogic.gdx.physics.box2d.JointDef;
 import net.mgsx.game.core.EditorScreen;
 import net.mgsx.game.core.tools.MultiClickTool;
 import net.mgsx.game.plugins.box2d.components.Box2DBodyModel;
-import net.mgsx.game.plugins.box2d.components.WorldItem;
-import net.mgsx.game.plugins.box2dold.commands.Box2DCommands;
+import net.mgsx.game.plugins.box2d.systems.Box2DWorldContext;
+import net.mgsx.game.plugins.box2d.tools.Box2DCommands;
 
 abstract public class JointTool<T extends JointDef> extends MultiClickTool 
 {
-	protected WorldItem worldItem;
+	protected Box2DWorldContext worldItem;
 	
-	public JointTool(String name, EditorScreen editor, WorldItem worldItem, int maxPoints) 
+	public JointTool(String name, EditorScreen editor, Box2DWorldContext worldItem, int maxPoints) 
 	{
 		super("Create " + name, editor, maxPoints);
 		this.worldItem = worldItem;
