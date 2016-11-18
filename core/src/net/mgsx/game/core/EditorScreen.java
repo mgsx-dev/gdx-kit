@@ -75,7 +75,7 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 	private boolean showStatus;
 	private String currentText;
 	
-	protected Skin skin;
+	public Skin skin;
 	protected Stage stage;
 	protected Table panel;
 	protected Table buttons;
@@ -139,6 +139,9 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 		
 		Table table = new Table(skin);
 		table.add(panel).expand().left().top().row();
+		
+		toolOutline = new Table(skin);
+		table.add(toolOutline).left().row();
 		table.add(status).left();
 		// table.add(scroll).expand().right().top();
 		return table;
@@ -252,7 +255,7 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 
 	public ToolGroup createToolGroup() 
 	{
-		ToolGroup g = new ToolGroup();
+		ToolGroup g = new ToolGroup(this);
 		toolDelegator.addProcessor(g);
 		tools.add(g);
 		return g;
@@ -468,6 +471,8 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 	public Array<Entity> selection = new Array<Entity>();
 	public boolean selectionDirty;
 	public boolean displayEnabled = true; // true by default
+
+	public Table toolOutline;
 
 	public Entity currentEntity() 
 	{

@@ -7,6 +7,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector2;
 
 import net.mgsx.game.core.EditorScreen;
+import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.core.helpers.EntityHelper;
 import net.mgsx.game.core.tools.Tool;
 import net.mgsx.game.plugins.box2d.components.Box2DBodyModel;
@@ -14,8 +15,10 @@ import net.mgsx.game.plugins.core.components.ExpiryComponent;
 
 public class Box2DParticleTool  extends Tool
 {
-	public float life = 3;
-	public float rate = 4;
+	@Editable public float life = 3;
+	@Editable public float rate = 4;
+	@Editable public float expiryDelay = 2;
+	
 	private float time;
 	
 	private Vector2 position;
@@ -72,7 +75,7 @@ public class Box2DParticleTool  extends Tool
 				time -= period;
 				Entity entity = EntityHelper.clone(editor.entityEngine, base);
 				ExpiryComponent expiry = getEngine().createComponent(ExpiryComponent.class);
-				expiry.time = 2;
+				expiry.time = expiryDelay;
 				entity.add(expiry);
 				Box2DBodyModel physics = Box2DBodyModel.components.get(entity);
 				if(physics != null)

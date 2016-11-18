@@ -5,8 +5,12 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.ButtonGroup;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.utils.Array;
+
+import net.mgsx.game.core.EditorScreen;
+import net.mgsx.game.core.ui.EntityEditor;
 
 public class ToolGroup extends InputMultiplexer
 {
@@ -15,8 +19,11 @@ public class ToolGroup extends InputMultiplexer
 	private Tool activeTool, defaultTool;
 	
 	private ButtonGroup<Button> group;
+
+	protected EditorScreen editor;
 	
-	public ToolGroup() {
+	public ToolGroup(EditorScreen editor) {
+		this.editor = editor;
 		group = new ButtonGroup<Button>();
 		group.setMinCheckCount(0);
 	}
@@ -30,12 +37,19 @@ public class ToolGroup extends InputMultiplexer
 			activeTool.desactivate();
 			activeTool.group = null;
 			removeProcessor(activeTool);
+			editor.toolOutline.clear();
 		}
 		activeTool = tool;
 		if(activeTool != null){
 			activeTool.group = this;
 			addProcessor(activeTool);
 			activeTool.activate();
+			Table table = new Table(editor.skin);
+			Table view = new EntityEditor(activeTool, true, editor.skin);
+			table.setBackground(editor.skin.getDrawable("default-rect"));
+			table.add(activeTool.name).row();
+			table.add(view).row();
+			editor.toolOutline.add(table);
 		}
 	}
 

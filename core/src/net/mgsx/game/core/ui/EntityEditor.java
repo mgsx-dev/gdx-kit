@@ -76,6 +76,7 @@ public class EntityEditor extends Table
 			
 			if(entity.getClass().getAnnotation(EditableSystem.class) != null) match = true;
 			if(entity.getClass().getAnnotation(EditableComponent.class) != null) match = true;
+			if(net.mgsx.game.core.tools.Tool.class.isAssignableFrom(entity.getClass())) match = true;
 			
 			if(!match) return;
 		}
