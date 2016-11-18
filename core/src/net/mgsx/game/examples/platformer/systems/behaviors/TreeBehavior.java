@@ -7,9 +7,9 @@ import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.Fixture;
 
+import net.mgsx.game.core.components.Initializable;
 import net.mgsx.game.core.components.LogicBehavior;
 import net.mgsx.game.core.helpers.EntityHelper;
-import net.mgsx.game.core.plugins.Initializable;
 import net.mgsx.game.examples.platformer.components.BonusComponent;
 import net.mgsx.game.examples.platformer.components.PlayerComponent;
 import net.mgsx.game.plugins.box2d.components.Box2DBodyModel;

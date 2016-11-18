@@ -24,9 +24,9 @@ import com.badlogic.gdx.utils.ObjectMap.Entries;
 import com.badlogic.gdx.utils.ObjectMap.Entry;
 
 import net.mgsx.game.core.GameScreen;
+import net.mgsx.game.core.components.Initializable;
 import net.mgsx.game.core.components.OverrideProxy;
 import net.mgsx.game.core.exceptions.NotSupportedEntityGroupException;
-import net.mgsx.game.core.plugins.Initializable;
 import net.mgsx.game.plugins.core.components.ProxyComponent;
 
 /**

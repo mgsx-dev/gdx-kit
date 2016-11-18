@@ -14,8 +14,8 @@ import com.badlogic.gdx.physics.box2d.Fixture;
 
 import net.mgsx.game.core.annotations.EditableComponent;
 import net.mgsx.game.core.annotations.Storable;
+import net.mgsx.game.core.components.Initializable;
 import net.mgsx.game.core.components.LogicComponent;
-import net.mgsx.game.core.plugins.Initializable;
 import net.mgsx.game.plugins.box2d.components.Box2DBodyModel;
 import net.mgsx.game.plugins.box2d.listeners.Box2DAdapter;
 import net.mgsx.game.plugins.box2d.listeners.Box2DComponentListener;

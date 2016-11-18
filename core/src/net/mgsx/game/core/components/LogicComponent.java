@@ -4,8 +4,6 @@ import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 
-import net.mgsx.game.core.plugins.Initializable;
-
 abstract public class LogicComponent implements Component, Initializable, Duplicable
 {
 	public LogicBehavior behavior;

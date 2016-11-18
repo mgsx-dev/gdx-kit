@@ -8,7 +8,7 @@ import com.badlogic.ashley.utils.ImmutableArray;
 
 import net.mgsx.game.core.annotations.EditableComponent;
 import net.mgsx.game.core.components.Duplicable;
-import net.mgsx.game.core.plugins.Initializable;
+import net.mgsx.game.core.components.Initializable;
 
 /**
  * Helper for Ashley extension 

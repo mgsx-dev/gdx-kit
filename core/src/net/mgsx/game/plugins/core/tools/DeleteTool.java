@@ -6,8 +6,8 @@ import com.badlogic.gdx.utils.Array;
 
 import net.mgsx.game.core.EditorScreen;
 import net.mgsx.game.core.commands.Command;
+import net.mgsx.game.core.components.Initializable;
 import net.mgsx.game.core.helpers.ArrayHelper;
-import net.mgsx.game.core.plugins.Initializable;
 import net.mgsx.game.core.tools.Tool;
 
 public class DeleteTool extends Tool {

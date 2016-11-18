@@ -5,7 +5,7 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 
 import net.mgsx.game.core.EditorScreen;
-import net.mgsx.game.core.plugins.Initializable;
+import net.mgsx.game.core.components.Initializable;
 
 abstract public class ComponentTool extends Tool
 {
