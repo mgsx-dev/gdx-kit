@@ -10,6 +10,7 @@ import com.badlogic.gdx.physics.box2d.Fixture;
 
 import net.mgsx.game.core.helpers.FamilyHelper;
 import net.mgsx.game.examples.platformer.components.FallingPlatform;
+import net.mgsx.game.examples.platformer.components.FallingPlatform.State;
 import net.mgsx.game.plugins.box2d.components.Box2DBodyModel;
 import net.mgsx.game.plugins.box2d.components.Box2DFixtureModel;
 import net.mgsx.game.plugins.box2d.listeners.Box2DAdapter;
@@ -34,20 +35,42 @@ public class FallingPlatformSystem extends AbstractBox2DSystem
 	public void update(float deltaTime) {
 		super.update(deltaTime);
 		
+		// TODO this is a state machine and should be component based :
+		// the state machine add and remove component depending on events and states
 		
-		// TODO update timeout
 		for(Entity entity : fallingPlatforms){
 			Box2DBodyModel physics = Box2DBodyModel.components.get(entity);
 			FallingPlatform fallingPlatform = FallingPlatform.components.get(entity);
-			if(fallingPlatform.isFalling)
-				fallingPlatform.timeout += deltaTime;
-			if(fallingPlatform.timeout > 5){
-				fallingPlatform.timeout = 0;
+			switch(fallingPlatform.state){
+			case INIT:
 				physics.body.setActive(true);
 				physics.body.setTransform(fallingPlatform.position, fallingPlatform.angle);
 				physics.body.setType(BodyType.StaticBody);
-				fallingPlatform.isFalling = false;
+				fallingPlatform.state = State.RIGID;
+				break;
+			case RIGID:
+				break;
+			case COLLAPSING:
+				fallingPlatform.timeout -= deltaTime;
+				if(fallingPlatform.timeout < 0){
+					physics.body.setType(BodyType.DynamicBody);
+					fallingPlatform.state = State.FALLING;
+				}
+				break;
+			case FALLING:
+				break;
+			case DEAD:
+				fallingPlatform.timeout -= deltaTime;
+				physics.body.setActive(false);
+				if(fallingPlatform.timeout < 0){
+					fallingPlatform.state = State.INIT;
+				}
+				break;
+			default:
+				break;
+			
 			}
+			
 		}
 	}
 	
@@ -61,26 +84,16 @@ public class FallingPlatformSystem extends AbstractBox2DSystem
 			
 			@Override
 			public void beginContact(Contact contact, Fixture self, Fixture other) {
-				if(falling.isFalling){
+				if(falling.state == State.FALLING){
 					if(other.getBody().getType() != BodyType.DynamicBody){
-						physics.context.schedule(new Runnable() {
-							@Override
-							public void run() {
-								physics.body.setActive(false);
-							}
-						});
+						falling.state = State.DEAD;
+						falling.timeout = falling.regenerationDelay;
 					}
-				}else{
+				}else if(falling.state == State.RIGID){
 					falling.position.set(physics.body.getPosition());
 					falling.angle = physics.body.getAngle();
-					physics.context.schedule(new Runnable() {
-						@Override
-						public void run() {
-							physics.body.setType(BodyType.DynamicBody);
-						}
-					});
-					
-					falling.isFalling = true;
+					falling.timeout = falling.collapseTime;
+					falling.state = State.COLLAPSING;
 				}
 				
 			}
