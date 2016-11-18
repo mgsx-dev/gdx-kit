@@ -25,6 +25,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -65,7 +66,12 @@ import net.mgsx.game.plugins.core.tools.UndoTool;
  */
 public class EditorScreen extends ScreenDelegate implements EditorContext
 {
+	private static final String STATUS_HIDDEN_TEXT = "Press F1 to toggle help";
+
 	public CommandHistory history;
+	
+	private boolean showStatus;
+	private String currentText;
 	
 	protected Skin skin;
 	protected Stage stage;
@@ -104,6 +110,8 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 	
 	public final ObjectMap<Class, Serializer> serializers;
 
+	private Label status;
+
 	
 	public EditorScreen(EditorConfiguration config, GameScreen screen, EditorAssetManager assets, Engine engine) {
 		super();
@@ -122,8 +130,10 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 	
 	private Table createMainTable()
 	{
+		status = new Label(STATUS_HIDDEN_TEXT, skin);
 		Table table = new Table(skin);
-		table.add(panel).expand().left().top();
+		table.add(panel).expand().left().top().row();
+		table.add(status).left();
 		// table.add(scroll).expand().right().top();
 		return table;
 	}
@@ -150,7 +160,10 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 		
 		// TODO add menu
 		global = new TabPane(skin);
-		buttons = new Table(skin); buttons.setBackground(skin.getDrawable("default-rect"));
+		
+		buttons = new Table(skin); 
+		buttons.setBackground(skin.getDrawable("default-rect"));
+		
 		outline = new Table(skin); 
 		superGlobal = new Table(skin);
 		
@@ -198,7 +211,7 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 		}
 		
 		
-		global.addTab("Tools", buttons);
+		global.addTab("Tools", new ScrollPane(buttons, skin));
 		global.addTab("Components", new ScrollPane(outline, skin, "light"));
 		for(Entry<String, GlobalEditorPlugin> entry : registry.globalEditors.entrySet()){
 			global.addTab(entry.getKey(), entry.getValue().createEditor(this, skin));
@@ -569,6 +582,21 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 		selection.clear();
 		selection.add(entity);
 		invalidateSelection();
+	}
+
+	public void setInfo(String message) {
+		currentText = message;
+		if(showStatus) status.setText(message);
+	}
+
+	public void toggleStatus() {
+		if(showStatus){
+			status.setText(STATUS_HIDDEN_TEXT);
+			showStatus = false;
+		}else{
+			status.setText(currentText);
+			showStatus = true;
+		}
 	}
 
 }

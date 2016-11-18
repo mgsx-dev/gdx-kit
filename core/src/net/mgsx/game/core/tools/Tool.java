@@ -53,8 +53,12 @@ abstract public class Tool extends InputAdapter
 		return editor.entityEngine;
 	}
 
-	protected void activate(){}
-	protected void desactivate(){}
+	protected void activate(){
+		editor.setInfo("This tool doesn't provide help. Call editor.setInfo in activate method.");
+	}
+	protected void desactivate(){
+		editor.setInfo("");
+	}
 	
 	/**
 	 * helper

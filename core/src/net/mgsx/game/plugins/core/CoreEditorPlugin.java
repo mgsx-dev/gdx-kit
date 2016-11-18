@@ -30,6 +30,7 @@ import net.mgsx.game.plugins.core.tools.ResetTool;
 import net.mgsx.game.plugins.core.tools.SaveTool;
 import net.mgsx.game.plugins.core.tools.SelectTool;
 import net.mgsx.game.plugins.core.tools.SwitchModeTool;
+import net.mgsx.game.plugins.core.tools.ToggleHelpTool;
 import net.mgsx.game.plugins.core.tools.ZoomTool;
 
 @PluginDef(dependencies={CorePlugin.class, CameraEditorPlugin.class})
@@ -52,6 +53,8 @@ public class CoreEditorPlugin extends EditorPlugin
 		editor.addGlobalTool(new DuplicateTool(editor));
 		editor.addGlobalTool(new FollowSelectionTool(editor));
 		editor.addGlobalTool(new SwitchModeTool(editor));
+		editor.addGlobalTool(new ToggleHelpTool(editor));
+
 		editor.addGlobalTool(new Tool(editor){
 			@Override
 			public boolean keyDown(int keycode) {

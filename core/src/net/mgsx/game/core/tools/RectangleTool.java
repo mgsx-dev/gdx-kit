@@ -10,11 +10,18 @@ import net.mgsx.game.core.EditorScreen;
 
 abstract public class RectangleTool extends Tool
 {
+	protected Vector2 startPoint, endPoint;
+	protected int buttonFilter = Input.Buttons.LEFT;
+	
 	public RectangleTool(String name, EditorScreen editor) {
 		super(name, editor);
 	}
-	protected Vector2 startPoint, endPoint;
-	protected int buttonFilter = Input.Buttons.LEFT;
+	
+	@Override
+	protected void activate() {
+		super.activate();
+		editor.setInfo("Draw a rectangle by dragging mouse.");
+	}
 	
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
