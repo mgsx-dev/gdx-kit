@@ -27,7 +27,7 @@ public class CreateEdgeTool extends MultiClickTool
 		
 		// TODO not good ...
 		EdgeShape shape = new EdgeShape();
-		shape.set(bodyItem.body.getPosition(), new Vector2(dots.get(2)).sub(bodyItem.body.getPosition()));
+		shape.set(new Vector2(dots.get(1)).sub(bodyItem.body.getPosition()), new Vector2(dots.get(2)).sub(bodyItem.body.getPosition()));
 		shape.setVertex0(new Vector2(dots.get(0)).sub(bodyItem.body.getPosition()));
 		shape.setVertex3(new Vector2(dots.get(3)).sub(bodyItem.body.getPosition()));
 		shape.setHasVertex0(true);
