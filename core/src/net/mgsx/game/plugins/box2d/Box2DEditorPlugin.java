@@ -25,11 +25,9 @@ public class Box2DEditorPlugin extends EditorPlugin
 		editor.addTool(new Box2DParticleTool(editor));
 		
 		editor.addSelector(new Box2DBodySelector(editor, Box2DPlugin.worldItem));
-		// TODO entity with model Box2D (at least a body) open all the tools ...
 		
 		editor.entityEngine.addSystem(new Box2DRenderDebugSystem(editor));
 
-		// TODO type should be configured in editor (activation function !)
 		editor.registry.registerPlugin(Box2DBodyModel.class, new Box2DBodyEditorPlugin());
 		editor.registry.registerPlugin(Box2DJointModel.class, new Box2DJointEditorPlugin());
 		

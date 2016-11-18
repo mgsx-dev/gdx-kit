@@ -48,7 +48,7 @@ import net.mgsx.game.examples.platformer.systems.states.FlyingControlSystem;
 import net.mgsx.game.examples.platformer.systems.states.FlyingSystem;
 import net.mgsx.game.plugins.DefaultPlugin;
 import net.mgsx.game.plugins.boundary.components.BoundaryComponent;
-import net.mgsx.game.plugins.boundary.systems.BoundaryLogicSystem;
+import net.mgsx.game.plugins.boundary.systems.AbstractBoundaryLogicSystem;
 import net.mgsx.game.plugins.box2d.components.Box2DBodyModel;
 import net.mgsx.game.plugins.g3d.components.G3DModel;
 import net.mgsx.game.plugins.spline.components.PathComponent;
@@ -169,7 +169,7 @@ public class PlatformerPlugin implements Plugin, DefaultPlugin
 		engine.entityEngine.addSystem(new CavernSystem(engine));
 		engine.entityEngine.addSystem(new EnvSystem(engine));
 		engine.entityEngine.addSystem(new SpiderSystem());
-		engine.entityEngine.addSystem(BoundaryLogicSystem.create(EnemyComponent.class));
+		engine.entityEngine.addSystem(AbstractBoundaryLogicSystem.create(EnemyComponent.class));
 		
 		engine.entityEngine.addSystem(new FlyingSystem());
 		engine.entityEngine.addSystem(new EatSystem());

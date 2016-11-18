@@ -14,10 +14,10 @@ import net.mgsx.game.plugins.boundary.components.BoundaryComponent;
  *
  * @param <T>
  */
-public class BoundaryLogicSystem<T extends LogicComponent> extends IteratingSystem
+public class AbstractBoundaryLogicSystem<T extends LogicComponent> extends IteratingSystem
 {
 	private Class<T> type;
-	public BoundaryLogicSystem(Class<T> type) 
+	public AbstractBoundaryLogicSystem(Class<T> type) 
 	{
 		super(Family.all(BoundaryComponent.class, type).get(), GamePipeline.BEFORE_LOGIC);
 		this.type = type;
@@ -39,8 +39,8 @@ public class BoundaryLogicSystem<T extends LogicComponent> extends IteratingSyst
 		if(logic.behavior != null) logic.behavior.update(deltaTime);
 	}
 	
-	public static <T extends LogicComponent> BoundaryLogicSystem<T> create(Class<T> type) {
-		return new BoundaryLogicSystem<T>(type);
+	public static <T extends LogicComponent> AbstractBoundaryLogicSystem<T> create(Class<T> type) {
+		return new AbstractBoundaryLogicSystem<T>(type);
 	}
 
 }
