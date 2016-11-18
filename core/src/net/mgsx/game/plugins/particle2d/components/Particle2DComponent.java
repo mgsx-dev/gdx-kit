@@ -2,6 +2,7 @@ package net.mgsx.game.plugins.particle2d.components;
 
 import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.ComponentMapper;
+import com.badlogic.ashley.core.Engine;
 import com.badlogic.gdx.graphics.g2d.ParticleEffectPool.PooledEffect;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.collision.BoundingBox;
@@ -24,8 +25,8 @@ public class Particle2DComponent implements Component, Duplicable
 	public boolean paused;
 	
 	@Override
-	public Component duplicate() {
-		Particle2DComponent clone = new Particle2DComponent();
+	public Component duplicate(Engine engine) {
+		Particle2DComponent clone = engine.createComponent(Particle2DComponent.class);
 		clone.reference = reference;
 		return clone;
 	}

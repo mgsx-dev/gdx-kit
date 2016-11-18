@@ -2,6 +2,7 @@ package net.mgsx.game.examples.platformer.components;
 
 import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.ComponentMapper;
+import com.badlogic.ashley.core.Engine;
 import com.badlogic.gdx.math.Vector2;
 
 import net.mgsx.game.core.annotations.EditableComponent;
@@ -21,8 +22,8 @@ public class FallingPlatform implements Component, Duplicable
 	public float timeout;
 
 	@Override
-	public Component duplicate() {
-		FallingPlatform clone = new FallingPlatform(); // TODO pool
+	public Component duplicate(Engine engine) {
+		FallingPlatform clone = engine.createComponent(FallingPlatform.class);
 		clone.isFalling = isFalling;
 		clone.position.set(position);
 		clone.angle = angle;

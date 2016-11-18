@@ -247,6 +247,7 @@ public class Storage
 	
 	private static EntityGroup load(Reader reader, AssetManager assets, ObjectMap<Class, Serializer> serializers)
 	{
+		// TODO engine should be used here to create from pool !
 		Json json = setup(assets, serializers);
 		
 		EntityGroup group = json.fromJson(EntityGroup.class, reader);
@@ -261,7 +262,9 @@ public class Storage
 				}
 				
 				for(Entity sub : proxyGroup.entities){
-					sub.add(proxy.duplicate());
+					ProxyComponent subProxy = new ProxyComponent(); // TODO use pool
+					subProxy.ref = proxy.ref;
+					sub.add(subProxy);
 					
 					for(Component c : entity.getComponents()){
 						if(c instanceof OverrideProxy){

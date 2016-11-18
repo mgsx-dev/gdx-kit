@@ -2,6 +2,7 @@ package net.mgsx.game.plugins.g3d.components;
 
 import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.ComponentMapper;
+import com.badlogic.ashley.core.Engine;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
@@ -33,9 +34,9 @@ public class G3DModel implements Component, Duplicable, Serializable
 	public boolean culling = false;
 	
 	@Override
-	public Component duplicate() 
+	public Component duplicate(Engine engine) 
 	{
-		G3DModel model = new G3DModel();
+		G3DModel model = engine.createComponent(G3DModel.class);
 		model.modelInstance = new ModelInstance(modelInstance);
 		model.origin.set(origin);
 		if(animationController != null){

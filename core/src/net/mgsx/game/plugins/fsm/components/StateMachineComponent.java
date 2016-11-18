@@ -2,6 +2,7 @@ package net.mgsx.game.plugins.fsm.components;
 
 import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.ComponentMapper;
+import com.badlogic.ashley.core.Engine;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.Json.Serializable;
 import com.badlogic.gdx.utils.JsonValue;
@@ -35,8 +36,8 @@ public class StateMachineComponent implements Component, Duplicable, Serializabl
 	}
 
 	@Override
-	public Component duplicate() {
-		StateMachineComponent clone = new StateMachineComponent();
+	public Component duplicate(Engine engine) {
+		StateMachineComponent clone = engine.createComponent(StateMachineComponent.class);
 		clone.initialState = initialState;
 		clone.globalState = globalState;
 		return clone;

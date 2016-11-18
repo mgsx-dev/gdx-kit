@@ -2,6 +2,7 @@ package net.mgsx.game.plugins.g2d.components;
 
 import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.ComponentMapper;
+import com.badlogic.ashley.core.Engine;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -23,8 +24,8 @@ public class SpriteModel implements Component, Duplicable, Serializable
 	@Editable public Sprite sprite;
 
 	@Override
-	public Component duplicate() {
-		SpriteModel model = new SpriteModel();
+	public Component duplicate(Engine engine) {
+		SpriteModel model = engine.createComponent(SpriteModel.class);
 		model.sprite = new Sprite(sprite);
 		return model;
 	}

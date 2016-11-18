@@ -2,6 +2,7 @@ package net.mgsx.game.plugins.core.components;
 
 import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.ComponentMapper;
+import com.badlogic.ashley.core.Engine;
 import com.badlogic.gdx.math.Vector2;
 
 import net.mgsx.game.core.annotations.Editable;
@@ -24,8 +25,8 @@ public class Transform2DComponent implements Component, Duplicable, OverrideProx
 	@Editable public Vector2 origin = new Vector2();
 	
 	@Override
-	public Component duplicate() {
-		Transform2DComponent clone = new Transform2DComponent();
+	public Component duplicate(Engine engine) {
+		Transform2DComponent clone = engine.createComponent(Transform2DComponent.class);
 		clone.position.set(position);
 		clone.angle = angle;
 		return clone;

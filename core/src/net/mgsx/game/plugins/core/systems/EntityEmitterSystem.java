@@ -1,12 +1,11 @@
 package net.mgsx.game.plugins.core.systems;
 
-import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
 
 import net.mgsx.game.core.GamePipeline;
-import net.mgsx.game.core.components.Duplicable;
+import net.mgsx.game.core.helpers.EntityHelper;
 import net.mgsx.game.plugins.core.components.EntityEmitter;
 import net.mgsx.game.plugins.core.components.Transform2DComponent;
 
@@ -26,27 +25,28 @@ public class EntityEmitterSystem extends IteratingSystem
 				
 				emitter.current++;
 				
-				Transform2DComponent selfTransform = Transform2DComponent.components.get(entity);
-				for(Entity entityTemplate : emitter.template){
-					
-					Entity entityClone = getEngine().createEntity();
-					for(Component componentTemplate : entityTemplate.getComponents()){
-						if(componentTemplate instanceof Duplicable){
-							Component componentClone = ((Duplicable) componentTemplate).duplicate();
-							entityClone.add(componentClone);
-						}
-					}
-					if(selfTransform != null){
-						Transform2DComponent transform = Transform2DComponent.components.get(entityClone);
-						if(transform != null){
-							transform.position.add(selfTransform.position);
-						}
-					}
-					getEngine().addEntity(entityClone);
-				}
-				
+				emit(entity, emitter);
 			}
 		}
 		
 	}
+	
+	private void emit(Entity self, EntityEmitter emitter)
+	{
+		Transform2DComponent selfTransform = Transform2DComponent.components.get(self);
+		for(Entity entityTemplate : emitter.template){
+			
+			Entity entityClone = EntityHelper.clone(getEngine(), entityTemplate);
+			
+			if(selfTransform != null){
+				Transform2DComponent transform = Transform2DComponent.components.get(entityClone);
+				if(transform != null){
+					transform.position.add(selfTransform.position);
+				}
+			}
+			getEngine().addEntity(entityClone);
+		}
+		
+	}
+	
 }

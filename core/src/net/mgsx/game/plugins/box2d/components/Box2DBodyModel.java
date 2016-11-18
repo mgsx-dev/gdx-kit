@@ -2,6 +2,7 @@ package net.mgsx.game.plugins.box2d.components;
 
 import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.ComponentMapper;
+import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -43,8 +44,8 @@ public class Box2DBodyModel implements Component, Duplicable, Poolable, Disposab
 	}
 	
 	@Override
-	public Component duplicate() {
-		Box2DBodyModel model = new Box2DBodyModel();
+	public Component duplicate(Engine engine) {
+		Box2DBodyModel model = engine.createComponent(Box2DBodyModel.class);
 		model.id = id; // TODO ? + " (clone)";
 		model.def = def;
 		model.context = context;

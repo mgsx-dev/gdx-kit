@@ -1,16 +1,14 @@
 package net.mgsx.game.examples.platformer.systems.behaviors;
 
-import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
-import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.Fixture;
 
-import net.mgsx.game.core.components.Duplicable;
 import net.mgsx.game.core.components.LogicBehavior;
+import net.mgsx.game.core.helpers.EntityHelper;
 import net.mgsx.game.core.plugins.Initializable;
 import net.mgsx.game.examples.platformer.components.BonusComponent;
 import net.mgsx.game.examples.platformer.components.PlayerComponent;
@@ -68,23 +66,12 @@ public class TreeBehavior implements LogicBehavior, Initializable
 		// XXX find template !
 		Entity template = manager.getEntitiesFor(Family.one(BonusComponent.class).get()).first();
 		
-		Entity newEntity = (manager instanceof PooledEngine) ? ((PooledEngine)manager).createEntity() : new Entity();
-		manager.addEntity(newEntity);
-		Transform2DComponent t = new Transform2DComponent();
+		Entity newEntity = EntityHelper.clone(manager, template);
+		Transform2DComponent t = EntityHelper.getOrCreate(manager, newEntity, Transform2DComponent.class);
 		t.position.set(body.body.getPosition());
 		t.position.x += 3.2f; // TODO how to set it ? 
 		t.position.y += 1;
 		newEntity.add(t);
-		for(Component component : template.getComponents()){
-			if(component instanceof Duplicable)
-			{
-				Component newComponent = ((Duplicable) component).duplicate();
-				if(newComponent instanceof Initializable){
-					((Initializable) newComponent).initialize(manager, newEntity);
-				}
-				if(newEntity.getComponent(newComponent.getClass()) == null) newEntity.add(newComponent);
-			}
-		}
 		newEntity.getComponent(Box2DBodyModel.class).body.setType(BodyType.DynamicBody);
 		
 		model.animationController.allowSameAnimation = true;

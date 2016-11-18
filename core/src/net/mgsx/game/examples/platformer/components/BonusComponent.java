@@ -59,8 +59,8 @@ public class BonusComponent implements Component, Initializable, Duplicable
 	}
 
 	@Override
-	public Component duplicate() {
-		BonusComponent clone = new BonusComponent();
+	public Component duplicate(Engine engine) {
+		BonusComponent clone = engine.createComponent(BonusComponent.class);
 		clone.catchable = catchable;
 		return clone;
 	}

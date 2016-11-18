@@ -2,7 +2,6 @@ package net.mgsx.game.plugins.core.components;
 
 import com.badlogic.ashley.core.Component;
 
-import net.mgsx.game.core.annotations.DuplicableComponent;
 import net.mgsx.game.core.annotations.EditableComponent;
 
 /**
@@ -17,8 +16,7 @@ import net.mgsx.game.core.annotations.EditableComponent;
  * @author mgsx
  *
  */
-@DuplicableComponent
-@EditableComponent
+@EditableComponent(autoClone=true)
 public class SlavePhysics implements Component {
 	
 }

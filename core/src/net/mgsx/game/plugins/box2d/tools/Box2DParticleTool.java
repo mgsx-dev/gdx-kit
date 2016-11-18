@@ -7,10 +7,10 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector2;
 
 import net.mgsx.game.core.EditorScreen;
+import net.mgsx.game.core.helpers.EntityHelper;
 import net.mgsx.game.core.tools.Tool;
 import net.mgsx.game.plugins.box2d.components.Box2DBodyModel;
 import net.mgsx.game.plugins.core.components.ExpiryComponent;
-import net.mgsx.game.plugins.core.tools.DuplicateTool;
 
 public class Box2DParticleTool  extends Tool
 {
@@ -70,7 +70,7 @@ public class Box2DParticleTool  extends Tool
 			float period = 1.f / rate;
 			if(time > period){
 				time -= period;
-				Entity entity = DuplicateTool.duplicateEntity(editor, base);
+				Entity entity = EntityHelper.clone(editor.entityEngine, base);
 				ExpiryComponent expiry = getEngine().createComponent(ExpiryComponent.class);
 				expiry.time = 2;
 				entity.add(expiry);

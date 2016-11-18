@@ -8,6 +8,8 @@ import java.lang.annotation.Target;
 
 import com.badlogic.ashley.core.Component;
 
+import net.mgsx.game.core.components.Duplicable;
+
 @Retention(RUNTIME)
 @Target(TYPE)
 public @interface EditableComponent 
@@ -21,4 +23,8 @@ public @interface EditableComponent
 	
 	/** whether to create a tool to add component (default is true) */
 	boolean autoTool() default true;
+
+	/** whether to automatically clone component when cloning entity (no field are copied).
+	 * In order to customize cloning, component should implements {@link Duplicable} interface. */
+	boolean autoClone() default false;
 }

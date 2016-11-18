@@ -4,7 +4,6 @@ import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 
-import net.mgsx.game.core.helpers.ReflectionHelper;
 import net.mgsx.game.core.plugins.Initializable;
 
 abstract public class LogicComponent implements Component, Initializable, Duplicable
@@ -21,9 +20,9 @@ abstract public class LogicComponent implements Component, Initializable, Duplic
 	}
 	
 	@Override
-	public Component duplicate() 
+	public Component duplicate(Engine engine) 
 	{
-		LogicComponent clone = ReflectionHelper.newInstance(this.getClass()); /// XXX not sure
+		LogicComponent clone = engine.createComponent(this.getClass()); // dynamic component
 		clone.behavior = createBehavior();
 		return clone;
 	}
