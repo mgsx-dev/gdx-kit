@@ -48,9 +48,9 @@ public class DuplicateTool extends SelectTool
 		return false;
 	}
 	
+	// TODO move to helper
 	public static Entity duplicateEntity(EditorScreen editor, Entity base){
 		Entity newEntity = editor.entityEngine.createEntity();
-		editor.entityEngine.addEntity(newEntity);
 		for(Component component : base.getComponents()){
 			if(component instanceof Duplicable)
 			{
@@ -61,6 +61,7 @@ public class DuplicateTool extends SelectTool
 				newEntity.add(newComponent);
 			}
 		}
+		editor.entityEngine.addEntity(newEntity);
 		return newEntity;
 	}
 	

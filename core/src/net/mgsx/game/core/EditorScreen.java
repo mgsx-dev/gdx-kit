@@ -16,6 +16,7 @@ import com.badlogic.gdx.assets.loaders.TextureLoader.TextureParameter;
 import com.badlogic.gdx.assets.loaders.resolvers.ClasspathFileHandleResolver;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
@@ -26,6 +27,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -131,6 +133,10 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 	private Table createMainTable()
 	{
 		status = new Label(STATUS_HIDDEN_TEXT, skin);
+		LabelStyle style = new LabelStyle(status.getStyle());
+		style.fontColor.set(Color.DARK_GRAY);
+		status.setStyle(style);
+		
 		Table table = new Table(skin);
 		table.add(panel).expand().left().top().row();
 		table.add(status).left();
@@ -283,6 +289,7 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 		editorBatch.end();
 		
 		for(ToolGroup g : tools){
+			g.update(deltaTime);
 			g.render(shapeRenderer);
 		}
 		

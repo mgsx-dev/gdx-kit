@@ -97,6 +97,10 @@ abstract public class Tool extends InputAdapter
 	
 	final public String name;
 
+	public void update(float deltaTime){
+		
+	}
+	
 	public void render(ShapeRenderer renderer){
 		
 	}

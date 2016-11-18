@@ -19,12 +19,12 @@ public class BodyMove  extends Movable
 	
 	@Override
 	public void moveBegin(Entity entity) {
-		body.setGravityScale(0);
+		// body.setGravityScale(0);
 	}
 
 	@Override
 	public void moveEnd(Entity entity) {
-		body.setGravityScale(1);
+		// body.setGravityScale(1);
 		body.setLinearVelocity(0, 0);
 		body.applyForceToCenter(0, 0, true);
 	}
@@ -36,7 +36,7 @@ public class BodyMove  extends Movable
 		position.add(deltaWorld.x, deltaWorld.y);
 		
 		body.setAngularVelocity(0);
-		body.setGravityScale(0);
+		// body.setGravityScale(0);
 		body.setLinearVelocity(0, 0);
 		
 		body.setLinearVelocity(deltaWorld.x, deltaWorld.y); // ensure to wake others !

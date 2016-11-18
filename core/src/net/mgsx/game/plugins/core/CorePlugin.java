@@ -10,6 +10,7 @@ import net.mgsx.game.plugins.core.components.Rotate2DAnimation;
 import net.mgsx.game.plugins.core.components.SlavePhysics;
 import net.mgsx.game.plugins.core.components.Transform2DComponent;
 import net.mgsx.game.plugins.core.systems.EntityEmitterSystem;
+import net.mgsx.game.plugins.core.systems.ExpirySystem;
 import net.mgsx.game.plugins.core.systems.Rotation2DSystem;
 
 @PluginDef(components={
@@ -27,6 +28,7 @@ public class CorePlugin implements Plugin
 	{
 		engine.entityEngine.addSystem(new Rotation2DSystem());
 		engine.entityEngine.addSystem(new EntityEmitterSystem());
+		engine.entityEngine.addSystem(new ExpirySystem());
 	}
 
 }
