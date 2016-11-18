@@ -17,7 +17,7 @@ import net.mgsx.game.plugins.core.components.Transform2DComponent;
 // TODO it is more an EditorContext (ctx) ...
 public class Box2DWorldContext 
 {
-	public EditorSettings settings = new EditorSettings();
+	public Box2DEditorSettings settings = new Box2DEditorSettings();
 	public World world;
 	public EditorScreen editor;
 	
@@ -30,7 +30,7 @@ public class Box2DWorldContext
 	
 	public void initialize() {
 		if(world == null){
-			world = new World(settings.gravity, true); // TODO settings for doSleep 
+			world = new World(settings.world.gravity, true); // TODO settings for doSleep 
 		}
 	}
 	

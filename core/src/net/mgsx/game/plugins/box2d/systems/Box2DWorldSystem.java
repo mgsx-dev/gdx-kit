@@ -29,18 +29,18 @@ public class Box2DWorldSystem extends EntitySystem {
 
 	@Override
 	public void update(float deltaTime) {
-		Box2DPlugin.worldItem.world.setGravity(Box2DPlugin.worldItem.settings.gravity);
+		Box2DPlugin.worldItem.world.setGravity(Box2DPlugin.worldItem.settings.world.gravity);
 		Box2DPlugin.worldItem.update();
 		
 		
 		
 		// update physics
-		if(Box2DPlugin.worldItem.settings.runSimulation)
+		if(Box2DPlugin.worldItem.settings.world.runSimulation)
 		{
 			Box2DPlugin.worldItem.world.step(
-					Box2DPlugin.worldItem.settings.timeStep, 
-					Box2DPlugin.worldItem.settings.velocityIterations, 
-					Box2DPlugin.worldItem.settings.positionIterations);
+					Box2DPlugin.worldItem.settings.world.timeStep, 
+					Box2DPlugin.worldItem.settings.world.velocityIterations, 
+					Box2DPlugin.worldItem.settings.world.positionIterations);
 			
 			for(Runnable runnable : Box2DPlugin.worldItem.scheduled){
 				runnable.run();

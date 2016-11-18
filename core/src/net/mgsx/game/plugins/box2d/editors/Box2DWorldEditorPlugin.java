@@ -1,6 +1,7 @@
 package net.mgsx.game.plugins.box2d.editors;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
 import com.badlogic.gdx.utils.Array;
@@ -80,12 +81,21 @@ public class Box2DWorldEditorPlugin implements GlobalEditorPlugin {
 		
 		// remaining...
 		EntityEditor worldEditor = new EntityEditor(skin);
-		worldEditor.setEntity(worldItem.settings);
+		worldEditor.setEntity(worldItem.settings.world);
 		
 
 		
-		VerticalGroup shapePane = new VerticalGroup();
-		for(Tool tool : shapeTools) shapePane.addActor(editor.createToolButton(tool));
+		VerticalGroup shapePaneButtons = new VerticalGroup();
+		for(Tool tool : shapeTools) shapePaneButtons.addActor(editor.createToolButton(tool));
+		
+		VerticalGroup shapePaneDefs = new VerticalGroup();
+		shapePaneDefs.addActor(new EntityEditor(worldItem.settings.bodyDef, skin));
+		shapePaneDefs.addActor(new EntityEditor(worldItem.settings.fixtureDef, skin));
+		
+		HorizontalGroup shapePane = new HorizontalGroup();
+		shapePane.addActor(shapePaneButtons);
+		shapePane.addActor(shapePaneDefs);
+		
 		
 		VerticalGroup jointPane = new VerticalGroup();
 		for(Tool tool : jointTools) jointPane.addActor(editor.createToolButton(tool));
