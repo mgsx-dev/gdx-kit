@@ -1,4 +1,4 @@
-package net.mgsx.game.plugins.parallax;
+package net.mgsx.game.plugins.parallax.components;
 
 import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.ComponentMapper;

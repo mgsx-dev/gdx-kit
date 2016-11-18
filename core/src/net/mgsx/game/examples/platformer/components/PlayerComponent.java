@@ -26,7 +26,7 @@ import net.mgsx.game.plugins.core.components.Transform2DComponent;
 import net.mgsx.game.plugins.g3d.components.G3DModel;
 
 @Storable("example.platformer.player")
-@EditableComponent(all={Box2DBodyModel.class, G3DModel.class})
+@EditableComponent(name="Player Logic",all={Box2DBodyModel.class, G3DModel.class})
 public class PlayerComponent implements Component, Initializable
 {
 	private G3DModel model;
