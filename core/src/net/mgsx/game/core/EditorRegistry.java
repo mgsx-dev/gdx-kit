@@ -23,7 +23,7 @@ public class EditorRegistry extends GameRegistry
 	{
 		super.registerPlugin(plugin);
 		
-		if(plugin instanceof EditorPlugin)
+		if(plugin instanceof EditorPlugin && !editablePlugins.containsKey(plugin.getClass()))
 		{
 			EditorPlugin editorPlugin = (EditorPlugin)plugin;
 			editorPlugins.put(editorPlugin.getClass(), editorPlugin);

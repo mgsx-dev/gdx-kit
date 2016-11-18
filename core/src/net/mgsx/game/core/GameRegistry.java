@@ -69,7 +69,7 @@ public class GameRegistry {
 	}
 	
 	private void register(Class<? extends Component> type){
-		
+		if(components.contains(type, true)) return;
 		Storable storable = type.getAnnotation(Storable.class);
 		if(storable != null){
 			Storage.register(type, storable.value());
