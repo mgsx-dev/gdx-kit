@@ -6,7 +6,6 @@ import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 
 import net.mgsx.game.core.EditorScreen;
 import net.mgsx.game.core.GamePipeline;
@@ -18,6 +17,7 @@ import net.mgsx.game.plugins.box2d.components.Box2DJointModel;
 import net.mgsx.game.plugins.box2d.editors.Box2DBodyEditorPlugin;
 import net.mgsx.game.plugins.box2d.editors.Box2DJointEditorPlugin;
 import net.mgsx.game.plugins.box2d.editors.Box2DWorldEditorPlugin;
+import net.mgsx.game.plugins.box2d.systems.Box2DRenderDebugSystem;
 import net.mgsx.game.plugins.box2d.tools.BodyMove;
 import net.mgsx.game.plugins.box2d.tools.Box2DBodySelector;
 import net.mgsx.game.plugins.box2d.tools.Box2DParticleTool;
@@ -40,15 +40,12 @@ public class Box2DEditorPlugin extends EditorPlugin
 	// debug rendering
 	
 	// ...
-	private Box2DDebugRenderer box2dRenderer;
+	
 	
 	@Override
 	public void initialize(final EditorScreen editor) 
 	{
 		Box2DPlugin.worldItem.editor = editor;
-		
-		box2dRenderer = new Box2DDebugRenderer();
-		
 		
 		editor.registry.addGlobalEditor("Box2D", new Box2DWorldEditorPlugin(Box2DPlugin.worldItem));
 		
@@ -130,13 +127,7 @@ public class Box2DEditorPlugin extends EditorPlugin
 			}
 		});
 	
-		editor.entityEngine.addSystem(new EntitySystem(GamePipeline.RENDER_OVER) {
-			
-			@Override
-			public void update(float deltaTime) {
-				box2dRenderer.render(Box2DPlugin.worldItem.world, editor.getRenderCamera().combined);
-			}
-		});
+		editor.entityEngine.addSystem(new Box2DRenderDebugSystem(editor));
 
 		// TODO type should be configured in editor (activation function !)
 		editor.registry.registerPlugin(Box2DBodyModel.class, new Box2DBodyEditorPlugin());
