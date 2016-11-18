@@ -1,5 +1,11 @@
 package net.mgsx.game.core;
 
+import org.reflections.Reflections;
+import org.reflections.scanners.SubTypesScanner;
+import org.reflections.scanners.TypeAnnotationsScanner;
+import org.reflections.util.ClasspathHelper;
+import org.reflections.util.ConfigurationBuilder;
+
 import com.badlogic.ashley.core.Component;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
@@ -73,7 +79,24 @@ public class GameRegistry {
 		
 	}
 	
-	public void init(GameScreen screen) {
+	public void init(GameScreen screen) 
+	{
+		// bootstrap here ...
+		Reflections reflections = new Reflections(
+				new ConfigurationBuilder()
+			     .setUrls(ClasspathHelper.getUrlsForPackagePrefix("net.mgsx.game"))
+			     .setScanners(new SubTypesScanner(), new TypeAnnotationsScanner()));
+		
+		reflections.getTypesAnnotatedWith(PluginDef.class);
+		
+		for(Class<? extends Plugin> type : reflections.getSubTypesOf(Plugin.class)){
+			registerPlugin(type);
+		}
+		
+		for(Class<? extends Component> type : reflections.getSubTypesOf(Component.class)){
+			register(type);
+		}
+		
 		for(Plugin plugin : plugins.values()){
 			plugin.initialize(screen);
 		}

@@ -86,16 +86,6 @@ public class PlatformerEditorPlugin extends EditorPlugin implements DefaultEdito
 				return logic;
 			}
 		});
-//		editor.addTool(new ComponentTool("Bee Logic", editor, Family.all(G3DModel.class).get()) {
-//			
-//			@Override
-//			protected Component createComponent(Entity entity) 
-//			{
-////				StateMachineComponent smc = editor.entityEngine.createComponent(StateMachineComponent.class);
-////				smc.initialState = BeeState.INIT;
-//				return editor.entityEngine.createComponent(FlyingState.class);
-//			}
-//		});
 	}
 
 }

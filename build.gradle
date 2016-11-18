@@ -53,6 +53,8 @@ project(":core") {
         compile "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-ai:$gdxAiVersion"
         compile "com.badlogicgames.ashley:ashley:$ashleyVersion"
+        
+		compile group: 'org.reflections', name: 'reflections', version: '0.9.5-RC2'
     }
 }
 
