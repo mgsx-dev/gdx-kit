@@ -68,6 +68,8 @@ import net.mgsx.game.plugins.core.tools.UndoTool;
  */
 public class EditorScreen extends ScreenDelegate implements EditorContext
 {
+	// TODO handle selection in separated class
+	
 	private static final String STATUS_HIDDEN_TEXT = "Press F1 to toggle help";
 
 	public CommandHistory history;

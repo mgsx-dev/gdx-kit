@@ -33,6 +33,7 @@ import net.mgsx.game.examples.platformer.components.WaterZone;
 import net.mgsx.game.examples.platformer.systems.CavernSystem;
 import net.mgsx.game.examples.platformer.systems.EnvSystem;
 import net.mgsx.game.examples.platformer.systems.FallingPlatformSystem;
+import net.mgsx.game.examples.platformer.systems.GravityWalkSystem;
 import net.mgsx.game.examples.platformer.systems.LiquidSystem;
 import net.mgsx.game.examples.platformer.systems.MagnetSystem;
 import net.mgsx.game.examples.platformer.systems.OneWaySystem;
@@ -102,6 +103,7 @@ public class PlatformerPlugin implements Plugin, DefaultPlugin
 		engine.entityEngine.addSystem(new MagnetSystem());
 		engine.entityEngine.addSystem(new WalkingSystem());
 		engine.entityEngine.addSystem(new FallingPlatformSystem());
+		engine.entityEngine.addSystem(new GravityWalkSystem());
 		
 		// add a processor for player
 		// TODO could be automated with a generic component and abstract behavior attached to it ?

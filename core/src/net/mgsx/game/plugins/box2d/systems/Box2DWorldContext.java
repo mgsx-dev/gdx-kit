@@ -138,6 +138,40 @@ public class Box2DWorldContext
 		world.rayCast(callback, start, new Vector2(direction).scl(length).add(start));
 		return found[0];
 	}
+	
+	public static class RayCastResult{
+		public Fixture fixture;
+		public final Vector2 point = new Vector2();
+		public final Vector2 normal = new Vector2();
+		public float fraction;
+		public boolean isValid(){
+			return fixture != null;
+		}
+		public void reset() {
+			fixture = null;
+		}
+	}
+	
+	private RayCastResult rayCastResult = new RayCastResult();
+	
+	public RayCastResult rayCastFirstDetails(final Vector2 start, Vector2 direction, final float length) {
+		RayCastCallback callback = new RayCastCallback() {
+			
+			@Override
+			public float reportRayFixture(Fixture fixture, Vector2 point, Vector2 normal, float fraction) {
+				if(point.dst(start) < length){
+					rayCastResult.fixture = fixture;
+					rayCastResult.point.set(point);
+					rayCastResult.normal.set(normal);
+					rayCastResult.fraction = fraction;
+				}
+				return 0;
+			}
+		};
+		rayCastResult.reset();
+		world.rayCast(callback, start, new Vector2(direction).scl(length).add(start));
+		return rayCastResult;
+	}
 	public Fixture rayCastFirst(Vector2 start, Vector2 end) {
 		final Fixture [] found = new Fixture[]{null};
 		RayCastCallback callback = new RayCastCallback() {
