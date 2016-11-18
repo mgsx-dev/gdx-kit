@@ -4,8 +4,10 @@ import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.gdx.math.Vector2;
 
+import net.mgsx.game.core.annotations.EditableComponent;
 import net.mgsx.game.core.helpers.MathHelper;
 
+@EditableComponent(autoClone=true)
 public class PlayerController implements Component
 {
 	public static ComponentMapper<PlayerController> components = ComponentMapper.getFor(PlayerController.class);

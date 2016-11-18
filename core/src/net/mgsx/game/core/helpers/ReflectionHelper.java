@@ -3,6 +3,7 @@ package net.mgsx.game.core.helpers;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 
 public class ReflectionHelper {
 
@@ -116,5 +117,14 @@ public class ReflectionHelper {
 		} catch (InvocationTargetException e) {
 			throw new ReflectionError(e);
 		}
+	}
+	public static <T> T copy(T out, T in) 
+	{
+		for(Field field : out.getClass().getFields()){
+			if(field.isAccessible() && !Modifier.isStatic(field.getModifiers())){
+				set(out, field, get(in, field));
+			}
+		}
+		return out;
 	}
 }

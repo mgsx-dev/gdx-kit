@@ -34,6 +34,7 @@ public class EntityHelper
 				EditableComponent editable = componentTemplate.getClass().getAnnotation(EditableComponent.class);
 				if(editable != null && editable.autoClone()){
 					Component componentClone = engine.createComponent(componentTemplate.getClass());
+					ReflectionHelper.copy(componentClone, componentTemplate);
 					entityClone.add(componentClone);
 				}
 			}

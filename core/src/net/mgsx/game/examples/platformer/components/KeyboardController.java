@@ -6,8 +6,10 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Input.Keys;
 
 import net.mgsx.game.core.annotations.Editable;
+import net.mgsx.game.core.annotations.EditableComponent;
 import net.mgsx.game.core.annotations.EnumType;
 
+@EditableComponent(autoClone=true)
 public class KeyboardController implements Component
 {
 	
