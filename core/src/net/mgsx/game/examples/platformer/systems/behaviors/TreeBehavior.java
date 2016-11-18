@@ -36,6 +36,8 @@ public class TreeBehavior implements LogicBehavior, Initializable
 		this.entity = entity;
 		body = entity.getComponent(Box2DBodyModel.class);
 		model = entity.getComponent(G3DModel.class);
+		if(body == null || model == null) return;
+		if(body.fixtures.size < 2) return; // XXX hardcoded fix index
 		body.fixtures.get(1).fixture.setUserData(new Box2DAdapter() { // XXX sensor
 			
 			@Override

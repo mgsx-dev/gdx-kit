@@ -40,6 +40,8 @@ public class DesktopNativeInterface implements NativeServiceInterface
 					callback.selected(Gdx.files.absolute(file.getAbsolutePath()));
 				}
 			});
+		}else{
+			callback.cancel();
 		}
 		applet.destroy();
 	}

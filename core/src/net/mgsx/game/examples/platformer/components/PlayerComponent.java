@@ -26,7 +26,7 @@ import net.mgsx.game.plugins.core.components.Transform2DComponent;
 import net.mgsx.game.plugins.g3d.components.G3DModel;
 
 @Storable("example.platformer.player")
-@EditableComponent
+@EditableComponent(all={Box2DBodyModel.class, G3DModel.class})
 public class PlayerComponent implements Component, Initializable
 {
 	private G3DModel model;
@@ -68,7 +68,8 @@ public class PlayerComponent implements Component, Initializable
 		
 		physics = entity.getComponent(Box2DBodyModel.class);
 		
-		physics.fixtures.get(1).fixture.setUserData(new Box2DAdapter() { // XXX hard coded sensor index 1
+		if(physics.fixtures.size < 2) return; // XXX hard coded sensor index 1
+		physics.fixtures.get(1).fixture.setUserData(new Box2DAdapter() { 
 			@Override
 			public void endContact(Contact contact, Fixture self, Fixture other) {
 				if(other.isSensor()) return;

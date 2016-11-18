@@ -124,11 +124,16 @@ public class CoreEditorPlugin extends EditorPlugin
 					public String description() {
 						return "Patch files (json)";
 					}
+					@Override
+					public void cancel() {
+						end();
+					}
 				});
 			}
 			@Override
 			protected void create(final Vector2 position) 
 			{
+				// if(file == null) return;
 				for(Entity entity : Storage.load(editor.entityEngine, file, editor.assets, editor.serializers, true)){
 					// TODO add proxy component
 					Movable movable = entity.getComponent(Movable.class);

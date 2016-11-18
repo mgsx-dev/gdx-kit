@@ -43,13 +43,15 @@ public class ToolGroup extends InputMultiplexer
 		if(activeTool != null){
 			activeTool.group = this;
 			addProcessor(activeTool);
-			activeTool.activate();
 			Table table = new Table(editor.skin);
 			Table view = new EntityEditor(activeTool, true, editor.skin);
 			table.setBackground(editor.skin.getDrawable("default-rect"));
 			table.add(activeTool.name).row();
 			table.add(view).row();
 			editor.toolOutline.add(table);
+			activeTool.activate();
+		}else{
+			group.uncheckAll();
 		}
 	}
 
@@ -58,7 +60,7 @@ public class ToolGroup extends InputMultiplexer
 	}
 
 	final void end(Tool tool) {
-		if(defaultTool != null) setActiveTool(defaultTool);
+		setActiveTool(defaultTool);
 	}
 
 	public void addButton(TextButton btTool) {
