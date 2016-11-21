@@ -38,6 +38,7 @@ import net.mgsx.game.examples.platformer.systems.LiquidSystem;
 import net.mgsx.game.examples.platformer.systems.MagnetSystem;
 import net.mgsx.game.examples.platformer.systems.OneWaySystem;
 import net.mgsx.game.examples.platformer.systems.PixelEffectBindSystem;
+import net.mgsx.game.examples.platformer.systems.PlatformerHUDSystem;
 import net.mgsx.game.examples.platformer.systems.PlatformerPostProcessing;
 import net.mgsx.game.examples.platformer.systems.PulleySystem;
 import net.mgsx.game.examples.platformer.systems.SpeedWalkSystem;
@@ -104,6 +105,7 @@ public class PlatformerPlugin implements Plugin, DefaultPlugin
 		engine.entityEngine.addSystem(new WalkingSystem());
 		engine.entityEngine.addSystem(new FallingPlatformSystem());
 		engine.entityEngine.addSystem(new GravityWalkSystem());
+		engine.entityEngine.addSystem(new PlatformerHUDSystem(engine.assets));
 		
 		// add a processor for player
 		// TODO could be automated with a generic component and abstract behavior attached to it ?

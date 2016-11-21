@@ -16,6 +16,7 @@ import net.mgsx.game.core.annotations.EditableComponent;
 import net.mgsx.game.core.annotations.Storable;
 import net.mgsx.game.core.components.Initializable;
 import net.mgsx.game.core.components.LogicComponent;
+import net.mgsx.game.examples.platformer.systems.PlatformerHUDSystem;
 import net.mgsx.game.plugins.box2d.components.Box2DBodyModel;
 import net.mgsx.game.plugins.box2d.listeners.Box2DAdapter;
 import net.mgsx.game.plugins.box2d.listeners.Box2DComponentListener;
@@ -101,6 +102,7 @@ public class PlayerComponent implements Component, Initializable
 			{
 				if(bonus.isCatchable()){
 					bonus.setCatch();
+					engine.getSystem(PlatformerHUDSystem.class).addScore(1000);
 					// TODO add score
 					contact.setEnabled(false);
 					return;

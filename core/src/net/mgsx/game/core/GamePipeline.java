@@ -41,9 +41,10 @@ final public class GamePipeline
 	public static final int RENDER_OPAQUE = BEFORE_RENDER + SLOTS;
 	public static final int RENDER_TRANSPARENT = RENDER_OPAQUE + SLOTS;
 	public static final int AFTER_RENDER = RENDER_TRANSPARENT + SLOTS;
+	public static final int HUD = AFTER_RENDER + SLOTS;
 	
 	// special render phase for tools (last render after any FBO process)
-	public static final int RENDER_DEBUG = AFTER_RENDER + SLOTS;
+	public static final int RENDER_DEBUG = HUD + SLOTS;
 	
 	// 
 	public static final int LAST = RENDER_DEBUG + SLOTS;

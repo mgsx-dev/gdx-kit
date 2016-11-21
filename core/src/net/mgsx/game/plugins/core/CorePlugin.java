@@ -12,6 +12,7 @@ import net.mgsx.game.plugins.core.components.Transform2DComponent;
 import net.mgsx.game.plugins.core.systems.EntityEmitterSystem;
 import net.mgsx.game.plugins.core.systems.ExpirySystem;
 import net.mgsx.game.plugins.core.systems.Rotation2DSystem;
+import net.mgsx.game.plugins.core.systems.Translation3DSystem;
 
 @PluginDef(components={
 		ProxyComponent.class, 
@@ -26,6 +27,7 @@ public class CorePlugin implements Plugin
 	@Override
 	public void initialize(GameScreen engine) 
 	{
+		engine.entityEngine.addSystem(new Translation3DSystem());
 		engine.entityEngine.addSystem(new Rotation2DSystem());
 		engine.entityEngine.addSystem(new EntityEmitterSystem());
 		engine.entityEngine.addSystem(new ExpirySystem());
