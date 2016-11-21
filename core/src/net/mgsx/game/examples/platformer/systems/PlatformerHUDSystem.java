@@ -13,6 +13,7 @@ import net.mgsx.game.core.annotations.EditableSystem;
 import net.mgsx.game.examples.platformer.PlatformerAssets;
 import net.mgsx.game.plugins.core.systems.HUDSystem;
 
+// TODO separate act from draw ? 2 systems and use StageComponent instead !
 @EditableSystem
 public class PlatformerHUDSystem extends HUDSystem
 {
@@ -41,8 +42,8 @@ public class PlatformerHUDSystem extends HUDSystem
 		
 		Table main = new Table(skin);
 		
-		pointsLabel = new Label("Points ", skin);
-		lifeLabel = new Label("Life ", skin);
+		pointsLabel = new Label("Points ", skin, "score");
+		lifeLabel = new Label("Life ", skin, "score");
 		
 		banner = new Table(skin);
 		banner.setTransform(true);
@@ -82,8 +83,9 @@ public class PlatformerHUDSystem extends HUDSystem
 	{
 		if(!banner.isVisible()){
 			banner.addAction(Actions.sequence(
+					Actions.moveBy(0, 60),
 					Actions.visible(true),
-					Actions.moveBy(0, -30, .3f, Interpolation.pow2Out)));
+					Actions.moveBy(0, -60, .3f, Interpolation.pow2Out)));
 		}
 	}
 	@Editable
@@ -91,8 +93,9 @@ public class PlatformerHUDSystem extends HUDSystem
 	{
 		if(banner.isVisible()){
 			banner.addAction(Actions.sequence(
-					Actions.moveBy(0, 30, .3f, Interpolation.pow2In), 
-					Actions.visible(false)));
+					Actions.moveBy(0, 60, .3f, Interpolation.pow2In), 
+					Actions.visible(false),
+					Actions.moveBy(0, -60)));
 		}
 	}
 

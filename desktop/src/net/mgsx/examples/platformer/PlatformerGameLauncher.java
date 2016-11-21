@@ -1,5 +1,6 @@
 package net.mgsx.examples.platformer;
 
+import com.badlogic.gdx.Graphics.DisplayMode;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 
@@ -14,6 +15,10 @@ public class PlatformerGameLauncher
 		NativeService.instance = new DesktopNativeInterface(); 
 		
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
+		DisplayMode dm = LwjglApplicationConfiguration.getDesktopDisplayMode();
+		config.width = dm.width;
+		config.height = dm.height;
+		config.fullscreen = true;
 		
 		new LwjglApplication(new PlatformerGame(), config);
 	}

@@ -1,6 +1,9 @@
 package net.mgsx.game.core;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Graphics.DisplayMode;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
@@ -40,6 +43,19 @@ public abstract class GameApplication extends Game
 	@Override
 	public void render() 
 	{
+		if(Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT) && Gdx.input.isKeyPressed(Input.Keys.ENTER)){
+			if(Gdx.graphics.isFullscreen()){
+				Gdx.graphics.setWindowedMode(640, 480);
+				// TODO Gdx.graphics.setSystemCursor(SystemCursor.Arrow);
+			}
+			else{
+				DisplayMode dm = Gdx.graphics.getDisplayMode();
+				Gdx.graphics.setFullscreenMode(dm);
+				// TODO Gdx.graphics.setSystemCursor(null);
+			}
+			
+		}
+		
 		super.render();
 		
 		// check complete status for clips
