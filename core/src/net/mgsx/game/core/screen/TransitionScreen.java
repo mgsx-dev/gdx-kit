@@ -79,5 +79,10 @@ public class TransitionScreen implements ScreenClip
 	{
 		return complete;
 	}
+
+	public void reset() 
+	{
+		time = 0;
+	}
 	
 }

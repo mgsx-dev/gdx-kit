@@ -77,7 +77,6 @@ public class PlatformerGame extends GameApplication implements PlatformerWorkflo
 		// then fadein level screen
 		// finally set input processor
 		
-		// TODO just create screens
 		// load level loading screen
 		if(levelLoadingScreen == null)
 		{

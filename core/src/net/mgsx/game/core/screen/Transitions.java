@@ -45,7 +45,7 @@ public class Transitions
 	}
 	
 	private static FadeTransition fadeTransition;
-	private static ScreenTransition fadeTransition() 
+	public static ScreenTransition fadeTransition() 
 	{
 		if(fadeTransition == null){
 			fadeTransition = new FadeTransition();

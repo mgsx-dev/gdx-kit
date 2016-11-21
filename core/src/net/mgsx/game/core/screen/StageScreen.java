@@ -43,8 +43,8 @@ public class StageScreen extends ScreenAdapter
 	}
 	
 	@Override
-	public void render(float delta) {
-		stage.act(delta);
+	public void render(float deltaTime) {
+		stage.act(deltaTime);
 		stage.draw();
 	}
 	

@@ -8,6 +8,6 @@ public class TransitionDesc
 	public ScreenTransition transition;
 	public Screen destination;
 	public float duration;
-	public Interpolation interpolation;
-	public TransitionListener listener;
+	public Interpolation interpolation = Interpolation.linear;
+	public TransitionListener listener = null;
 }
