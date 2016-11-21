@@ -34,15 +34,15 @@ import net.mgsx.game.plugins.core.components.Transform2DComponent;
 @PluginDef(components={Box2DBodyModel.class, Box2DJointModel.class})
 public class Box2DPlugin implements Plugin
 {
-	public static Box2DWorldContext worldItem;
+	
 
 	@Override
 	public void initialize(final GameScreen engine) 
 	{
-		worldItem = new Box2DWorldContext();
+		Box2DWorldContext worldItem = new Box2DWorldContext();
 		worldItem.initialize();
 		
-		engine.entityEngine.addSystem(new Box2DWorldSystem());
+		engine.entityEngine.addSystem(new Box2DWorldSystem(worldItem));
 		engine.entityEngine.addSystem(new Box2DMasterSystem());
 		engine.entityEngine.addSystem(new Box2DSlaveSystem());
 		

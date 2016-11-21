@@ -1,39 +1,130 @@
 package net.mgsx.game.examples.platformer;
 
-import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.PooledEngine;
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Color;
 
+import net.mgsx.game.core.GameApplication;
 import net.mgsx.game.core.GameRegistry;
-import net.mgsx.game.core.GameScreen;
+import net.mgsx.game.core.screen.TransitionListener;
+import net.mgsx.game.core.screen.Transitions;
+import net.mgsx.game.examples.platformer.screens.GameLoadingScreen;
+import net.mgsx.game.examples.platformer.screens.GameMenuScreen;
+import net.mgsx.game.examples.platformer.screens.LevelLoadingScreen;
+import net.mgsx.game.examples.platformer.screens.LevelScreen;
 
-public class PlatformerGame extends Game
+/**
+ * Platformer Game Application (official entry point)
+ * 
+ * This classe is responsible of platformer screen workflow : 
+ * - loading (simple splash screen)
+ * - title screen (engine with HUD menu)
+ * - level loading screen (interactive loading screen)
+ * - level screen (in game screen with engine)
+ * 
+ * @author mgsx
+ *
+ */
+public class PlatformerGame extends GameApplication implements PlatformerWorkflow
 {
-	private AssetManager assets;
-	private Engine engine;
+	// all cached screens
+	private GameLoadingScreen gameLoadingScreen;
+	private GameMenuScreen gameMenuScreen;
+	private LevelLoadingScreen levelLoadingScreen;
+	private LevelScreen levelScreen;
+	
+	private boolean gameStarted = false;
 	
 	@Override
 	public void create() 
 	{
-		// For now it's just a single screen game, menu, intro and transitions
-		// will come later.
-		// we boot up on level 1.
-		assets = new AssetManager();
-		Texture.setAssetManager(assets);
-
-		engine = new PooledEngine();
+		super.create();
 		
-		GameScreen screen = new GameScreen(assets, engine);
-		screen.registry = new GameRegistry();
-		screen.registry.registerPlugin(new PlatformerPlugin());
-		screen.registry.init(screen);
+		// create game loading screen, force asset loading and show it
+		gameLoadingScreen = new GameLoadingScreen(this);
+		assets.finishLoading();
+		setScreen(gameLoadingScreen);
 		
-		screen.load(Gdx.files.internal("levels/level1.json"));
+		// set this screen as recovery screen as well.
+		setDefaultLoadingScreen(gameLoadingScreen);
 		
-		setScreen(screen);
+		// create all cached screens (menu)
+		gameMenuScreen = new GameMenuScreen(this);
+		
+		// create screen sequence.
+		addTransition(Transitions.fade(Transitions.empty(Color.BLACK), 1));
+		addTransition(Transitions.fade(gameMenuScreen, 1));
+	}
+	
+	@Override
+	public AssetManager assets(){
+		return assets;
+	}
+	
+	@Override
+	public void startGame()
+	{
+		if(gameStarted) return;
+		gameStarted = true;
+		
+		// create start game sequence :
+		// first create both level loading and level screens.
+		// then fadeout current screen
+		// prepare loading
+		// fadein level loading screen
+		// when all is loaded, fadeout level loading screen
+		// then fadein level screen
+		// finally set input processor
+		
+		// TODO just create screens
+		// load level loading screen
+		if(levelLoadingScreen == null)
+		{
+			levelLoadingScreen = new LevelLoadingScreen(this, new PooledEngine());
+			levelLoadingScreen.registry = new GameRegistry();
+			levelLoadingScreen.registry.registerPlugin(new PlatformerPlugin());
+			levelLoadingScreen.registry.init(levelLoadingScreen);
+		}
+		levelLoadingScreen.load(Gdx.files.internal("levels/level-load.json"));
+		
+		// create the game screen (not cached)
+		levelScreen = new LevelScreen(this, new PooledEngine());
+		
+		levelScreen.registry = new GameRegistry();
+		levelScreen.registry.registerPlugin(new PlatformerPlugin());
+		levelScreen.registry.init(levelScreen);
+		levelScreen.load(Gdx.files.internal("levels/level1.json"));
+		
+		setTransition(Transitions.fade(Transitions.empty(Color.BLACK), 1.f));
+		addTransition(Transitions.fade(levelLoadingScreen, 1.f));
+		addTransition(Transitions.fade(Transitions.empty(Color.WHITE), 1.f));
+		addTransition(Transitions.fade(levelScreen, 1.f));
+		
+	}
+	
+	@Override
+	public void abortGame()
+	{
+		if(!gameStarted) return;
+		gameStarted = false;
+		
+		// transition :
+		// fadeout level screen
+		// dispose it
+		// fadein menu screen
+		setTransition(Transitions.fade(Transitions.empty(Color.BLACK), 1.f, new TransitionListener(){
+			@Override
+			public void end() {
+				levelScreen.dispose();
+				levelScreen = null;
+			}
+		}));
+		
+		addTransition(Transitions.fade(gameMenuScreen, 1.f));
+		
+		
+		
 	}
 
 }

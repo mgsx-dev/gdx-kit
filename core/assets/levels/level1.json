@@ -1,1 +1,4054 @@
-{}
+{
+assets: [
+	{
+		type: com.badlogic.gdx.graphics.g3d.Model
+		name: "/home/germain/dev/box2d-editor/presets/bones/background.g3dj"
+	}
+	{
+		type: com.badlogic.gdx.graphics.g3d.Model
+		name: "/home/germain/dev/box2d-editor/presets/bones/env.g3dj"
+	}
+	{
+		type: com.badlogic.gdx.graphics.Texture
+		name: "/home/germain/dev/box2d-editor/presets/bones/player.normal.png"
+	}
+	{
+		type: com.badlogic.gdx.graphics.Texture
+		name: "/home/germain/dev/box2d-editor/presets/bones/scolopandre.png"
+	}
+	{
+		type: com.badlogic.gdx.graphics.Texture
+		name: "/home/germain/dev/box2d-editor/presets/bones/forest.png"
+	}
+	{
+		type: com.badlogic.gdx.graphics.g3d.Model
+		name: "/home/germain/dev/box2d-editor/presets/bones/pulley-base.g3dj"
+	}
+	{
+		type: com.badlogic.gdx.graphics.Texture
+		name: "/home/germain/dev/box2d-editor/presets/bones/chain.png"
+	}
+	{
+		type: com.badlogic.gdx.graphics.g3d.Model
+		name: "/home/germain/dev/box2d-editor/presets/bones/water-plants.g3dj"
+	}
+	{
+		type: com.badlogic.gdx.graphics.g3d.Model
+		name: "/home/germain/dev/box2d-editor/presets/bones/pulley.g3dj"
+	}
+	{
+		type: com.badlogic.gdx.graphics.g3d.Model
+		name: "/home/germain/dev/box2d-editor/presets/bones/water.g3dj"
+	}
+	{
+		type: com.badlogic.gdx.graphics.g3d.Model
+		name: "/home/germain/dev/box2d-editor/presets/bones/platform.g3dj"
+	}
+	{
+		type: com.badlogic.gdx.graphics.Texture
+		name: "/home/germain/dev/box2d-editor/presets/bones/toile2.png"
+	}
+	{
+		type: net.mgsx.SplineTest$BlenderCurve
+		name: "/home/germain/dev/box2d-editor/presets/bones/splines/spline-platform-2.json"
+	}
+	{
+		type: com.badlogic.gdx.graphics.Texture
+		name: "/home/germain/dev/box2d-editor/presets/bones/player-diffuse.png"
+	}
+	{
+		type: com.badlogic.gdx.graphics.g3d.Model
+		name: "/home/germain/dev/box2d-editor/presets/bones/toiles.g3dj"
+	}
+	{
+		type: com.badlogic.gdx.graphics.Texture
+		name: "/home/germain/dev/box2d-editor/presets/bones/bones-texture.png"
+	}
+	{
+		type: com.badlogic.gdx.graphics.g3d.Model
+		name: "/home/germain/dev/box2d-editor/presets/bones/limace.g3dj"
+	}
+	{
+		type: com.badlogic.gdx.graphics.g3d.Model
+		name: "/home/germain/dev/box2d-editor/presets/bones/forest.g3dj"
+	}
+	{
+		type: com.badlogic.gdx.graphics.g3d.Model
+		name: "/home/germain/dev/box2d-editor/presets/bones/spider.g3dj"
+	}
+	{
+		type: com.badlogic.gdx.graphics.g3d.Model
+		name: "/home/germain/dev/box2d-editor/presets/bones/player.g3dj"
+	}
+	{
+		type: com.badlogic.gdx.graphics.g3d.Model
+		name: "/home/germain/dev/box2d-editor/presets/bones/tree.g3dj"
+	}
+	{
+		type: com.badlogic.gdx.graphics.g3d.Model
+		name: "/home/germain/dev/box2d-editor/presets/bones/cavern.g3dj"
+	}
+	{
+		type: com.badlogic.gdx.graphics.g2d.ParticleEffect
+		name: "/home/germain/dev/box2d-editor/presets/flames.p"
+	}
+	{
+		type: com.badlogic.gdx.graphics.Texture
+		name: "/home/germain/dev/box2d-editor/presets/bones/apple-texture.png"
+	}
+	{
+		type: com.badlogic.gdx.graphics.Texture
+		name: "/home/germain/dev/box2d-editor/presets/bones/toile1.png"
+	}
+	{
+		type: com.badlogic.gdx.graphics.g3d.Model
+		name: "/home/germain/dev/box2d-editor/presets/bones/apple.g3dj"
+	}
+	{
+		type: com.badlogic.gdx.graphics.Texture
+		name: "/home/germain/dev/box2d-editor/presets/bones/waterfall-texture.png"
+	}
+	{
+		type: com.badlogic.gdx.graphics.g3d.Model
+		name: "/home/germain/dev/box2d-editor/presets/bones/liane.g3dj"
+	}
+	{
+		type: com.badlogic.gdx.graphics.Texture
+		name: "/home/germain/dev/box2d-editor/presets/bones/aquaplant.png"
+	}
+	{
+		type: com.badlogic.gdx.graphics.g3d.Model
+		name: "/home/germain/dev/box2d-editor/presets/bones/waterfall.g3dj"
+	}
+]
+entities: [
+	{
+		id: 0
+	}
+	{
+		id: 1
+	}
+	{
+		id: 2
+		g3d: {
+			modelInstance: "/home/germain/dev/box2d-editor/presets/bones/background.g3dj"
+			origin: {}
+			blended: false
+			culling: false
+		}
+		box2d: {
+			id: Rectangle
+			def: {
+				position: {
+					x: 149.6435
+					y: 5.031269
+				}
+			}
+			fixtures: [
+				{
+					def: {
+						shape: {
+							type: Polygon
+							vertex: [
+								{
+									x: 1.5245743
+									y: -0.25552464
+								}
+								{
+									x: 1.5245743
+									y: 0.25552464
+								}
+								{
+									x: -1.5245743
+									y: 0.25552464
+								}
+								{
+									x: -1.5245743
+									y: -0.25552464
+								}
+							]
+						}
+						density: 1
+						filter: {}
+					}
+				}
+			]
+		}
+		2d: {
+			position: {
+				x: 149.6435
+				y: 5.031269
+			}
+			origin: {
+				x: 149.6435
+				y: 5.031269
+			}
+		}
+	}
+	{
+		id: 3
+		box2d: {
+			id: Chain
+			def: {
+				position: {
+					x: -4.280648
+					y: 4.0707054
+				}
+			}
+			fixtures: [
+				{
+					def: {
+						shape: {
+							type: Chain
+							loop: false
+							vertex: [
+								{}
+								{
+									x: 0.09943199
+									y: -4.0814395
+								}
+								{
+									x: 8.058716
+									y: -4.0767064
+								}
+								{
+									x: 9.043564
+									y: -3.4280324
+								}
+								{
+									x: 9.962125
+									y: -3.4327672
+								}
+								{
+									x: 10.975382
+									y: -4.067237
+								}
+								{
+									x: 12.807769
+									y: -4.067237
+								}
+								{
+									x: 13.555875
+									y: -2.4952672
+								}
+								{
+									x: 14.493383
+									y: -2.5000026
+								}
+								{
+									x: 15.241489
+									y: -4.0719724
+								}
+								{
+									x: 17.514217
+									y: -4.081442
+								}
+								{
+									x: 18.986755
+									y: -3.5274649
+								}
+								{
+									x: 21.420448
+									y: -3.5369332
+								}
+								{
+									x: 21.42992
+									y: -3.6979182
+								}
+								{
+									x: 26.870274
+									y: -3.7121222
+								}
+								{
+									x: 26.946
+									y: 8.366477
+								}
+								{
+									x: 28.95831
+									y: 8.148673
+								}
+								{
+									x: 32.997135
+									y: 8.584288
+								}
+								{
+									x: 35.781216
+									y: 9.408169
+								}
+								{
+									x: 38.977238
+									y: 9.663851
+								}
+								{
+									x: 41.13631
+									y: 9.294542
+								}
+								{
+									x: 41.25468
+									y: 9.18564
+								}
+								{
+									x: 40.90904
+									y: 9.138292
+								}
+								{
+									x: 38.920403
+									y: 9.289807
+								}
+								{
+									x: 35.852226
+									y: 8.868396
+								}
+								{
+									x: 33.22439
+									y: 7.8125353
+								}
+								{
+									x: 28.963032
+									y: 6.7898006
+								}
+								{
+									x: 27.987644
+									y: 0.1704855
+								}
+								{
+									x: 27.98291
+									y: -3.7783787
+								}
+								{
+									x: 39.583286
+									y: -3.7736444
+								}
+								{
+									x: 40.55393
+									y: -3.1155005
+								}
+								{
+									x: 41.5009
+									y: -3.1202354
+								}
+								{
+									x: 42.509422
+									y: -3.7736444
+								}
+								{
+									x: 44.322845
+									y: -3.76891
+								}
+								{
+									x: 45.08989
+									y: -2.173266
+								}
+								{
+									x: 46.02739
+									y: -2.173266
+								}
+								{
+									x: 46.76129
+									y: -3.75944
+								}
+								{
+									x: 49.02929
+									y: -3.7831144
+								}
+								{
+									x: 50.516033
+									y: -3.2244024
+								}
+								{
+									x: 58.001842
+									y: -3.2291358
+								}
+								{
+									x: 58.00657
+									y: 0.17522049
+								}
+								{
+									x: 57.75089
+									y: 1.846622
+								}
+								{
+									x: 52.8361
+									y: 2.0644212
+								}
+								{
+									x: 52.84557
+									y: 2.3579817
+								}
+								{
+									x: 57.66565
+									y: 2.5757847
+								}
+								{
+									x: 57.035934
+									y: 6.799267
+								}
+								{
+									x: 52.817204
+									y: 7.8077965
+								}
+								{
+									x: 50.132565
+									y: 8.873147
+								}
+								{
+									x: 47.03601
+									y: 9.294552
+								}
+								{
+									x: 45.07105
+									y: 9.152506
+								}
+								{
+									x: 44.744343
+									y: 9.209325
+								}
+								{
+									x: 44.9148
+									y: 9.389249
+								}
+								{
+									x: 46.97919
+									y: 9.777506
+								}
+								{
+									x: 50.22729
+									y: 9.48869
+								}
+								{
+									x: 53.07767
+									y: 8.726379
+								}
+								{
+									x: 57.01709
+									y: 8.309704
+								}
+								{
+									x: 59.00571
+									y: 8.447014
+								}
+								{
+									x: 59.176163
+									y: 7.96406
+								}
+								{
+									x: 59.199783
+									y: -3.7120695
+								}
+								{
+									x: 65.49712
+									y: -3.697865
+								}
+								{
+									x: 66.6097
+									y: -3.5368843
+								}
+								{
+									x: 74.403244
+									y: -3.5321498
+								}
+								{
+									x: 75.885254
+									y: -4.0719223
+								}
+								{
+									x: 78.1533
+									y: -4.0671873
+								}
+								{
+									x: 78.87772
+									y: -2.4904833
+								}
+								{
+									x: 79.848366
+									y: -2.4904833
+								}
+								{
+									x: 80.587006
+									y: -4.0671873
+								}
+								{
+									x: 82.40992
+									y: -4.0861273
+								}
+								{
+									x: 83.413704
+									y: -3.4279823
+								}
+								{
+									x: 84.341736
+									y: -3.4279823
+								}
+								{
+									x: 85.321846
+									y: -4.0766563
+								}
+								{
+									x: 97.83135
+									y: -4.086126
+								}
+							]
+						}
+						density: 1
+						filter: {}
+					}
+				}
+			]
+		}
+		2d: {
+			position: {
+				x: -4.280648
+				y: 4.0707054
+			}
+		}
+	}
+	{
+		id: 4
+		box2d: {
+			id: Polygon
+			def: {
+				position: {
+					x: -2.7465622
+					y: -1.1281587
+				}
+			}
+			fixtures: [
+				{
+					def: {
+						shape: {
+							type: Polygon
+							vertex: [
+								{
+									x: 3.4043562
+									y: -0.91382587
+								}
+								{
+									x: 2.9024622
+									y: -0.02367425
+								}
+								{}
+								{
+									x: -0.6723485
+									y: -0.97537863
+								}
+							]
+						}
+						density: 1
+						filter: {}
+					}
+				}
+			]
+		}
+		2d: {
+			position: {
+				x: -2.7465622
+				y: -1.1281587
+			}
+		}
+	}
+	{
+		id: 5
+		box2d: {
+			id: Rectangle
+			def: {
+				position: {
+					x: 18.344336
+					y: 3.952737
+				}
+			}
+			fixtures: [
+				{
+					def: {
+						shape: {
+							type: Polygon
+							vertex: [
+								{
+									x: 1.212122
+									y: -0.18939376
+								}
+								{
+									x: 1.212122
+									y: 0.18939376
+								}
+								{
+									x: -1.212122
+									y: 0.18939376
+								}
+								{
+									x: -1.212122
+									y: -0.18939376
+								}
+							]
+						}
+						density: 1
+						filter: {}
+					}
+				}
+			]
+		}
+		2d: {
+			position: {
+				x: 18.344336
+				y: 3.952737
+			}
+		}
+	}
+	{
+		id: 6
+		box2d: {
+			id: Rectangle
+			def: {
+				position: {
+					x: 21.301247
+					y: 1.8930781
+				}
+			}
+			fixtures: [
+				{
+					def: {
+						shape: {
+							type: Polygon
+							vertex: [
+								{
+									x: 1.366004
+									y: -0.042613685
+								}
+								{
+									x: 1.366004
+									y: 0.042613685
+								}
+								{
+									x: -1.366004
+									y: 0.042613685
+								}
+								{
+									x: -1.366004
+									y: -0.042613685
+								}
+							]
+						}
+						density: 1
+						filter: {}
+					}
+				}
+			]
+		}
+		2d: {
+			position: {
+				x: 21.301247
+				y: 1.8930781
+			}
+		}
+	}
+	{
+		id: 7
+		box2d: {
+			id: Rectangle
+			def: {
+				position: {
+					x: 21.904942
+					y: 3.23304
+				}
+			}
+			fixtures: [
+				{
+					def: {
+						shape: {
+							type: Polygon
+							vertex: [
+								{
+									x: 0.804924
+									y: -0.113636255
+								}
+								{
+									x: 0.804924
+									y: 0.113636255
+								}
+								{
+									x: -0.804924
+									y: 0.113636255
+								}
+								{
+									x: -0.804924
+									y: -0.113636255
+								}
+							]
+						}
+						density: 1
+						filter: {}
+					}
+				}
+			]
+		}
+		2d: {
+			position: {
+				x: 21.904942
+				y: 3.23304
+			}
+		}
+	}
+	{
+		id: 8
+		box2d: {
+			id: Rectangle
+			def: {
+				position: {
+					x: 20.76624
+					y: 6.696581
+				}
+			}
+			fixtures: [
+				{
+					def: {
+						shape: {
+							type: Polygon
+							vertex: [
+								{
+									x: 1.18608
+									y: -0.22964025
+								}
+								{
+									x: 1.18608
+									y: 0.22964025
+								}
+								{
+									x: -1.18608
+									y: 0.22964025
+								}
+								{
+									x: -1.18608
+									y: -0.22964025
+								}
+							]
+						}
+						density: 1
+						filter: {}
+					}
+				}
+			]
+		}
+		2d: {
+			position: {
+				x: 20.76624
+				y: 6.696581
+			}
+		}
+	}
+	{
+		id: 9
+		box2d: {
+			id: Rectangle
+			def: {
+				position: {
+					x: 17.321636
+					y: 5.425275
+				}
+			}
+			fixtures: [
+				{
+					def: {
+						shape: {
+							type: Polygon
+							vertex: [
+								{
+									x: 0.553977
+									y: -0.13257575
+								}
+								{
+									x: 0.553977
+									y: 0.13257575
+								}
+								{
+									x: -0.553977
+									y: 0.13257575
+								}
+								{
+									x: -0.553977
+									y: -0.13257575
+								}
+							]
+						}
+						density: 1
+						filter: {}
+					}
+				}
+			]
+		}
+		2d: {
+			position: {
+				x: 17.321636
+				y: 5.425275
+			}
+		}
+	}
+	{
+		id: 10
+		box2d: {
+			id: Rectangle
+			def: {
+				position: {
+					x: 17.80696
+					y: 9.269967
+				}
+			}
+			fixtures: [
+				{
+					def: {
+						shape: {
+							type: Polygon
+							vertex: [
+								{
+									x: 1.181345
+									y: -0.250947
+								}
+								{
+									x: 1.181345
+									y: 0.250947
+								}
+								{
+									x: -1.181345
+									y: 0.250947
+								}
+								{
+									x: -1.181345
+									y: -0.250947
+								}
+							]
+						}
+						density: 1
+						filter: {}
+					}
+				}
+			]
+		}
+		2d: {
+			position: {
+				x: 17.80696
+				y: 9.269967
+			}
+		}
+	}
+	{
+		id: 11
+		box2d: {
+			id: Rectangle
+			def: {
+				position: {
+					x: 19.724573
+					y: 8.543169
+				}
+			}
+			fixtures: [
+				{
+					def: {
+						shape: {
+							type: Polygon
+							vertex: [
+								{
+									x: 0.556345
+									y: -0.1586175
+								}
+								{
+									x: 0.556345
+									y: 0.1586175
+								}
+								{
+									x: -0.556345
+									y: 0.1586175
+								}
+								{
+									x: -0.556345
+									y: -0.1586175
+								}
+							]
+						}
+						density: 1
+						filter: {}
+					}
+				}
+			]
+		}
+		2d: {
+			position: {
+				x: 19.724573
+				y: 8.543169
+			}
+		}
+	}
+	{
+		id: 12
+		box2d: {
+			id: Rectangle
+			def: {
+				position: {
+					x: 21.620918
+					y: 11.424334
+				}
+			}
+			fixtures: [
+				{
+					def: {
+						shape: {
+							type: Polygon
+							vertex: [
+								{
+									x: 1.093751
+									y: -0.123106
+								}
+								{
+									x: 1.093751
+									y: 0.123106
+								}
+								{
+									x: -1.093751
+									y: 0.123106
+								}
+								{
+									x: -1.093751
+									y: -0.123106
+								}
+							]
+						}
+						density: 1
+						filter: {}
+					}
+				}
+			]
+		}
+		2d: {
+			position: {
+				x: 21.620918
+				y: 11.424334
+			}
+		}
+	}
+	{
+		id: 13
+		box2d: {
+			id: Rectangle
+			def: {
+				position: {
+					x: 20.510595
+					y: 10.657288
+				}
+			}
+			fixtures: [
+				{
+					def: {
+						shape: {
+							type: Polygon
+							vertex: [
+								{
+									x: 0.61789703
+									y: -0.11363649
+								}
+								{
+									x: 0.61789703
+									y: 0.11363649
+								}
+								{
+									x: -0.61789703
+									y: 0.11363649
+								}
+								{
+									x: -0.61789703
+									y: -0.11363649
+								}
+							]
+						}
+						density: 1
+						filter: {}
+					}
+				}
+			]
+		}
+		2d: {
+			position: {
+				x: 20.510595
+				y: 10.657288
+			}
+		}
+	}
+	{
+		id: 14
+		box2d: {
+			id: Rectangle
+			def: {
+				position: {
+					x: 38.787083
+					y: 12.98687
+				}
+			}
+			fixtures: [
+				{
+					def: {
+						shape: {
+							type: Polygon
+							vertex: [
+								{
+									x: 0.684185
+									y: -0.10416651
+								}
+								{
+									x: 0.684185
+									y: 0.10416651
+								}
+								{
+									x: -0.684185
+									y: 0.10416651
+								}
+								{
+									x: -0.684185
+									y: -0.10416651
+								}
+							]
+						}
+						density: 1
+						filter: {}
+					}
+				}
+			]
+		}
+		2d: {
+			position: {
+				x: 38.709076
+				y: 12.492924
+			}
+		}
+	}
+	{
+		id: 15
+		box2d: {
+			id: Rectangle
+			def: {
+				position: {
+					x: 51.033722
+					y: 2.6530724
+				}
+			}
+			fixtures: [
+				{
+					def: {
+						shape: {
+							type: Polygon
+							vertex: [
+								{
+									x: 0.501894
+									y: -0.1538825
+								}
+								{
+									x: 0.501894
+									y: 0.1538825
+								}
+								{
+									x: -0.501894
+									y: 0.1538825
+								}
+								{
+									x: -0.501894
+									y: -0.1538825
+								}
+							]
+						}
+						density: 1
+						filter: {}
+					}
+				}
+			]
+		}
+		2d: {
+			position: {
+				x: 51.033722
+				y: 2.6530724
+			}
+		}
+	}
+	{
+		id: 16
+		box2d: {
+			id: Rectangle
+			def: {
+				position: {
+					x: 50.100952
+					y: 3.03186
+				}
+			}
+			fixtures: [
+				{
+					def: {
+						shape: {
+							type: Polygon
+							vertex: [
+								{
+									x: 0.52083397
+									y: -0.28645825
+								}
+								{
+									x: 0.52083397
+									y: 0.28645825
+								}
+								{
+									x: -0.52083397
+									y: 0.28645825
+								}
+								{
+									x: -0.52083397
+									y: -0.28645825
+								}
+							]
+						}
+						density: 1
+						filter: {}
+					}
+				}
+			]
+		}
+		2d: {
+			position: {
+				x: 50.100952
+				y: 3.03186
+			}
+		}
+	}
+	{
+		id: 17
+		box2d: {
+			id: Rectangle
+			def: {
+				position: {
+					x: 48.829647
+					y: 3.4911404
+				}
+			}
+			fixtures: [
+				{
+					def: {
+						shape: {
+							type: Polygon
+							vertex: [
+								{
+									x: 0.816761
+									y: -0.27698863
+								}
+								{
+									x: 0.816761
+									y: 0.27698863
+								}
+								{
+									x: -0.816761
+									y: 0.27698863
+								}
+								{
+									x: -0.816761
+									y: -0.27698863
+								}
+							]
+						}
+						density: 1
+						filter: {}
+					}
+				}
+			]
+		}
+		2d: {
+			position: {
+				x: 48.829647
+				y: 3.4911404
+			}
+		}
+	}
+	{
+		id: 18
+		box2d: {
+			id: Rectangle
+			def: {
+				position: {
+					x: 47.832962
+					y: 4.0048714
+				}
+			}
+			fixtures: [
+				{
+					def: {
+						shape: {
+							type: Polygon
+							vertex: [
+								{
+									x: 0.71022797
+									y: -0.28882587
+								}
+								{
+									x: 0.71022797
+									y: 0.28882587
+								}
+								{
+									x: -0.71022797
+									y: 0.28882587
+								}
+								{
+									x: -0.71022797
+									y: -0.28882587
+								}
+							]
+						}
+						density: 1
+						filter: {}
+					}
+				}
+			]
+		}
+		2d: {
+			position: {
+				x: 47.832962
+				y: 4.0048714
+			}
+		}
+	}
+	{
+		id: 19
+		box2d: {
+			id: Rectangle
+			def: {
+				position: {
+					x: 51.8126
+					y: 2.2624474
+				}
+			}
+			fixtures: [
+				{
+					def: {
+						shape: {
+							type: Polygon
+							vertex: [
+								{
+									x: 0.561079
+									y: -0.28882563
+								}
+								{
+									x: 0.561079
+									y: 0.28882563
+								}
+								{
+									x: -0.561079
+									y: 0.28882563
+								}
+								{
+									x: -0.561079
+									y: -0.28882563
+								}
+							]
+						}
+						density: 1
+						filter: {}
+					}
+				}
+			]
+		}
+		2d: {
+			position: {
+				x: 51.8126
+				y: 2.2624474
+			}
+		}
+	}
+	{
+		id: 20
+		box2d: {
+			id: Rectangle
+			def: {
+				position: {
+					x: 52.520462
+					y: 2.0043979
+				}
+			}
+			fixtures: [
+				{
+					def: {
+						shape: {
+							type: Polygon
+							vertex: [
+								{
+									x: 0.246212
+									y: -0.15388262
+								}
+								{
+									x: 0.246212
+									y: 0.15388262
+								}
+								{
+									x: -0.246212
+									y: 0.15388262
+								}
+								{
+									x: -0.246212
+									y: -0.15388262
+								}
+							]
+						}
+						density: 1
+						filter: {}
+					}
+				}
+			]
+		}
+		2d: {
+			position: {
+				x: 52.520462
+				y: 2.0043979
+			}
+		}
+	}
+	{
+		id: 21
+		box2d: {
+			id: Rectangle
+			def: {
+				position: {
+					x: 46.758156
+					y: 4.9731474
+				}
+			}
+			fixtures: [
+				{
+					def: {
+						shape: {
+							type: Polygon
+							vertex: [
+								{
+									x: 0.80018806
+									y: -0.86411
+								}
+								{
+									x: 0.80018806
+									y: 0.86411
+								}
+								{
+									x: -0.80018806
+									y: 0.86411
+								}
+								{
+									x: -0.80018806
+									y: -0.86411
+								}
+							]
+						}
+						density: 1
+						filter: {}
+					}
+				}
+			]
+		}
+		2d: {
+			position: {
+				x: 46.654152
+				y: 4.94715
+			}
+		}
+	}
+	{
+		id: 22
+		box2d: {
+			id: Chain Loop
+			def: {
+				position: {
+					x: 15.129299
+					y: 2.5607612
+				}
+			}
+			fixtures: [
+				{
+					def: {
+						shape: {
+							type: Chain
+							loop: true
+							vertex: [
+								{}
+								{
+									x: 1.07481
+								}
+								{
+									x: 1.1316338
+									y: 12.017049
+								}
+								{
+									x: 2.1969452
+									y: 14.815352
+								}
+								{
+									x: 1.4393692
+									y: 14.815352
+								}
+								{
+									x: 0.009444237
+									y: 12.0596695
+								}
+							]
+						}
+						density: 1
+						filter: {}
+					}
+				}
+			]
+		}
+		2d: {
+			position: {
+				x: 15.129299
+				y: 2.5607612
+			}
+		}
+	}
+	{
+		id: 23
+		box2d: {
+			id: Chain Loop
+			def: {
+				position: {
+					x: 53.831917
+					y: 14.431064
+				}
+			}
+			fixtures: [
+				{
+					def: {
+						shape: {
+							type: Chain
+							loop: true
+							vertex: [
+								{}
+								{
+									x: -0.08049393
+									y: 0.17518997
+								}
+								{
+									x: 1.3588753
+									y: 2.9592867
+								}
+								{
+									x: 2.1306572
+									y: 2.9308786
+								}
+								{
+									x: 1.0084991
+									y: -0.20832634
+								}
+							]
+						}
+						density: 1
+						filter: {}
+					}
+				}
+			]
+		}
+		2d: {
+			position: {
+				x: 53.831917
+				y: 14.431064
+			}
+		}
+	}
+	{
+		id: 24
+		box2d: {
+			id: Chain Loop
+			def: {
+				position: {
+					x: 62.354557
+					y: 2.4140139
+				}
+			}
+			fixtures: [
+				{
+					def: {
+						shape: {
+							type: Chain
+							loop: true
+							vertex: [
+								{}
+								{
+									x: -1.0558739
+									y: 0.009469509
+								}
+								{
+									x: -0.8901367
+									y: 11.993376
+								}
+								{
+									x: -1.8418427
+									y: 13.991481
+								}
+								{
+									x: -1.0085068
+									y: 14.176141
+								}
+								{
+									x: 0.004749298
+									y: 12.196974
+								}
+							]
+						}
+						density: 1
+						filter: {}
+					}
+				}
+			]
+		}
+		2d: {
+			position: {
+				x: 62.354557
+				y: 2.4140139
+			}
+		}
+	}
+	{
+		id: 25
+		box2d: {
+			id: Rectangle
+			def: {
+				position: {
+					x: 5.184658
+					y: 0.43797415
+				}
+			}
+			fixtures: [
+				{
+					def: {
+						shape: {
+							type: Polygon
+							vertex: [
+								{
+									x: 2.028883
+									y: -1.730587
+								}
+								{
+									x: 2.028883
+									y: 1.730587
+								}
+								{
+									x: -2.028883
+									y: 1.730587
+								}
+								{
+									x: -2.028883
+									y: -1.730587
+								}
+							]
+						}
+						density: 1
+						isSensor: true
+						filter: {}
+					}
+				}
+			]
+		}
+		2d: {
+			position: {
+				x: 5.184658
+				y: 0.43797415
+			}
+		}
+	}
+	{
+		id: 26
+		box2d: {
+			id: Chain
+			def: {
+				position: {
+					x: 92.96046
+					y: -0.37178183
+				}
+			}
+			fixtures: [
+				{
+					def: {
+						shape: {
+							type: Chain
+							loop: false
+							vertex: [
+								{}
+								{
+									x: 2.2539597
+									y: 1.4948363
+								}
+								{
+									x: 5.396797
+									y: 1.4312263
+								}
+								{
+									x: 5.396797
+									y: -6.3610086
+								}
+							]
+						}
+						density: 1
+						filter: {}
+					}
+				}
+			]
+		}
+		2d: {
+			position: {
+				x: 92.96046
+				y: -0.37178183
+			}
+			origin: {
+				x: 92.96046
+				y: -0.37178183
+			}
+		}
+	}
+	{
+		id: 27
+		box2d: {
+			id: Chain
+			def: {
+				position: {
+					x: 92.166374
+					y: 7.8975143
+				}
+			}
+			fixtures: [
+				{
+					def: {
+						shape: {
+							type: Chain
+							loop: false
+							vertex: [
+								{}
+								{
+									x: 2.0952377
+									y: -0.031804085
+								}
+								{
+									x: 3.0158615
+									y: -0.47707605
+								}
+								{
+									x: 4.19046
+									y: -0.9223461
+								}
+								{
+									x: 5.6507797
+									y: -1.1131763
+								}
+								{
+									x: 7.1428375
+									y: -1.0177603
+								}
+								{
+									x: 8.603149
+									y: -0.6997099
+								}
+								{
+									x: 9.714256
+									y: -0.2544403
+								}
+								{
+									x: 10.190445
+								}
+								{
+									x: 13.460274
+									y: -0.031804085
+								}
+								{
+									x: 17.809464
+									y: -2.480793
+								}
+								{
+									x: 20.095161
+									y: -5.693102
+								}
+								{
+									x: 22.888695
+									y: -5.7567024
+								}
+							]
+						}
+						density: 1
+						filter: {}
+					}
+				}
+			]
+		}
+		2d: {
+			position: {
+				x: 92.166374
+				y: 7.8975143
+			}
+			origin: {
+				x: 92.166374
+				y: 7.8975143
+			}
+		}
+	}
+	{
+		id: 28
+		box2d: {
+			id: Rectangle
+			def: {
+				position: {
+					x: 90.18097
+					y: 4.3211517
+				}
+			}
+			fixtures: [
+				{
+					def: {
+						shape: {
+							type: Polygon
+							vertex: [
+								{
+									x: 2.0082893
+									y: -3.2708375
+								}
+								{
+									x: 2.0082893
+									y: 3.2708375
+								}
+								{
+									x: -2.0082893
+									y: 3.2708375
+								}
+								{
+									x: -2.0082893
+									y: -3.2708375
+								}
+							]
+						}
+						density: 1
+						isSensor: true
+						filter: {}
+					}
+				}
+			]
+		}
+		2d: {
+			position: {
+				x: 90.19407
+				y: 3.0781326
+			}
+			origin: {
+				x: 90.18097
+				y: 4.3211517
+			}
+		}
+		example.platformer.climb-zone: {}
+	}
+	{
+		id: 29
+		2d: {
+			position: {
+				x: 22.163967
+				y: 2.6271555
+			}
+		}
+		p2d: {
+			reference: "/home/germain/dev/box2d-editor/presets/flames.p"
+		}
+	}
+	{
+		id: 30
+		g3d: {
+			modelInstance: "/home/germain/dev/box2d-editor/presets/bones/water.g3dj"
+			origin: {}
+			blended: true
+			culling: false
+		}
+		example.platformer.water-zone: {}
+	}
+	{
+		id: 31
+		box2d: {
+			id: Chain
+			def: {
+				position: {
+					x: 115.06773
+					y: 2.0200202
+				}
+			}
+			fixtures: [
+				{
+					def: {
+						shape: {
+							type: Chain
+							loop: false
+							vertex: [
+								{}
+								{
+									x: 0.023040771
+									y: -3.6250377
+								}
+								{
+									x: -3.7786865
+									y: -3.6712165
+								}
+								{
+									x: -7.5112915
+									y: -7.4809685
+								}
+								{
+									x: -13.271484
+									y: -7.4809685
+								}
+								{
+									x: -10.806122
+									y: -5.6338167
+								}
+							]
+						}
+						density: 1
+						filter: {}
+					}
+				}
+			]
+		}
+		2d: {
+			position: {
+				x: 115.06773
+				y: 2.0200202
+			}
+			origin: {
+				x: 115.06773
+				y: 2.0200202
+			}
+		}
+	}
+	{
+		id: 32
+		box2d: {
+			id: Chain
+			def: {
+				position: {
+					x: 98.20189
+					y: -5.43786
+				}
+			}
+			fixtures: [
+				{
+					def: {
+						shape: {
+							type: Chain
+							loop: false
+							vertex: [
+								{}
+								{
+									x: -12.60331
+									y: -0.06926727
+								}
+								{
+									x: -12.62635
+									y: -11.590883
+								}
+								{
+									x: 9.377594
+									y: -11.521614
+								}
+								{
+									x: 13.1562805
+									y: -0.13853598
+								}
+								{
+									x: 20.068512
+									y: -0.092357635
+								}
+								{
+									x: 20.02243
+									y: 3.8328426
+								}
+							]
+						}
+						density: 1
+						filter: {}
+					}
+				}
+			]
+		}
+		2d: {
+			position: {
+				x: 98.20189
+				y: -5.43786
+			}
+			origin: {
+				x: 98.20189
+				y: -5.43786
+			}
+		}
+	}
+	{
+		id: 33
+		box2d: {
+			id: Polygon
+			def: {
+				position: {
+					x: 107.55889
+					y: -5.454547
+				}
+			}
+			fixtures: [
+				{
+					def: {
+						shape: {
+							type: Polygon
+							vertex: [
+								{
+									x: 3.812622
+									y: -0.16467094
+								}
+								{
+									x: 3.6154175
+									y: 3.754498
+								}
+								{}
+								{
+									x: -0.03286743
+									y: -11.494033
+								}
+							]
+						}
+						density: 1
+						isSensor: true
+						filter: {}
+					}
+				}
+				{
+					def: {
+						shape: {
+							type: Polygon
+							vertex: [
+								{
+									x: 0.06573486
+									y: -11.493669
+								}
+								{
+									x: 0.06573486
+									y: -0.09843731
+								}
+								{
+									x: -21.955444
+									y: -0.09843731
+								}
+								{
+									x: -21.955444
+									y: -11.493669
+								}
+							]
+						}
+						density: 1
+						isSensor: true
+						filter: {}
+					}
+				}
+				{
+					def: {
+						shape: {
+							type: Polygon
+							vertex: [
+								{
+									x: 10.714775
+									y: -0.09868097
+								}
+								{
+									x: 10.714775
+									y: 3.7875538
+								}
+								{
+									x: 3.6482773
+									y: 3.7875538
+								}
+								{
+									x: 3.6482773
+									y: -0.09868097
+								}
+							]
+						}
+						density: 1
+						isSensor: true
+						filter: {}
+					}
+				}
+			]
+		}
+		2d: {
+			position: {
+				x: 107.55889
+				y: -5.454547
+			}
+			origin: {
+				x: 107.55889
+				y: -5.454547
+			}
+		}
+		example.platformer.water-zone: {}
+	}
+	{
+		id: 34
+		g3d: {
+			modelInstance: "/home/germain/dev/box2d-editor/presets/bones/platform.g3dj"
+			origin: {}
+			blended: false
+			culling: false
+		}
+		box2d: {
+			id: Rectangle
+			def: {
+				type: KinematicBody
+				position: {
+					x: 0.031340063
+					y: 0.11908801
+				}
+			}
+			fixtures: [
+				{
+					def: {
+						shape: {
+							type: Polygon
+							vertex: [
+								{
+									x: 1.9932318
+									y: -0.10655205
+								}
+								{
+									x: 1.9932318
+									y: 0.10655205
+								}
+								{
+									x: -1.9932318
+									y: 0.10655205
+								}
+								{
+									x: -1.9932318
+									y: -0.10655205
+								}
+							]
+						}
+						density: 1
+						filter: {}
+					}
+				}
+			]
+		}
+		2d: {
+			position: {
+				x: 131.1736
+				y: 8.705406
+			}
+			origin: {
+				x: 0.031340063
+				y: 0.11908801
+			}
+		}
+		example.platformer.platform: {
+			time: 0.9875475
+			speed: 0.5
+		}
+		spline: {
+			path: {
+				class: com.badlogic.gdx.math.BSpline
+				controlPoints: [
+					{
+						x: 119.23218
+						y: 0.30800104
+					}
+					{
+						x: 119.23218
+						y: 0.70637035
+					}
+					{
+						x: 119.23218
+						y: 1.084821
+					}
+					{
+						x: 118.99286
+						y: 7.219701
+					}
+					{
+						x: 119.43161
+						y: 8.295297
+					}
+					{
+						x: 120.70798
+						y: 8.673748
+					}
+					{
+						x: 131.238
+						y: 8.892849
+					}
+					{
+						x: 133.05284
+						y: 8.434725
+					}
+					{
+						x: 133.51154
+						y: 7.219701
+					}
+					{
+						x: 133.57137
+						y: 1.6823742
+					}
+					{
+						x: 133.61125
+						y: 0.30800104
+					}
+					{
+						x: 133.61125
+						y: -0.3094697
+					}
+				]
+				continuous: false
+			}
+		}
+	}
+	{
+		id: 35
+		box2d: {
+			id: Rectangle
+			def: {
+				position: {
+					x: 132.4145
+					y: -5.5777273
+				}
+			}
+			fixtures: [
+				{
+					def: {
+						shape: {
+							type: Polygon
+							vertex: [
+								{
+									x: 17.045654
+									y: -0.5162859
+								}
+								{
+									x: 17.045654
+									y: 0.5162859
+								}
+								{
+									x: -17.045654
+									y: 0.5162859
+								}
+								{
+									x: -17.045654
+									y: -0.5162859
+								}
+							]
+						}
+						density: 1
+						filter: {}
+					}
+				}
+			]
+		}
+		2d: {
+			position: {
+				x: 132.4145
+				y: -5.5777273
+			}
+			origin: {
+				x: 132.4145
+				y: -5.5777273
+			}
+		}
+	}
+	{
+		id: 36
+		box2d: {
+			id: Rectangle
+			def: {
+				position: {
+					x: 126.210396
+					y: 3.6997736
+				}
+			}
+			fixtures: [
+				{
+					def: {
+						shape: {
+							type: Polygon
+							vertex: [
+								{
+									x: 5.232765
+									y: -3.5357769
+								}
+								{
+									x: 5.232765
+									y: 3.5357769
+								}
+								{
+									x: -5.232765
+									y: 3.5357769
+								}
+								{
+									x: -5.232765
+									y: -3.5357769
+								}
+							]
+						}
+						density: 1
+						filter: {}
+					}
+				}
+			]
+		}
+		2d: {
+			position: {
+				x: 126.210396
+				y: 3.6997736
+			}
+			origin: {
+				x: 126.210396
+				y: 3.6997736
+			}
+		}
+	}
+	{
+		id: 37
+		g3d: {
+			modelInstance: "/home/germain/dev/box2d-editor/presets/bones/liane.g3dj"
+			origin: {}
+			blended: false
+			culling: false
+		}
+		box2d: {
+			id: Rectangle
+			def: {
+				type: DynamicBody
+				position: {
+					x: 0.0012107156
+					y: -0.0036316812
+				}
+			}
+			fixtures: [
+				{
+					def: {
+						shape: {
+							type: Polygon
+							vertex: [
+								{
+									x: 0.09685515
+									y: -0.9841937
+								}
+								{
+									x: 0.09685515
+									y: 0.9841937
+								}
+								{
+									x: -0.09685515
+									y: 0.9841937
+								}
+								{
+									x: -0.09685515
+									y: -0.9841937
+								}
+							]
+						}
+						density: 1
+						isSensor: true
+						filter: {}
+					}
+				}
+			]
+		}
+		2d: {
+			position: {
+				x: 3.7482178
+				y: 2.928641
+			}
+			angle: -0.009257767
+			origin: {
+				x: 0.0012107156
+				y: -0.0036316812
+			}
+		}
+		example.platformer.liana-zone: {}
+	}
+	{
+		id: 38
+		g3d: {
+			modelInstance: "/home/germain/dev/box2d-editor/presets/bones/liane.g3dj"
+			origin: {}
+			blended: false
+			culling: false
+		}
+		box2d: {
+			id: Rectangle
+			def: {
+				type: DynamicBody
+				position: {
+					x: 0.0012107156
+					y: -0.0036316812
+				}
+			}
+			fixtures: [
+				{
+					def: {
+						shape: {
+							type: Polygon
+							vertex: [
+								{
+									x: 0.09685515
+									y: -0.9841937
+								}
+								{
+									x: 0.09685515
+									y: 0.9841937
+								}
+								{
+									x: -0.09685515
+									y: 0.9841937
+								}
+								{
+									x: -0.09685515
+									y: -0.9841937
+								}
+							]
+						}
+						density: 1
+						isSensor: true
+						filter: {}
+					}
+				}
+			]
+		}
+		2d: {
+			position: {
+				x: 3.7495685
+				y: 4.7412295
+			}
+			angle: -0.007860186
+		}
+		example.platformer.liana-zone: {}
+	}
+	{
+		id: 39
+		g3d: {
+			modelInstance: "/home/germain/dev/box2d-editor/presets/bones/liane.g3dj"
+			origin: {}
+			blended: false
+			culling: false
+		}
+		box2d: {
+			id: Rectangle
+			def: {
+				type: DynamicBody
+				position: {
+					x: 0.0012107156
+					y: -0.0036316812
+				}
+			}
+			fixtures: [
+				{
+					def: {
+						shape: {
+							type: Polygon
+							vertex: [
+								{
+									x: 0.09685515
+									y: -0.9841937
+								}
+								{
+									x: 0.09685515
+									y: 0.9841937
+								}
+								{
+									x: -0.09685515
+									y: 0.9841937
+								}
+								{
+									x: -0.09685515
+									y: -0.9841937
+								}
+							]
+						}
+						density: 1
+						isSensor: true
+						filter: {}
+					}
+				}
+			]
+		}
+		2d: {
+			position: {
+				x: 3.7496495
+				y: 6.540005
+			}
+			angle: -0.0071327304
+		}
+		example.platformer.liana-zone: {}
+	}
+	{
+		id: 40
+		box2d: {
+			id: Rectangle
+			def: {
+				type: KinematicBody
+				position: {
+					x: -0.013835415
+					y: 4.8216476
+				}
+			}
+			fixtures: [
+				{
+					def: {
+						shape: {
+							type: Polygon
+							vertex: [
+								{
+									x: 0.3389799
+									y: -0.33896804
+								}
+								{
+									x: 0.3389799
+									y: 0.33896804
+								}
+								{
+									x: -0.3389799
+									y: 0.33896804
+								}
+								{
+									x: -0.3389799
+									y: -0.33896804
+								}
+							]
+						}
+						density: 1
+						isSensor: true
+						filter: {}
+					}
+				}
+			]
+		}
+		2d: {
+			position: {
+				x: 3.7545023
+				y: 7.7958927
+			}
+			origin: {
+				x: -0.013835415
+				y: 4.8216476
+			}
+		}
+	}
+	{
+		id: 41
+		box2d.joint: {
+			id: Create Distance
+			def: {
+				class: com.badlogic.gdx.physics.box2d.joints.DistanceJointDef
+				bodyA: 40
+				bodyB: 39
+				collideConnected: true
+				localAnchorA: {
+					x: -0.005505517
+					y: -0.18429661
+				}
+				localAnchorB: {
+					x: -0.0067157447
+					y: 0.85138035
+				}
+				length: 0.22018433
+			}
+		}
+	}
+	{
+		id: 42
+		box2d.joint: {
+			id: Create Distance
+			def: {
+				class: com.badlogic.gdx.physics.box2d.joints.DistanceJointDef
+				bodyA: 39
+				bodyB: 38
+				collideConnected: true
+				localAnchorA: {
+					x: 0.004294604
+					y: -0.7229376
+				}
+				localAnchorB: {
+					x: -0.0067157447
+					y: 0.7563391
+				}
+				length: 0.31945708
+			}
+		}
+	}
+	{
+		id: 43
+		box2d.joint: {
+			id: Create Distance
+			def: {
+				class: com.badlogic.gdx.physics.box2d.joints.DistanceJointDef
+				bodyA: 38
+				bodyB: 37
+				collideConnected: true
+				localAnchorA: {
+					x: 0.004294604
+					y: -0.7299051
+				}
+				localAnchorB: {
+					x: -0.006715741
+					y: 0.71916974
+				}
+				length: 0.36347094
+			}
+		}
+	}
+	{
+		id: 44
+		box2d: {
+			id: Rectangle
+			def: {
+				position: {
+					x: 143.90282
+					y: 1.1365013
+				}
+			}
+			fixtures: [
+				{
+					def: {
+						shape: {
+							type: Polygon
+							vertex: [
+								{
+									x: 6.953583
+									y: -0.9863906
+								}
+								{
+									x: 6.953583
+									y: 0.9863906
+								}
+								{
+									x: -6.953583
+									y: 0.9863906
+								}
+								{
+									x: -6.953583
+									y: -0.9863906
+								}
+							]
+						}
+						density: 1
+						filter: {}
+					}
+				}
+			]
+		}
+		2d: {
+			position: {
+				x: 143.88884
+				y: 1.1924667
+			}
+			origin: {
+				x: 143.90282
+				y: 1.1365013
+			}
+		}
+	}
+	{
+		id: 45
+		box2d: {
+			id: Rectangle
+			def: {
+				type: DynamicBody
+				position: {
+					x: 152.49187
+					y: 3.614346
+				}
+			}
+			fixtures: [
+				{
+					def: {
+						shape: {
+							type: Polygon
+							vertex: [
+								{
+									x: 0.08270264
+									y: -0.09939182
+								}
+								{
+									x: 0.08270264
+									y: 0.09939182
+								}
+								{
+									x: -0.08270264
+									y: 0.09939182
+								}
+								{
+									x: -0.08270264
+									y: -0.09939182
+								}
+							]
+						}
+						density: 1
+						filter: {}
+					}
+				}
+			]
+		}
+		2d: {
+			position: {
+				x: 152.54102
+				y: 2.2231402
+			}
+			angle: 14.15595
+			origin: {
+				x: 152.49187
+				y: 3.614346
+			}
+		}
+	}
+	{
+		id: 46
+		g3d: {
+			modelInstance: "/home/germain/dev/box2d-editor/presets/bones/pulley-base.g3dj"
+			origin: {}
+			blended: false
+			culling: false
+		}
+		box2d: {
+			id: Rectangle
+			def: {
+				type: DynamicBody
+				position: {
+					x: 152.97981
+					y: 2.3966997
+				}
+				fixedRotation: true
+			}
+			fixtures: [
+				{
+					def: {
+						shape: {
+							type: Polygon
+							vertex: [
+								{
+									x: 1.4142151
+									y: -0.20706654
+								}
+								{
+									x: 1.4142151
+									y: 0.20706654
+								}
+								{
+									x: -1.4142151
+									y: 0.20706654
+								}
+								{
+									x: -1.4142151
+									y: -0.20706654
+								}
+							]
+						}
+						density: 1
+						filter: {}
+					}
+				}
+			]
+		}
+		2d: {
+			position: {
+				x: 152.94951
+				y: 4.0698423
+			}
+			angle: 0.023682052
+			origin: {
+				x: 152.97981
+				y: 2.3966997
+			}
+		}
+	}
+	{
+		id: 47
+		g3d: {
+			modelInstance: "/home/germain/dev/box2d-editor/presets/bones/pulley-base.g3dj"
+			origin: {}
+			blended: false
+			culling: false
+		}
+		box2d: {
+			id: Rectangle
+			def: {
+				type: DynamicBody
+				position: {
+					x: 152.97981
+					y: 2.3966997
+				}
+				fixedRotation: true
+			}
+			fixtures: [
+				{
+					def: {
+						shape: {
+							type: Polygon
+							vertex: [
+								{
+									x: 1.4142151
+									y: -0.20706654
+								}
+								{
+									x: 1.4142151
+									y: 0.20706654
+								}
+								{
+									x: -1.4142151
+									y: 0.20706654
+								}
+								{
+									x: -1.4142151
+									y: -0.20706654
+								}
+							]
+						}
+						density: 1
+						filter: {}
+					}
+				}
+			]
+		}
+		2d: {
+			position: {
+				x: 157.39467
+				y: 4.563937
+			}
+			angle: -0.0013355961
+			origin: {
+				x: 152.97981
+				y: 2.3966997
+			}
+		}
+	}
+	{
+		id: 48
+		box2d.joint: {
+			id: Create Pulley
+			def: {
+				class: com.badlogic.gdx.physics.box2d.joints.PulleyJointDef
+				bodyA: 46
+				bodyB: 47
+				groundAnchorA: {
+					x: 152.93846
+					y: 5.4530015
+				}
+				groundAnchorB: {
+					x: 157.38786
+					y: 5.486132
+				}
+				localAnchorA: {
+					x: -0.008270264
+					y: 0.115971565
+				}
+				localAnchorB: {
+					y: 0.13253593
+				}
+				lengthA: 1.0161533
+				lengthB: 1.0409527
+			}
+		}
+		g3d: {
+			modelInstance: "/home/germain/dev/box2d-editor/presets/bones/pulley.g3dj"
+			origin: {}
+			blended: true
+			culling: false
+		}
+	}
+	{
+		id: 49
+		box2d: {
+			id: Rectangle
+			def: {
+				position: {
+					x: 154.66695
+					y: 0.26400995
+				}
+			}
+			fixtures: [
+				{
+					def: {
+						shape: {
+							type: Polygon
+							vertex: [
+								{
+									x: 6.8229675
+									y: -0.29403448
+								}
+								{
+									x: 6.8229675
+									y: 0.29403448
+								}
+								{
+									x: -6.8229675
+									y: 0.29403448
+								}
+								{
+									x: -6.8229675
+									y: -0.29403448
+								}
+							]
+						}
+						density: 1
+						filter: {}
+					}
+				}
+			]
+		}
+		2d: {
+			position: {
+				x: 157.4924
+				y: 1.8295512
+			}
+			origin: {
+				x: 154.66695
+				y: 0.26400995
+			}
+		}
+	}
+	{
+		id: 50
+		box2d: {
+			id: Rectangle
+			def: {
+				type: DynamicBody
+				position: {
+					x: 157.21089
+					y: 6.212381
+				}
+			}
+			fixtures: [
+				{
+					def: {
+						shape: {
+							type: Polygon
+							vertex: [
+								{
+									x: 0.7826996
+									y: -0.18555212
+								}
+								{
+									x: 0.7826996
+									y: 0.18555212
+								}
+								{
+									x: -0.7826996
+									y: 0.18555212
+								}
+								{
+									x: -0.7826996
+									y: -0.18555212
+								}
+							]
+						}
+						density: 1
+						filter: {}
+					}
+				}
+			]
+		}
+		2d: {
+			position: {
+				x: 151.63971
+				y: 2.3263147
+			}
+			angle: 0.0027869036
+			origin: {
+				x: 157.21089
+				y: 6.212381
+			}
+		}
+	}
+	{
+		id: 51
+		g3d: {
+			modelInstance: "/home/germain/dev/box2d-editor/presets/bones/forest.g3dj"
+			origin: {}
+			blended: false
+			culling: false
+		}
+	}
+	{
+		id: 52
+		g3d: {
+			modelInstance: "/home/germain/dev/box2d-editor/presets/bones/water-plants.g3dj"
+			origin: {}
+			blended: true
+			culling: false
+		}
+	}
+	{
+		id: 53
+		g3d: {
+			modelInstance: "/home/germain/dev/box2d-editor/presets/bones/cavern.g3dj"
+			origin: {}
+			blended: false
+			culling: false
+		}
+	}
+	{
+		id: 54
+		box2d: {
+			id: Chain
+			def: {
+				position: {
+					x: 164.25757
+					y: 2.036256
+				}
+			}
+			fixtures: [
+				{
+					def: {
+						shape: {
+							type: Chain
+							loop: false
+							vertex: [
+								{}
+								{
+									x: 4.617325
+									y: 0.11562395
+								}
+								{
+									x: 5.5638733
+									y: -1.2949824
+								}
+								{
+									x: 6.094864
+									y: -0.5781168
+								}
+								{
+									x: 9.280792
+									y: -1.7112272
+								}
+								{
+									x: 35.50711
+									y: -27.817966
+								}
+								{
+									x: 38.069702
+									y: -29.945438
+								}
+								{
+									x: 43.587402
+									y: -31.171047
+								}
+								{
+									x: 46.796417
+									y: -32.16541
+								}
+								{
+									x: 48.92038
+									y: -30.824177
+								}
+								{
+									x: 50.167053
+									y: -30.616055
+								}
+								{
+									x: 53.653122
+									y: -31.078548
+								}
+								{
+									x: 55.36154
+									y: -30.384808
+								}
+								{
+									x: 55.823257
+									y: -29.899189
+								}
+								{
+									x: 57.00067
+									y: -29.691067
+								}
+								{
+									x: 57.8087
+									y: -29.899189
+								}
+								{
+									x: 58.24739
+									y: -30.73164
+								}
+								{
+									x: 60.39444
+									y: -30.500393
+								}
+								{
+									x: 61.225555
+									y: -30.523518
+								}
+								{
+									x: 66.32767
+									y: -31.217258
+								}
+								{
+									x: 71.291275
+									y: -30.708515
+								}
+								{
+									x: 77.29378
+									y: -30.33852
+								}
+								{
+									x: 83.25011
+									y: -30.592892
+								}
+								{
+									x: 84.727646
+									y: -30.592892
+								}
+							]
+						}
+						density: 1
+						filter: {}
+					}
+				}
+			]
+		}
+		2d: {
+			position: {
+				x: 164.25757
+				y: 2.036256
+			}
+			origin: {
+				x: 164.25757
+				y: 2.036256
+			}
+		}
+	}
+	{
+		id: 55
+		g3d: {
+			modelInstance: "/home/germain/dev/box2d-editor/presets/bones/env.g3dj"
+			origin: {}
+			blended: false
+			culling: false
+		}
+		example.platformer.env: {
+			cameraOffset: {
+				y: 3.020133
+				z: 16.57925
+			}
+			enabled: true
+		}
+	}
+	{
+		id: 56
+		box2d: {
+			id: Chain
+			def: {
+				position: {
+					x: 236.64383
+					y: -28.530594
+				}
+			}
+			fixtures: [
+				{
+					def: {
+						shape: {
+							type: Chain
+							loop: false
+							vertex: [
+								{}
+								{
+									x: 9.323746
+									y: -2.2233124
+								}
+								{
+									x: 18.561844
+									y: -3.719799
+								}
+								{
+									x: 27.532257
+									y: -3.667698
+								}
+								{
+									x: 32.88617
+									y: -2.9841728
+								}
+								{
+									x: 34.856415
+									y: -1.4035263
+								}
+								{
+									x: 38.925415
+									y: -0.6772804
+								}
+								{
+									x: 42.480408
+									y: -1.6598473
+								}
+								{
+									x: 44.793304
+									y: -6.786274
+								}
+								{
+									x: 47.57727
+									y: -11.053448
+								}
+								{
+									x: 59.098938
+									y: -11.523369
+								}
+								{
+									x: 72.33383
+									y: -10.668964
+								}
+								{
+									x: 108.69217
+									y: -11.438408
+								}
+								{
+									x: 108.787476
+									y: 20.211643
+								}
+							]
+						}
+						density: 1
+						filter: {}
+					}
+				}
+			]
+		}
+		2d: {
+			position: {
+				x: 236.64383
+				y: -28.530594
+			}
+			origin: {
+				x: 236.64383
+				y: -28.530594
+			}
+		}
+	}
+	{
+		id: 57
+		box2d: {
+			id: Chain
+			def: {
+				position: {
+					x: 173.14326
+					y: 19.487827
+				}
+			}
+			fixtures: [
+				{
+					def: {
+						shape: {
+							type: Chain
+							loop: false
+							vertex: [
+								{}
+								{
+									x: 1.7771301
+									y: 1.1977348
+								}
+								{
+									x: 11.797119
+									y: 1.6094589
+								}
+								{
+									x: 16.674774
+									y: 0.4117241
+								}
+								{
+									x: 25.484802
+									y: -0.26200485
+								}
+								{
+									x: 25.560425
+									y: -1.0854473
+								}
+								{
+									x: 16.674774
+									y: -1.6468868
+								}
+								{
+									x: 12.477722
+									y: -2.769764
+								}
+								{
+									x: 0.5671692
+									y: -0.41172028
+								}
+							]
+						}
+						density: 1
+						filter: {}
+					}
+				}
+			]
+		}
+		2d: {
+			position: {
+				x: 173.14326
+				y: 19.487827
+			}
+			origin: {
+				x: 173.14326
+				y: 19.487827
+			}
+		}
+	}
+	{
+		id: 58
+		box2d: {
+			id: Chain
+			def: {
+				position: {
+					x: 171.32832
+					y: 9.718793
+				}
+			}
+			fixtures: [
+				{
+					def: {
+						shape: {
+							type: Chain
+							loop: false
+							vertex: [
+								{}
+								{
+									x: 8.28067
+									y: 0.2620039
+								}
+								{
+									x: 10.738403
+									y: -0.7860155
+								}
+								{
+									x: 30.513702
+									y: 0.074858665
+								}
+								{
+									x: 36.563507
+									y: 1.1977358
+								}
+								{
+									x: 38.945618
+									y: 0.41172028
+								}
+								{
+									x: 42.575485
+									y: -3.0301905
+								}
+								{
+									x: 47.906876
+									y: -3.0676198
+								}
+								{
+									x: 47.490967
+									y: -11.85705
+								}
+								{
+									x: 48.77655
+									y: -21.289223
+								}
+							]
+						}
+						density: 1
+						filter: {}
+					}
+				}
+			]
+		}
+		2d: {
+			position: {
+				x: 171.32832
+				y: 9.718793
+			}
+			origin: {
+				x: 171.32832
+				y: 9.718793
+			}
+		}
+	}
+	{
+		id: 59
+		box2d: {
+			id: Chain
+			def: {
+				position: {
+					x: 222.67604
+					y: -11.645288
+				}
+			}
+			fixtures: [
+				{
+					def: {
+						shape: {
+							type: Chain
+							loop: false
+							vertex: [
+								{}
+								{
+									x: 2.4955444
+									y: 9.806465
+								}
+								{
+									x: 2.5333557
+									y: 14.14826
+								}
+								{
+									x: 7.2597656
+									y: 17.329746
+								}
+								{
+									x: 15.842926
+									y: 20.06208
+								}
+								{
+									x: 22.913635
+									y: 20.17437
+								}
+								{
+									x: 24.95546
+									y: 28.133213
+								}
+								{
+									x: 24.99327
+									y: 31.539274
+								}
+							]
+						}
+						density: 1
+						filter: {}
+					}
+				}
+			]
+		}
+		2d: {
+			position: {
+				x: 222.67604
+				y: -11.645288
+			}
+			origin: {
+				x: 222.67604
+				y: -11.645288
+			}
+		}
+	}
+	{
+		id: 60
+		box2d: {
+			id: Chain Loop
+			def: {
+				position: {
+					x: 142.28926
+					y: 6.98469
+				}
+			}
+			fixtures: [
+				{
+					def: {
+						shape: {
+							type: Chain
+							loop: true
+							vertex: [
+								{}
+								{
+									x: -0.64279175
+									y: 1.9837499
+								}
+								{
+									x: 4.045807
+									y: 1.4597411
+								}
+								{
+									x: 3.2895813
+									y: 0.26200438
+								}
+							]
+						}
+						density: 1
+						filter: {}
+					}
+				}
+			]
+		}
+		2d: {
+			position: {
+				x: 142.28926
+				y: 6.98469
+			}
+			origin: {
+				x: 142.28926
+				y: 6.98469
+			}
+		}
+	}
+	{
+		id: 61
+		box2d: {
+			id: Chain Loop
+			def: {
+				position: {
+					x: 142.28926
+					y: 6.98469
+				}
+			}
+			fixtures: [
+				{
+					def: {
+						shape: {
+							type: Chain
+							loop: true
+							vertex: [
+								{}
+								{
+									x: -0.64279175
+									y: 1.9837499
+								}
+								{
+									x: 4.045807
+									y: 1.4597411
+								}
+								{
+									x: 3.2895813
+									y: 0.26200438
+								}
+							]
+						}
+						density: 1
+						filter: {}
+					}
+				}
+			]
+		}
+		2d: {
+			position: {
+				x: 147.0913
+				y: 4.439463
+			}
+		}
+	}
+	{
+		id: 62
+		box2d: {
+			id: Chain Loop
+			def: {
+				position: {
+					x: 142.28926
+					y: 6.98469
+				}
+			}
+			fixtures: [
+				{
+					def: {
+						shape: {
+							type: Chain
+							loop: true
+							vertex: [
+								{}
+								{
+									x: -0.64279175
+									y: 1.9837499
+								}
+								{
+									x: 4.045807
+									y: 1.4597411
+								}
+								{
+									x: 3.2895813
+									y: 0.26200438
+								}
+							]
+						}
+						density: 1
+						filter: {}
+					}
+				}
+			]
+		}
+		2d: {
+			position: {
+				x: 157.1491
+				y: 9.118189
+			}
+		}
+	}
+	{
+		id: 63
+		g3d: {
+			modelInstance: "/home/germain/dev/box2d-editor/presets/bones/forest.g3dj"
+			origin: {}
+			blended: false
+			culling: false
+		}
+	}
+	{
+		id: 64
+		box2d: {
+			id: Chain Loop
+			def: {
+				position: {
+					x: 142.28926
+					y: 6.98469
+				}
+			}
+			fixtures: [
+				{
+					def: {
+						shape: {
+							type: Chain
+							loop: true
+							vertex: [
+								{}
+								{
+									x: -0.64279175
+									y: 1.9837499
+								}
+								{
+									x: 4.045807
+									y: 1.4597411
+								}
+								{
+									x: 3.2895813
+									y: 0.26200438
+								}
+							]
+						}
+						density: 1
+						filter: {}
+					}
+				}
+			]
+		}
+		2d: {
+			position: {
+				x: 156.69536
+				y: 14.320932
+			}
+		}
+	}
+	{
+		id: 65
+		box2d: {
+			id: Chain Loop
+			def: {
+				position: {
+					x: 142.28926
+					y: 6.98469
+				}
+			}
+			fixtures: [
+				{
+					def: {
+						shape: {
+							type: Chain
+							loop: true
+							vertex: [
+								{}
+								{
+									x: -0.64279175
+									y: 1.9837499
+								}
+								{
+									x: 4.045807
+									y: 1.4597411
+								}
+								{
+									x: 3.2895813
+									y: 0.26200438
+								}
+							]
+						}
+						density: 1
+						filter: {}
+					}
+				}
+			]
+		}
+		2d: {
+			position: {
+				x: 160.40086
+				y: 17.390177
+			}
+		}
+	}
+	{
+		id: 66
+		box2d: {
+			id: Chain Loop
+			def: {
+				position: {
+					x: 142.28926
+					y: 6.98469
+				}
+			}
+			fixtures: [
+				{
+					def: {
+						shape: {
+							type: Chain
+							loop: true
+							vertex: [
+								{}
+								{
+									x: -0.64279175
+									y: 1.9837499
+								}
+								{
+									x: 4.045807
+									y: 1.4597411
+								}
+								{
+									x: 3.2895813
+									y: 0.26200438
+								}
+							]
+						}
+						density: 1
+						filter: {}
+					}
+				}
+			]
+		}
+		2d: {
+			position: {
+				x: 144.67137
+				y: 13.609766
+			}
+		}
+	}
+	{
+		id: 67
+		box2d: {
+			id: Chain Loop
+			def: {
+				position: {
+					x: 148.5425
+					y: 8.886304
+				}
+			}
+			fixtures: [
+				{
+					def: {
+						shape: {
+							type: Chain
+							loop: true
+							vertex: [
+								{}
+								{
+									x: 0.44830322
+									y: 0.9395561
+								}
+								{
+									x: 3.8554077
+									y: 1.3422241
+								}
+								{
+									x: 4.572693
+									y: -0.5816326
+								}
+							]
+						}
+						density: 1
+						filter: {}
+					}
+				}
+			]
+		}
+		2d: {
+			position: {
+				x: 148.5425
+				y: 8.886304
+			}
+			origin: {
+				x: 148.5425
+				y: 8.886304
+			}
+		}
+	}
+	{
+		id: 68
+		box2d: {
+			id: Chain Loop
+			def: {
+				position: {
+					x: 148.5425
+					y: 8.886304
+				}
+			}
+			fixtures: [
+				{
+					def: {
+						shape: {
+							type: Chain
+							loop: true
+							vertex: [
+								{}
+								{
+									x: 0.44830322
+									y: 0.9395561
+								}
+								{
+									x: 3.8554077
+									y: 1.3422241
+								}
+								{
+									x: 4.572693
+									y: -0.5816326
+								}
+							]
+						}
+						density: 1
+						filter: {}
+					}
+				}
+			]
+		}
+		2d: {
+			position: {
+				x: 162.66405
+				y: 13.002271
+			}
+		}
+	}
+	{
+		id: 69
+		box2d: {
+			id: Chain Loop
+			def: {
+				position: {
+					x: 148.5425
+					y: 8.886304
+				}
+			}
+			fixtures: [
+				{
+					def: {
+						shape: {
+							type: Chain
+							loop: true
+							vertex: [
+								{}
+								{
+									x: 0.44830322
+									y: 0.9395561
+								}
+								{
+									x: 3.8554077
+									y: 1.3422241
+								}
+								{
+									x: 4.572693
+									y: -0.5816326
+								}
+							]
+						}
+						density: 1
+						filter: {}
+					}
+				}
+			]
+		}
+		2d: {
+			position: {
+				x: 167.28157
+				y: 17.073498
+			}
+		}
+	}
+	{
+		id: 70
+		g3d: {
+			modelInstance: "/home/germain/dev/box2d-editor/presets/bones/toiles.g3dj"
+			origin: {}
+			blended: true
+			culling: false
+		}
+	}
+	{
+		id: 71
+		proxy: {
+			ref: "/home/germain/dev/box2d-editor/presets/bones/player.json"
+		}
+		2d: {
+			position: {
+				x: 295.31885
+				y: -39.813168
+			}
+			enabled: false
+			origin: {
+				x: -0.0135644665
+				y: 0.22245598
+			}
+		}
+	}
+	{
+		id: 72
+		proxy: {
+			ref: "/home/germain/dev/box2d-editor/presets/bones/limace.json"
+		}
+		2d: {
+			position: {
+				x: 19.882982
+				y: 0.49460799
+			}
+			angle: 5.4424425E-4
+			enabled: false
+			origin: {
+				x: 0.002487123
+				y: 0.13181457
+			}
+		}
+	}
+	{
+		id: 73
+		proxy: {
+			ref: "/home/germain/dev/box2d-editor/presets/bones/waterfall.json"
+		}
+	}
+	{
+		id: 74
+		proxy: {
+			ref: "/home/germain/dev/box2d-editor/presets/bones/apple-static.json"
+		}
+		2d: {
+			position: {
+				x: 55.069675
+				y: 0.51339465
+			}
+			angle: 77.3712
+		}
+	}
+	{
+		id: 75
+		proxy: {
+			ref: "/home/germain/dev/box2d-editor/presets/bones/apple-static.json"
+		}
+		2d: {
+			position: {
+				x: 28.595709
+				y: 13.00057
+			}
+		}
+	}
+	{
+		id: 76
+		proxy: {
+			ref: "/home/germain/dev/box2d-editor/presets/bones/apple-static.json"
+		}
+		2d: {
+			position: {
+				x: 29.736921
+				y: 13.401754
+			}
+		}
+	}
+	{
+		id: 77
+		proxy: {
+			ref: "/home/germain/dev/box2d-editor/presets/bones/apple-static.json"
+		}
+		2d: {
+			position: {
+				x: 31.379768
+				y: 13.865623
+			}
+		}
+	}
+	{
+		id: 78
+		proxy: {
+			ref: "/home/germain/dev/box2d-editor/presets/bones/apple-static.json"
+		}
+		2d: {
+			position: {
+				x: 32.809433
+				y: 14.204123
+			}
+		}
+	}
+	{
+		id: 79
+		proxy: {
+			ref: "/home/germain/dev/box2d-editor/presets/bones/apple-static.json"
+		}
+		2d: {
+			position: {
+				x: 34.652954
+				y: 14.191586
+			}
+		}
+	}
+	{
+		id: 80
+		proxy: {
+			ref: "/home/germain/dev/box2d-editor/presets/bones/apple-static.json"
+		}
+		2d: {
+			position: {
+				x: 36.35846
+				y: 13.87816
+			}
+		}
+	}
+	{
+		id: 81
+		proxy: {
+			ref: "/home/germain/dev/box2d-editor/presets/bones/apple-static.json"
+		}
+		2d: {
+			position: {
+				x: 40.785378
+				y: 13.865633
+			}
+		}
+	}
+	{
+		id: 82
+		proxy: {
+			ref: "/home/germain/dev/box2d-editor/presets/bones/apple-static.json"
+		}
+		2d: {
+			position: {
+				x: 42.69158
+				y: 14.304428
+			}
+		}
+	}
+	{
+		id: 83
+		proxy: {
+			ref: "/home/germain/dev/box2d-editor/presets/bones/apple-static.json"
+		}
+		2d: {
+			position: {
+				x: 44.64795
+				y: 14.066225
+			}
+		}
+	}
+	{
+		id: 84
+		proxy: {
+			ref: "/home/germain/dev/box2d-editor/presets/bones/apple-static.json"
+		}
+		2d: {
+			position: {
+				x: 46.491447
+				y: 13.777874
+			}
+		}
+	}
+	{
+		id: 85
+		proxy: {
+			ref: "/home/germain/dev/box2d-editor/presets/bones/apple-static.json"
+		}
+		2d: {
+			position: {
+				x: 48.272243
+				y: 13.25132
+			}
+		}
+	}
+	{
+		id: 86
+		proxy: {
+			ref: "/home/germain/dev/box2d-editor/presets/bones/apple-static.json"
+		}
+		2d: {
+			position: {
+				x: 49.990353
+				y: 12.912826
+			}
+		}
+	}
+	{
+		id: 87
+		proxy: {
+			ref: "/home/germain/dev/box2d-editor/presets/bones/apple-static.json"
+		}
+		2d: {
+			position: {
+				x: 38.415245
+				y: 16.184969
+			}
+		}
+	}
+	{
+		id: 88
+		proxy: {
+			ref: "/home/germain/dev/box2d-editor/presets/bones/apple-static.json"
+		}
+		2d: {
+			position: {
+				x: 39.456207
+				y: 15.207083
+			}
+		}
+	}
+	{
+		id: 89
+		proxy: {
+			ref: "/home/germain/dev/box2d-editor/presets/bones/tree-static.json"
+		}
+		2d: {
+			position: {
+				x: 62.858593
+				y: 6.4344645
+			}
+			origin: {
+				x: 62.91375
+				y: 6.462043
+			}
+		}
+	}
+	{
+		id: 90
+		proxy: {
+			ref: "/home/germain/dev/box2d-editor/presets/bones/apple-static.json"
+		}
+		2d: {
+			position: {
+				x: 55.356533
+				y: 0.51196253
+			}
+			angle: 75.25836
+		}
+	}
+	{
+		id: 91
+		proxy: {
+			ref: "/home/germain/dev/box2d-editor/presets/bones/apple-static.json"
+		}
+		2d: {
+			position: {
+				x: 71.64873
+				y: 0.15390137
+			}
+			angle: -47.96846
+		}
+	}
+	{
+		id: 92
+		proxy: {
+			ref: "/home/germain/dev/box2d-editor/presets/bones/limace.json"
+		}
+		2d: {
+			position: {
+				x: 36.79237
+				y: 1.0818132
+			}
+			angle: -0.008973912
+			enabled: false
+			origin: {
+				x: 0.002487123
+				y: 0.13181457
+			}
+		}
+	}
+	{
+		id: 93
+		proxy: {
+			ref: "/home/germain/dev/box2d-editor/presets/bones/spider.json"
+		}
+		2d: {
+			position: {
+				x: 345.77808
+				y: -37.105328
+			}
+			enabled: false
+			origin: {
+				x: -2.0124023
+				y: 0.3133851
+			}
+		}
+	}
+]
+}

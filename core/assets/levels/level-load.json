@@ -1,0 +1,25 @@
+{
+assets: [
+	{
+		type: com.badlogic.gdx.graphics.g3d.Model
+		name: "/home/germain/dev/box2d-editor/presets/bones/platform.g3dj"
+	}
+]
+entities: [
+	{
+		id: 0
+	}
+	{
+		id: 1
+	}
+	{
+		id: 2
+		g3d: {
+			modelInstance: "/home/germain/dev/box2d-editor/presets/bones/platform.g3dj"
+			origin: {}
+			blended: false
+			culling: false
+		}
+	}
+]
+}
