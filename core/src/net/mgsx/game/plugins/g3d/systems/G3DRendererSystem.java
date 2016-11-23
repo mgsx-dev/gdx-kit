@@ -5,19 +5,20 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntityListener;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
+import com.badlogic.ashley.utils.ImmutableArray;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.Shader;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
-import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
+import com.badlogic.gdx.graphics.g3d.environment.DirectionalShadowLight;
 import com.badlogic.gdx.graphics.g3d.utils.DefaultShaderProvider;
+import com.badlogic.gdx.graphics.g3d.utils.DepthShaderProvider;
 import com.badlogic.gdx.graphics.g3d.utils.ShaderProvider;
-import com.badlogic.gdx.math.Quaternion;
-import com.badlogic.gdx.math.Vector3;
 
 import net.mgsx.game.core.GamePipeline;
 import net.mgsx.game.core.GameScreen;
@@ -25,14 +26,29 @@ import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.core.annotations.EditableSystem;
 import net.mgsx.game.core.components.Hidden;
 import net.mgsx.game.core.helpers.FilesShader;
+import net.mgsx.game.plugins.core.components.Transform2DComponent;
+import net.mgsx.game.plugins.g3d.components.DirectionalLightComponent;
 import net.mgsx.game.plugins.g3d.components.G3DModel;
+import net.mgsx.game.plugins.g3d.components.PointLightComponent;
+import net.mgsx.game.plugins.g3d.components.ShadowCasting;
 
+// TODO separate shadow to another system, the only common thing is environement object
+
+// TODO supress warning for shadows ... have to watch new API when out.
+@SuppressWarnings("deprecation")
 @EditableSystem("G3D Rendering")
 public class G3DRendererSystem extends IteratingSystem 
 {
+	private ImmutableArray<Entity> directionalLights;
+	private ImmutableArray<Entity> pointLights;
+	private ImmutableArray<Entity> shadowCasts;
+	
+	
+	private DirectionalShadowLight shadowLight; // unique shadow map for now
+	
 	// TODO should be in editor code !
 	public static enum ShaderType{
-		DEFAULT, VERTEX, FRAGMENT, TOON
+		DEFAULT, VERTEX, FRAGMENT, TOON, SHADOW
 	}
 	
 	@Editable
@@ -41,12 +57,6 @@ public class G3DRendererSystem extends IteratingSystem
 	@Editable
 	public Color ambient = new Color(0.4f, 0.4f, 0.4f, 1f);
 	
-	@Editable
-	public Color diffuse = new Color(0.8f, 0.8f, 0.8f, 1f);
-
-	@Editable
-	public Quaternion direction = new Quaternion().setFromAxisRad(-1f, -0.8f, -0.2f, 0);
-
 	private EntityListener listener = new EntityListener() {
 		
 		@Override
@@ -64,16 +74,18 @@ public class G3DRendererSystem extends IteratingSystem
 	private ModelBatch modelBatch;
 	public Environment environment;
 	
-	public DirectionalLight light;
-	
 	public ShaderProvider [] shaderProviders;
 
 	private GameScreen engine;
+	private ModelBatch shadowBatch;
 	
 	@Override
 	public void addedToEngine(Engine engine) {
 		super.addedToEngine(engine);
 		engine.addEntityListener(Family.all(G3DModel.class).get(), listener);
+		directionalLights = engine.getEntitiesFor(Family.all(DirectionalLightComponent.class).get());
+		pointLights = engine.getEntitiesFor(Family.all(PointLightComponent.class).get());
+		shadowCasts = engine.getEntitiesFor(Family.all(G3DModel.class, ShadowCasting.class).get());
 	}
 	
 	@Override
@@ -99,6 +111,9 @@ public class G3DRendererSystem extends IteratingSystem
 		shaderProviders[ShaderType.TOON.ordinal()] = new FilesShader(
 				Gdx.files.local("../core/src/net/mgsx/game/plugins/g3d/shaders/platform-vertex.glsl"),
 				Gdx.files.local("../core/src/net/mgsx/game/plugins/g3d/shaders/platform-fragment.glsl")); // TODO toon !
+		shaderProviders[ShaderType.SHADOW.ordinal()] = new FilesShader(
+				Gdx.files.local("../core/src/net/mgsx/game/plugins/g3d/shaders/shadow-vertex.glsl"),
+				Gdx.files.local("../core/src/net/mgsx/game/plugins/g3d/shaders/shadow-fragment.glsl")); // TODO toon !
 		
 		
 		ShaderProvider switchableProvider = new ShaderProvider() {
@@ -113,23 +128,72 @@ public class G3DRendererSystem extends IteratingSystem
 		
 		modelBatch = new ModelBatch(switchableProvider);
 		
-		light = new DirectionalLight().set(diffuse, direction.transform(new Vector3(0,0,1)) );
+		shadowBatch = new ModelBatch(new DepthShaderProvider());
+		
 		
 		environment = new Environment();
         environment.set(new ColorAttribute(ColorAttribute.AmbientLight, ambient));
-        environment.add(light);
-
+        
+        // TODO how to adjust values ?
+        shadowLight = new DirectionalShadowLight(1024, 1024, 50f, 50f, .1f, 100f);
 	}
 
 	@Override
-	public void update(float deltaTime) {
+	public void update(float deltaTime) 
+	{
+		boolean shadow = false;
 		
-		// update environnement TODO editor specific ?
-		((ColorAttribute)environment.get(ColorAttribute.AmbientLight)).color.set(ambient);
-		light.color.set(diffuse);
-		light.direction.set(direction.transform(new Vector3(0,0,1)));
+		// gather all lights
+		environment.clear();
+		for(Entity entity : directionalLights)
+		{
+			DirectionalLightComponent dl = DirectionalLightComponent.components.get(entity);
+			if(shadow == false && dl.shadow){
+				shadow = true;
+				
+				shadowLight.color.set(dl.light.color);
+				shadowLight.direction.set(dl.light.direction);
+				environment.add(shadowLight);
+			}else{
+				environment.add(dl.light);
+			}
+		}
 		
-		modelBatch.begin(engine.getRenderCamera());
+		for(Entity entity : pointLights)
+		{
+			PointLightComponent dl = PointLightComponent.components.get(entity);
+			Transform2DComponent transform = Transform2DComponent.components.get(entity);
+			if(transform != null) dl.light.position.set(transform.position, 0);
+			environment.add(dl.light);
+		}
+		environment.set(new ColorAttribute(ColorAttribute.AmbientLight, ambient));
+		
+		
+		Camera camera = engine.getRenderCamera();
+		
+		if(shadow)
+		{
+			shadowLight.begin(camera.position, camera.direction);
+	        shadowBatch.begin(shadowLight.getCamera());
+	
+	        for(Entity instance : shadowCasts){
+	        	G3DModel model = G3DModel.components.get(instance);
+	        	if(model.inFrustum ){
+	        		shadowBatch.render(model.modelInstance);
+	        	}
+	        }
+	
+	        shadowBatch.end();
+	        shadowLight.end();
+	        
+	        environment.shadowMap = shadowLight;
+		}
+		else
+		{
+			environment.shadowMap = null;
+		}
+		
+		modelBatch.begin(camera);
 		super.update(deltaTime);
 	    modelBatch.end();
 	}
