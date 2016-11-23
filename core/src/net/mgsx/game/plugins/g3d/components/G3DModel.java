@@ -13,6 +13,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.Json.Serializable;
 import com.badlogic.gdx.utils.JsonValue;
+import com.badlogic.gdx.utils.Pool.Poolable;
 
 import net.mgsx.game.core.annotations.EditableComponent;
 import net.mgsx.game.core.annotations.Storable;
@@ -20,7 +21,7 @@ import net.mgsx.game.core.components.Duplicable;
 
 @Storable("g3d")
 @EditableComponent(autoTool=false)
-public class G3DModel implements Component, Duplicable, Serializable
+public class G3DModel implements Component, Duplicable, Serializable, Poolable
 {
 	public final static ComponentMapper<G3DModel> components = ComponentMapper.getFor(G3DModel.class);
 	
@@ -75,6 +76,21 @@ public class G3DModel implements Component, Duplicable, Serializable
 			}
 			attr.blended = blended;
 		}
+	}
+
+	@Override
+	public void reset() 
+	{
+		// TODO use pool for modelInstance and animation controller ! (pool by Model name)
+		this.animationController = null;
+		this.boundary.clear();
+		this.blended = false;
+		this.culling = true;
+		this.globalBoundary = null;
+		this.localBoundary = null;
+		this.inFrustum = false;
+		this.modelInstance = null;
+		this.origin.setZero();
 	}
 	
 	

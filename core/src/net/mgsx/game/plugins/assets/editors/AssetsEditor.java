@@ -105,9 +105,9 @@ public class AssetsEditor implements GlobalEditorPlugin
 			}
 		});
 		
-		table.add(btRefresh);
-		table.add(editor.assets.getDiagnostics()).row();
-		table.add(String.valueOf(editor.assets.getLoadedAssets())).row();
+		table.add(btRefresh).row();
+		//table.add(editor.assets.getDiagnostics()).row();
+		//table.add(String.valueOf(editor.assets.getLoadedAssets())).row();
 		table.add(assetList);
 		
 		return table;

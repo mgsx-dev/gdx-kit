@@ -7,7 +7,8 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 
 import net.mgsx.game.core.EditorScreen;
-import net.mgsx.game.core.helpers.EntityHelper;
+import net.mgsx.game.core.storage.EntityGroup;
+import net.mgsx.game.core.storage.EntityGroupStorage;
 
 public class DuplicateTool extends SelectTool
 {
@@ -31,11 +32,16 @@ public class DuplicateTool extends SelectTool
 		if(keycode == Input.Keys.D && shift())
 		{
 			Array<Entity> duplicates = new Array<Entity>();
-			for(Entity entity : editor.selection)
-			{
-				Entity newEntity = EntityHelper.clone(editor.entityEngine, entity);
-				duplicates.add(newEntity);
-			}
+			EntityGroup group = new EntityGroup();
+			group.entities().addAll(editor.selection);
+			EntityGroupStorage.create(duplicates, editor.assets, getEngine(), group, null);
+			
+//			for(Entity entity : editor.selection)
+//			{
+//				
+//				Entity newEntity = EntityHelper.clone(editor.entityEngine, entity);
+//				duplicates.add(newEntity);
+//			}
 			editor.selection.clear();
 			editor.selection.addAll(duplicates);
 			editor.invalidateSelection();

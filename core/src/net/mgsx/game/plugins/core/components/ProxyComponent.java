@@ -6,6 +6,7 @@ import com.badlogic.ashley.core.Engine;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.Json.Serializable;
 import com.badlogic.gdx.utils.JsonValue;
+import com.badlogic.gdx.utils.Pool.Poolable;
 
 import net.mgsx.game.core.annotations.EditableComponent;
 import net.mgsx.game.core.annotations.Storable;
@@ -14,7 +15,7 @@ import net.mgsx.game.core.storage.EntityGroup;
 
 @Storable("proxy")
 @EditableComponent(name="Proxy", autoTool=false)
-public class ProxyComponent implements Component, Duplicable, Serializable
+public class ProxyComponent implements Component, Duplicable, Serializable, Poolable
 {
 	
 	public final static ComponentMapper<ProxyComponent> components = ComponentMapper.getFor(ProxyComponent.class);
@@ -39,5 +40,11 @@ public class ProxyComponent implements Component, Duplicable, Serializable
 	@Override
 	public void read(Json json, JsonValue jsonData) {
 		json.readField(this, "ref", jsonData);
+	}
+
+	@Override
+	public void reset() {
+		template = clones = null;
+		ref = null;
 	}
 }

@@ -118,7 +118,6 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 
 	private Label status;
 
-	
 	public EditorScreen(EditorConfiguration config, GameScreen screen, EditorAssetManager assets, Engine engine) {
 		super();
 		this.game = screen;
@@ -128,9 +127,7 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 		this.serializers = config.registry.serializers;
 		this.registry = config.registry;
 		this.current = this.game;
-		
-		this.editorCamera = new EditorCamera(entityEngine);
-		
+		editorCamera = new EditorCamera(entityEngine);
 		init();
 	}
 	
@@ -603,13 +600,16 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 	public void reset() 
 	{
 		entityEngine.removeAllEntities();
+		
+		// clear all assets used by engine (not these loaded by editor).
+		assets.clear();
+		
 		game.createCamera();
 		
 		editorCamera.reset();
 		
 		selection.clear();
 		invalidateSelection();
-		
 	}
 
 	// TODO externalize selection : editor.selection.set/clear/add...etc invalidating is done in it

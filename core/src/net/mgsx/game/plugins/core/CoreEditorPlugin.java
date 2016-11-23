@@ -22,6 +22,7 @@ import net.mgsx.game.plugins.core.tools.SelectTool;
 import net.mgsx.game.plugins.core.tools.SwitchCameraTool;
 import net.mgsx.game.plugins.core.tools.SwitchModeTool;
 import net.mgsx.game.plugins.core.tools.ToggleHelpTool;
+import net.mgsx.game.plugins.core.tools.UnproxyTool;
 import net.mgsx.game.plugins.core.tools.ZoomTool;
 
 @PluginDef(dependencies={CorePlugin.class, CameraEditorPlugin.class})
@@ -37,6 +38,7 @@ public class CoreEditorPlugin extends EditorPlugin
 		
 		editor.addTool(new EntityEmitterTool(editor));
 		editor.addTool(new ResetProxyTool(editor));
+		editor.addTool(new UnproxyTool(editor));
 		
 		// order is very important !
 		editor.addGlobalTool(new SelectTool(editor));
