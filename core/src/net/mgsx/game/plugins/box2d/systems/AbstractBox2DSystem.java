@@ -33,6 +33,10 @@ abstract public class AbstractBox2DSystem extends EntitySystem
 	};
 	private Family family;
 	
+	/**
+	 * 
+	 * @param family family that apply to this system (Box2DBodyModel is always included, no need to include it)
+	 */
 	public AbstractBox2DSystem(FamilyBuilder family) 
 	{
 		// update will be executed after box2D listener

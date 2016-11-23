@@ -101,9 +101,9 @@ public class PlayerComponent implements Component, Initializable
 			protected void beginContact(Contact contact, Fixture self, Fixture other, Entity otherEntity, BonusComponent bonus) 
 			{
 				if(bonus.isCatchable()){
-					bonus.setCatch();
+					bonus.setCatch(otherEntity);
+					// TODO add score from bonus settings, call game state machine instead of HUD !
 					engine.getSystem(PlatformerHUDSystem.class).addScore(1000);
-					// TODO add score
 					contact.setEnabled(false);
 					return;
 				}

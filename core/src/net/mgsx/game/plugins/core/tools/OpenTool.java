@@ -5,7 +5,7 @@ import com.badlogic.gdx.files.FileHandle;
 import net.mgsx.game.core.EditorScreen;
 import net.mgsx.game.core.helpers.NativeService;
 import net.mgsx.game.core.helpers.NativeService.DefaultCallback;
-import net.mgsx.game.core.storage.Storage;
+import net.mgsx.game.core.storage.EntityGroupStorage;
 import net.mgsx.game.core.tools.Tool;
 
 public class OpenTool extends Tool
@@ -20,7 +20,7 @@ public class OpenTool extends Tool
 		NativeService.instance.openSaveDialog(new DefaultCallback() {
 			@Override
 			public void selected(FileHandle file) {
-				Storage.load(editor.entityEngine, file, editor.assets, editor.serializers);
+				EntityGroupStorage.loadForEditing(editor.assets, editor.registry, editor.entityEngine, file.path());
 				// TODO ? rebuild();
 			}
 			@Override

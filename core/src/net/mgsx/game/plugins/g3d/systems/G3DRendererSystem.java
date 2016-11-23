@@ -1,6 +1,8 @@
 package net.mgsx.game.plugins.g3d.systems;
 
+import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
+import com.badlogic.ashley.core.EntityListener;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.Gdx;
@@ -45,6 +47,17 @@ public class G3DRendererSystem extends IteratingSystem
 	@Editable
 	public Quaternion direction = new Quaternion().setFromAxisRad(-1f, -0.8f, -0.2f, 0);
 
+	private EntityListener listener = new EntityListener() {
+		
+		@Override
+		public void entityRemoved(Entity entity) {
+		}
+		@Override
+		public void entityAdded(Entity entity) {
+			G3DModel model = G3DModel.components.get(entity);
+			model.applyBlending();
+		}
+	};
 	
 	
 	
@@ -56,6 +69,18 @@ public class G3DRendererSystem extends IteratingSystem
 	public ShaderProvider [] shaderProviders;
 
 	private GameScreen engine;
+	
+	@Override
+	public void addedToEngine(Engine engine) {
+		super.addedToEngine(engine);
+		engine.addEntityListener(Family.all(G3DModel.class).get(), listener);
+	}
+	
+	@Override
+	public void removedFromEngine(Engine engine) {
+		engine.removeEntityListener(listener);
+		super.removedFromEngine(engine);
+	}
 
 
 	public G3DRendererSystem(GameScreen engine) {

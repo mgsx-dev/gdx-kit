@@ -13,7 +13,7 @@ import com.badlogic.gdx.physics.box2d.Fixture;
  * 
  * @author mgsx
  */
-
+// TODO what is b parameter ?
 public abstract class Box2DComponentTrigger<T extends Component> extends Box2DComponentListener<T> 
 {
 	private int contactCounter = 0; // TODO is it always true ?

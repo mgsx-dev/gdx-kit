@@ -1,0 +1,38 @@
+package net.mgsx.game.plugins.core.tools;
+
+import com.badlogic.ashley.core.Entity;
+import com.badlogic.ashley.core.Family;
+import com.badlogic.gdx.utils.Array;
+
+import net.mgsx.game.core.EditorScreen;
+import net.mgsx.game.core.storage.EntityGroupStorage;
+import net.mgsx.game.core.tools.Tool;
+import net.mgsx.game.plugins.core.components.ProxyComponent;
+
+public class ResetProxyTool extends Tool
+{
+
+	public ResetProxyTool(EditorScreen editor) {
+		super("Reset Proxy", editor);
+		activator = Family.all(ProxyComponent.class).get();
+	}
+	
+	@Override
+	protected void activate() {
+		super.activate();
+		
+		Entity master = editor.getSelected();
+		ProxyComponent proxy = ProxyComponent.components.get(master);
+		
+		// remove clones
+		// TODO clones are not always set ! fix this in loaders
+		for(Entity entity : proxy.clones.entities()) editor.entityEngine.removeEntity(entity);
+		proxy.clones.entities().clear();
+		
+		// recreate clones
+		proxy.clones = EntityGroupStorage.create(new Array<Entity>(), editor.assets, getEngine(), proxy.template, master);
+		
+		end();
+	}
+	
+}

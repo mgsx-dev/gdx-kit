@@ -9,7 +9,7 @@ import net.mgsx.game.core.EditorScreen;
 import net.mgsx.game.core.components.Movable;
 import net.mgsx.game.core.helpers.NativeService;
 import net.mgsx.game.core.helpers.NativeService.DefaultCallback;
-import net.mgsx.game.core.storage.Storage;
+import net.mgsx.game.core.storage.EntityGroupStorage;
 import net.mgsx.game.core.tools.ClickTool;
 
 public class ImportPatchTool extends ClickTool {
@@ -40,7 +40,7 @@ public class ImportPatchTool extends ClickTool {
 	@Override
 	protected void create(final Vector2 position) 
 	{
-		for(Entity entity : Storage.load(editor.entityEngine, file, editor.assets, editor.serializers)){
+		for(Entity entity : EntityGroupStorage.loadForEditing(editor.assets, editor.registry, editor.entityEngine, file.path())){
 			Movable movable = entity.getComponent(Movable.class);
 			if(movable != null){
 				movable.move(entity, new Vector3(position.x, position.y, 0)); // sprite plan

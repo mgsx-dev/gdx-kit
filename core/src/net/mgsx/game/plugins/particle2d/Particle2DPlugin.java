@@ -15,7 +15,6 @@ import net.mgsx.game.core.GameScreen;
 import net.mgsx.game.core.annotations.PluginDef;
 import net.mgsx.game.core.plugins.Plugin;
 import net.mgsx.game.core.storage.AssetSerializer;
-import net.mgsx.game.core.storage.Storage;
 import net.mgsx.game.plugins.particle2d.components.Particle2DComponent;
 import net.mgsx.game.plugins.particle2d.systems.P2DBoundarySystem;
 import net.mgsx.game.plugins.particle2d.systems.P2DCullingSystem;
@@ -34,10 +33,10 @@ public class Particle2DPlugin implements Plugin
 	public void initialize(final GameScreen engine) 
 	{
 		// serialize ParticleEffect type as asset reference.
-		Storage.register(new AssetSerializer<ParticleEffect>(ParticleEffect.class));
+		engine.registry.addSerializer(ParticleEffect.class, new AssetSerializer<ParticleEffect>(ParticleEffect.class));
 		
 		// just serialize reference (TODO use annotations for this kind of things)
-		engine.addSerializer(Particle2DComponent.class, new Serializer<Particle2DComponent>(){
+		engine.registry.addSerializer(Particle2DComponent.class, new Serializer<Particle2DComponent>(){
 
 			@Override
 			public void write(Json json, Particle2DComponent object, Class knownType) {

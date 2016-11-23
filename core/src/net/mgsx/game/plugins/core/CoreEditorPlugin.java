@@ -15,6 +15,7 @@ import net.mgsx.game.plugins.core.tools.FollowSelectionTool;
 import net.mgsx.game.plugins.core.tools.ImportPatchTool;
 import net.mgsx.game.plugins.core.tools.OpenTool;
 import net.mgsx.game.plugins.core.tools.PanTool;
+import net.mgsx.game.plugins.core.tools.ResetProxyTool;
 import net.mgsx.game.plugins.core.tools.ResetTool;
 import net.mgsx.game.plugins.core.tools.SaveTool;
 import net.mgsx.game.plugins.core.tools.SelectTool;
@@ -35,6 +36,7 @@ public class CoreEditorPlugin extends EditorPlugin
 		editor.entityEngine.addSystem(new PolygonRenderSystem(editor));
 		
 		editor.addTool(new EntityEmitterTool(editor));
+		editor.addTool(new ResetProxyTool(editor));
 		
 		// order is very important !
 		editor.addGlobalTool(new SelectTool(editor));

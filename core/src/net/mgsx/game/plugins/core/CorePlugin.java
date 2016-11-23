@@ -1,8 +1,11 @@
 package net.mgsx.game.plugins.core;
 
+import com.badlogic.gdx.graphics.Texture;
+
 import net.mgsx.game.core.GameScreen;
 import net.mgsx.game.core.annotations.PluginDef;
 import net.mgsx.game.core.plugins.Plugin;
+import net.mgsx.game.core.storage.AssetSerializer;
 import net.mgsx.game.plugins.core.components.EntityEmitter;
 import net.mgsx.game.plugins.core.components.PolygonComponent;
 import net.mgsx.game.plugins.core.components.ProxyComponent;
@@ -27,10 +30,14 @@ public class CorePlugin implements Plugin
 	@Override
 	public void initialize(GameScreen engine) 
 	{
+		// basic type serializers
+		engine.registry.addSerializer(Texture.class, new AssetSerializer<Texture>(Texture.class));
+		
 		engine.entityEngine.addSystem(new Translation3DSystem());
 		engine.entityEngine.addSystem(new Rotation2DSystem());
-		engine.entityEngine.addSystem(new EntityEmitterSystem());
+		engine.entityEngine.addSystem(new EntityEmitterSystem(engine));
 		engine.entityEngine.addSystem(new ExpirySystem());
+		
 	}
 
 }

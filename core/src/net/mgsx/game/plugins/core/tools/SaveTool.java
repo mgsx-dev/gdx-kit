@@ -5,7 +5,7 @@ import com.badlogic.gdx.files.FileHandle;
 import net.mgsx.game.core.EditorScreen;
 import net.mgsx.game.core.helpers.NativeService;
 import net.mgsx.game.core.helpers.NativeService.DefaultCallback;
-import net.mgsx.game.core.storage.Storage;
+import net.mgsx.game.core.storage.EntityGroupStorage;
 import net.mgsx.game.core.tools.Tool;
 
 public class SaveTool extends Tool
@@ -20,7 +20,7 @@ public class SaveTool extends Tool
 		NativeService.instance.openSaveDialog(new DefaultCallback() {
 			@Override
 			public void selected(FileHandle file) {
-				Storage.save(editor.entityEngine, editor.assets, file, true, editor.serializers); // TODO pretty configurable
+				EntityGroupStorage.save(editor.assets, editor.entityEngine, editor.registry, file, true); // TODO pretty configurable
 			}
 			@Override
 			public boolean match(FileHandle file) {

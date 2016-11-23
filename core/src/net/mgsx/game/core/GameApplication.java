@@ -13,6 +13,8 @@ import net.mgsx.game.core.screen.ScreenClip;
 import net.mgsx.game.core.screen.TransitionDesc;
 import net.mgsx.game.core.screen.TransitionScreen;
 import net.mgsx.game.core.screen.Transitions;
+import net.mgsx.game.core.storage.EntityGroup;
+import net.mgsx.game.core.storage.EntityGroupLoader;
 
 public abstract class GameApplication extends Game
 {
@@ -29,6 +31,7 @@ public abstract class GameApplication extends Game
 	@Override
 	public void create() {
 		assets = new AssetManager();
+		assets.setLoader(EntityGroup.class, new EntityGroupLoader(assets.getFileHandleResolver()));
 		Texture.setAssetManager(assets);
 	}
 

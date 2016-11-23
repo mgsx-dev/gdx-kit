@@ -15,7 +15,7 @@ import net.mgsx.game.examples.platformer.screens.LevelLoadingScreen;
 import net.mgsx.game.examples.platformer.screens.LevelScreen;
 
 /**
- * Platformer Game Application (official entry point)
+ * Platformer Game Application (entry point)
  * 
  * This classe is responsible of platformer screen workflow : 
  * - loading (simple splash screen)
@@ -26,6 +26,7 @@ import net.mgsx.game.examples.platformer.screens.LevelScreen;
  * @author mgsx
  *
  */
+// TODO it's over complicated : need to abstract screen lifecycle (Application Scope, Recycled, Not cached at all)
 public class PlatformerGame extends GameApplication implements PlatformerWorkflow
 {
 	// all cached screens

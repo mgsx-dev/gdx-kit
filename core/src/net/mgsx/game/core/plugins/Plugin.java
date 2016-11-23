@@ -1,7 +1,6 @@
 package net.mgsx.game.core.plugins;
 
 import net.mgsx.game.core.GameScreen;
-import net.mgsx.game.core.storage.Storage;
 
 /**
  * Base plugin runtime

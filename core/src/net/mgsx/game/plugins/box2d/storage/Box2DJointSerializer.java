@@ -5,18 +5,12 @@ import com.badlogic.gdx.utils.JsonValue;
 
 import net.mgsx.game.core.storage.ContextualSerializer;
 import net.mgsx.game.plugins.box2d.components.Box2DJointModel;
-import net.mgsx.game.plugins.box2d.systems.Box2DWorldContext;
 
+// TODO doesn't require context anymore ...
 public class Box2DJointSerializer extends ContextualSerializer<Box2DJointModel>
 {
-
-	private Box2DWorldContext context;
-	
-	
-	public Box2DJointSerializer(Box2DWorldContext context) 
-	{
+	public Box2DJointSerializer() {
 		super(Box2DJointModel.class);
-		this.context = context;
 	}
 
 	@Override
@@ -34,11 +28,10 @@ public class Box2DJointSerializer extends ContextualSerializer<Box2DJointModel>
 		// first read defs
 		json.readField(object, "id", jsonData);
 		json.readField(object, "def", jsonData);
+		object.bodyA = jsonData.get("def").get("bodyA").asInt();
+		object.bodyB = jsonData.get("def").get("bodyB").asInt();
 
-		// then create instances
-		// object.context = context;
-		object.joint = context.world.createJoint(object.def);
-		object.joint.setUserData(null); // dont know yet
+		// TODO not same indexes !
 		
 		return object;
 	}

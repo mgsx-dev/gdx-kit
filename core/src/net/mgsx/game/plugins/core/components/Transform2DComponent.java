@@ -9,11 +9,10 @@ import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.core.annotations.EditableComponent;
 import net.mgsx.game.core.annotations.Storable;
 import net.mgsx.game.core.components.Duplicable;
-import net.mgsx.game.core.components.OverrideProxy;
 
 @Storable("2d")
 @EditableComponent(name="2D Transform")
-public class Transform2DComponent implements Component, Duplicable, OverrideProxy
+public class Transform2DComponent implements Component, Duplicable
 {
 	
 	public static ComponentMapper<Transform2DComponent> components = ComponentMapper.getFor(Transform2DComponent.class);
@@ -29,6 +28,10 @@ public class Transform2DComponent implements Component, Duplicable, OverrideProx
 		Transform2DComponent clone = engine.createComponent(Transform2DComponent.class);
 		clone.position.set(position);
 		clone.angle = angle;
+		clone.rotation = rotation;
+		clone.enabled = enabled;
+		clone.origin.set(origin);
 		return clone;
 	}
+
 }

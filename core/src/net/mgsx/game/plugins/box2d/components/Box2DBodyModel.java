@@ -50,13 +50,10 @@ public class Box2DBodyModel implements Component, Duplicable, Poolable, Disposab
 		model.def = def;
 		model.context = context;
 		model.fixtures = new Array<Box2DFixtureModel>();
-		model.body = body.getWorld().createBody(def);
-		model.body.setTransform(body.getPosition(), body.getAngle());
 		for(Box2DFixtureModel fixture : fixtures){
 			Box2DFixtureModel newFixture = new Box2DFixtureModel();
 			newFixture.def = fixture.def;
 			newFixture.id = fixture.id;
-			newFixture.fixture = model.body.createFixture(newFixture.def);
 			model.fixtures.add(newFixture);
 		}
 		return model;

@@ -8,6 +8,8 @@ import com.badlogic.gdx.graphics.Texture;
 
 import net.mgsx.game.core.helpers.EditorAssetManager;
 import net.mgsx.game.core.plugins.Plugin;
+import net.mgsx.game.core.storage.EntityGroup;
+import net.mgsx.game.core.storage.EntityGroupLoader;
 
 public class EditorApplication extends Game
 {
@@ -25,6 +27,7 @@ public class EditorApplication extends Game
 	public void create() 
 	{
 		assetManager = new EditorAssetManager();
+		assetManager.setLoader(EntityGroup.class, new EntityGroupLoader(assetManager.getFileHandleResolver()));
 		
 		Texture.setAssetManager(assetManager);
 		
@@ -43,7 +46,7 @@ public class EditorApplication extends Game
 		EditorScreen editorScreen = new EditorScreen(config, screen, assetManager, engine);
 		
 		if(config.path != null && config.root != null) {
-			screen.load(Gdx.files.absolute(config.root).child(config.path));
+			editorScreen.loadForEditing(Gdx.files.absolute(config.root).child(config.path));
 		}
 		
 		setScreen(editorScreen);

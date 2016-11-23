@@ -13,7 +13,11 @@ public class Box2DJointMovable extends Movable
 	public void getPosition(Entity entity, Vector3 pos) 
 	{
 		Box2DJointModel model = entity.getComponent(Box2DJointModel.class);
-		Vector2 p = model.joint.getAnchorA().add(model.joint.getAnchorB()).scl(0.5f);
-		pos.set(p, 0);
+		if(model != null && model.joint != null){
+			Vector2 p = model.joint.getAnchorA().add(model.joint.getAnchorB()).scl(0.5f);
+			pos.set(p, 0);
+		}else{
+			pos.setZero();
+		}
 	}
 }

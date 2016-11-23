@@ -1,13 +1,12 @@
 package net.mgsx.game.plugins.core.tools;
 
-import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.files.FileHandle;
 
 import net.mgsx.game.core.EditorScreen;
 import net.mgsx.game.core.helpers.NativeService;
 import net.mgsx.game.core.helpers.NativeService.DefaultCallback;
-import net.mgsx.game.core.storage.Storage;
+import net.mgsx.game.core.storage.EntityGroupStorage;
 import net.mgsx.game.core.tools.Tool;
 import net.mgsx.game.plugins.core.components.EntityEmitter;
 
@@ -27,7 +26,7 @@ public class EntityEmitterTool extends Tool
 			{
 				Entity master = editor.currentEntity();
 				EntityEmitter emitter = getEngine().createComponent(EntityEmitter.class);
-				emitter.template = Storage.load(new Engine(), file, editor.assets, editor.serializers);
+				emitter.template = EntityGroupStorage.loadNow(editor.assets, editor.registry, file.path());
 				master.add(emitter);
 			}
 			@Override

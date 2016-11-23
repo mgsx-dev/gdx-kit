@@ -1,0 +1,53 @@
+{
+assets: [
+	{
+		type: com.badlogic.gdx.graphics.g2d.TextureAtlas
+		name: skins/game-skin.atlas
+	}
+	{
+		type: com.badlogic.gdx.graphics.Texture
+		name: "/home/germain/dev/box2d-editor/presets/bones-texture.png"
+	}
+	{
+		type: com.badlogic.gdx.scenes.scene2d.ui.Skin
+		name: skins/game-skin.json
+	}
+	{
+		type: com.badlogic.gdx.graphics.Texture
+		name: skins/game-skin.png
+	}
+]
+entities: [
+	{
+		id: 0
+	}
+	{
+		id: 1
+	}
+	{
+		id: 2
+		sprite: {
+			sprite: {
+				u: 0
+				v: 0
+				u2: 1
+				v2: 1
+				x: 5.5708704
+				y: 1.3237714
+				width: 2.2614417
+				height: -2.2338638
+				sx: 1
+				sy: 1
+				rotation: 0
+				texture: "/home/germain/dev/box2d-editor/presets/bones-texture.png"
+				color: {
+					r: 1
+					g: 1
+					b: 1
+					a: 0.99607843
+				}
+			}
+		}
+	}
+]
+}

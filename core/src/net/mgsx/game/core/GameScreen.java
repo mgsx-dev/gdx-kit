@@ -10,9 +10,9 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
-import com.badlogic.gdx.utils.Json.Serializer;
+import com.badlogic.gdx.utils.Array;
 
-import net.mgsx.game.core.storage.Storage;
+import net.mgsx.game.core.storage.EntityGroupStorage;
 import net.mgsx.game.plugins.camera.components.CameraComponent;
 import net.mgsx.game.plugins.camera.components.CullingComponent;
 import net.mgsx.game.plugins.camera.components.RenderingComponent;
@@ -28,6 +28,8 @@ import net.mgsx.game.plugins.camera.systems.CameraSystem;
 public class GameScreen extends ScreenAdapter
 {
 	final public AssetManager assets;
+	
+	final private Array<String> pendingGroups = new Array<String>();
 	
 	final public Engine entityEngine;
 	public GameRegistry registry;
@@ -95,7 +97,12 @@ public class GameScreen extends ScreenAdapter
 	
 	// TODO remove ?
 	@Override
-	public void render(float delta) {
+	public void render(float delta) 
+	{
+		// load pending entity groups in engine.
+		while(pendingGroups.size > 0){
+			EntityGroupStorage.get(assets, entityEngine, pendingGroups.removeIndex(0));
+		}
 		
 		// TODO in systems
 		Gdx.gl.glClearColor(.2f, .2f, .2f, 1);
@@ -116,15 +123,13 @@ public class GameScreen extends ScreenAdapter
 		c.camera.update(true);
 	}
 
-
-	public <T> void addSerializer(Class<T> type, Serializer<T> serializer) {
-		registry.addSerializer(type, serializer);
-	}
-
-
 	public void load(FileHandle file) 
 	{
-		if(file != null) Storage.load(entityEngine, file, assets, registry.serializers);
+		if(file != null){
+			String name = file.path();
+			pendingGroups.add(name);
+			EntityGroupStorage.load(assets, registry, name);
+		}
 	}
 
 }

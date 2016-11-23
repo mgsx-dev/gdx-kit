@@ -24,7 +24,9 @@ public @interface EditableComponent
 	/** whether to create a tool to add component (default is true) */
 	boolean autoTool() default true;
 
-	/** whether to automatically clone component when cloning entity all field are copied by reference.
-	 * In order to customize cloning, component should implements {@link Duplicable} interface. */
+	/** whether to automatically clone component when cloning entity. All field are copied by reference.
+	 * Note that by default fields are not copied. 
+	 * In order to customize cloning, component should implements {@link Duplicable} interface. 
+	 */
 	boolean autoClone() default false;
 }

@@ -5,14 +5,17 @@ import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
 
 import net.mgsx.game.core.GamePipeline;
-import net.mgsx.game.core.helpers.EntityHelper;
+import net.mgsx.game.core.GameScreen;
 import net.mgsx.game.plugins.core.components.EntityEmitter;
 import net.mgsx.game.plugins.core.components.Transform2DComponent;
 
 public class EntityEmitterSystem extends IteratingSystem
 {
-	public EntityEmitterSystem() {
+	final private GameScreen game;
+
+	public EntityEmitterSystem(GameScreen game) {
 		super(Family.all(EntityEmitter.class).get(), GamePipeline.LOGIC);
+		this.game = game;
 	}
 
 	@Override
@@ -34,9 +37,8 @@ public class EntityEmitterSystem extends IteratingSystem
 	private void emit(Entity self, EntityEmitter emitter)
 	{
 		Transform2DComponent selfTransform = Transform2DComponent.components.get(self);
-		for(Entity entityTemplate : emitter.template){
-			
-			Entity entityClone = EntityHelper.clone(getEngine(), entityTemplate);
+		
+		for(Entity entityClone : emitter.template.create(game.assets, getEngine())){
 			
 			if(selfTransform != null){
 				Transform2DComponent transform = Transform2DComponent.components.get(entityClone);
@@ -44,7 +46,6 @@ public class EntityEmitterSystem extends IteratingSystem
 					transform.position.add(selfTransform.position);
 				}
 			}
-			getEngine().addEntity(entityClone);
 		}
 		
 	}

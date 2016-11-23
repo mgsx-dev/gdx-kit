@@ -43,6 +43,7 @@ import net.mgsx.game.core.annotations.EditableComponent;
 import net.mgsx.game.core.commands.Command;
 import net.mgsx.game.core.commands.CommandHistory;
 import net.mgsx.game.core.components.Movable;
+import net.mgsx.game.core.components.Repository;
 import net.mgsx.game.core.editors.AnnotationBasedComponentEditor;
 import net.mgsx.game.core.helpers.AssetHelper;
 import net.mgsx.game.core.helpers.AssetLookupCallback;
@@ -53,6 +54,7 @@ import net.mgsx.game.core.helpers.ScreenDelegate;
 import net.mgsx.game.core.plugins.EntityEditorPlugin;
 import net.mgsx.game.core.plugins.GlobalEditorPlugin;
 import net.mgsx.game.core.plugins.SelectorPlugin;
+import net.mgsx.game.core.storage.EntityGroupStorage;
 import net.mgsx.game.core.tools.ComponentTool;
 import net.mgsx.game.core.tools.Tool;
 import net.mgsx.game.core.tools.ToolGroup;
@@ -476,14 +478,33 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 
 	public Table toolOutline;
 
+	/**
+	 * get current entity which can be the selected entity (last in selection)
+	 * or a fresh new one.
+	 * Note that entity will have repository component which mark it as persistable.
+	 * use {@link #transcientEntity()} to create a non persistable entity.
+	 * @return
+	 */
 	public Entity currentEntity() 
 	{
 		if(selection.size <= 0){
 			Entity entity = entityEngine.createEntity();
+			entity.add(entityEngine.createComponent(Repository.class));
 			entityEngine.addEntity(entity);
 			return entity;
 		}
 		return selection.get(selection.size-1);
+	}
+	
+	public Entity transcientEntity(){
+		if(selection.size <= 0){
+			return entityEngine.createEntity();
+		}
+		Entity entity = selection.get(selection.size-1);
+		if(Repository.components.has(entity)){
+			return entityEngine.createEntity();
+		}
+		return entity;
 	}
 
 	public void addTool(Tool tool) {
@@ -611,6 +632,11 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 			status.setText(currentText);
 			showStatus = true;
 		}
+	}
+
+	public void loadForEditing(FileHandle file) 
+	{
+		EntityGroupStorage.loadForEditing(assets, registry, entityEngine, file.path());
 	}
 
 }

@@ -5,7 +5,7 @@ import com.badlogic.gdx.utils.Json;
 
 public abstract class ContextualSerializer<T> implements Json.Serializer<T> 
 {
-	protected EntityGroupSerializer context;
+	protected EntityGroup context;
 	private Class<T> type;
 
 	
@@ -15,7 +15,7 @@ public abstract class ContextualSerializer<T> implements Json.Serializer<T>
 	}
 
 	protected Entity findEntity(int reference){
-		return context.object.entities.get(reference);
+		return context.find(reference);
 	}
 
 	public Class<T> getType() {

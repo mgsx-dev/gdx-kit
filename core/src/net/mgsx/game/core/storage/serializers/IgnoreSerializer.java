@@ -1,4 +1,4 @@
-package net.mgsx.game.core.storage;
+package net.mgsx.game.core.storage.serializers;
 
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;

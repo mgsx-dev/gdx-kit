@@ -38,7 +38,8 @@ public class AshleyEntitiesEditor implements GlobalEditorPlugin
 		}
 	}
 
-	private static class ComponentFilter{
+	private static class ComponentFilter implements Comparable<ComponentFilter>
+	{
 		public String name;
 		public Class<? extends Component> type;
 		public ComponentFilter(String name, Class<? extends Component> type) {
@@ -49,6 +50,10 @@ public class AshleyEntitiesEditor implements GlobalEditorPlugin
 		@Override
 		public String toString() {
 			return name;
+		}
+		@Override
+		public int compareTo(ComponentFilter o) {
+			return name.compareTo(o.name);
 		}
 	}
 	
@@ -106,13 +111,15 @@ public class AshleyEntitiesEditor implements GlobalEditorPlugin
 		});
 		
 		Array<ComponentFilter> filters = new Array<ComponentFilter>();
-		filters.add(new ComponentFilter("", null));
 		for(Class<? extends Component> type : editor.registry.components){
 			EditableComponent meta = type.getAnnotation(EditableComponent.class);
 			String name = meta == null || meta.name().isEmpty() ? type.getSimpleName() : meta.name();
 			filters.add(new ComponentFilter(name, type));
 		}
 		
+		filters.sort();
+		filters.insert(0, new ComponentFilter("", null));
+
 		final SelectBox<ComponentFilter> filter = new SelectBox<AshleyEntitiesEditor.ComponentFilter>(skin);
 		filter.setItems(filters);
 		

@@ -8,29 +8,17 @@ import com.badlogic.gdx.graphics.g3d.utils.AnimationController.AnimationDesc;
 import net.mgsx.game.core.annotations.EditableComponent;
 import net.mgsx.game.core.annotations.Storable;
 import net.mgsx.game.core.components.Duplicable;
-import net.mgsx.game.core.components.Initializable;
 import net.mgsx.game.core.helpers.AnimationAdapter;
 import net.mgsx.game.plugins.box2d.components.Box2DBodyModel;
-import net.mgsx.game.plugins.core.components.Transform2DComponent;
 import net.mgsx.game.plugins.g3d.components.G3DModel;
 
 @Storable("example.platformer.bonus")
 @EditableComponent(all={G3DModel.class, Box2DBodyModel.class})
-public class BonusComponent implements Component, Initializable, Duplicable
+public class BonusComponent implements Component, Duplicable
 {
-	private Entity entity;
-	
 	private boolean catchable = true;
 
-	@Override
-	public void initialize(Engine manager, Entity entity) {
-		this.entity = entity;
-		entity.getComponent(G3DModel.class).animationController.paused = false;
-		entity.getComponent(G3DModel.class).animationController.setAnimation("apple.lp|apple.lpAction", -1);
-		if(entity.getComponent(Transform2DComponent.class) == null) entity.add(new Transform2DComponent());
-	}
-	
-	public void setCatch() 
+	public void setCatch(final Entity entity) 
 	{
 		catchable = false;
 		
@@ -65,13 +53,13 @@ public class BonusComponent implements Component, Initializable, Duplicable
 		return clone;
 	}
 
-	public void enter() {
+	public void enter(Entity entity) {
 		catchable = true;
 		entity.getComponent(Box2DBodyModel.class).body.setActive(true);
 		entity.getComponent(G3DModel.class).animationController.setAnimation("apple.lp|apple.lpAction", -1);
 	}
 
-	public void exit() {
+	public void exit(Entity entity) {
 		entity.getComponent(Box2DBodyModel.class).body.setActive(false);
 	}
 

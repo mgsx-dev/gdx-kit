@@ -7,11 +7,10 @@ import com.badlogic.gdx.math.collision.BoundingBox;
 import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.core.annotations.EditableComponent;
 import net.mgsx.game.core.annotations.Storable;
-import net.mgsx.game.core.components.OverrideProxy;
 
 @Storable("boundary")
 @EditableComponent(name="Boundary")
-public class BoundaryComponent implements Component, OverrideProxy
+public class BoundaryComponent implements Component
 {
 	public static final ComponentMapper<BoundaryComponent> components = ComponentMapper.getFor(BoundaryComponent.class);
 

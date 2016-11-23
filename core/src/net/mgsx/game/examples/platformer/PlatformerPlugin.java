@@ -30,6 +30,7 @@ import net.mgsx.game.examples.platformer.components.SpiderComponent;
 import net.mgsx.game.examples.platformer.components.TreeComponent;
 import net.mgsx.game.examples.platformer.components.WalkingComponent;
 import net.mgsx.game.examples.platformer.components.WaterZone;
+import net.mgsx.game.examples.platformer.systems.BonusSystem;
 import net.mgsx.game.examples.platformer.systems.CavernSystem;
 import net.mgsx.game.examples.platformer.systems.EnvSystem;
 import net.mgsx.game.examples.platformer.systems.FallingPlatformSystem;
@@ -43,6 +44,7 @@ import net.mgsx.game.examples.platformer.systems.PlatformerPostProcessing;
 import net.mgsx.game.examples.platformer.systems.PulleySystem;
 import net.mgsx.game.examples.platformer.systems.SpeedWalkSystem;
 import net.mgsx.game.examples.platformer.systems.SpiderSystem;
+import net.mgsx.game.examples.platformer.systems.TreeSystem;
 import net.mgsx.game.examples.platformer.systems.WalkingSystem;
 import net.mgsx.game.examples.platformer.systems.input.KeyboardControllerSystem;
 import net.mgsx.game.examples.platformer.systems.states.EatSystem;
@@ -105,6 +107,8 @@ public class PlatformerPlugin implements Plugin, DefaultPlugin
 		engine.entityEngine.addSystem(new WalkingSystem());
 		engine.entityEngine.addSystem(new FallingPlatformSystem());
 		engine.entityEngine.addSystem(new GravityWalkSystem());
+		
+		// TODO HUD should not be in level screen
 		engine.entityEngine.addSystem(new PlatformerHUDSystem(engine.assets));
 		
 		// add a processor for player
@@ -116,13 +120,6 @@ public class PlatformerPlugin implements Plugin, DefaultPlugin
 				// TODO do the update here !
 				PlayerComponent pc = entity.getComponent(PlayerComponent.class);
 				pc.update(deltaTime);
-			}
-		});
-		
-		engine.entityEngine.addSystem(new IteratingSystem(Family.all(TreeComponent.class, Box2DBodyModel.class, G3DModel.class).get(), GamePipeline.LOGIC) {
-			@Override
-			protected void processEntity(Entity entity, float deltaTime) {
-				entity.getComponent(TreeComponent.class).behavior.update(deltaTime);
 			}
 		});
 		
@@ -162,9 +159,9 @@ public class PlatformerPlugin implements Plugin, DefaultPlugin
 			@Override
 			protected void processEntity(Entity entity, float deltaTime) {
 				if(BoundaryComponent.components.get(entity).justOutside)
-					entity.getComponent(BonusComponent.class).exit();
+					entity.getComponent(BonusComponent.class).exit(entity);
 				else if(BoundaryComponent.components.get(entity).justInside)
-					entity.getComponent(BonusComponent.class).enter();
+					entity.getComponent(BonusComponent.class).enter(entity);
 			}
 		});
 
@@ -180,6 +177,8 @@ public class PlatformerPlugin implements Plugin, DefaultPlugin
 		
 		engine.entityEngine.addSystem(new KeyboardControllerSystem());
 		engine.entityEngine.addSystem(new FlyingControlSystem());
+		engine.entityEngine.addSystem(new BonusSystem());
+		engine.entityEngine.addSystem(new TreeSystem());
 		
 		
 	}
