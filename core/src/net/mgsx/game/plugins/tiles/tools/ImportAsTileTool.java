@@ -35,11 +35,11 @@ public class ImportAsTileTool extends Tool {
 			}
 			@Override
 			public boolean match(FileHandle file) {
-				return file.extension().equals("json");
+				return file.extension().equals("tmx");
 			}
 			@Override
 			public String description() {
-				return "Patch files (json)";
+				return "Tiledmap files (tmx)";
 			}
 		});
 	}

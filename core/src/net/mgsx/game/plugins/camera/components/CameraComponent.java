@@ -11,7 +11,7 @@ import net.mgsx.game.core.annotations.EditableComponent;
 public class CameraComponent implements Component
 {
 	
-	public static ComponentMapper<CameraComponent> components = ComponentMapper.getFor(CameraComponent.class);
+	public static final ComponentMapper<CameraComponent> components = ComponentMapper.getFor(CameraComponent.class);
 	
 	@Editable public Camera camera;
 	public boolean frustumDirty;
