@@ -22,6 +22,14 @@ public class AssetSerializer<T> implements Serializer<T>
 		super();
 		this.type = type;
 	}
+	
+	/**
+	 * Subclasses may reference additional assets.
+	 * @param fileName
+	 */
+	protected void addReference(String fileName){
+		parent.reference(fileName);
+	}
 
 	public Class<T> getType() {
 		return type;

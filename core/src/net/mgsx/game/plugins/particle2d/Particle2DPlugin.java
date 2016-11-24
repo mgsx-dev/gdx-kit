@@ -7,7 +7,6 @@ import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.ParticleEffectPool;
 import com.badlogic.gdx.graphics.g2d.ParticleEffectPool.PooledEffect;
 import com.badlogic.gdx.utils.Json;
-import com.badlogic.gdx.utils.Json.Serializer;
 import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.ObjectMap;
 
@@ -35,14 +34,17 @@ public class Particle2DPlugin implements Plugin
 		// serialize ParticleEffect type as asset reference.
 		engine.registry.addSerializer(ParticleEffect.class, new AssetSerializer<ParticleEffect>(ParticleEffect.class));
 		
-		// just serialize reference (TODO use annotations for this kind of things)
-		engine.registry.addSerializer(Particle2DComponent.class, new Serializer<Particle2DComponent>(){
-
+		// just serialize reference (TODO use annotations for this kind of things and use asset serializer above !)
+		// it's tricky here because we need reference later for pool (maybe use particle effect directly instead of
+		// String reference, pools could be indexed by Particle Effect object)
+		engine.registry.addSerializer(Particle2DComponent.class, new AssetSerializer<Particle2DComponent>(Particle2DComponent.class) {
 			@Override
 			public void write(Json json, Particle2DComponent object, Class knownType) {
 				json.writeObjectStart();
 				json.writeField(object, "reference");
 				json.writeObjectEnd();
+				
+				addReference(object.reference);
 			}
 
 			@Override
