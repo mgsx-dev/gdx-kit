@@ -7,6 +7,7 @@ import net.mgsx.game.plugins.boundary.BoundaryEditorPlugin;
 import net.mgsx.game.plugins.box2d.Box2DEditorPlugin;
 import net.mgsx.game.plugins.camera.CameraEditorPlugin;
 import net.mgsx.game.plugins.core.CoreEditorPlugin;
+import net.mgsx.game.plugins.fsm.StateMachineEditorPlugin;
 import net.mgsx.game.plugins.g2d.G2DEditorPlugin;
 import net.mgsx.game.plugins.g3d.G3DEditorPlugin;
 import net.mgsx.game.plugins.particle2d.Particle2DEditorPlugin;
@@ -30,7 +31,8 @@ import net.mgsx.game.plugins.spline.SplineEditorPlugin;
 	CameraEditorPlugin.class,
 	SplineEditorPlugin.class,
 	Particle2DEditorPlugin.class,
-	AssetsEditorPlugin.class
+	AssetsEditorPlugin.class,
+	StateMachineEditorPlugin.class
 })
 public interface DefaultEditorPlugin extends DefaultPlugin {
 

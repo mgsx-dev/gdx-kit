@@ -8,12 +8,14 @@ import com.badlogic.gdx.utils.Json.Serializable;
 import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.Pool.Poolable;
 
+import net.mgsx.game.core.annotations.EditableComponent;
 import net.mgsx.game.core.annotations.Storable;
 import net.mgsx.game.core.components.Duplicable;
 import net.mgsx.game.core.helpers.ReflectionHelper;
 import net.mgsx.game.plugins.fsm.StateMachinePlugin;
 
 @Storable("fsm")
+@EditableComponent
 public class StateMachineComponent implements Component, Duplicable, Serializable, Poolable
 {
 	public static ComponentMapper<StateMachineComponent> components = ComponentMapper.getFor(StateMachineComponent.class);
@@ -25,14 +27,16 @@ public class StateMachineComponent implements Component, Duplicable, Serializabl
 	@Override
 	public void write(Json json) 
 	{
-		json.writeValue("initial", initialState.getClass().getName());
+		// TODO only if storable : need to force tagname for it
+		if(initialState != null) json.writeValue("initial", initialState.getClass().getName());
 	}
 
 	@Override
 	public void read(Json json, JsonValue jsonData) 
 	{
+		// TODO check tagname
 		String typename = json.readValue("initial", String.class, jsonData);
-		initialState = ReflectionHelper.newInstance(typename, EntityState.class);
+		if(typename != null) initialState = StateMachinePlugin.state(ReflectionHelper.forName(typename));
 	}
 
 	@Override

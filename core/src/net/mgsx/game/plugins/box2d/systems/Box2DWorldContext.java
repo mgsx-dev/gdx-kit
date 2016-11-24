@@ -125,6 +125,8 @@ public class Box2DWorldContext
 		
 		return objects.size > 0 ? objects.get(0) : null;
 	}
+	
+	// TODO raycast with zero length crash !
 	public Fixture rayCastFirst(final Vector2 start, Vector2 direction, final float length) {
 		final Fixture [] found = new Fixture[]{null};
 		RayCastCallback callback = new RayCastCallback() {
