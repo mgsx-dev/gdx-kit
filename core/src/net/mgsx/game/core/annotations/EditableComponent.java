@@ -27,6 +27,7 @@ public @interface EditableComponent
 	/** whether to automatically clone component when cloning entity. All field are copied by reference.
 	 * Note that by default fields are not copied. 
 	 * In order to customize cloning, component should implements {@link Duplicable} interface. 
+	 * Default is false.
 	 */
 	boolean autoClone() default false;
 }

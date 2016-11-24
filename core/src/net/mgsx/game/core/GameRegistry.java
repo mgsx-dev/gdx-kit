@@ -18,6 +18,7 @@ import net.mgsx.game.core.annotations.Storable;
 import net.mgsx.game.core.helpers.ReflectionHelper;
 import net.mgsx.game.core.helpers.TypeMap;
 import net.mgsx.game.core.plugins.Plugin;
+import net.mgsx.game.core.storage.serializers.AnnotationBasedSerializer;
 
 public class GameRegistry {
 
@@ -132,14 +133,15 @@ public class GameRegistry {
 		for(Plugin plugin : plugins.values()){
 			plugin.initialize(screen);
 		}
-	//	typeMap.get("example.platformer.climb-zone")
 		// register automatic serializers
 		for(Entry<String, Class<? extends Component>> entry : typeMap.entries())
 		{
-			Storable storable = entry.value.getAnnotation(Storable.class);
-			if(storable != null){
-				
-				// storable.value()
+			// if this component doesn't have custom serializer then add automatic annotation based.
+			if(!serializers.containsKey(entry.value)){
+				Storable storable = entry.value.getAnnotation(Storable.class);
+				if(storable != null && storable.auto()){
+					serializers.put(entry.value, new AnnotationBasedSerializer(entry.value));
+				}
 			}
 		}
 	}
