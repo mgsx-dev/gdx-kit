@@ -1,5 +1,6 @@
 package net.mgsx.game.examples.platformer.systems;
 
+import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.ashley.core.Family;
@@ -30,6 +31,7 @@ import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.core.annotations.EditableSystem;
 import net.mgsx.game.examples.platformer.components.WaterZone;
 import net.mgsx.game.plugins.g3d.components.G3DModel;
+import net.mgsx.game.plugins.g3d.systems.G3DRendererSystem;
 
 // TODO refactor things up here ... FBO ... shaders ...
 @EditableSystem("Post Processing Effects")
@@ -50,6 +52,7 @@ public class PlatformerPostProcessing extends EntitySystem
 	Renderable renderable = new Renderable();
 	Shader flatShader;
 	private GameScreen engine;
+	private G3DRendererSystem renderSystem;
 	
 	public PlatformerPostProcessing(GameScreen engine) {
 		super(GamePipeline.AFTER_RENDER);
@@ -59,6 +62,12 @@ public class PlatformerPostProcessing extends EntitySystem
 	
 	public FrameBuffer getMainTarget(){
 		return fbo;
+	}
+	
+	@Override
+	public void addedToEngine(Engine engine) {
+		super.addedToEngine(engine);
+		renderSystem = engine.getSystem(G3DRendererSystem.class);
 	}
 	
 	
@@ -95,6 +104,8 @@ public class PlatformerPostProcessing extends EntitySystem
 		if(!settings.enabled) return;
 		
 		fbo.end();
+		
+		renderSystem.fboStack.pop();
 		
 		// TODO find a way to see FBO (FBO stack ? push/pop/bind ... etc ...
 		if(!settings.debugDepth)

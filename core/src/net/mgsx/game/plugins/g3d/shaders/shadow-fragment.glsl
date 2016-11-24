@@ -191,5 +191,7 @@ void main() {
 		// gl_FragColor.rgb = vec3(gl_FragCoord.x / 1024.0, gl_FragCoord.y / 1024.0, 0.0); //texture2D(u_shadowTexture, gl_FragCoord.xy * 0.01);
 		// gl_FragColor.rgb = texture2D(u_shadowTexture, vec2(gl_FragCoord.x / 1024.0, gl_FragCoord.y / 1024.0)); //texture2D(u_shadowTexture, gl_FragCoord.xy * 0.01);
 		gl_FragColor.rgb = texture2D(u_shadowTexture, v_shadowMapUv.xy);
+		// gl_FragColor.rgb = diffuse.rgb * getShadow();
+		// gl_FragColor.a = 1.0;
 #endif
 }

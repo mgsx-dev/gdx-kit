@@ -19,6 +19,9 @@ import com.badlogic.gdx.graphics.g3d.environment.DirectionalShadowLight;
 import com.badlogic.gdx.graphics.g3d.utils.DefaultShaderProvider;
 import com.badlogic.gdx.graphics.g3d.utils.DepthShaderProvider;
 import com.badlogic.gdx.graphics.g3d.utils.ShaderProvider;
+import com.badlogic.gdx.graphics.glutils.FrameBuffer;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Array;
 
 import net.mgsx.game.core.GamePipeline;
 import net.mgsx.game.core.GameScreen;
@@ -43,8 +46,16 @@ public class G3DRendererSystem extends IteratingSystem
 	private ImmutableArray<Entity> pointLights;
 	private ImmutableArray<Entity> shadowCasts;
 	
+	final public Array<FrameBuffer> fboStack = new Array<FrameBuffer>();
 	
 	private DirectionalShadowLight shadowLight; // unique shadow map for now
+	
+	@Editable public int shadowQuality = 10;
+	@Editable public Vector2 shadowSize = new Vector2(50, 50);
+	@Editable public float shadowNear = .1f;
+	@Editable public float shadowFar = 100f;
+	private int currentShadowSize;
+	
 	
 	// TODO should be in editor code !
 	public static enum ShaderType{
@@ -116,6 +127,7 @@ public class G3DRendererSystem extends IteratingSystem
 				Gdx.files.local("../core/src/net/mgsx/game/plugins/g3d/shaders/shadow-fragment.glsl")); // TODO toon !
 		
 		
+		// TODO when shadows enabled, shaderProvider should be reset ?! or there is a bug
 		ShaderProvider switchableProvider = new ShaderProvider() {
 			@Override
 			public Shader getShader(Renderable renderable) {
@@ -133,16 +145,55 @@ public class G3DRendererSystem extends IteratingSystem
 		
 		environment = new Environment();
         environment.set(new ColorAttribute(ColorAttribute.AmbientLight, ambient));
-        
-        // TODO how to adjust values ?
-        shadowLight = new DirectionalShadowLight(1024, 1024, 50f, 50f, .1f, 100f);
+	}
+	
+	@Editable
+	public void updateShadowSettings()
+	{
+		if(shadowLight != null){
+			shadowLight.dispose();
+			shadowLight = null;
+		}
+		configureShadowLight();
 	}
 
+	private void configureShadowLight()
+	{
+		// TODO check max render buffer size instead
+		if(shadowQuality < 0) shadowQuality = 0;
+		if(shadowQuality > 12) shadowQuality = 12;
+		int qualitySize = 1 << shadowQuality;
+		
+		if(shadowLight == null)
+		{
+			currentShadowSize = qualitySize;
+			shadowLight = new DirectionalShadowLight(currentShadowSize, currentShadowSize, shadowSize.x, shadowSize.y, shadowNear, shadowFar);
+		
+			// dispose providers since environement has changed
+			// TODO should be done only when shadow state changed (shaders has to be recreated)
+			for(ShaderProvider provider : shaderProviders){
+				provider.dispose();
+			}
+		}
+		else if(currentShadowSize != qualitySize)
+		{
+			shadowLight.dispose();
+			shadowLight = null;
+			configureShadowLight();
+			return;
+		}
+		
+		shadowLight.getCamera().near = shadowNear;
+		shadowLight.getCamera().far = shadowFar;
+		shadowLight.getCamera().viewportWidth = shadowSize.x;
+		shadowLight.getCamera().viewportHeight = shadowSize.y;
+	}
+	
 	@Override
 	public void update(float deltaTime) 
 	{
 		boolean shadow = false;
-		
+
 		// gather all lights
 		environment.clear();
 		for(Entity entity : directionalLights)
@@ -150,6 +201,8 @@ public class G3DRendererSystem extends IteratingSystem
 			DirectionalLightComponent dl = DirectionalLightComponent.components.get(entity);
 			if(shadow == false && dl.shadow){
 				shadow = true;
+				
+				configureShadowLight();
 				
 				shadowLight.color.set(dl.light.color);
 				shadowLight.direction.set(dl.light.direction);
@@ -173,6 +226,10 @@ public class G3DRendererSystem extends IteratingSystem
 		
 		if(shadow)
 		{
+			 if(fboStack.size > 0){
+	        	fboStack.peek().end();
+	        }
+			 
 			shadowLight.begin(camera.position, camera.direction);
 	        shadowBatch.begin(shadowLight.getCamera());
 	
@@ -187,6 +244,11 @@ public class G3DRendererSystem extends IteratingSystem
 	        shadowLight.end();
 	        
 	        environment.shadowMap = shadowLight;
+	        
+	        // TODO restore FBO
+	        if(fboStack.size > 0){
+	        	fboStack.peek().begin();
+	        }
 		}
 		else
 		{
