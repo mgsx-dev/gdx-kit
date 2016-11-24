@@ -9,7 +9,7 @@ import net.mgsx.game.core.annotations.EditableComponent;
 import net.mgsx.game.core.annotations.Storable;
 
 @Storable("boundary")
-@EditableComponent(name="Boundary")
+@EditableComponent(name="Boundary") // TODO autoTool really required ??
 public class BoundaryComponent implements Component
 {
 	public static final ComponentMapper<BoundaryComponent> components = ComponentMapper.getFor(BoundaryComponent.class);

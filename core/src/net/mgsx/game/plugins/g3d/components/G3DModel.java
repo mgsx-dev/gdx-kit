@@ -83,7 +83,7 @@ public class G3DModel implements Component, Duplicable, Serializable, Poolable
 	{
 		// TODO use pool for modelInstance and animation controller ! (pool by Model name)
 		this.animationController = null;
-		this.boundary.clear();
+		if(this.boundary != null) this.boundary = null;
 		this.blended = false;
 		this.culling = true;
 		this.globalBoundary = null;

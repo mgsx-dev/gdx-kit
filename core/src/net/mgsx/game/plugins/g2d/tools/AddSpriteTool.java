@@ -12,6 +12,7 @@ import net.mgsx.game.core.helpers.AssetLookupCallback;
 import net.mgsx.game.core.tools.RectangleTool;
 import net.mgsx.game.plugins.g2d.components.SpriteModel;
 
+// TODO Doesn'work !
 public class AddSpriteTool extends RectangleTool 
 {
 	private Sprite sprite;

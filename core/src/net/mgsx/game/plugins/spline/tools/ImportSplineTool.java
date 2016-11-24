@@ -10,6 +10,7 @@ import net.mgsx.game.core.helpers.NativeService.DefaultCallback;
 import net.mgsx.game.core.tools.Tool;
 import net.mgsx.game.plugins.spline.components.PathComponent;
 
+// TODO really work ?
 public class ImportSplineTool extends Tool {
 	public ImportSplineTool(EditorScreen editor) {
 		super("Import Spline", editor);
