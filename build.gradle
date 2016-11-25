@@ -68,6 +68,7 @@ project(":demo-platformer") {
     dependencies {
         compile project(":core")
         compile "net.mgsx.gdx:gdx-pd:$pdVersion"
+        compile 'com.illposed.osc:javaosc-core:0.3'
     }
 }
 
