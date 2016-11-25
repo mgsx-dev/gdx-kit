@@ -32,6 +32,7 @@ import net.mgsx.game.examples.platformer.components.WalkingComponent;
 import net.mgsx.game.examples.platformer.components.WaterZone;
 import net.mgsx.game.examples.platformer.systems.BonusSystem;
 import net.mgsx.game.examples.platformer.systems.CavernSystem;
+import net.mgsx.game.examples.platformer.systems.CristalSoundSystem;
 import net.mgsx.game.examples.platformer.systems.EnvSystem;
 import net.mgsx.game.examples.platformer.systems.FallingPlatformSystem;
 import net.mgsx.game.examples.platformer.systems.GravityWalkSystem;
@@ -110,6 +111,7 @@ public class PlatformerPlugin implements Plugin, DefaultPlugin
 		engine.entityEngine.addSystem(new FallingPlatformSystem());
 		engine.entityEngine.addSystem(new GravityWalkSystem());
 		engine.entityEngine.addSystem(new PlatformerCameraSystem());
+		engine.entityEngine.addSystem(new CristalSoundSystem());
 		
 		engine.entityEngine.addSystem(new WaterSoundSystem(engine));
 		

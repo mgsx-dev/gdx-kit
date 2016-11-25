@@ -25,6 +25,7 @@ import net.mgsx.game.plugins.box2d.listeners.Box2DListener;
 import net.mgsx.game.plugins.box2d.listeners.Box2DMultiplexer;
 import net.mgsx.game.plugins.core.components.Transform2DComponent;
 import net.mgsx.game.plugins.g3d.components.G3DModel;
+import net.mgsx.pd.Pd;
 
 @Storable("example.platformer.player")
 @EditableComponent(name="Player Logic",all={Box2DBodyModel.class, G3DModel.class})
@@ -76,20 +77,23 @@ public class PlayerComponent implements Component, Initializable
 				if(other.isSensor()) return;
 				onGround = false;
 				contactCount--;
-				
-				System.out.println(contactCount);
+				if(contactCount == 0){
+					Pd.audio.sendFloat("ground-out", MathUtils.clamp(self.getBody().getLinearVelocity().len() / 4.f, 0, 1));
+				}
 			}
 			@Override
 			public void beginContact(Contact contact, Fixture self, Fixture other) {
 				if(other.isSensor()) return;
 				onGround = true;
+				if(contactCount == 0){
+					Pd.audio.sendFloat("ground-in", MathUtils.clamp(self.getBody().getLinearVelocity().len() / 4.f, 0, 1));
+				}
 				contactCount++;
 				System.out.println(contactCount);
 				LogicComponent enemy = ((Entity)other.getBody().getUserData()).getComponent(LogicComponent.class);
 				if(enemy != null){
 					// physics.body.applyLinearImpulse(0, 1, 0, 0, true);
 					// physics.body.setBullet(true);
-					System.out.println("bounce!!");
 					return;
 				}
 			}
