@@ -259,13 +259,15 @@ public class PlatformerPostProcessing extends EntitySystem
 	@Editable
 	public void loadShaders() 
 	{
+		// TODO local path !?
+		String rootPath = "../demo-platformer/src/";
 		// TODO unload before ...
 		
 		// TODO Auto-generated method stub
 		// postProcessShader = SpriteBatch.createDefaultShader();
 		postProcessShader = loadShader(
-				Gdx.files.local("../core/src/net/mgsx/game/examples/platformer/core/water-vertex.glsl"),
-				Gdx.files.local("../core/src/net/mgsx/game/examples/platformer/core/water-fragment.glsl"));
+				Gdx.files.local(rootPath + "net/mgsx/game/examples/platformer/core/water-vertex.glsl"),
+				Gdx.files.local(rootPath + "net/mgsx/game/examples/platformer/core/water-fragment.glsl"));
 		postProcessShader.begin();
 		if(!postProcessShader.isCompiled()){
 			System.err.println(postProcessShader.getLog());
@@ -281,8 +283,8 @@ public class PlatformerPostProcessing extends EntitySystem
 		texture2Location = postProcessShader.getUniformLocation("u_texture2");
 		
 		flatProgram = loadShader(
-				Gdx.files.local("../core/src/net/mgsx/game/examples/platformer/core/flat-vertex.glsl"),
-				Gdx.files.local("../core/src/net/mgsx/game/examples/platformer/core/flat-fragment.glsl"));
+				Gdx.files.local(rootPath + "net/mgsx/game/examples/platformer/core/flat-vertex.glsl"),
+				Gdx.files.local(rootPath + "net/mgsx/game/examples/platformer/core/flat-fragment.glsl"));
 		flatProgram.begin();
 		if(!flatProgram.isCompiled()){
 			System.err.println(flatProgram.getLog());
@@ -291,8 +293,8 @@ public class PlatformerPostProcessing extends EntitySystem
 		
 		
 		blurXProgram = loadShader(
-				Gdx.files.local("../core/src/net/mgsx/game/examples/platformer/core/blurx-vertex.glsl"),
-				Gdx.files.local("../core/src/net/mgsx/game/examples/platformer/core/blurx-fragment.glsl"));
+				Gdx.files.local(rootPath + "net/mgsx/game/examples/platformer/core/blurx-vertex.glsl"),
+				Gdx.files.local(rootPath + "net/mgsx/game/examples/platformer/core/blurx-fragment.glsl"));
 		blurXProgram.begin();
 		if(!blurXProgram.isCompiled()){
 			System.err.println(blurXProgram.getLog());
