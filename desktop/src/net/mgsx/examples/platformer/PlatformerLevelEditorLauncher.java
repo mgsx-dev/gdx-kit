@@ -8,6 +8,8 @@ import net.mgsx.game.core.EditorApplication;
 import net.mgsx.game.core.EditorConfiguration;
 import net.mgsx.game.core.helpers.NativeService;
 import net.mgsx.game.examples.platformer.PlatformerEditorPlugin;
+import net.mgsx.gdx.pd.PdAudioDesktop;
+import net.mgsx.pd.Pd;
 
 /**
  * Desktop launcher for level editor
@@ -20,6 +22,10 @@ public class PlatformerLevelEditorLauncher {
 	{
 		DesktopNativeInterface nativeService = new DesktopNativeInterface(); 
 		NativeService.instance = nativeService; 
+		
+		LwjglApplicationConfiguration.disableAudio = true;
+		Pd.audio = new PdAudioDesktop();
+		Pd.audio.create();
 		
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		

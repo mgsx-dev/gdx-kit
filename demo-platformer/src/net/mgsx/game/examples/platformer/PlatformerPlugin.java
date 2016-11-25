@@ -47,6 +47,7 @@ import net.mgsx.game.examples.platformer.systems.SpeedWalkSystem;
 import net.mgsx.game.examples.platformer.systems.SpiderSystem;
 import net.mgsx.game.examples.platformer.systems.TreeSystem;
 import net.mgsx.game.examples.platformer.systems.WalkingSystem;
+import net.mgsx.game.examples.platformer.systems.WaterSoundSystem;
 import net.mgsx.game.examples.platformer.systems.input.KeyboardControllerSystem;
 import net.mgsx.game.examples.platformer.systems.states.EatSystem;
 import net.mgsx.game.examples.platformer.systems.states.FlyingControlSystem;
@@ -109,6 +110,8 @@ public class PlatformerPlugin implements Plugin, DefaultPlugin
 		engine.entityEngine.addSystem(new FallingPlatformSystem());
 		engine.entityEngine.addSystem(new GravityWalkSystem());
 		engine.entityEngine.addSystem(new PlatformerCameraSystem());
+		
+		engine.entityEngine.addSystem(new WaterSoundSystem(engine));
 		
 		// TODO HUD should not be in level screen
 		engine.entityEngine.addSystem(new PlatformerHUDSystem(engine.assets));
