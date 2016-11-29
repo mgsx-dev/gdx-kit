@@ -10,6 +10,7 @@ import net.mgsx.game.core.plugins.GlobalEditorPlugin;
 import net.mgsx.game.core.ui.EntityEditor;
 import net.mgsx.pd.Pd;
 import net.mgsx.pd.PdAudio;
+import net.mgsx.pd.PdConfiguration;
 
 public class PdEditor implements GlobalEditorPlugin
 {
@@ -44,7 +45,7 @@ public class PdEditor implements GlobalEditorPlugin
 				if(defaultAudio != null){
 					defaultAudio.release();
 				}
-				remoteAudio.create();
+				remoteAudio.create(new PdConfiguration());// TODO get static config
 				Pd.audio = remoteAudio;
 			}
 		}
@@ -53,7 +54,7 @@ public class PdEditor implements GlobalEditorPlugin
 			if(Pd.audio == remoteAudio){
 				remoteAudio.release();
 				if(defaultAudio != null){
-					defaultAudio.create();
+					defaultAudio.create(new PdConfiguration()); // TODO get static config
 				}
 				Pd.audio = defaultAudio;
 			}

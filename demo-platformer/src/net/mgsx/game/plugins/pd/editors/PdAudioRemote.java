@@ -7,11 +7,14 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import org.puredata.core.PdListener;
+
 import com.badlogic.gdx.files.FileHandle;
 import com.illposed.osc.OSCMessage;
 import com.illposed.osc.OSCPortOut;
 
 import net.mgsx.pd.PdAudio;
+import net.mgsx.pd.PdConfiguration;
 import net.mgsx.pd.PdPatch;
 
 public class PdAudioRemote implements PdAudio
@@ -19,7 +22,7 @@ public class PdAudioRemote implements PdAudio
 	OSCPortOut sender;
 	
 	@Override
-	public void create() 
+	public void create(PdConfiguration config) 
 	{
 		try {
 			sender = new OSCPortOut(InetAddress.getByName("localhost"), 3000);
@@ -92,6 +95,17 @@ public class PdAudioRemote implements PdAudio
 
 	@Override
 	public void writeArray(String arg0, int arg1, float[] arg2, int arg3, int arg4) {
+	}
+
+	@Override
+	public void addListener(String arg0, PdListener arg1) {
+		// TODO support remote listener
+		
+	}
+
+	@Override
+	public void removeListener(String arg0, PdListener arg1) {
+		// TODO support remote listener
 	}
 
 }
