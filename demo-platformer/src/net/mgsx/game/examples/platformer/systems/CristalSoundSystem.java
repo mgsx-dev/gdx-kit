@@ -1,7 +1,6 @@
 package net.mgsx.game.examples.platformer.systems;
 
 import com.badlogic.ashley.core.Entity;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.Fixture;
 
@@ -19,6 +18,7 @@ public class CristalSoundSystem extends AbstractBox2DSystem
 	private static final String pdDrop = "water-drop";
 
 	private float sum;
+	private float weight;
 	private int count;
 	
 	public CristalSoundSystem() {
@@ -30,10 +30,11 @@ public class CristalSoundSystem extends AbstractBox2DSystem
 	{
 		if(count > 0){
 			float ave = sum / count;
-			Pd.audio.sendFloat(pdDrop, MathUtils.clamp(1.0f - ave, 0, 1));
+			Pd.audio.sendList(pdDrop, ave, weight/count);
 		}
 		count = 0;
 		sum = 0;
+		weight= 0;
 	}
 	
 
@@ -42,7 +43,8 @@ public class CristalSoundSystem extends AbstractBox2DSystem
 		Box2DListener listener = new Box2DAdapter() {
 			@Override
 			public void beginContact(Contact contact, Fixture self, Fixture other) {
-				sum += (other.getBody().getLinearVelocity().len() * 0 + 1) * other.getBody().getMass() / 1.f;
+				weight += other.getBody().getMass();
+				sum += other.getBody().getLinearVelocity().len();
 				count++;
 			}
 		};
