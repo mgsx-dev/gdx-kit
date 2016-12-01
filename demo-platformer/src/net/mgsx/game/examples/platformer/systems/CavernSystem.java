@@ -15,10 +15,10 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 
+import net.mgsx.game.core.GamePipeline;
 import net.mgsx.game.core.GameScreen;
 import net.mgsx.game.examples.platformer.components.CavernComponent;
 import net.mgsx.game.examples.platformer.components.PlayerComponent;
-import net.mgsx.game.core.GamePipeline;
 import net.mgsx.game.plugins.g3d.components.G3DModel;
 
 public class CavernSystem extends IteratingSystem

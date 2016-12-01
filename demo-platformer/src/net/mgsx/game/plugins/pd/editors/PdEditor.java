@@ -9,8 +9,8 @@ import net.mgsx.game.core.EditorScreen;
 import net.mgsx.game.core.plugins.GlobalEditorPlugin;
 import net.mgsx.game.core.ui.EntityEditor;
 import net.mgsx.pd.Pd;
-import net.mgsx.pd.PdAudio;
 import net.mgsx.pd.PdConfiguration;
+import net.mgsx.pd.audio.PdAudio;
 
 public class PdEditor implements GlobalEditorPlugin
 {

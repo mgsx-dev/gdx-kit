@@ -13,9 +13,9 @@ import com.badlogic.gdx.files.FileHandle;
 import com.illposed.osc.OSCMessage;
 import com.illposed.osc.OSCPortOut;
 
-import net.mgsx.pd.PdAudio;
 import net.mgsx.pd.PdConfiguration;
-import net.mgsx.pd.PdPatch;
+import net.mgsx.pd.audio.PdAudio;
+import net.mgsx.pd.patch.PdPatch;
 
 public class PdAudioRemote implements PdAudio
 {

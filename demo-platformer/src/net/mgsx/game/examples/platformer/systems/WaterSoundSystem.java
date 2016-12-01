@@ -14,7 +14,7 @@ import net.mgsx.game.core.GameScreen;
 import net.mgsx.game.examples.platformer.components.WaterZone;
 import net.mgsx.game.plugins.core.components.Transform2DComponent;
 import net.mgsx.pd.Pd;
-import net.mgsx.pd.PdPatch;
+import net.mgsx.pd.patch.PdPatch;
 
 public class WaterSoundSystem extends IteratingSystem
 {

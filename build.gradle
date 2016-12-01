@@ -22,7 +22,7 @@ allprojects {
         box2DLightsVersion = '1.4'
         ashleyVersion = '1.7.3'
         aiVersion = '1.8.0'
-        pdVersion = '0.0.1-SNAPSHOT'
+        pdVersion = '0.1.0-SNAPSHOT'
     }
 
     repositories {
@@ -43,6 +43,7 @@ project(":desktop") {
         compile "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
         compile "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-desktop"
         
+        compile "net.mgsx.gdx:gdx-pd-platform:$pdVersion:desktop"
         compile "net.mgsx.gdx:gdx-pd-platform:$pdVersion:natives-desktop"
     }
 }
