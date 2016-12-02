@@ -42,6 +42,7 @@ import net.mgsx.game.examples.platformer.systems.OneWaySystem;
 import net.mgsx.game.examples.platformer.systems.PixelEffectBindSystem;
 import net.mgsx.game.examples.platformer.systems.PlatformerCameraSystem;
 import net.mgsx.game.examples.platformer.systems.PlatformerHUDSystem;
+import net.mgsx.game.examples.platformer.systems.PlatformerMusicSystem;
 import net.mgsx.game.examples.platformer.systems.PlatformerPostProcessing;
 import net.mgsx.game.examples.platformer.systems.PulleySystem;
 import net.mgsx.game.examples.platformer.systems.SpeedWalkSystem;
@@ -112,6 +113,7 @@ public class PlatformerPlugin implements Plugin, DefaultPlugin
 		engine.entityEngine.addSystem(new GravityWalkSystem());
 		engine.entityEngine.addSystem(new PlatformerCameraSystem());
 		engine.entityEngine.addSystem(new CristalSoundSystem());
+		engine.entityEngine.addSystem(new PlatformerMusicSystem(engine));
 		
 		engine.entityEngine.addSystem(new WaterSoundSystem(engine));
 		

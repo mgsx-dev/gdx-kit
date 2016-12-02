@@ -15,7 +15,7 @@ public class EditorApplication extends Game
 {
 	final private EditorConfiguration config;
 	
-	private EditorAssetManager assetManager;
+	protected EditorAssetManager assetManager;
 	private Engine engine;
 	
 	public EditorApplication(EditorConfiguration config) {
