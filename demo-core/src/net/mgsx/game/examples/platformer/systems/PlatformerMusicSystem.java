@@ -132,8 +132,8 @@ public class PlatformerMusicSystem extends EntitySystem
 		assets.setLoader(Music.class, "mid", new MidiMusicLoader(assets.getFileHandleResolver()));
 		assets.setLoader(PdPatch.class, "pd", new PatchLoader(assets.getFileHandleResolver()));
 		
-		AssetDescriptor<PdPatch> patchAsset = new AssetDescriptor<PdPatch>("../demo-platformer/assets/pdmidi/midiplayer.pd", PdPatch.class);
-		AssetDescriptor<Music> songAsset = new AssetDescriptor<Music>("../demo-platformer/assets/MuteCity.mid", Music.class);
+		AssetDescriptor<PdPatch> patchAsset = new AssetDescriptor<PdPatch>("pdmidi/midiplayer.pd", PdPatch.class);
+		AssetDescriptor<Music> songAsset = new AssetDescriptor<Music>("MuteCity.mid", Music.class);
 		
 		assets.load(patchAsset);
 		assets.load(songAsset);

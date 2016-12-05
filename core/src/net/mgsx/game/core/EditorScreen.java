@@ -11,9 +11,7 @@ import com.badlogic.ashley.core.Family;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.assets.AssetLoaderParameters;
-import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.TextureLoader.TextureParameter;
-import com.badlogic.gdx.assets.loaders.resolvers.ClasspathFileHandleResolver;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
@@ -91,8 +89,6 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 	
 	public EditorRegistry registry;
 	
-	private AssetManager editorAssets;
-	
 	public Array<SelectorPlugin> selectors = new Array<SelectorPlugin>();
 	
 	final private Array<ToolGroup> tools = new Array<ToolGroup>();
@@ -154,9 +150,7 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 		
 		shapeRenderer = new ShapeRenderer();
 		
-		editorAssets = new AssetManager(new ClasspathFileHandleResolver());
-		
-		skin = AssetHelper.loadAssetNow(editorAssets, "data/uiskin.json", Skin.class);
+		skin = new Skin(Gdx.files.classpath("data/uiskin.json"));
 		
 		stage = new Stage(new ScreenViewport());
 		history = new CommandHistory();

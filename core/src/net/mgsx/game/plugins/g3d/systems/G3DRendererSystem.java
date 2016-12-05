@@ -112,19 +112,19 @@ public class G3DRendererSystem extends IteratingSystem
 		
 		// TODO env should be configurable ... in some way but it's not 1-1 mapping !
 		
-		FileHandle vs = Gdx.files.classpath("net/mgsx/game/plugins/g3d/shaders/pixel-vertex.glsl");
-		FileHandle fs = Gdx.files.classpath("net/mgsx/game/plugins/g3d/shaders/pixel-fragment.glsl");
+		FileHandle vs = Gdx.files.internal("shaders/pixel-vertex.glsl");
+		FileHandle fs = Gdx.files.internal("shaders/pixel-fragment.glsl");
 		
 		shaderProviders = new ShaderProvider[ShaderType.values().length];
 		shaderProviders[ShaderType.DEFAULT.ordinal()] = new DefaultShaderProvider();
 		shaderProviders[ShaderType.VERTEX.ordinal()] = new DefaultShaderProvider();
 		shaderProviders[ShaderType.FRAGMENT.ordinal()] = new FilesShader(vs, fs);
 		shaderProviders[ShaderType.TOON.ordinal()] = new FilesShader(
-				Gdx.files.local("../core/src/net/mgsx/game/plugins/g3d/shaders/platform-vertex.glsl"),
-				Gdx.files.local("../core/src/net/mgsx/game/plugins/g3d/shaders/platform-fragment.glsl")); // TODO toon !
+				Gdx.files.internal("shaders/platform-vertex.glsl"),
+				Gdx.files.internal("shaders/platform-fragment.glsl")); // TODO toon !
 		shaderProviders[ShaderType.SHADOW.ordinal()] = new FilesShader(
-				Gdx.files.local("../core/src/net/mgsx/game/plugins/g3d/shaders/shadow-vertex.glsl"),
-				Gdx.files.local("../core/src/net/mgsx/game/plugins/g3d/shaders/shadow-fragment.glsl")); // TODO toon !
+				Gdx.files.internal("shaders/shadow-vertex.glsl"),
+				Gdx.files.internal("shaders/shadow-fragment.glsl")); // TODO toon !
 		
 		
 		// TODO when shadows enabled, shaderProvider should be reset ?! or there is a bug

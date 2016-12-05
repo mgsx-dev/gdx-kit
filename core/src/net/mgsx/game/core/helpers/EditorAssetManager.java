@@ -1,6 +1,7 @@
 package net.mgsx.game.core.helpers;
 
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.assets.loaders.FileHandleResolver;
 import com.badlogic.gdx.utils.Array;
 
 public class EditorAssetManager extends AssetManager
@@ -20,6 +21,15 @@ public class EditorAssetManager extends AssetManager
 		public void reload(T asset);
 	}
 	
+	public EditorAssetManager() {
+		super();
+	}
+	
+	public EditorAssetManager(FileHandleResolver resolver) {
+		super(resolver);
+	}
+
+
 	private Array<AssetManagerListener> listeners = new Array<AssetManagerListener>();
 	private TypeGroup<ReloadListener> reloadListeners = new TypeGroup<ReloadListener>();
 	

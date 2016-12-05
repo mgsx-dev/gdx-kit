@@ -4,6 +4,9 @@ import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.loaders.FileHandleResolver;
+import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
+import com.badlogic.gdx.assets.loaders.resolvers.PrefixFileHandleResolver;
 import com.badlogic.gdx.graphics.Texture;
 
 import net.mgsx.game.core.helpers.EditorAssetManager;
@@ -26,7 +29,12 @@ public class EditorApplication extends Game
 	@Override
 	public void create() 
 	{
-		assetManager = new EditorAssetManager();
+		FileHandleResolver resolver = new InternalFileHandleResolver();
+		if(config.root != null){
+			resolver = new PrefixFileHandleResolver(resolver, config.root + "/");
+		}
+		
+		assetManager = new EditorAssetManager(resolver);
 		assetManager.setLoader(EntityGroup.class, new EntityGroupLoader(assetManager.getFileHandleResolver()));
 		
 		Texture.setAssetManager(assetManager);
