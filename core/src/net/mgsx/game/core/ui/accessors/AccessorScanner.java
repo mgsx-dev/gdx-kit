@@ -35,33 +35,30 @@ public class AccessorScanner {
 	{
 		if(Modifier.isStatic(method.getModifiers())) return;
 		
-		if(annotationBasedOnly){
-			Editable editable = method.getAnnotation(Editable.class);
-			if(editable == null){
-				return;
-			}
-			if(method.getReturnType() != void.class) return;
-			if(method.getParameterCount() > 0) return;
+		Editable editable = method.getAnnotation(Editable.class);
+		if(editable == null && annotationBasedOnly){
+			return;
+		}
+		
+		if(editable != null && method.getReturnType() == void.class && method.getParameterCount() == 0){
 			if(editable.value().isEmpty())
 				accessors.add(new VoidAccessor(entity, method));
 			else
 				accessors.add(new VoidAccessor(entity, method, editable.value()));
 		}
-		else
+		
+		if(method.getName().startsWith("set") && method.getName().length() > 3 && method.getParameterCount() == 1)
 		{
-			if(method.getName().startsWith("set") && method.getName().length() > 3 && method.getParameterCount() == 1)
-			{
-				String getterName = "g" + method.getName().substring(1);
-				Method getter = ReflectionHelper.method(entity.getClass(), getterName);
-				if(getter == null || getter.getReturnType() != method.getParameterTypes()[0]){
-					// try boolean pattern setX/isX
-					getterName = "is" + method.getName().substring(3);
-					getter = ReflectionHelper.method(entity.getClass(), getterName);
-				}
-				if(getter != null && getter.getReturnType() == method.getParameterTypes()[0]){
-					String name = method.getName().substring(3,4).toLowerCase() + method.getName().substring(4);
-					accessors.add(new MethodAccessor(entity, name, getter, method));
-				}
+			String getterName = "g" + method.getName().substring(1);
+			Method getter = ReflectionHelper.method(entity.getClass(), getterName);
+			if(getter == null || getter.getReturnType() != method.getParameterTypes()[0]){
+				// try boolean pattern setX/isX
+				getterName = "is" + method.getName().substring(3);
+				getter = ReflectionHelper.method(entity.getClass(), getterName);
+			}
+			if(getter != null && getter.getReturnType() == method.getParameterTypes()[0]){
+				String name = method.getName().substring(3,4).toLowerCase() + method.getName().substring(4);
+				accessors.add(new MethodAccessor(entity, name, getter, method));
 			}
 		}
 	}
