@@ -27,13 +27,17 @@ public class EntityGroupLoader extends AsynchronousAssetLoader<EntityGroup, Enti
 	public Array<AssetDescriptor> getDependencies(String fileName, FileHandle file, EntityGroupLoaderParameters parameter) {
 		final Array<AssetDescriptor> assets = new Array<AssetDescriptor>();
 		
+		Json json = EntityGroupStorage.setup();
+		
 		// load json file and return asset part
 		parameter.entityGroup = new EntityGroup();
 		parameter.jsonData = new JsonReader().parse(file);
 		if(parameter.jsonData.has("assets")){
 			for(JsonIterator i = parameter.jsonData.get("assets").iterator() ; i.hasNext() ; ){
 				JsonValue asset = i.next();
-				Class assetType = ReflectionHelper.forName(asset.get("type").asString());
+				String typeName = asset.get("type").asString();
+				Class assetType = json.getClass(typeName);
+				if(assetType == null) assetType = ReflectionHelper.forName(typeName);
 				String name = asset.get("name").asString();
 				AssetLoaderParameters parameters = null;
 				if(assetType == EntityGroup.class){

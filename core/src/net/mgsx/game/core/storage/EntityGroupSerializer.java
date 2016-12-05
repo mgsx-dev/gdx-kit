@@ -59,8 +59,11 @@ class EntityGroupSerializer implements Json.Serializer<EntityGroup>
 		{
 			Class type = assets.getAssetType(name);
 			
+			String typeName = json.getTag(type);
+			if(typeName == null) typeName = type.getName();
+			
 			json.writeObjectStart();
-			json.writeValue("type", type.getName());
+			json.writeValue("type", typeName);
 			json.writeValue("name", name);
 			// TODO save some parameters (texture wrap/mipmap ?)
 			json.writeObjectEnd();

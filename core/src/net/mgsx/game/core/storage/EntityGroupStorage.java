@@ -278,6 +278,16 @@ public class EntityGroupStorage
 			json.toJson(group, writer);
 	}
 
+	static Json setup()
+	{
+		Json json = new Json();
+		
+		// TODO add some tags for all gdx asset types ("gdx.texture", "gdx....")
+		json.addClassTag("kit.entity-group", EntityGroup.class);
+		
+		return json;
+	}
+
 	static Json setup(AssetManager assets, GameRegistry registry, EntityGroup group)
 	{
 		Json json = new Json();
@@ -285,9 +295,6 @@ public class EntityGroupStorage
 		// set the root serializer
 		EntityGroupSerializer entityGroupSerializer = new EntityGroupSerializer(assets, registry);
 		json.setSerializer(EntityGroup.class, entityGroupSerializer);
-		
-		// TODO add some tags for all gdx asset types ("gdx.texture", "gdx....")
-		json.addClassTag("kit.entity-group", EntityGroup.class);
 		
 		for(Entries<Class, Serializer> entries = registry.serializers.iterator() ; entries.hasNext() ; )
 		{
