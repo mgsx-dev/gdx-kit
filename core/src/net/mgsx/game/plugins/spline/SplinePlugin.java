@@ -14,13 +14,13 @@ import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.Json.Serializer;
 import com.badlogic.gdx.utils.JsonValue;
 
-import net.mgsx.SplineTest.BlenderCurve;
-import net.mgsx.SplineTest.BlenderNURBSCurve;
-import net.mgsx.SplineTest.CubicBezierCurve;
 import net.mgsx.game.core.GameScreen;
 import net.mgsx.game.core.annotations.PluginDef;
 import net.mgsx.game.core.plugins.Plugin;
 import net.mgsx.game.core.storage.AssetSerializer;
+import net.mgsx.game.plugins.spline.blender.BlenderCurve;
+import net.mgsx.game.plugins.spline.blender.BlenderNURBSCurve;
+import net.mgsx.game.plugins.spline.blender.CubicBezierCurve;
 import net.mgsx.game.plugins.spline.components.PathComponent;
 
 @PluginDef(components={PathComponent.class})

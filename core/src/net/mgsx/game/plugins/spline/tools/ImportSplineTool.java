@@ -2,12 +2,12 @@ package net.mgsx.game.plugins.spline.tools;
 
 import com.badlogic.gdx.files.FileHandle;
 
-import net.mgsx.SplineTest.AbstractBlenderCurve;
-import net.mgsx.SplineTest.BlenderCurve;
 import net.mgsx.game.core.EditorScreen;
 import net.mgsx.game.core.helpers.NativeService;
 import net.mgsx.game.core.helpers.NativeService.DefaultCallback;
 import net.mgsx.game.core.tools.Tool;
+import net.mgsx.game.plugins.spline.blender.AbstractBlenderCurve;
+import net.mgsx.game.plugins.spline.blender.BlenderCurve;
 import net.mgsx.game.plugins.spline.components.PathComponent;
 
 // TODO really work ?
