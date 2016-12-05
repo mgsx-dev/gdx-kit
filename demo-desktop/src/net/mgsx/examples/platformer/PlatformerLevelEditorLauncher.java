@@ -33,10 +33,7 @@ public class PlatformerLevelEditorLauncher {
 		
 		EditorConfiguration editConfig = new EditorConfiguration();
 		editConfig.plugins.add(new PlatformerEditorPlugin());
-		editConfig.root = args.length > 0 ? args[0] : null;
-		editConfig.path = args.length > 1 ? args[1] : null;
-		
-		if(editConfig.root != null) nativeService.path = editConfig.root;
+		editConfig.path = args.length > 0 ? args[0] : null;
 		
 		new LwjglApplication(new EditorApplication(editConfig){
 			@Override

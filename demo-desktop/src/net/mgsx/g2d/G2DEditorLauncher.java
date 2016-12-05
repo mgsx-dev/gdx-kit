@@ -25,8 +25,7 @@ public class G2DEditorLauncher {
 		editConfig.plugins.add(new AshleyEditorPlugin());
 		editConfig.plugins.add(new G2DEditorPlugin());
 		
-		editConfig.root = args.length > 0 ? args[0] : null;
-		editConfig.path = args.length > 1 ? args[1] : null;
+		editConfig.path = args.length > 0 ? args[0] : null;
 		
 		new LwjglApplication(new EditorApplication(editConfig), config);
 	}
