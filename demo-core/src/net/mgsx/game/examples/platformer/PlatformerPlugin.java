@@ -44,6 +44,7 @@ import net.mgsx.game.examples.platformer.systems.PlatformerCameraSystem;
 import net.mgsx.game.examples.platformer.systems.PlatformerHUDSystem;
 import net.mgsx.game.examples.platformer.systems.PlatformerMusicSystem;
 import net.mgsx.game.examples.platformer.systems.PlatformerPostProcessing;
+import net.mgsx.game.examples.platformer.systems.PlatformerRenderSystem;
 import net.mgsx.game.examples.platformer.systems.PulleySystem;
 import net.mgsx.game.examples.platformer.systems.SpeedWalkSystem;
 import net.mgsx.game.examples.platformer.systems.SpiderSystem;
@@ -119,6 +120,8 @@ public class PlatformerPlugin implements Plugin, DefaultPlugin
 		
 		// TODO HUD should not be in level screen
 		engine.entityEngine.addSystem(new PlatformerHUDSystem(engine.assets));
+		
+		engine.entityEngine.addSystem(new PlatformerRenderSystem());
 		
 		// add a processor for player
 		// TODO could be automated with a generic component and abstract behavior attached to it ?

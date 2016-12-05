@@ -6,17 +6,12 @@ import com.badlogic.ashley.core.EntityListener;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.ashley.utils.ImmutableArray;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
-import com.badlogic.gdx.graphics.g3d.Renderable;
-import com.badlogic.gdx.graphics.g3d.Shader;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalShadowLight;
-import com.badlogic.gdx.graphics.g3d.utils.DefaultShaderProvider;
 import com.badlogic.gdx.graphics.g3d.utils.DepthShaderProvider;
 import com.badlogic.gdx.graphics.g3d.utils.ShaderProvider;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
@@ -28,7 +23,6 @@ import net.mgsx.game.core.GameScreen;
 import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.core.annotations.EditableSystem;
 import net.mgsx.game.core.components.Hidden;
-import net.mgsx.game.core.helpers.FilesShader;
 import net.mgsx.game.plugins.core.components.Transform2DComponent;
 import net.mgsx.game.plugins.g3d.components.DirectionalLightComponent;
 import net.mgsx.game.plugins.g3d.components.G3DModel;
@@ -56,15 +50,6 @@ public class G3DRendererSystem extends IteratingSystem
 	@Editable public float shadowFar = 100f;
 	private int currentShadowSize;
 	
-	
-	// TODO should be in editor code !
-	public static enum ShaderType{
-		DEFAULT, VERTEX, FRAGMENT, TOON, SHADOW
-	}
-	
-	@Editable
-	public ShaderType shader = ShaderType.DEFAULT;
-	
 	@Editable
 	public Color ambient = new Color(0.4f, 0.4f, 0.4f, 1f);
 	
@@ -85,8 +70,6 @@ public class G3DRendererSystem extends IteratingSystem
 	private ModelBatch modelBatch;
 	public Environment environment;
 	
-	public ShaderProvider [] shaderProviders;
-
 	private GameScreen engine;
 	private ModelBatch shadowBatch;
 	
@@ -112,39 +95,18 @@ public class G3DRendererSystem extends IteratingSystem
 		
 		// TODO env should be configurable ... in some way but it's not 1-1 mapping !
 		
-		FileHandle vs = Gdx.files.internal("shaders/pixel-vertex.glsl");
-		FileHandle fs = Gdx.files.internal("shaders/pixel-fragment.glsl");
-		
-		shaderProviders = new ShaderProvider[ShaderType.values().length];
-		shaderProviders[ShaderType.DEFAULT.ordinal()] = new DefaultShaderProvider();
-		shaderProviders[ShaderType.VERTEX.ordinal()] = new DefaultShaderProvider();
-		shaderProviders[ShaderType.FRAGMENT.ordinal()] = new FilesShader(vs, fs);
-		shaderProviders[ShaderType.TOON.ordinal()] = new FilesShader(
-				Gdx.files.internal("shaders/platform-vertex.glsl"),
-				Gdx.files.internal("shaders/platform-fragment.glsl")); // TODO toon !
-		shaderProviders[ShaderType.SHADOW.ordinal()] = new FilesShader(
-				Gdx.files.internal("shaders/shadow-vertex.glsl"),
-				Gdx.files.internal("shaders/shadow-fragment.glsl")); // TODO toon !
-		
-		
-		// TODO when shadows enabled, shaderProvider should be reset ?! or there is a bug
-		ShaderProvider switchableProvider = new ShaderProvider() {
-			@Override
-			public Shader getShader(Renderable renderable) {
-				return shaderProviders[shader.ordinal()].getShader(renderable);
-			}
-			@Override
-			public void dispose() {
-			}
-		};
-		
-		modelBatch = new ModelBatch(switchableProvider);
+		modelBatch = new ModelBatch();
 		
 		shadowBatch = new ModelBatch(new DepthShaderProvider());
 		
 		
 		environment = new Environment();
         environment.set(new ColorAttribute(ColorAttribute.AmbientLight, ambient));
+	}
+	
+	public void setShaderProvider(ShaderProvider shaderProvider) {
+		modelBatch.dispose();
+		modelBatch = new ModelBatch(shaderProvider);
 	}
 	
 	@Editable
@@ -169,11 +131,9 @@ public class G3DRendererSystem extends IteratingSystem
 			currentShadowSize = qualitySize;
 			shadowLight = new DirectionalShadowLight(currentShadowSize, currentShadowSize, shadowSize.x, shadowSize.y, shadowNear, shadowFar);
 		
+			// TODO use 2 versions instead !
 			// dispose providers since environement has changed
-			// TODO should be done only when shadow state changed (shaders has to be recreated)
-			for(ShaderProvider provider : shaderProviders){
-				provider.dispose();
-			}
+			modelBatch.dispose();
 		}
 		else if(currentShadowSize != qualitySize)
 		{
@@ -210,6 +170,11 @@ public class G3DRendererSystem extends IteratingSystem
 			}else{
 				environment.add(dl.light);
 			}
+		}
+		if(!shadow && shadowLight != null){
+			// dispose providers since environement has changed
+			// TODO use 2 versions instead !
+			modelBatch.dispose();
 		}
 		
 		for(Entity entity : pointLights)
