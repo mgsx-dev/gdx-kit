@@ -286,6 +286,9 @@ public class EntityGroupStorage
 		EntityGroupSerializer entityGroupSerializer = new EntityGroupSerializer(assets, registry);
 		json.setSerializer(EntityGroup.class, entityGroupSerializer);
 		
+		// TODO add some tags for all gdx asset types ("gdx.texture", "gdx....")
+		json.addClassTag("kit.entity-group", EntityGroup.class);
+		
 		for(Entries<Class, Serializer> entries = registry.serializers.iterator() ; entries.hasNext() ; )
 		{
 			Entry<Class, Serializer> entry = entries.next();
