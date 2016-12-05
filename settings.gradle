@@ -1,1 +1,1 @@
-include 'demo-platformer', 'desktop', 'core'
+include 'core', 'demo-core', 'demo-desktop'

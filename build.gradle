@@ -15,11 +15,9 @@ allprojects {
 
     version = '1.0'
     ext {
-        appName = "box2d-editor"
+        appName = "gdx-kit"
         gdxVersion = '1.9.4'
         gdxAiVersion = '1.7.0'
-        roboVMVersion = '2.2.0'
-        box2DLightsVersion = '1.4'
         ashleyVersion = '1.7.3'
         aiVersion = '1.8.0'
         pdVersion = '0.2.0-SNAPSHOT'
@@ -33,20 +31,10 @@ allprojects {
     }
 }
 
-project(":desktop") {
-    apply plugin: "java"
-
-
-    dependencies {
-        compile project(":demo-platformer")
-        compile "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
-        compile "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
-        compile "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-desktop"
-        
-        compile "net.mgsx.gdx:gdx-pd-platform:$pdVersion:desktop"
-        compile "net.mgsx.gdx:gdx-pd-platform:$pdVersion:natives-desktop"
-    }
+eclipse.project {
+    name = appName
 }
+
 
 project(":core") {
     apply plugin: "java"
@@ -58,11 +46,11 @@ project(":core") {
         compile "com.badlogicgames.gdx:gdx-ai:$gdxAiVersion"
         compile "com.badlogicgames.ashley:ashley:$ashleyVersion"
         
-		compile group: 'org.reflections', name: 'reflections', version: '0.9.5-RC2'
+        compile group: 'org.reflections', name: 'reflections', version: '0.9.5-RC2'
     }
 }
 
-project(":demo-platformer") {
+project(":demo-core") {
     apply plugin: "java"
 
 
@@ -73,6 +61,17 @@ project(":demo-platformer") {
     }
 }
 
-tasks.eclipse.doLast {
-    delete ".project"
+project(":demo-desktop") {
+    apply plugin: "java"
+
+    dependencies {
+        compile project(":demo-core")
+        
+        compile "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
+        compile "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
+        compile "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-desktop"
+        
+        compile "net.mgsx.gdx:gdx-pd-platform:$pdVersion:desktop"
+        compile "net.mgsx.gdx:gdx-pd-platform:$pdVersion:natives-desktop"
+    }
 }
