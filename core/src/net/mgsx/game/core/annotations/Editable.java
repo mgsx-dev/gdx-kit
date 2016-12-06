@@ -7,6 +7,9 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
+import net.mgsx.game.core.ui.DefaultFieldEditor;
+import net.mgsx.game.core.ui.FieldEditor;
+
 /**
  * 
  * @author mgsx
@@ -23,4 +26,6 @@ public @interface Editable
 	String group() default "";
 	
 	EnumType type() default EnumType.AUTO;
+	
+	Class<? extends FieldEditor> editor() default DefaultFieldEditor.class;
 }

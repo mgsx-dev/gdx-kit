@@ -1,0 +1,509 @@
+{
+entities: [
+	{
+		id: 0
+		box2d: {
+			id: Rectangle
+			def: {
+				position: {
+					x: 1.6609821
+					y: -3.140198
+				}
+			}
+			fixtures: [
+				{
+					def: {
+						shape: {
+							type: Polygon
+							vertex: [
+								{
+									x: 9.552216
+									y: -0.6079824
+								}
+								{
+									x: 9.552216
+									y: 0.6079824
+								}
+								{
+									x: -9.552216
+									y: 0.6079824
+								}
+								{
+									x: -9.552216
+									y: -0.6079824
+								}
+							]
+						}
+						density: 1
+						filter: {}
+					}
+				}
+			]
+		}
+	}
+	{
+		id: 1
+		g3d: {
+			modelInstance: "/home/germain/git/box2d-editor/demo-android/assets/cake/chocos.g3dj"
+			origin: {}
+			blended: false
+			culling: true
+		}
+		2d: {
+			position: {
+				x: -4.3358464
+				y: 0.30304226
+			}
+		}
+		box2d: {
+			id: Rectangle
+			def: {
+				type: DynamicBody
+				position: {
+					x: 3.3887403
+					y: 0.1876927
+				}
+				fixedRotation: true
+			}
+			fixtures: [
+				{
+					def: {
+						shape: {
+							type: Polygon
+							vertex: [
+								{
+									x: 0.06406903
+									y: 0.13533562
+								}
+								{
+									x: 0.06406903
+									y: 0.8654792
+								}
+								{
+									x: -0.08256984
+									y: 0.8654792
+								}
+								{
+									x: -0.08256984
+									y: 0.13533562
+								}
+							]
+						}
+						density: 1
+						filter: {}
+					}
+				}
+				{
+					def: {
+						shape: {
+							type: Polygon
+							vertex: [
+								{
+									x: 0.16881108
+									y: 0.012647599
+								}
+								{
+									x: 0.10297322
+									y: 0.1443142
+								}
+								{
+									x: -0.11548877
+									y: 0.14132205
+								}
+								{
+									x: -0.16037822
+									y: 0.012647599
+								}
+							]
+						}
+						density: 1
+						filter: {}
+					}
+				}
+			]
+		}
+		example.platformer.walking: {}
+		demo.platformer.patrol: {
+			checkVoid: true
+			horizon: 1.056638
+			rayStart: {
+				y: 0.34295163
+			}
+			timeout: -0.003390966
+		}
+		demo.platformer.character: {}
+	}
+	{
+		id: 2
+		box2d: {
+			id: Rectangle
+			def: {
+				position: {
+					x: -8.824352
+					y: 1.4459385
+				}
+			}
+			fixtures: [
+				{
+					def: {
+						shape: {
+							type: Polygon
+							vertex: [
+								{
+									x: 1.3004639
+									y: -4.4835024
+								}
+								{
+									x: 1.3004639
+									y: 4.4835024
+								}
+								{
+									x: -1.3004639
+									y: 4.4835024
+								}
+								{
+									x: -1.3004639
+									y: -4.4835024
+								}
+							]
+						}
+						density: 1
+						filter: {}
+					}
+				}
+			]
+		}
+	}
+	{
+		id: 3
+		box2d: {
+			id: Rectangle
+			def: {
+				position: {
+					x: 11.178017
+					y: 1.84227
+				}
+			}
+			fixtures: [
+				{
+					def: {
+						shape: {
+							type: Polygon
+							vertex: [
+								{
+									x: 1.5357862
+									y: -4.780751
+								}
+								{
+									x: 1.5357862
+									y: 4.780751
+								}
+								{
+									x: -1.5357862
+									y: 4.780751
+								}
+								{
+									x: -1.5357862
+									y: -4.780751
+								}
+							]
+						}
+						density: 1
+						filter: {}
+					}
+				}
+			]
+		}
+	}
+	{
+		id: 4
+		box2d: {
+			id: Rectangle
+			def: {
+				position: {
+					x: -2.2560308
+					y: -2.1173606
+				}
+			}
+			fixtures: [
+				{
+					def: {
+						shape: {
+							type: Polygon
+							vertex: [
+								{
+									x: 0.32574743
+									y: -0.5888516
+								}
+								{
+									x: 0.32574743
+									y: 0.5888516
+								}
+								{
+									x: -0.32574743
+									y: 0.5888516
+								}
+								{
+									x: -0.32574743
+									y: -0.5888516
+								}
+							]
+						}
+						density: 1
+						filter: {}
+					}
+				}
+			]
+		}
+	}
+	{
+		id: 5
+		box2d: {
+			id: Rectangle
+			def: {
+				position: {
+					x: -2.7195935
+					y: -0.025057495
+				}
+			}
+			fixtures: [
+				{
+					def: {
+						shape: {
+							type: Polygon
+							vertex: [
+								{
+									x: 2.1674747
+									y: -0.32574746
+								}
+								{
+									x: 2.1674747
+									y: 0.32574746
+								}
+								{
+									x: -2.1674747
+									y: 0.32574746
+								}
+								{
+									x: -2.1674747
+									y: -0.32574746
+								}
+							]
+						}
+						density: 1
+						filter: {}
+					}
+				}
+			]
+		}
+	}
+	{
+		id: 6
+		g3d: {
+			modelInstance: "/home/germain/git/box2d-editor/demo-android/assets/cake/chocos.g3dj"
+			origin: {}
+			blended: false
+			culling: true
+		}
+		2d: {
+			position: {
+				x: 7.605973
+				y: -2.5298636
+			}
+		}
+		box2d: {
+			id: Rectangle
+			def: {
+				type: DynamicBody
+				position: {
+					x: 3.3887403
+					y: 0.1876927
+				}
+				fixedRotation: true
+			}
+			fixtures: [
+				{
+					def: {
+						shape: {
+							type: Polygon
+							vertex: [
+								{
+									x: 0.06406903
+									y: 0.13533562
+								}
+								{
+									x: 0.06406903
+									y: 0.8654792
+								}
+								{
+									x: -0.08256984
+									y: 0.8654792
+								}
+								{
+									x: -0.08256984
+									y: 0.13533562
+								}
+							]
+						}
+						density: 1
+						filter: {}
+					}
+				}
+				{
+					def: {
+						shape: {
+							type: Polygon
+							vertex: [
+								{
+									x: 0.16881108
+									y: 0.012647599
+								}
+								{
+									x: 0.10297322
+									y: 0.1443142
+								}
+								{
+									x: -0.11548877
+									y: 0.14132205
+								}
+								{
+									x: -0.16037822
+									y: 0.012647599
+								}
+							]
+						}
+						density: 1
+						filter: {}
+					}
+				}
+			]
+		}
+		example.platformer.walking: {}
+		demo.platformer.patrol: {
+			rayStart: {
+				y: 0.24978504
+			}
+		}
+		demo.platformer.character: {
+			rightToLeft: true
+		}
+	}
+	{
+		id: 7
+		g3d: {
+			modelInstance: "/home/germain/git/box2d-editor/demo-android/assets/cake/chocos.g3dj"
+			origin: {}
+			blended: false
+			culling: true
+		}
+		2d: {
+			position: {
+				x: 4.8385625
+				y: -2.5298636
+			}
+		}
+		box2d: {
+			id: Rectangle
+			def: {
+				type: DynamicBody
+				position: {
+					x: 3.3887403
+					y: 0.1876927
+				}
+				fixedRotation: true
+			}
+			fixtures: [
+				{
+					def: {
+						shape: {
+							type: Polygon
+							vertex: [
+								{
+									x: 0.06406903
+									y: 0.13533562
+								}
+								{
+									x: 0.06406903
+									y: 0.8654792
+								}
+								{
+									x: -0.08256984
+									y: 0.8654792
+								}
+								{
+									x: -0.08256984
+									y: 0.13533562
+								}
+							]
+						}
+						density: 1
+						filter: {}
+					}
+				}
+				{
+					def: {
+						shape: {
+							type: Polygon
+							vertex: [
+								{
+									x: 0.16881108
+									y: 0.012647599
+								}
+								{
+									x: 0.10297322
+									y: 0.1443142
+								}
+								{
+									x: -0.11548877
+									y: 0.14132205
+								}
+								{
+									x: -0.16037822
+									y: 0.012647599
+								}
+							]
+						}
+						density: 1
+						filter: {}
+					}
+				}
+			]
+		}
+		example.platformer.walking: {}
+		demo.platformer.patrol: {
+			rayStart: {
+				y: 0.28344485
+			}
+			timeout: -8.8158995E-6
+		}
+		demo.platformer.character: {
+			rightToLeft: true
+		}
+	}
+	{
+		id: 8
+		g3d.light.dir: {
+			light: {
+				color: {
+					r: 1
+					g: 1
+					b: 1
+					a: 1
+				}
+				direction: {
+					x: 0.15632367
+					y: -1.0701332
+					z: -1
+				}
+			}
+			shadow: false
+		}
+	}
+]
+assets: [
+	{
+		type: com.badlogic.gdx.graphics.g3d.Model
+		name: "/home/germain/git/box2d-editor/demo-android/assets/cake/chocos.g3dj"
+	}
+]
+}

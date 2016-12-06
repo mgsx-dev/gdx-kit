@@ -77,7 +77,9 @@ public class FloatWidget extends Label
 	}
 	
 	private float getValue(){
-		return (Float)accessor.get();
+		Float f = (Float)accessor.get();
+		if(f.isNaN()) return 0.1f;
+		return f;
 	}
 	
 	private void setValue(float value){

@@ -1,0 +1,92 @@
+{
+entities: [
+	{
+		id: 0
+		g3d: {
+			modelInstance: "/home/germain/git/box2d-editor/demo-android/assets/cake/chocos.g3dj"
+			origin: {}
+			blended: false
+			culling: false
+		}
+		2d: {
+			position: {
+				x: 3.3887403
+				y: 0.1876927
+			}
+		}
+		box2d: {
+			id: Rectangle
+			def: {
+				type: DynamicBody
+				position: {
+					x: 3.3887403
+					y: 0.1876927
+				}
+				fixedRotation: true
+			}
+			fixtures: [
+				{
+					def: {
+						shape: {
+							type: Polygon
+							vertex: [
+								{
+									x: 0.06406903
+									y: 0.13533562
+								}
+								{
+									x: 0.06406903
+									y: 0.8654792
+								}
+								{
+									x: -0.08256984
+									y: 0.8654792
+								}
+								{
+									x: -0.08256984
+									y: 0.13533562
+								}
+							]
+						}
+						density: 1
+						filter: {}
+					}
+				}
+				{
+					def: {
+						shape: {
+							type: Polygon
+							vertex: [
+								{
+									x: 0.16881108
+									y: 0.012647599
+								}
+								{
+									x: 0.10297322
+									y: 0.1443142
+								}
+								{
+									x: -0.11548877
+									y: 0.14132205
+								}
+								{
+									x: -0.16037822
+									y: 0.012647599
+								}
+							]
+						}
+						density: 1
+						filter: {}
+					}
+				}
+			]
+		}
+	}
+]
+assets: [
+	{
+		type: com.badlogic.gdx.graphics.g3d.Model
+		name: "/home/germain/git/box2d-editor/demo-android/assets/cake/chocos.g3dj"
+	}
+]
+}

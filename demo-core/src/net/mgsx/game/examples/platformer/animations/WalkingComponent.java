@@ -2,7 +2,6 @@ package net.mgsx.game.examples.platformer.animations;
 
 import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.ComponentMapper;
-import com.badlogic.gdx.graphics.g3d.model.Animation;
 
 import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.core.annotations.EditableComponent;
@@ -18,6 +17,6 @@ public class WalkingComponent implements Component {
 	@Editable
 	public float speedScale = 1; // one world unit per seconds.
 
-	@Editable
-	public Animation animation;
+	@Editable // TODO (editor=ModelAnimationSelector.class)
+	public String animation = "skeleton|walk";
 }

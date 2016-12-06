@@ -21,7 +21,7 @@ public class WalkingAnimationSystem extends IteratingSystem
 	@Override
 	public void addedToEngine(Engine engine) {
 		super.addedToEngine(engine);
-		engine.addEntityListener(Family.all(G3DModel.class, WalkingState.class).get(), new EntityListener() {
+		engine.addEntityListener(Family.all(G3DModel.class, WalkingComponent.class, WalkingState.class).get(), new EntityListener() {
 			
 			@Override
 			public void entityRemoved(Entity entity) {
@@ -31,7 +31,7 @@ public class WalkingAnimationSystem extends IteratingSystem
 			public void entityAdded(Entity entity) {
 				G3DModel model = G3DModel.components.get(entity);
 				WalkingComponent walk = WalkingComponent.components.get(entity);
-				model.animationController.animate(walk.animation.id, .1f);
+				model.animationController.animate(walk.animation, -1, null, .1f);
 			}
 		});
 	}
@@ -42,11 +42,7 @@ public class WalkingAnimationSystem extends IteratingSystem
 		Box2DBodyModel physics = Box2DBodyModel.components.get(entity);
 		WalkingComponent walk = WalkingComponent.components.get(entity);
 		
-		model.animationController.current.speed = physics.body.getLinearVelocity().x * walk.speedScale;
-	
-		if(physics.body.getLinearVelocity().x == 0){
-			
-		}
+		model.animationController.current.speed = Math.abs(physics.body.getLinearVelocity().x) * walk.speedScale;
 		
 	}
 

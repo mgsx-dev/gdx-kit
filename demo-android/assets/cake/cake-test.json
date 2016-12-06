@@ -1,0 +1,445 @@
+{
+entities: [
+	{
+		id: 0
+		box2d: {
+			id: Rectangle
+			def: {
+				position: {
+					x: 2.3441792
+					y: -2.8894837
+				}
+			}
+			fixtures: [
+				{
+					def: {
+						shape: {
+							type: Polygon
+							vertex: [
+								{
+									x: 7.966448
+									y: -0.40741086
+								}
+								{
+									x: 7.966448
+									y: 0.40741086
+								}
+								{
+									x: -7.966448
+									y: 0.40741086
+								}
+								{
+									x: -7.966448
+									y: -0.40741086
+								}
+							]
+						}
+						density: 1
+						filter: {}
+					}
+				}
+			]
+		}
+	}
+	{
+		id: 1
+		box2d: {
+			id: Rectangle
+			def: {
+				position: {
+					x: 10.09752
+					y: 1.2911793
+				}
+			}
+			fixtures: [
+				{
+					def: {
+						shape: {
+							type: Polygon
+							vertex: [
+								{
+									x: 0.6142502
+									y: -4.1994667
+								}
+								{
+									x: 0.6142502
+									y: 4.1994667
+								}
+								{
+									x: -0.6142502
+									y: 4.1994667
+								}
+								{
+									x: -0.6142502
+									y: -4.1994667
+								}
+							]
+						}
+						density: 1
+						filter: {}
+					}
+				}
+			]
+		}
+	}
+	{
+		id: 2
+		box2d: {
+			id: Rectangle
+			def: {
+				position: {
+					x: -5.3276796
+					y: 1.5356256
+				}
+			}
+			fixtures: [
+				{
+					def: {
+						shape: {
+							type: Polygon
+							vertex: [
+								{
+									x: 0.6957326
+									y: -4.3060203
+								}
+								{
+									x: 0.6957326
+									y: 4.3060203
+								}
+								{
+									x: -0.6957326
+									y: 4.3060203
+								}
+								{
+									x: -0.6957326
+									y: -4.3060203
+								}
+							]
+						}
+						density: 1
+						filter: {}
+					}
+				}
+			]
+		}
+	}
+	{
+		id: 3
+		box2d: {
+			id: Rectangle
+			def: {
+				position: {
+					x: 2.6074288
+					y: 5.7726994
+				}
+			}
+			fixtures: [
+				{
+					def: {
+						shape: {
+							type: Polygon
+							vertex: [
+								{
+									x: 7.6906624
+									y: -0.582911
+								}
+								{
+									x: 7.6906624
+									y: 0.582911
+								}
+								{
+									x: -7.6906624
+									y: 0.582911
+								}
+								{
+									x: -7.6906624
+									y: -0.582911
+								}
+							]
+						}
+						density: 1
+						filter: {}
+					}
+				}
+			]
+		}
+	}
+	{
+		id: 4
+		box2d: {
+			id: Rectangle
+			def: {
+				position: {
+					x: 0.7646991
+					y: -1.2034149
+				}
+			}
+			fixtures: [
+				{
+					def: {
+						shape: {
+							type: Polygon
+							vertex: [
+								{
+									x: 0.8587196
+									y: -0.46381608
+								}
+								{
+									x: 0.8587196
+									y: 0.46381608
+								}
+								{
+									x: -0.8587196
+									y: 0.46381608
+								}
+								{
+									x: -0.8587196
+									y: -0.46381608
+								}
+							]
+						}
+						density: 1
+						filter: {}
+					}
+				}
+			]
+		}
+	}
+	{
+		id: 5
+		g3d: {
+			modelInstance: "/home/germain/git/box2d-editor/demo-android/assets/cake/cupcake.g3dj"
+			origin: {}
+			blended: false
+			culling: false
+		}
+		2d: {
+			position: {
+				x: 3.0233545
+				y: -2.439099
+			}
+			angle: -75.455765
+		}
+		box2d: {
+			id: Circle
+			def: {
+				type: DynamicBody
+				position: {
+					x: -0.07521629
+					y: -0.6643853
+				}
+				fixedRotation: true
+			}
+			fixtures: [
+				{
+					def: {
+						shape: {
+							type: Circle
+							position: {
+								x: -0.031336978
+								y: 1.0529927
+							}
+							radius: 0.54078215
+						}
+						density: 1
+						filter: {}
+					}
+				}
+				{
+					def: {
+						shape: {
+							type: Circle
+							position: {
+								x: -0.018801704
+								y: 0.28831366
+							}
+							radius: 0.3268917
+						}
+						density: 1
+						filter: {}
+					}
+				}
+			]
+		}
+		example.platformer.player-control: {
+			
+		}
+		example.platformer.walking: {}
+		example.platformer.keyboard: {}
+	}
+	{
+		id: 6
+	}
+	{
+		id: 7
+		2d: {
+			position: {
+				x: -2.1687365
+				y: 0.8022766
+			}
+		}
+		g3d.light.dir: {
+			light: {
+				color: {
+					r: 1
+					g: 1
+					b: 1
+					a: 1
+				}
+				direction: {
+					z: -1
+				}
+			}
+			shadow: false
+		}
+	}
+	{
+		id: 8
+		box2d: {
+			id: Rectangle
+			def: {
+				position: {
+					x: 6.274292
+					y: -0.9401677
+				}
+			}
+			fixtures: [
+				{
+					def: {
+						shape: {
+							type: Polygon
+							vertex: [
+								{
+									x: 2.0183039
+									y: -0.32592493
+								}
+								{
+									x: 2.0183039
+									y: 0.32592493
+								}
+								{
+									x: -2.0183039
+									y: 0.32592493
+								}
+								{
+									x: -2.0183039
+									y: -0.32592493
+								}
+							]
+						}
+						density: 1
+						filter: {}
+					}
+				}
+			]
+		}
+	}
+	{
+		id: 9
+		g3d: {
+			modelInstance: "/home/germain/git/box2d-editor/demo-android/assets/cake/background.g3dj"
+			origin: {}
+			blended: false
+			culling: false
+		}
+		2d: {
+			position: {
+				x: -0.37622452
+				y: -2.5079575
+			}
+		}
+	}
+	{
+		id: 10
+		box2d: {
+			id: Rectangle
+			def: {
+				position: {
+					x: 2.3441792
+					y: -2.8894837
+				}
+			}
+			fixtures: [
+				{
+					def: {
+						shape: {
+							type: Polygon
+							vertex: [
+								{
+									x: 7.966448
+									y: -0.40741086
+								}
+								{
+									x: 7.966448
+									y: 0.40741086
+								}
+								{
+									x: -7.966448
+									y: 0.40741086
+								}
+								{
+									x: -7.966448
+									y: -0.40741086
+								}
+							]
+						}
+						density: 1
+						filter: {}
+					}
+				}
+			]
+		}
+	}
+	{
+		id: 11
+		box2d: {
+			id: Rectangle
+			def: {
+				position: {
+					x: 2.3441792
+					y: -2.8894837
+				}
+			}
+			fixtures: [
+				{
+					def: {
+						shape: {
+							type: Polygon
+							vertex: [
+								{
+									x: 7.966448
+									y: -0.40741086
+								}
+								{
+									x: 7.966448
+									y: 0.40741086
+								}
+								{
+									x: -13.018476
+									y: 0.40741086
+								}
+								{
+									x: -13.0059395
+									y: -0.40741086
+								}
+							]
+						}
+						density: 1
+						filter: {}
+					}
+				}
+			]
+		}
+	}
+]
+assets: [
+	{
+		type: com.badlogic.gdx.graphics.g3d.Model
+		name: "/home/germain/git/box2d-editor/demo-android/assets/cake/cupcake.g3dj"
+	}
+	{
+		type: com.badlogic.gdx.graphics.g3d.Model
+		name: "/home/germain/git/box2d-editor/demo-android/assets/cake/background.g3dj"
+	}
+]
+}

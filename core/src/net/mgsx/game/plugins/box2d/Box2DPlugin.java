@@ -23,6 +23,7 @@ import net.mgsx.game.plugins.box2d.storage.Box2DModelSerializer;
 import net.mgsx.game.plugins.box2d.storage.Box2DShapesSerializers;
 import net.mgsx.game.plugins.box2d.systems.Box2DMasterSystem;
 import net.mgsx.game.plugins.box2d.systems.Box2DSlaveSystem;
+import net.mgsx.game.plugins.box2d.systems.Box2DVelocitySystem;
 import net.mgsx.game.plugins.box2d.systems.Box2DWorldContext;
 import net.mgsx.game.plugins.box2d.systems.Box2DWorldSystem;
 import net.mgsx.game.plugins.box2d.tools.BodyMove;
@@ -43,6 +44,8 @@ public class Box2DPlugin implements Plugin
 		engine.entityEngine.addSystem(new Box2DWorldSystem(worldItem));
 		engine.entityEngine.addSystem(new Box2DMasterSystem());
 		engine.entityEngine.addSystem(new Box2DSlaveSystem());
+		
+		engine.entityEngine.addSystem(new Box2DVelocitySystem());
 		
 		engine.entityEngine.addEntityListener(Family.all(Box2DJointModel.class).get(), new EntityListener() {
 			@Override

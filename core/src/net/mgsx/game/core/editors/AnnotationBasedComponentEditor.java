@@ -8,7 +8,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import net.mgsx.game.core.plugins.EntityEditorPlugin;
 import net.mgsx.game.core.ui.EntityEditor;
 
-public class AnnotationBasedComponentEditor implements EntityEditorPlugin {
+public class AnnotationBasedComponentEditor implements EntityEditorPlugin 
+{
 	private final Class<? extends Component> type;
 
 	public AnnotationBasedComponentEditor(Class<? extends Component> type) {
@@ -16,7 +17,8 @@ public class AnnotationBasedComponentEditor implements EntityEditorPlugin {
 	}
 
 	@Override
-	public Actor createEditor(Entity entity, Skin skin) {
+	public Actor createEditor(Entity entity, Skin skin) 
+	{
 		return new EntityEditor(entity.getComponent(type), true, skin);
 	}
 }

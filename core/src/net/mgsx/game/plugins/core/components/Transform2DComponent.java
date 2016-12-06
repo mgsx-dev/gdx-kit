@@ -22,7 +22,7 @@ public class Transform2DComponent implements Component, Duplicable
 	@Editable public boolean rotation = true;
 	@Editable public boolean enabled = true;
 	@Editable public Vector2 origin = new Vector2();
-	
+
 	@Override
 	public Component duplicate(Engine engine) {
 		Transform2DComponent clone = engine.createComponent(Transform2DComponent.class);

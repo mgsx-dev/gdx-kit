@@ -136,6 +136,7 @@ public class EntityEditor extends Table
 	{
 		return createControl(table, entity, accessor, new Array<Object>());
 	}
+	
 	private static boolean createControl(final Table table, final Object entity, final Accessor accessor, Array<Object> stack) 
 	{
 		Skin skin = table.getSkin();

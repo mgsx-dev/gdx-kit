@@ -9,13 +9,16 @@ import net.mgsx.game.core.GamePipeline;
 import net.mgsx.game.core.GameScreen;
 import net.mgsx.game.core.annotations.PluginDef;
 import net.mgsx.game.core.plugins.Plugin;
+import net.mgsx.game.examples.platformer.ai.PatrolSystem;
 import net.mgsx.game.examples.platformer.animations.CavernComponent;
 import net.mgsx.game.examples.platformer.animations.CavernSystem;
+import net.mgsx.game.examples.platformer.animations.Character2DModelSystem;
 import net.mgsx.game.examples.platformer.animations.EnvComponent;
 import net.mgsx.game.examples.platformer.animations.EnvSystem;
 import net.mgsx.game.examples.platformer.animations.FlyingAnimationSystem;
 import net.mgsx.game.examples.platformer.animations.PlatformComponent;
 import net.mgsx.game.examples.platformer.animations.PlatformerCameraSystem;
+import net.mgsx.game.examples.platformer.animations.WalkingAnimationSystem;
 import net.mgsx.game.examples.platformer.animations.WalkingComponent;
 import net.mgsx.game.examples.platformer.audio.CristalSoundSystem;
 import net.mgsx.game.examples.platformer.audio.PlatformerMusicSystem;
@@ -120,6 +123,10 @@ public class PlatformerPlugin implements Plugin, DefaultPlugin
 		engine.entityEngine.addSystem(new PlatformerHUDSystem(engine.assets));
 		
 		engine.entityEngine.addSystem(new PlatformerRenderSystem());
+		
+		engine.entityEngine.addSystem(new Character2DModelSystem());
+		engine.entityEngine.addSystem(new WalkingAnimationSystem());
+		engine.entityEngine.addSystem(new PatrolSystem());
 		
 		// add a processor for player
 		// TODO could be automated with a generic component and abstract behavior attached to it ?

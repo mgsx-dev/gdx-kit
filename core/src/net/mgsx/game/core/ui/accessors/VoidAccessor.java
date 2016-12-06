@@ -2,6 +2,7 @@ package net.mgsx.game.core.ui.accessors;
 
 import java.lang.reflect.Method;
 
+import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.core.helpers.ReflectionHelper;
 
 public class VoidAccessor implements Accessor
@@ -39,6 +40,11 @@ public class VoidAccessor implements Accessor
 	@Override
 	public Class getType() {
 		return void.class;
+	}
+
+	@Override
+	public Editable config() {
+		return method.getAnnotation(Editable.class);
 	}
 	
 }

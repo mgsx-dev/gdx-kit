@@ -2,6 +2,7 @@ package net.mgsx.game.core.ui.accessors;
 
 import java.lang.reflect.Field;
 
+import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.core.helpers.ReflectionHelper;
 
 public class FieldAccessor implements Accessor
@@ -45,6 +46,10 @@ public class FieldAccessor implements Accessor
 	@Override
 	public Class getType() {
 		return field.getType();
+	}
+	@Override
+	public Editable config() {
+		return field.getAnnotation(Editable.class);
 	}
 	
 }
