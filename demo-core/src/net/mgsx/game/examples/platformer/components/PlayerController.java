@@ -5,8 +5,10 @@ import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.gdx.math.Vector2;
 
 import net.mgsx.game.core.annotations.EditableComponent;
+import net.mgsx.game.core.annotations.Storable;
 import net.mgsx.game.core.helpers.MathHelper;
 
+@Storable("example.platformer.player-control")
 @EditableComponent(autoClone=true)
 public class PlayerController implements Component
 {

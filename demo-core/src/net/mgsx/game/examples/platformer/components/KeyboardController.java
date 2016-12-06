@@ -8,7 +8,9 @@ import com.badlogic.gdx.Input.Keys;
 import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.core.annotations.EditableComponent;
 import net.mgsx.game.core.annotations.EnumType;
+import net.mgsx.game.core.annotations.Storable;
 
+@Storable("example.platformer.keyboard")
 @EditableComponent(autoClone=true)
 public class KeyboardController implements Component
 {
