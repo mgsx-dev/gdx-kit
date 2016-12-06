@@ -334,6 +334,7 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 	{
 		final Entity entity = selection.size == 1 ? selection.first() : null;
 		
+		mainToolGroup.clear();
 		buttons.clear();
 		outline.clear();
 		outline.setBackground((Drawable)null);
