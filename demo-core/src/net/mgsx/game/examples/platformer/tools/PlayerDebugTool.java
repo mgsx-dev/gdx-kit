@@ -11,9 +11,9 @@ import com.badlogic.gdx.physics.box2d.joints.DistanceJointDef;
 
 import net.mgsx.game.core.EditorScreen;
 import net.mgsx.game.core.tools.RectangleTool;
-import net.mgsx.game.examples.platformer.components.KeyboardController;
-import net.mgsx.game.examples.platformer.components.PlayerController;
-import net.mgsx.game.examples.platformer.components.WalkingComponent;
+import net.mgsx.game.examples.platformer.animations.WalkingComponent;
+import net.mgsx.game.examples.platformer.inputs.KeyboardController;
+import net.mgsx.game.examples.platformer.inputs.PlayerController;
 import net.mgsx.game.plugins.box2d.components.Box2DBodyModel;
 import net.mgsx.game.plugins.box2d.components.Box2DFixtureModel;
 import net.mgsx.game.plugins.box2d.listeners.Box2DEntityListener;

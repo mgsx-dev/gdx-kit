@@ -5,8 +5,8 @@ import com.badlogic.ashley.core.Family;
 
 import net.mgsx.game.core.EditorScreen;
 import net.mgsx.game.core.tools.Tool;
-import net.mgsx.game.examples.platformer.components.FocusComponent;
-import net.mgsx.game.examples.platformer.components.PlayerTracker;
+import net.mgsx.game.examples.platformer.animations.FocusComponent;
+import net.mgsx.game.examples.platformer.animations.PlayerTracker;
 import net.mgsx.game.plugins.camera.components.CameraComponent;
 import net.mgsx.game.plugins.camera.components.CullingComponent;
 

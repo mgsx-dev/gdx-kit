@@ -5,8 +5,8 @@ import com.badlogic.gdx.Input;
 
 import net.mgsx.game.core.EditorScreen;
 import net.mgsx.game.core.tools.Tool;
-import net.mgsx.game.examples.platformer.components.KeyboardController;
-import net.mgsx.game.examples.platformer.components.PlayerController;
+import net.mgsx.game.examples.platformer.inputs.KeyboardController;
+import net.mgsx.game.examples.platformer.inputs.PlayerController;
 
 public class KeyboardPlayerTool extends Tool {
 	public KeyboardPlayerTool(EditorScreen editor) {
