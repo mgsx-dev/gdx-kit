@@ -1,4 +1,4 @@
-package net.mgsx.game.examples.platformer.components;
+package net.mgsx.game.examples.platformer.components.states;
 
 import com.badlogic.ashley.core.ComponentMapper;
 

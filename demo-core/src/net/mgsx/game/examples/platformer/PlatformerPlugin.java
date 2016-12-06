@@ -9,15 +9,12 @@ import net.mgsx.game.core.GamePipeline;
 import net.mgsx.game.core.GameScreen;
 import net.mgsx.game.core.annotations.PluginDef;
 import net.mgsx.game.core.plugins.Plugin;
-import net.mgsx.game.examples.platformer.components.BeeComponent;
 import net.mgsx.game.examples.platformer.components.BonusComponent;
 import net.mgsx.game.examples.platformer.components.CavernComponent;
 import net.mgsx.game.examples.platformer.components.ClimbZone;
-import net.mgsx.game.examples.platformer.components.EatState;
 import net.mgsx.game.examples.platformer.components.EnemyComponent;
 import net.mgsx.game.examples.platformer.components.EnvComponent;
 import net.mgsx.game.examples.platformer.components.FallingPlatform;
-import net.mgsx.game.examples.platformer.components.FlyingState;
 import net.mgsx.game.examples.platformer.components.LianaZone;
 import net.mgsx.game.examples.platformer.components.LiquidComponent;
 import net.mgsx.game.examples.platformer.components.MagnetComponent;
@@ -30,6 +27,8 @@ import net.mgsx.game.examples.platformer.components.SpiderComponent;
 import net.mgsx.game.examples.platformer.components.TreeComponent;
 import net.mgsx.game.examples.platformer.components.WalkingComponent;
 import net.mgsx.game.examples.platformer.components.WaterZone;
+import net.mgsx.game.examples.platformer.components.states.EatState;
+import net.mgsx.game.examples.platformer.components.states.FlyingState;
 import net.mgsx.game.examples.platformer.systems.BonusSystem;
 import net.mgsx.game.examples.platformer.systems.CavernSystem;
 import net.mgsx.game.examples.platformer.systems.CristalSoundSystem;
@@ -70,7 +69,6 @@ import net.mgsx.game.plugins.spline.components.PathComponent;
  *
  */
 @PluginDef(components={
-		BeeComponent.class,
 		BonusComponent.class,
 		CavernComponent.class,
 		ClimbZone.class,

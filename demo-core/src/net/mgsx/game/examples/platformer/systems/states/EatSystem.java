@@ -2,9 +2,9 @@ package net.mgsx.game.examples.platformer.systems.states;
 
 import com.badlogic.ashley.core.Entity;
 
-import net.mgsx.game.examples.platformer.components.EatState;
-import net.mgsx.game.examples.platformer.components.FlyingState;
 import net.mgsx.game.examples.platformer.components.PlayerController;
+import net.mgsx.game.examples.platformer.components.states.EatState;
+import net.mgsx.game.examples.platformer.components.states.FlyingState;
 import net.mgsx.game.plugins.fsm.systems.EntityStateSystem;
 import net.mgsx.game.plugins.g3d.components.G3DModel;
 

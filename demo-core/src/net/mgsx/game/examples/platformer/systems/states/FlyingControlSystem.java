@@ -7,9 +7,9 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
 import net.mgsx.game.core.GamePipeline;
-import net.mgsx.game.examples.platformer.components.EatState;
-import net.mgsx.game.examples.platformer.components.FlyingState;
 import net.mgsx.game.examples.platformer.components.PlayerController;
+import net.mgsx.game.examples.platformer.components.states.EatState;
+import net.mgsx.game.examples.platformer.components.states.FlyingState;
 import net.mgsx.game.plugins.box2d.components.Box2DBodyModel;
 
 public class FlyingControlSystem extends IteratingSystem
