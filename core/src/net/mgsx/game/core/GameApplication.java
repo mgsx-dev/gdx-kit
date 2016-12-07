@@ -18,7 +18,7 @@ import net.mgsx.game.core.storage.EntityGroupLoader;
 
 public abstract class GameApplication extends Game
 {
-	protected AssetManager assets;
+	public AssetManager assets;
 	
 	private Array<Screen> sequences = new Array<Screen>();
 	

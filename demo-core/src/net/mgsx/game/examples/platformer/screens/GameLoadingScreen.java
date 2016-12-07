@@ -10,7 +10,6 @@ import com.badlogic.gdx.utils.Scaling;
 
 import net.mgsx.game.core.screen.ScreenClip;
 import net.mgsx.game.core.screen.StageScreen;
-import net.mgsx.game.examples.platformer.PlatformerWorkflow;
 
 public class GameLoadingScreen extends StageScreen implements ScreenClip
 {
@@ -18,11 +17,9 @@ public class GameLoadingScreen extends StageScreen implements ScreenClip
 	
 	private final static String splashFileName = "splash.png";
 	
-	private boolean finished = false;
-	
-	public GameLoadingScreen(PlatformerWorkflow game) {
+	public GameLoadingScreen(AssetManager assets) {
 		super(null);
-		this.assets = game.assets();
+		this.assets = assets;
 		assets.load(splashFileName, Texture.class);
 	}
 	
@@ -36,29 +33,12 @@ public class GameLoadingScreen extends StageScreen implements ScreenClip
 		table.setFillParent(true);
 		stage.addActor(table);
 		
-//		Action endAction = Actions.run(new Runnable() {
-//			@Override
-//			public void run() {
-//				finished = true;
-//			}
-//		});
-//		
-//		image.setColor(1, 1, 1, 0);
-//		image.addAction(Actions.sequence(
-//				Actions.alpha(1, 1), 
-//				Actions.delay(2), 
-//				ActionsHelper.checkAssets(assets), 
-//				Actions.alpha(0, 1), 
-//				endAction));
-		
 		super.show();
 	}
 	
 	@Override
 	public void render(float delta) 
 	{
-		finished = assets.update();
-		
 		Gdx.gl.glClearColor(0, 0, 0, 0);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		super.render(delta);
@@ -78,6 +58,7 @@ public class GameLoadingScreen extends StageScreen implements ScreenClip
 
 	@Override
 	public boolean isComplete() {
-		return finished;
+		return assets.update();
 	}
+
 }

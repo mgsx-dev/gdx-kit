@@ -26,6 +26,7 @@ import net.mgsx.game.core.components.Repository;
 import net.mgsx.game.core.helpers.EntityHelper;
 import net.mgsx.game.plugins.core.components.ProxyComponent;
 import net.mgsx.game.plugins.core.components.Transform2DComponent;
+import net.mgsx.game.plugins.spline.blender.BlenderCurve;
 
 /**
  * Storage service.
@@ -284,6 +285,7 @@ public class EntityGroupStorage
 		
 		// TODO add some tags for all gdx asset types ("gdx.texture", "gdx....")
 		json.addClassTag("kit.entity-group", EntityGroup.class);
+		json.addClassTag("net.mgsx.SplineTest$BlenderCurve", BlenderCurve.class);
 		
 		return json;
 	}
