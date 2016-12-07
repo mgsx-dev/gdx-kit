@@ -1,126 +1,4 @@
 {
-assets: [
-	{
-		type: com.badlogic.gdx.graphics.g3d.Model
-		name: "/home/germain/dev/box2d-editor/presets/bones/background.g3dj"
-	}
-	{
-		type: com.badlogic.gdx.graphics.g3d.Model
-		name: "/home/germain/dev/box2d-editor/presets/bones/env.g3dj"
-	}
-	{
-		type: com.badlogic.gdx.graphics.Texture
-		name: "/home/germain/dev/box2d-editor/presets/bones/player.normal.png"
-	}
-	{
-		type: com.badlogic.gdx.graphics.Texture
-		name: "/home/germain/dev/box2d-editor/presets/bones/scolopandre.png"
-	}
-	{
-		type: com.badlogic.gdx.graphics.Texture
-		name: "/home/germain/dev/box2d-editor/presets/bones/forest.png"
-	}
-	{
-		type: com.badlogic.gdx.graphics.g3d.Model
-		name: "/home/germain/dev/box2d-editor/presets/bones/pulley-base.g3dj"
-	}
-	{
-		type: com.badlogic.gdx.graphics.Texture
-		name: "/home/germain/dev/box2d-editor/presets/bones/chain.png"
-	}
-	{
-		type: com.badlogic.gdx.graphics.g3d.Model
-		name: "/home/germain/dev/box2d-editor/presets/bones/water-plants.g3dj"
-	}
-	{
-		type: com.badlogic.gdx.graphics.g3d.Model
-		name: "/home/germain/dev/box2d-editor/presets/bones/pulley.g3dj"
-	}
-	{
-		type: com.badlogic.gdx.graphics.g3d.Model
-		name: "/home/germain/dev/box2d-editor/presets/bones/water.g3dj"
-	}
-	{
-		type: com.badlogic.gdx.graphics.g3d.Model
-		name: "/home/germain/dev/box2d-editor/presets/bones/platform.g3dj"
-	}
-	{
-		type: com.badlogic.gdx.graphics.Texture
-		name: "/home/germain/dev/box2d-editor/presets/bones/toile2.png"
-	}
-	{
-		type: net.mgsx.SplineTest$BlenderCurve
-		name: "/home/germain/dev/box2d-editor/presets/bones/splines/spline-platform-2.json"
-	}
-	{
-		type: com.badlogic.gdx.graphics.Texture
-		name: "/home/germain/dev/box2d-editor/presets/bones/player-diffuse.png"
-	}
-	{
-		type: com.badlogic.gdx.graphics.g3d.Model
-		name: "/home/germain/dev/box2d-editor/presets/bones/toiles.g3dj"
-	}
-	{
-		type: com.badlogic.gdx.graphics.Texture
-		name: "/home/germain/dev/box2d-editor/presets/bones/bones-texture.png"
-	}
-	{
-		type: com.badlogic.gdx.graphics.g3d.Model
-		name: "/home/germain/dev/box2d-editor/presets/bones/limace.g3dj"
-	}
-	{
-		type: com.badlogic.gdx.graphics.g3d.Model
-		name: "/home/germain/dev/box2d-editor/presets/bones/forest.g3dj"
-	}
-	{
-		type: com.badlogic.gdx.graphics.g3d.Model
-		name: "/home/germain/dev/box2d-editor/presets/bones/spider.g3dj"
-	}
-	{
-		type: com.badlogic.gdx.graphics.g3d.Model
-		name: "/home/germain/dev/box2d-editor/presets/bones/player.g3dj"
-	}
-	{
-		type: com.badlogic.gdx.graphics.g3d.Model
-		name: "/home/germain/dev/box2d-editor/presets/bones/tree.g3dj"
-	}
-	{
-		type: com.badlogic.gdx.graphics.g3d.Model
-		name: "/home/germain/dev/box2d-editor/presets/bones/cavern.g3dj"
-	}
-	{
-		type: com.badlogic.gdx.graphics.g2d.ParticleEffect
-		name: "/home/germain/dev/box2d-editor/presets/flames.p"
-	}
-	{
-		type: com.badlogic.gdx.graphics.Texture
-		name: "/home/germain/dev/box2d-editor/presets/bones/apple-texture.png"
-	}
-	{
-		type: com.badlogic.gdx.graphics.Texture
-		name: "/home/germain/dev/box2d-editor/presets/bones/toile1.png"
-	}
-	{
-		type: com.badlogic.gdx.graphics.g3d.Model
-		name: "/home/germain/dev/box2d-editor/presets/bones/apple.g3dj"
-	}
-	{
-		type: com.badlogic.gdx.graphics.Texture
-		name: "/home/germain/dev/box2d-editor/presets/bones/waterfall-texture.png"
-	}
-	{
-		type: com.badlogic.gdx.graphics.g3d.Model
-		name: "/home/germain/dev/box2d-editor/presets/bones/liane.g3dj"
-	}
-	{
-		type: com.badlogic.gdx.graphics.Texture
-		name: "/home/germain/dev/box2d-editor/presets/bones/aquaplant.png"
-	}
-	{
-		type: com.badlogic.gdx.graphics.g3d.Model
-		name: "/home/germain/dev/box2d-editor/presets/bones/waterfall.g3dj"
-	}
-]
 entities: [
 	{
 		id: 0
@@ -134,7 +12,7 @@ entities: [
 			modelInstance: "/home/germain/dev/box2d-editor/presets/bones/background.g3dj"
 			origin: {}
 			blended: false
-			culling: false
+			culling: true
 		}
 		box2d: {
 			id: Rectangle
@@ -1751,7 +1629,7 @@ entities: [
 			modelInstance: "/home/germain/dev/box2d-editor/presets/bones/water.g3dj"
 			origin: {}
 			blended: true
-			culling: false
+			culling: true
 		}
 		example.platformer.water-zone: {}
 	}
@@ -1985,7 +1863,7 @@ entities: [
 			modelInstance: "/home/germain/dev/box2d-editor/presets/bones/platform.g3dj"
 			origin: {}
 			blended: false
-			culling: false
+			culling: true
 		}
 		box2d: {
 			id: Rectangle
@@ -2028,8 +1906,8 @@ entities: [
 		}
 		2d: {
 			position: {
-				x: 131.1736
-				y: 8.705406
+				x: 119.24846
+				y: 1.4961925
 			}
 			origin: {
 				x: 0.031340063
@@ -2037,7 +1915,7 @@ entities: [
 			}
 		}
 		example.platformer.platform: {
-			time: 0.9875475
+			time: 0.6688009
 			speed: 0.5
 		}
 		spline: {
@@ -2205,7 +2083,7 @@ entities: [
 			modelInstance: "/home/germain/dev/box2d-editor/presets/bones/liane.g3dj"
 			origin: {}
 			blended: false
-			culling: false
+			culling: true
 		}
 		box2d: {
 			id: Rectangle
@@ -2249,10 +2127,10 @@ entities: [
 		}
 		2d: {
 			position: {
-				x: 3.7482178
-				y: 2.928641
+				x: 3.216478
+				y: 2.959169
 			}
-			angle: -0.009257767
+			angle: -0.16769336
 			origin: {
 				x: 0.0012107156
 				y: -0.0036316812
@@ -2266,7 +2144,7 @@ entities: [
 			modelInstance: "/home/germain/dev/box2d-editor/presets/bones/liane.g3dj"
 			origin: {}
 			blended: false
-			culling: false
+			culling: true
 		}
 		box2d: {
 			id: Rectangle
@@ -2310,10 +2188,10 @@ entities: [
 		}
 		2d: {
 			position: {
-				x: 3.7495685
-				y: 4.7412295
+				x: 3.4670851
+				y: 4.754088
 			}
-			angle: -0.007860186
+			angle: -0.12641515
 		}
 		example.platformer.liana-zone: {}
 	}
@@ -2323,7 +2201,7 @@ entities: [
 			modelInstance: "/home/germain/dev/box2d-editor/presets/bones/liane.g3dj"
 			origin: {}
 			blended: false
-			culling: false
+			culling: true
 		}
 		box2d: {
 			id: Rectangle
@@ -2367,10 +2245,10 @@ entities: [
 		}
 		2d: {
 			position: {
-				x: 3.7496495
-				y: 6.540005
+				x: 3.655152
+				y: 6.5434012
 			}
-			angle: -0.0071327304
+			angle: -0.0974748
 		}
 		example.platformer.liana-zone: {}
 	}
@@ -2600,7 +2478,7 @@ entities: [
 			modelInstance: "/home/germain/dev/box2d-editor/presets/bones/pulley-base.g3dj"
 			origin: {}
 			blended: false
-			culling: false
+			culling: true
 		}
 		box2d: {
 			id: Rectangle
@@ -2645,7 +2523,7 @@ entities: [
 		2d: {
 			position: {
 				x: 152.94951
-				y: 4.0698423
+				y: 4.72659
 			}
 			angle: 0.023682052
 			origin: {
@@ -2660,7 +2538,7 @@ entities: [
 			modelInstance: "/home/germain/dev/box2d-editor/presets/bones/pulley-base.g3dj"
 			origin: {}
 			blended: false
-			culling: false
+			culling: true
 		}
 		box2d: {
 			id: Rectangle
@@ -2704,8 +2582,8 @@ entities: [
 		}
 		2d: {
 			position: {
-				x: 157.39467
-				y: 4.563937
+				x: 157.38782
+				y: 3.9071586
 			}
 			angle: -0.0013355961
 			origin: {
@@ -2745,7 +2623,7 @@ entities: [
 			modelInstance: "/home/germain/dev/box2d-editor/presets/bones/pulley.g3dj"
 			origin: {}
 			blended: true
-			culling: false
+			culling: true
 		}
 	}
 	{
@@ -2843,9 +2721,9 @@ entities: [
 		2d: {
 			position: {
 				x: 151.63971
-				y: 2.3263147
+				y: 2.3263352
 			}
-			angle: 0.0027869036
+			angle: 0.002811271
 			origin: {
 				x: 157.21089
 				y: 6.212381
@@ -2858,7 +2736,7 @@ entities: [
 			modelInstance: "/home/germain/dev/box2d-editor/presets/bones/forest.g3dj"
 			origin: {}
 			blended: false
-			culling: false
+			culling: true
 		}
 	}
 	{
@@ -2867,7 +2745,7 @@ entities: [
 			modelInstance: "/home/germain/dev/box2d-editor/presets/bones/water-plants.g3dj"
 			origin: {}
 			blended: true
-			culling: false
+			culling: true
 		}
 	}
 	{
@@ -2876,7 +2754,7 @@ entities: [
 			modelInstance: "/home/germain/dev/box2d-editor/presets/bones/cavern.g3dj"
 			origin: {}
 			blended: false
-			culling: false
+			culling: true
 		}
 	}
 	{
@@ -3014,14 +2892,13 @@ entities: [
 			modelInstance: "/home/germain/dev/box2d-editor/presets/bones/env.g3dj"
 			origin: {}
 			blended: false
-			culling: false
+			culling: true
 		}
 		example.platformer.env: {
 			cameraOffset: {
 				y: 3.020133
 				z: 16.57925
 			}
-			enabled: true
 		}
 	}
 	{
@@ -3465,7 +3342,7 @@ entities: [
 			modelInstance: "/home/germain/dev/box2d-editor/presets/bones/forest.g3dj"
 			origin: {}
 			blended: false
-			culling: false
+			culling: true
 		}
 	}
 	{
@@ -3748,7 +3625,7 @@ entities: [
 			modelInstance: "/home/germain/dev/box2d-editor/presets/bones/toiles.g3dj"
 			origin: {}
 			blended: true
-			culling: false
+			culling: true
 		}
 	}
 	{
@@ -3758,8 +3635,8 @@ entities: [
 		}
 		2d: {
 			position: {
-				x: 295.31885
-				y: -39.813168
+				x: -2.4416618
+				y: 1.5594101
 			}
 			enabled: false
 			origin: {
@@ -3980,8 +3857,8 @@ entities: [
 		}
 		2d: {
 			position: {
-				x: 62.858593
-				y: 6.4344645
+				x: -0.20826721
+				y: 0.1712656
 			}
 			origin: {
 				x: 62.91375
@@ -4049,6 +3926,103 @@ entities: [
 				y: 0.3133851
 			}
 		}
+	}
+	{
+		id: 94
+		2d: {
+			position: {
+				x: 0.8936405
+				y: 3.860527
+			}
+		}
+		g3d.light.dir: {
+			light: {
+				color: {
+					r: 1
+					g: 1
+					b: 1
+					a: 1
+				}
+				direction: {
+					z: -1
+				}
+			}
+			shadow: false
+		}
+	}
+]
+assets: [
+	{
+		type: com.badlogic.gdx.graphics.g3d.Model
+		name: "/home/germain/dev/box2d-editor/presets/bones/background.g3dj"
+	}
+	{
+		type: com.badlogic.gdx.graphics.g3d.Model
+		name: "/home/germain/dev/box2d-editor/presets/bones/env.g3dj"
+	}
+	{
+		type: kit.entity-group
+		name: "/home/germain/dev/box2d-editor/presets/bones/apple-static.json"
+	}
+	{
+		type: com.badlogic.gdx.graphics.g3d.Model
+		name: "/home/germain/dev/box2d-editor/presets/bones/cavern.g3dj"
+	}
+	{
+		type: com.badlogic.gdx.graphics.g3d.Model
+		name: "/home/germain/dev/box2d-editor/presets/bones/pulley-base.g3dj"
+	}
+	{
+		type: com.badlogic.gdx.graphics.g3d.Model
+		name: "/home/germain/dev/box2d-editor/presets/bones/water-plants.g3dj"
+	}
+	{
+		type: kit.entity-group
+		name: "/home/germain/dev/box2d-editor/presets/bones/limace.json"
+	}
+	{
+		type: com.badlogic.gdx.graphics.g3d.Model
+		name: "/home/germain/dev/box2d-editor/presets/bones/pulley.g3dj"
+	}
+	{
+		type: com.badlogic.gdx.graphics.g3d.Model
+		name: "/home/germain/dev/box2d-editor/presets/bones/water.g3dj"
+	}
+	{
+		type: com.badlogic.gdx.graphics.g3d.Model
+		name: "/home/germain/dev/box2d-editor/presets/bones/platform.g3dj"
+	}
+	{
+		type: kit.entity-group
+		name: "/home/germain/dev/box2d-editor/presets/bones/spider.json"
+	}
+	{
+		type: com.badlogic.gdx.graphics.g3d.Model
+		name: "/home/germain/dev/box2d-editor/presets/bones/toiles.g3dj"
+	}
+	{
+		type: kit.entity-group
+		name: "/home/germain/dev/box2d-editor/presets/bones/player.json"
+	}
+	{
+		type: kit.entity-group
+		name: "/home/germain/dev/box2d-editor/presets/bones/tree-static.json"
+	}
+	{
+		type: com.badlogic.gdx.graphics.g2d.ParticleEffect
+		name: "/home/germain/dev/box2d-editor/presets/flames.p"
+	}
+	{
+		type: com.badlogic.gdx.graphics.g3d.Model
+		name: "/home/germain/dev/box2d-editor/presets/bones/forest.g3dj"
+	}
+	{
+		type: kit.entity-group
+		name: "/home/germain/dev/box2d-editor/presets/bones/waterfall.json"
+	}
+	{
+		type: com.badlogic.gdx.graphics.g3d.Model
+		name: "/home/germain/dev/box2d-editor/presets/bones/liane.g3dj"
 	}
 ]
 }
