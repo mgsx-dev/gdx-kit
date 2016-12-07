@@ -40,9 +40,9 @@ public class ReflectionHelper {
 			throw new ReflectionError(e);
 		}
 	}
-	public static Field field(Object entity, String field) {
+	public static Field field(Class type, String field) {
 		try {
-			return entity.getClass().getField(field);
+			return type.getField(field);
 		} catch (NoSuchFieldException e) {
 			throw new ReflectionError(e);
 		} catch (SecurityException e) {
@@ -126,5 +126,16 @@ public class ReflectionHelper {
 			}
 		}
 		return out;
+	}
+	/**
+	 * Check if left type is same type or subtype of right type using same conventions
+	 * as java instanceof expression but apply to type.
+	 * 
+	 * @param left
+	 * @param right
+	 * @return
+	 */
+	public static boolean instanceOf(Class left, Class right) {
+		return left.isAssignableFrom(right);
 	}
 }

@@ -26,9 +26,15 @@ public class FieldAccessor implements Accessor
 	public FieldAccessor(Object object, String fieldName) {
 		super();
 		this.object = object;
-		this.field = ReflectionHelper.field(object, fieldName);
+		this.field = ReflectionHelper.field(object.getClass(), fieldName);
 		this.label = fieldName;
 	}
+	public FieldAccessor(Field field) {
+		super();
+		this.field = field;
+		this.label = field.getName();
+	}
+
 
 	@Override
 	public Object get() {
@@ -50,6 +56,19 @@ public class FieldAccessor implements Accessor
 	@Override
 	public Editable config() {
 		return field.getAnnotation(Editable.class);
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if(obj instanceof FieldAccessor){
+			return ((FieldAccessor) obj).field.equals(field);
+		}
+		return super.equals(obj);
+	}
+	
+	@Override
+	public int hashCode() {
+		return field.hashCode();
 	}
 	
 }

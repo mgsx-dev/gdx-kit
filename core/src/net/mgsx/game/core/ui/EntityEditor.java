@@ -18,18 +18,31 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.ObjectMap;
 
+import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.core.annotations.EditableComponent;
 import net.mgsx.game.core.annotations.EditableSystem;
 import net.mgsx.game.core.ui.accessors.Accessor;
 import net.mgsx.game.core.ui.accessors.AccessorScanner;
 import net.mgsx.game.core.ui.accessors.FieldAccessor;
+import net.mgsx.game.core.ui.widgets.BitsWidget;
 import net.mgsx.game.core.ui.widgets.FloatWidget;
+import net.mgsx.game.core.ui.widgets.IntegerWidget;
 
 public class EntityEditor extends Table
 {
+	public static class Config{
+		
+		public ObjectMap<Accessor, FieldEditor> accessorEditors = new ObjectMap<Accessor, FieldEditor>();
+		public ObjectMap<Class, FieldEditor> typeEditors = new ObjectMap<Class, FieldEditor>();
+	}
+	
+	final public Config config;
 	private Array<Object> stack = new Array<Object>();
 	private final boolean annotationBased;
+	
+	
 	
 	public EntityEditor(Skin skin) {
 		this(skin, false);
@@ -43,13 +56,15 @@ public class EntityEditor extends Table
 	public EntityEditor(Object entity, boolean annotationBased, Skin skin) {
 		super(skin);
 		this.annotationBased = annotationBased;
+		this.config = new Config();
 		setEntity(entity);
 	}
 	
-	private EntityEditor(Object entity, boolean annotationBased, Skin skin, Array<Object> stack) {
+	private EntityEditor(Object entity, boolean annotationBased, Skin skin, Array<Object> stack, Config config) {
 		super(skin);
 		this.annotationBased = annotationBased;
 		this.stack = stack;
+		this.config = config;
 		generate(entity, this);
 	}
 	
@@ -73,7 +88,7 @@ public class EntityEditor extends Table
 		
 		if(annotationBased){
 			boolean match = false;
-			
+			if(entity.getClass().getAnnotation(Editable.class) != null) match = true;
 			if(entity.getClass().getAnnotation(EditableSystem.class) != null) match = true;
 			if(entity.getClass().getAnnotation(EditableComponent.class) != null) match = true;
 			if(net.mgsx.game.core.tools.Tool.class.isAssignableFrom(entity.getClass())) match = true;
@@ -87,7 +102,7 @@ public class EntityEditor extends Table
 			Label accessorLabel = new Label(accessor.getName(), table.getSkin());
 			table.add(accessorLabel).fill().left();
 			
-			if(!createControl(table, entity, accessor, stack))
+			if(!createControl(table, entity, accessor, stack, config))
 			{
 				// create recursively on missing type (object)
 				// TODO background ?
@@ -134,13 +149,32 @@ public class EntityEditor extends Table
 	}
 	public static boolean createControl(final Table table, final Object entity, final Accessor accessor) 
 	{
-		return createControl(table, entity, accessor, new Array<Object>());
+		return createControl(table, entity, accessor, new Array<Object>(), new Config());
 	}
 	
-	private static boolean createControl(final Table table, final Object entity, final Accessor accessor, Array<Object> stack) 
+	private static boolean createControl(final Table table, final Object entity, final Accessor accessor, Array<Object> stack, Config config) 
 	{
 		Skin skin = table.getSkin();
 		
+		// find appropriate control in following order :
+		// 1 - explicit editor for accessor
+		// 2 - annotation on accessor (predefined types)
+		// 3 - primitive types
+		FieldEditor accessorEditor = config.accessorEditors.get(accessor);
+		if(accessorEditor != null){
+			table.add(accessorEditor.create(accessor, skin));
+			return true;
+		}
+		
+		Editable accessorConfig = accessor.config();
+		
+		if(accessorConfig != null ){
+			switch(accessorConfig.type()){
+			case BITS: table.add(BitsWidget.instance.create(accessor, skin)); return true;
+			default:
+			}
+			
+		}
 		if(accessor.getType() == void.class){
 			TextButton bt = new TextButton(accessor.getName(), skin);
 			table.add(bt);
@@ -152,35 +186,15 @@ public class EntityEditor extends Table
 			});
 		}else if(accessor.getType() == int.class){
 			// TODO slider
-			Table sub = new Table(skin);
-			final Label label = new Label("", skin);
-			final TextButton btPlus = new TextButton("+", skin);
-			final TextButton btMinus = new TextButton("-", skin);
-			sub.add(btMinus);
-			sub.add(label).pad(4);
-			sub.add(btPlus);
-			label.setText(String.valueOf(accessor.get()));
 			
-			table.add(sub).fill();
+			table.add(IntegerWidget.unlimited.create(accessor, skin)).fill();
 			
-			btPlus.addListener(new ChangeListener() {
-				@Override
-				public void changed(ChangeEvent event, Actor actor) {
-					int value = 1 + (Integer)accessor.get();
-					accessor.set(value);
-					label.setText(String.valueOf(value));
-					// XXX btPlus.fire(new EntityEvent(entity, accessor, value));
-				}
-			});
-			btMinus.addListener(new ChangeListener() {
-				@Override
-				public void changed(ChangeEvent event, Actor actor) {
-					int value = -1 + (Integer)accessor.get();
-					accessor.set(value);
-					label.setText(String.valueOf(value));
-					// XXX btMinus.fire(new EntityEvent(entity, accessor, value));
-				}
-			});
+			
+		}else if(accessor.getType() == short.class){
+			// TODO slider
+			
+			table.add(IntegerWidget.unsignedShort.create(accessor, skin)).fill();
+			
 			
 		}else if(accessor.getType() == float.class){
 			
@@ -264,7 +278,7 @@ public class EntityEditor extends Table
 			table.add(selector);
 		}else{
 			
-			table.add(new EntityEditor(accessor.get(), false, skin, stack)).row();
+			table.add(new EntityEditor(accessor.get(), false, skin, stack, config)).row();
 			// XXX return false;
 		}
 		return true;

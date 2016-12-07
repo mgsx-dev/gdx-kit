@@ -14,8 +14,15 @@ import net.mgsx.game.plugins.g3d.components.G3DModel;
 
 public class ModelAnimationSelector implements FieldEditor
 {
+	private Entity entity;
+	
+	public ModelAnimationSelector(Entity entity) {
+		super();
+		this.entity = entity;
+	}
+
 	@Override
-	public Actor create(Entity entity, final Accessor accessor, Skin skin) 
+	public Actor create(final Accessor accessor, Skin skin) 
 	{
 		final G3DModel model = G3DModel.components.get(entity);
 		if(model != null){
