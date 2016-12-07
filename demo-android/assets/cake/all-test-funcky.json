@@ -215,8 +215,8 @@ entities: [
 		}
 		2d: {
 			position: {
-				x: 6.791866
-				y: -0.5712689
+				x: 5.992603
+				y: -2.439099
 			}
 			angle: -75.455765
 		}
@@ -261,14 +261,22 @@ entities: [
 				}
 			]
 		}
-		example.platformer.player-control: {}
 		example.platformer.keyboard: {}
 		example.platformer.walking: {
 			speedScale: 0.99956596
 			animation: skeleton|walking
 		}
-		demo.platformer.character: {}
+		demo.platformer.character: {
+			rightToLeft: true
+		}
 		g3d.shadow-casting: {}
+		demo.platformer.patrol: {
+			rayStart: {
+				y: 0.525697
+			}
+			timeout: -0.016996497
+			speed: 2.2174335
+		}
 	}
 	{
 		id: 6
@@ -280,22 +288,6 @@ entities: [
 				x: -2.1687365
 				y: 0.8022766
 			}
-		}
-		g3d.light.dir: {
-			light: {
-				color: {
-					r: 1
-					g: 1
-					b: 1
-					a: 1
-				}
-				direction: {
-					x: 0.21645615
-					y: 0.35253045
-					z: -0.7706391
-				}
-			}
-			shadow: true
 		}
 	}
 	{
@@ -349,8 +341,8 @@ entities: [
 		}
 		2d: {
 			position: {
-				x: -0.5777216
-				y: -2.5687342
+				x: 0.02400875
+				y: -2.5687313
 			}
 		}
 		g3d.shadow-casting: {}
@@ -488,7 +480,7 @@ entities: [
 		}
 		2d: {
 			position: {
-				x: 5.2166862
+				x: 0.92942023
 				y: -2.4797208
 			}
 		}
@@ -560,15 +552,12 @@ entities: [
 			]
 		}
 		example.platformer.walking: {}
-		demo.platformer.patrol: {
-			rayStart: {
-				y: 0.16896679
-			}
-			timeout: -0.016957492
-			speed: 0.41984245
+		demo.platformer.character: {
+			rightToLeft: true
 		}
-		demo.platformer.character: {}
 		g3d.shadow-casting: {}
+		example.platformer.keyboard: {}
+		example.platformer.player-control: {}
 	}
 	{
 		id: 14
@@ -733,6 +722,22 @@ entities: [
 				}
 			]
 		}
+		g3d.light.dir: {
+			light: {
+				color: {
+					r: 1
+					g: 1
+					b: 1
+					a: 1
+				}
+				direction: {
+					x: -0.47760388
+					y: -0.8125043
+					z: 0.09962457
+				}
+			}
+			shadow: true
+		}
 	}
 	{
 		id: 18
@@ -744,8 +749,8 @@ entities: [
 		}
 		2d: {
 			position: {
-				x: 8.230985
-				y: -2.4797208
+				x: 7.587345
+				y: -2.4783614
 			}
 		}
 		box2d: {
@@ -820,12 +825,10 @@ entities: [
 			rayStart: {
 				y: 0.13609278
 			}
-			timeout: -0.016001781
+			timeout: -0.01703863
 			speed: 0.53523725
 		}
-		demo.platformer.character: {
-			rightToLeft: true
-		}
+		demo.platformer.character: {}
 		g3d.shadow-casting: {}
 	}
 	{
@@ -838,8 +841,8 @@ entities: [
 		}
 		2d: {
 			position: {
-				x: 7.1096377
-				y: -2.4797206
+				x: 2.258681
+				y: -2.4797208
 			}
 		}
 		box2d: {
@@ -914,16 +917,158 @@ entities: [
 			rayStart: {
 				y: 0.24236763
 			}
-			timeout: -0.015943855
+			timeout: -0.016877852
 			speed: 0.46131232
 		}
-		demo.platformer.character: {
-			rightToLeft: true
-		}
+		demo.platformer.character: {}
 		g3d.shadow-casting: {}
+	}
+	{
+		id: 20
+		box2d: {
+			id: Circle
+			def: {
+				type: KinematicBody
+				position: {
+					x: 0.2068389
+					y: 3.4097161
+				}
+			}
+			fixtures: [
+				{
+					def: {
+						shape: {
+							type: Circle
+							position: {}
+							radius: 0.39001998
+						}
+						density: 1
+						filter: {}
+					}
+				}
+			]
+		}
+		demo.platformer.character: {}
+		demo.platformer.patrol: {
+			checkVoid: true
+			timeout: -0.016884247
+		}
+		p2d: {
+			reference: "/home/germain/dev/box2d-editor/presets/flames.p"
+		}
+		2d: {
+			position: {
+				x: 5.3743176
+				y: 3.0650966
+			}
+			angle: -4.554059
+		}
+		g3d.light.point: {
+			light: {
+				color: {
+					r: 4.981859
+					g: 1.2017517
+					b: -0.27803808
+					a: 1
+				}
+				position: {
+					x: 5.3743176
+					y: 3.0650966
+				}
+				intensity: 8.08269
+			}
+		}
+		g3d: {
+			modelInstance: "/home/germain/git/box2d-editor/demo-android/assets/cake/chocos.g3dj"
+			origin: {}
+			blended: false
+			culling: true
+		}
+		sprite: {
+			sprite: {
+				u: 0
+				v: 0
+				u2: 1
+				v2: 1
+				x: 5.3743176
+				y: 3.0650966
+				width: 1.0028577
+				height: -0.96525097
+				sx: 1
+				sy: 1
+				rotation: -4.554059
+				texture: "/home/germain/dev/box2d-editor/presets/images.png"
+				color: {
+					r: 1
+					g: 1
+					b: 1
+					a: 0.99607843
+				}
+			}
+		}
+	}
+	{
+		id: 21
+		sprite: {
+			sprite: {
+				u: 0
+				v: 0
+				u2: 1
+				v2: 1
+				x: -0.8023071
+				y: 7.2583723
+				width: 0.7897495
+				height: -0.6769285
+				sx: 1
+				sy: 1
+				rotation: 0
+				texture: "/home/germain/dev/box2d-editor/presets/images.png"
+				color: {
+					r: 1
+					g: 1
+					b: 1
+					a: 0.99607843
+				}
+			}
+		}
+		2d: {
+			position: {
+				x: -0.8023071
+				y: 7.2583723
+			}
+		}
+	}
+	{
+		id: 22
+		sprite: {
+			sprite: {
+				u: 0
+				v: 0
+				u2: 1
+				v2: 1
+				x: -0.06899421
+				y: 7.3834987
+				width: 1.4290724
+				height: -1.6797862
+				sx: 1
+				sy: 1
+				rotation: 0
+				texture: "/home/germain/dev/box2d-editor/presets/images.png"
+				color: {
+					r: 1
+					g: 1
+					b: 1
+					a: 0.99607843
+				}
+			}
+		}
 	}
 ]
 assets: [
+	{
+		type: com.badlogic.gdx.graphics.Texture
+		name: "/home/germain/dev/box2d-editor/presets/images.png"
+	}
 	{
 		type: com.badlogic.gdx.graphics.g3d.Model
 		name: "/home/germain/git/box2d-editor/demo-android/assets/cake/cupcake.g3dj"
@@ -935,6 +1080,10 @@ assets: [
 	{
 		type: com.badlogic.gdx.graphics.g3d.Model
 		name: "/home/germain/git/box2d-editor/demo-android/assets/cake/background.g3dj"
+	}
+	{
+		type: com.badlogic.gdx.graphics.g2d.ParticleEffect
+		name: "/home/germain/dev/box2d-editor/presets/flames.p"
 	}
 ]
 }
