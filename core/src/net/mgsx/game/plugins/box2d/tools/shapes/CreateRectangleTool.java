@@ -10,6 +10,8 @@ import net.mgsx.game.plugins.box2d.components.Box2DBodyModel;
 import net.mgsx.game.plugins.box2d.systems.Box2DWorldContext;
 import net.mgsx.game.plugins.box2d.tools.Box2DCommands;
 
+// TODO java: /var/lib/jenkins/workspace/libgdx/extensions/gdx-box2d/gdx-box2d/jni/Box2D/Collision/Shapes/b2PolygonShape.cpp:430: virtual void b2PolygonShape::ComputeMass(b2MassData*, float32) const: Assertion `area > 1.19209289550781250000e-7F' failed.
+
 public class CreateRectangleTool extends RectangleTool {
 
 	private Box2DWorldContext worldItem;

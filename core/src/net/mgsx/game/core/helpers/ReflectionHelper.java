@@ -121,7 +121,7 @@ public class ReflectionHelper {
 	public static <T> T copy(T out, T in) 
 	{
 		for(Field field : out.getClass().getFields()){
-			if(field.isAccessible() && !Modifier.isStatic(field.getModifiers())){
+			if(Modifier.isPublic(field.getModifiers()) && !Modifier.isStatic(field.getModifiers())){
 				set(out, field, get(in, field));
 			}
 		}

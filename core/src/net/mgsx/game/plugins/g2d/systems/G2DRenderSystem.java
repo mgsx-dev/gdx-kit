@@ -21,7 +21,7 @@ public class G2DRenderSystem extends IteratingSystem {
 	@Editable public boolean culling = false;
 	
 	public G2DRenderSystem(GameScreen engine) {
-		super(Family.all(SpriteModel.class).exclude(Hidden.class).get(), GamePipeline.RENDER);
+		super(Family.all(SpriteModel.class).exclude(Hidden.class).get(), GamePipeline.RENDER + 1);
 		this.engine = engine;
 	}
 
