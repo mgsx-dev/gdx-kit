@@ -14,5 +14,10 @@ public enum EnumType {
 	
 	
 	/** type is considered as bits (work with int, short, byte, long) */
-	BITS
+	BITS,
+	
+	/** type considered as unit value : range from 0 to 1 for floats,
+	 * unit vector for Vector2 and Vector3.
+	 *  */
+	UNIT
 }

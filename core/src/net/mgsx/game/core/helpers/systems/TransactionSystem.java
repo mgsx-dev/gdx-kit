@@ -6,12 +6,15 @@ import com.badlogic.ashley.core.EntitySystem;
 abstract public class TransactionSystem extends EntitySystem
 {
 	private EntitySystem afterSystem;
+	private boolean shouldUpdateAfter;
 	public TransactionSystem(int beforePriority, int afterPriority) {
 		super(beforePriority);
 		afterSystem = new EntitySystem(afterPriority) {
 			@Override
 			public void update(float deltaTime) {
-				updateAfter(deltaTime);
+				if(shouldUpdateAfter){
+					updateAfter(deltaTime);
+				}
 			}
 		};
 	}
@@ -30,7 +33,7 @@ abstract public class TransactionSystem extends EntitySystem
 	
 	@Override
 	public void update(float deltaTime) {
-		updateBefore(deltaTime);
+		shouldUpdateAfter = updateBefore(deltaTime);
 	}
 	
 	@Override
@@ -39,7 +42,12 @@ abstract public class TransactionSystem extends EntitySystem
 		afterSystem.setProcessing(processing);
 	}
 	
-	abstract protected void updateBefore(float deltaTime);
+	/**
+	 * Call before system
+	 * @param deltaTime
+	 * @return true if updateAfter should be called.
+	 */
+	abstract protected boolean updateBefore(float deltaTime);
 	abstract protected void updateAfter(float deltaTime);
 	
 }
