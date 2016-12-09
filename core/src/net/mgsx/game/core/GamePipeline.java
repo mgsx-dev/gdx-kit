@@ -8,7 +8,7 @@ import com.badlogic.ashley.core.EntitySystem;
 final public class GamePipeline 
 {
 	// num slot (increment) between stages
-	private static final int SLOTS = 1;
+	private static final int SLOTS = 100;
 	
 	// never used this is the default value.
 	public static final int DEFAULT = 0;

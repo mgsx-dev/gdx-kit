@@ -18,6 +18,7 @@ import net.mgsx.game.examples.platformer.animations.EnvSystem;
 import net.mgsx.game.examples.platformer.animations.FlyingAnimationSystem;
 import net.mgsx.game.examples.platformer.animations.PlatformComponent;
 import net.mgsx.game.examples.platformer.animations.PlatformerCameraSystem;
+import net.mgsx.game.examples.platformer.animations.TubeWorldSystem;
 import net.mgsx.game.examples.platformer.animations.WalkingAnimationSystem;
 import net.mgsx.game.examples.platformer.animations.WalkingComponent;
 import net.mgsx.game.examples.platformer.audio.CristalSoundSystem;
@@ -127,6 +128,7 @@ public class PlatformerPlugin implements Plugin, DefaultPlugin
 		engine.entityEngine.addSystem(new Character2DModelSystem());
 		engine.entityEngine.addSystem(new WalkingAnimationSystem());
 		engine.entityEngine.addSystem(new PatrolSystem());
+		engine.entityEngine.addSystem(new TubeWorldSystem());
 		
 		// add a processor for player
 		// TODO could be automated with a generic component and abstract behavior attached to it ?
