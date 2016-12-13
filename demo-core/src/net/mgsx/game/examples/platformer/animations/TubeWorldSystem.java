@@ -25,7 +25,7 @@ public class TubeWorldSystem extends TransactionSystem
 		X,Y,Z, None
 	}
 	
-	private ImmutableArray<Entity> models;
+	private ImmutableArray<Entity> models, tubes;
 	private ImmutableArray<Entity> cameras;
 	
 	private Vector3 translation = new Vector3();
@@ -50,6 +50,7 @@ public class TubeWorldSystem extends TransactionSystem
 	public void addedToEngine(Engine engine) {
 		super.addedToEngine(engine);
 		models = engine.getEntitiesFor(Family.all(G3DModel.class).exclude(TubeComponent.class).get());
+		tubes = engine.getEntitiesFor(Family.all(G3DModel.class, TubeComponent.class).get());
 		cameras = engine.getEntitiesFor(Family.all(CameraComponent.class, CullingComponent.class).get());
 	}
 	
@@ -101,6 +102,7 @@ public class TubeWorldSystem extends TransactionSystem
 			model.modelInstance.transform.rotate(rotation);
 		}
 		
+		
 		CameraComponent camera = CameraComponent.components.get(cameras.first());
 		
 		backup.combined.set(camera.camera.combined);
@@ -113,6 +115,11 @@ public class TubeWorldSystem extends TransactionSystem
 		rotation.transform(camera.camera.direction);
 		rotation.transform(camera.camera.up);
 		camera.camera.update();
+		
+		for(Entity entity : tubes){
+			G3DModel model = G3DModel.components.get(entity);
+			model.inFrustum = camera.camera.frustum.boundsInFrustum(model.globalBoundary);
+		}
 		
 		return true;
 	}
