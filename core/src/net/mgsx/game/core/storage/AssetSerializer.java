@@ -26,9 +26,10 @@ public class AssetSerializer<T> implements Serializer<T>
 	/**
 	 * Subclasses may reference additional assets.
 	 * @param fileName
+	 * @return fileName to save (may not be the same after some path resolution)
 	 */
-	protected void addReference(String fileName){
-		parent.reference(fileName);
+	protected String reference(String fileName){
+		return parent.reference(fileName);
 	}
 
 	public Class<T> getType() {
@@ -43,8 +44,7 @@ public class AssetSerializer<T> implements Serializer<T>
 	public void write(Json json, T object, Class knownType) 
 	{
 		String ref = getReference(object);
-		json.writeValue(ref);
-		parent.reference(ref);
+		json.writeValue(parent.reference(ref));
 	}
 
 	@Override

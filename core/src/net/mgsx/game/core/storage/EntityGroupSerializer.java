@@ -1,26 +1,25 @@
 package net.mgsx.game.core.storage;
 
+import java.io.File;
+
 import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.Entity;
-import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
-import com.badlogic.gdx.utils.ObjectSet;
-
-import net.mgsx.game.core.GameRegistry;
-import net.mgsx.game.plugins.core.components.ProxyComponent;
+import com.badlogic.gdx.utils.ObjectMap;
+import com.badlogic.gdx.utils.ObjectMap.Entry;
 
 class EntityGroupSerializer implements Json.Serializer<EntityGroup>
 {
-	private AssetManager assets;
-	private GameRegistry registry;
+	private SaveConfiguration config;
 	
-	private final ObjectSet<String> references = new ObjectSet<String>();
+	private final ObjectMap<String, String> references = new ObjectMap<String, String>();
 	
-	public EntityGroupSerializer(AssetManager assets, GameRegistry registry) {
+	public EntityGroupSerializer(SaveConfiguration config) {
 		super();
-		this.assets = assets;
-		this.registry = registry;
+		this.config = config;
 	}
 
 	@Override
@@ -38,14 +37,11 @@ class EntityGroupSerializer implements Json.Serializer<EntityGroup>
 			
 			json.writeObjectStart();
 			json.writeValue("id", i);
-			ProxyComponent proxy = ProxyComponent.components.get(entity);
-			if(proxy != null){
-				references.add(proxy.ref);
-			}
+
 			// default serialization
 			for(Component component : entity.getComponents())
 			{
-				String typeName = registry.nameMap.get(component.getClass());
+				String typeName = config.registry.nameMap.get(component.getClass());
 				if(typeName != null){
 					json.writeValue(typeName, component);
 				}
@@ -55,16 +51,18 @@ class EntityGroupSerializer implements Json.Serializer<EntityGroup>
 		json.writeArrayEnd();
 		
 		json.writeArrayStart("assets");
-		for(String name : references)
+		
+		for(Entry<String, String> reference : references)
 		{
-			Class type = assets.getAssetType(name);
+			String name = reference.key;
+			Class type = config.assets.getAssetType(name);
 			
 			String typeName = json.getTag(type);
 			if(typeName == null) typeName = type.getName();
 			
 			json.writeObjectStart();
 			json.writeValue("type", typeName);
-			json.writeValue("name", name);
+			json.writeValue("name", reference.value);
 			// TODO save some parameters (texture wrap/mipmap ?)
 			json.writeObjectEnd();
 		}
@@ -139,9 +137,25 @@ class EntityGroupSerializer implements Json.Serializer<EntityGroup>
 //		return object;
 	}
 
-	public void reference(String fileName) 
+	public String reference(String fileName) 
 	{
-		references.add(fileName);
+		String refName = fileName;
+		// change name
+		if(config.stripPaths){
+			String base = new File("").getAbsolutePath();
+			FileHandle file = Gdx.files.internal(fileName);
+			if(file.exists()){
+				if(fileName.startsWith(base)){
+					refName = fileName.substring(base.length() + 1);
+				}else{
+					Gdx.app.error("Storage", "can't strip path : " + fileName);
+				}
+			}
+		}
+		
+		references.put(fileName, refName);
+		
+		return refName;
 	}
 
 }

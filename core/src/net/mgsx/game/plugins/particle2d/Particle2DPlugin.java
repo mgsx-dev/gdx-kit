@@ -41,10 +41,8 @@ public class Particle2DPlugin implements Plugin
 			@Override
 			public void write(Json json, Particle2DComponent object, Class knownType) {
 				json.writeObjectStart();
-				json.writeField(object, "reference");
+				json.writeValue("reference", reference(object.reference));
 				json.writeObjectEnd();
-				
-				addReference(object.reference);
 			}
 
 			@Override

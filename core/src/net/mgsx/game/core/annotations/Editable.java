@@ -30,4 +30,6 @@ public @interface Editable
 	EnumType type() default EnumType.AUTO;
 	
 	Class<? extends FieldEditor> editor() default DefaultFieldEditor.class;
+
+	String doc() default "";
 }

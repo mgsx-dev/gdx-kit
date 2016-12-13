@@ -251,25 +251,25 @@ public class EntityGroupStorage
 		return clones;
 	}
 	
-	public static void save(AssetManager assets, Engine engine, GameRegistry registry, FileHandle file, boolean pretty) 
+	public static void save(FileHandle file, SaveConfiguration config) 
 	{
 		Writer writer = file.writer(false);
-		save(assets, engine, registry, writer, pretty);
+		save(writer, config);
 		try {
 			writer.close();
 		} catch (IOException e) {
 			throw new Error(e);
 		};
 	}
-	public static void save(AssetManager assets, Engine engine, GameRegistry registry, Writer writer, boolean pretty) 
+	public static void save(Writer writer, SaveConfiguration config) 
 	{
 		EntityGroup group = new EntityGroup();
-		for(Entity entity : engine.getEntitiesFor(Family.all(Repository.class).get())){
+		for(Entity entity : config.engine.getEntitiesFor(Family.all(Repository.class).get())){
 			group.add(entity);
 		}
 		
-		Json json = EntityGroupStorage.setup(assets, registry, group);
-		if(pretty){
+		Json json = EntityGroupStorage.setup(config, group);
+		if(config.pretty){
 			try {
 				writer.append(json.prettyPrint(group));
 			} catch (IOException e) {
@@ -289,15 +289,32 @@ public class EntityGroupStorage
 		
 		return json;
 	}
+	
+	static Json setup(SaveConfiguration config, EntityGroup group)
+	{
+		Json json = setup(config.assets, config.registry, group);
+		// set the root serializer
+		EntityGroupSerializer entityGroupSerializer = new EntityGroupSerializer(config);
+		json.setSerializer(EntityGroup.class, entityGroupSerializer);
+		
+		for(Entries<Class, Serializer> entries = config.registry.serializers.iterator() ; entries.hasNext() ; )
+		{
+			Entry<Class, Serializer> entry = entries.next();
+			Serializer serializer = entry.value;
+			
+			if(serializer instanceof AssetSerializer){
+				AssetSerializer assetSerializer = (AssetSerializer)serializer;
+				assetSerializer.assets = config.assets;
+				assetSerializer.parent = entityGroupSerializer;
+			}
+		}
+		return json;
+	}
 
 	static Json setup(AssetManager assets, GameRegistry registry, EntityGroup group)
 	{
 		Json json = new Json();
 	
-		// set the root serializer
-		EntityGroupSerializer entityGroupSerializer = new EntityGroupSerializer(assets, registry);
-		json.setSerializer(EntityGroup.class, entityGroupSerializer);
-		
 		for(Entries<Class, Serializer> entries = registry.serializers.iterator() ; entries.hasNext() ; )
 		{
 			Entry<Class, Serializer> entry = entries.next();
@@ -307,7 +324,6 @@ public class EntityGroupStorage
 			if(serializer instanceof AssetSerializer){
 				AssetSerializer assetSerializer = (AssetSerializer)serializer;
 				assetSerializer.assets = assets;
-				assetSerializer.parent = entityGroupSerializer;
 			}
 			else if(serializer instanceof ContextualSerializer){
 				ContextualSerializer contextualSerializer = (ContextualSerializer)serializer;

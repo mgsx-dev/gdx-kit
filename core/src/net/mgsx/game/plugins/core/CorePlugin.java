@@ -12,6 +12,7 @@ import net.mgsx.game.plugins.core.components.ProxyComponent;
 import net.mgsx.game.plugins.core.components.Rotate2DAnimation;
 import net.mgsx.game.plugins.core.components.SlavePhysics;
 import net.mgsx.game.plugins.core.components.Transform2DComponent;
+import net.mgsx.game.plugins.core.storage.ProxySerializer;
 import net.mgsx.game.plugins.core.systems.EntityEmitterSystem;
 import net.mgsx.game.plugins.core.systems.ExpirySystem;
 import net.mgsx.game.plugins.core.systems.Rotation2DSystem;
@@ -38,6 +39,7 @@ public class CorePlugin implements Plugin
 		engine.entityEngine.addSystem(new EntityEmitterSystem(engine));
 		engine.entityEngine.addSystem(new ExpirySystem());
 		
+		engine.registry.addSerializer(ProxyComponent.class, new ProxySerializer());
 	}
 
 }
