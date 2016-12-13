@@ -94,6 +94,8 @@ public class PlatformerPostProcessing extends EntitySystem
 		@Editable public boolean debugConfusion;
 		@Editable public boolean debugLimits;
 		
+		@Editable public float blurSize = 1.5f;
+		
 	}
 	
 	@Editable public Settings settings = new Settings();
@@ -154,7 +156,7 @@ public class PlatformerPostProcessing extends EntitySystem
 			blurA.begin();
 			batch.setShader(blurXProgram);
 			batch.begin();
-			blurXProgram.setUniformf("dir", new Vector2(1.5f / (float)Gdx.graphics.getWidth(),0));
+			blurXProgram.setUniformf("dir", new Vector2(settings.blurSize / (float)Gdx.graphics.getWidth(),0));
 			batch.draw(fbo.getColorBufferTexture(), 0, 0);
 			batch.end();
 			blurA.end();
@@ -162,7 +164,7 @@ public class PlatformerPostProcessing extends EntitySystem
 			blurB.begin();
 			batch.setShader(blurXProgram);
 			batch.begin();
-			blurXProgram.setUniformf("dir", new Vector2(0, 1.5f / (float)Gdx.graphics.getHeight()));
+			blurXProgram.setUniformf("dir", new Vector2(0, settings.blurSize / (float)Gdx.graphics.getHeight()));
 			batch.draw(blurA.getColorBufferTexture(), 0, 0);
 			batch.end();
 			blurB.end();
