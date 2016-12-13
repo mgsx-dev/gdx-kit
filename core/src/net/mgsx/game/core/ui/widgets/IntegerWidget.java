@@ -56,7 +56,7 @@ public class IntegerWidget implements FieldEditor
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
 				long value = 1 + AccessorHelper.asLong(accessor);
-				if(max != null && value <= max){
+				if(max == null || value <= max){
 					AccessorHelper.fromLong(accessor, value);
 					label.setText(String.valueOf(value));
 				}
@@ -66,7 +66,7 @@ public class IntegerWidget implements FieldEditor
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
 				long value = -1 + AccessorHelper.asLong(accessor);
-				if(min != null && value >= min){
+				if(min == null || value >= min){
 					AccessorHelper.fromLong(accessor, value);
 					label.setText(String.valueOf(value));
 				}
