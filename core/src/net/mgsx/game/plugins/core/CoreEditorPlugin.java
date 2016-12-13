@@ -3,7 +3,10 @@ package net.mgsx.game.plugins.core;
 import net.mgsx.game.core.EditorScreen;
 import net.mgsx.game.core.annotations.PluginDef;
 import net.mgsx.game.core.plugins.EditorPlugin;
+import net.mgsx.game.core.storage.EntityGroupRef;
+import net.mgsx.game.core.storage.LoadConfiguration;
 import net.mgsx.game.core.tools.NoTool;
+import net.mgsx.game.core.ui.EntityEditor;
 import net.mgsx.game.plugins.camera.CameraEditorPlugin;
 import net.mgsx.game.plugins.core.systems.PolygonRenderSystem;
 import net.mgsx.game.plugins.core.systems.SelectionRenderSystem;
@@ -11,6 +14,7 @@ import net.mgsx.game.plugins.core.tools.CreateProxyTool;
 import net.mgsx.game.plugins.core.tools.DeleteTool;
 import net.mgsx.game.plugins.core.tools.DuplicateTool;
 import net.mgsx.game.plugins.core.tools.EntityEmitterTool;
+import net.mgsx.game.plugins.core.tools.EntityGroupEditor;
 import net.mgsx.game.plugins.core.tools.FollowSelectionTool;
 import net.mgsx.game.plugins.core.tools.ImportPatchTool;
 import net.mgsx.game.plugins.core.tools.OpenTool;
@@ -63,6 +67,12 @@ public class CoreEditorPlugin extends EditorPlugin
 
 		editor.addSuperTool(new CreateProxyTool(editor));
 
+		LoadConfiguration config = new LoadConfiguration();
+		config.assets = editor.assets;
+		config.engine = editor.entityEngine;
+		config.registry = editor.registry;
+		
+		EntityEditor.defaultTypeEditors.put(EntityGroupRef.class, new EntityGroupEditor(config));
 	}
 
 }

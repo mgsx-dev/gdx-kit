@@ -17,7 +17,7 @@ public class PatrolSystem extends IteratingSystem
 	private Vector2 direction = new Vector2();
 	
 	public PatrolSystem() {
-		super(Family.all(PatrolComponent.class, Box2DBodyModel.class, Character2D.class).get(), GamePipeline.LOGIC);
+		super(Family.all(PatrolComponent.class, PatrolState.class, Box2DBodyModel.class, Character2D.class).get(), GamePipeline.LOGIC);
 	}
 	
 	@Override

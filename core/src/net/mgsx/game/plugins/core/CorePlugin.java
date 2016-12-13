@@ -6,6 +6,8 @@ import net.mgsx.game.core.GameScreen;
 import net.mgsx.game.core.annotations.PluginDef;
 import net.mgsx.game.core.plugins.Plugin;
 import net.mgsx.game.core.storage.AssetSerializer;
+import net.mgsx.game.core.storage.EntityGroupRef;
+import net.mgsx.game.core.storage.EntityGroupRefSerializer;
 import net.mgsx.game.plugins.core.components.EntityEmitter;
 import net.mgsx.game.plugins.core.components.PolygonComponent;
 import net.mgsx.game.plugins.core.components.ProxyComponent;
@@ -40,6 +42,7 @@ public class CorePlugin implements Plugin
 		engine.entityEngine.addSystem(new ExpirySystem());
 		
 		engine.registry.addSerializer(ProxyComponent.class, new ProxySerializer());
+		engine.registry.addSerializer(EntityGroupRef.class, new EntityGroupRefSerializer());
 	}
 
 }

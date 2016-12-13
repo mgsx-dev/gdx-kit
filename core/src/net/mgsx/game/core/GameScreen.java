@@ -134,7 +134,8 @@ public class GameScreen extends ScreenAdapter
 			config.assets = assets;
 			config.registry = registry;
 			config.engine = entityEngine;
-			config.loadSystemSettings = true;
+			
+			// TODO load settings as well !
 			
 			EntityGroupStorage.load(name, config);
 		}

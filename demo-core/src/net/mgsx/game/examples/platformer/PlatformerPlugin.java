@@ -9,6 +9,7 @@ import net.mgsx.game.core.GamePipeline;
 import net.mgsx.game.core.GameScreen;
 import net.mgsx.game.core.annotations.PluginDef;
 import net.mgsx.game.core.plugins.Plugin;
+import net.mgsx.game.examples.platformer.ai.MortarSystem;
 import net.mgsx.game.examples.platformer.ai.PatrolSystem;
 import net.mgsx.game.examples.platformer.animations.CavernComponent;
 import net.mgsx.game.examples.platformer.animations.CavernSystem;
@@ -129,6 +130,7 @@ public class PlatformerPlugin implements Plugin, DefaultPlugin
 		engine.entityEngine.addSystem(new WalkingAnimationSystem());
 		engine.entityEngine.addSystem(new PatrolSystem());
 		engine.entityEngine.addSystem(new TubeWorldSystem());
+		engine.entityEngine.addSystem(new MortarSystem(engine));
 		
 		// add a processor for player
 		// TODO could be automated with a generic component and abstract behavior attached to it ?

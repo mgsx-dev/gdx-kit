@@ -32,10 +32,16 @@ import net.mgsx.game.core.ui.widgets.IntegerWidget;
 
 public class EntityEditor extends Table
 {
+	public static final ObjectMap<Class, FieldEditor> defaultTypeEditors = new ObjectMap<Class, FieldEditor>();
+	
 	public static class Config{
 		
 		public ObjectMap<Accessor, FieldEditor> accessorEditors = new ObjectMap<Accessor, FieldEditor>();
 		public ObjectMap<Class, FieldEditor> typeEditors = new ObjectMap<Class, FieldEditor>();
+		
+		public Config() {
+			typeEditors.putAll(defaultTypeEditors);
+		}
 	}
 	
 	final public Config config;
@@ -163,6 +169,11 @@ public class EntityEditor extends Table
 		FieldEditor accessorEditor = config.accessorEditors.get(accessor);
 		if(accessorEditor != null){
 			table.add(accessorEditor.create(accessor, skin));
+			return true;
+		}
+		FieldEditor typeEditor = config.typeEditors.get(accessor.getType());
+		if(typeEditor != null){
+			table.add(typeEditor.create(accessor, skin));
 			return true;
 		}
 		
