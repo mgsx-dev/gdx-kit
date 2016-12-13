@@ -73,8 +73,8 @@ public class ToolGroup extends InputMultiplexer
 	
 	@Override
 	public void clear() {
+		setActiveTool(null);
 		clearButtons();
-		activeTool = defaultTool = null;
 		super.clear();
 	}
 
@@ -84,6 +84,10 @@ public class ToolGroup extends InputMultiplexer
 
 	public void update(float deltaTime) {
 		if(activeTool != null) activeTool.update(deltaTime);
+	}
+
+	public void removeButton(Button button) {
+		group.remove(button);
 	}
 	
 }

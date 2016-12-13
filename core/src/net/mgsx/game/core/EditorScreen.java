@@ -115,6 +115,8 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 
 	private Label status;
 
+	private Array<Button> contextualButtons = new Array<Button>();
+
 	public EditorScreen(EditorConfiguration config, GameScreen screen, EditorAssetManager assets, Engine engine) {
 		super();
 		this.game = screen;
@@ -335,7 +337,11 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 	{
 		final Entity entity = selection.size == 1 ? selection.first() : null;
 		
-		mainToolGroup.clear();
+		for(Button button : contextualButtons ){
+			mainToolGroup.removeButton(button);
+		}
+		contextualButtons.clear();
+		
 		buttons.clear();
 		outline.clear();
 		outline.setBackground((Drawable)null);
@@ -377,7 +383,9 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 						}
 					}
 					if(!handled){
-						buttons.add(createToolButton(tool.name, mainToolGroup, tool)).fill().row();
+						Button button = createToolButton(tool.name, mainToolGroup, tool);
+						contextualButtons.add(button);
+						buttons.add(button).fill().row();
 					}
 				}
 			}
