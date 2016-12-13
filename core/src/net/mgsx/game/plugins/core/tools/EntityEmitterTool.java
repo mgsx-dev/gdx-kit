@@ -7,6 +7,7 @@ import net.mgsx.game.core.EditorScreen;
 import net.mgsx.game.core.helpers.NativeService;
 import net.mgsx.game.core.helpers.NativeService.DefaultCallback;
 import net.mgsx.game.core.storage.EntityGroupStorage;
+import net.mgsx.game.core.storage.LoadConfiguration;
 import net.mgsx.game.core.tools.Tool;
 import net.mgsx.game.plugins.core.components.EntityEmitter;
 
@@ -24,9 +25,14 @@ public class EntityEmitterTool extends Tool
 			@Override
 			public void selected(FileHandle file) 
 			{
+				LoadConfiguration config = new LoadConfiguration();
+				config.assets = editor.assets;
+				config.registry = editor.registry;
+				config.engine = editor.entityEngine;
+				
 				Entity master = editor.currentEntity();
 				EntityEmitter emitter = getEngine().createComponent(EntityEmitter.class);
-				emitter.template = EntityGroupStorage.loadNow(editor.assets, editor.registry, file.path());
+				emitter.template = EntityGroupStorage.loadNow(file.path(), config);
 				master.add(emitter);
 			}
 			@Override

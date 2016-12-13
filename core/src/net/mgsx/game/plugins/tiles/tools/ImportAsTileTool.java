@@ -16,6 +16,7 @@ import net.mgsx.game.core.EditorScreen;
 import net.mgsx.game.core.helpers.NativeService;
 import net.mgsx.game.core.helpers.NativeService.DefaultCallback;
 import net.mgsx.game.core.storage.EntityGroupStorage;
+import net.mgsx.game.core.storage.LoadConfiguration;
 import net.mgsx.game.core.tools.Tool;
 import net.mgsx.game.plugins.boundary.components.BoundaryComponent;
 
@@ -45,6 +46,10 @@ public class ImportAsTileTool extends Tool {
 	}
 
 	private void importMap(TiledMap map, FileHandle mapFile, EditorScreen editor){
+		LoadConfiguration config = new LoadConfiguration();
+		config.assets = editor.assets;
+		config.registry = editor.registry;
+		config.engine = editor.entityEngine;
 		float res = 2;
 		for(MapLayer layer : map.getLayers()){
 			if(layer instanceof TiledMapTileLayer){
@@ -56,7 +61,7 @@ public class ImportAsTileTool extends Tool {
 							TiledMapTile tile = cell.getTile();
 							String name = String.valueOf(tile.getProperties().get("name"));
 							FileHandle file = mapFile.parent().parent().child("library").child(name + ".json");
-							for(Entity entity : EntityGroupStorage.loadTransient(editor.assets, editor.registry, editor.entityEngine, file.path()))
+							for(Entity entity : EntityGroupStorage.loadTransient(file.path(), config))
 							{
 								editor.getMovable(entity).move(entity, new Vector3(x * res, y * res, 0));
 								BoundaryComponent b = entity.getComponent(BoundaryComponent.class);

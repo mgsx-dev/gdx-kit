@@ -53,6 +53,7 @@ import net.mgsx.game.core.plugins.EntityEditorPlugin;
 import net.mgsx.game.core.plugins.GlobalEditorPlugin;
 import net.mgsx.game.core.plugins.SelectorPlugin;
 import net.mgsx.game.core.storage.EntityGroupStorage;
+import net.mgsx.game.core.storage.LoadConfiguration;
 import net.mgsx.game.core.tools.ComponentTool;
 import net.mgsx.game.core.tools.Tool;
 import net.mgsx.game.core.tools.ToolGroup;
@@ -631,7 +632,11 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 
 	public void loadForEditing(FileHandle file) 
 	{
-		EntityGroupStorage.loadForEditing(assets, registry, entityEngine, file.path());
+		LoadConfiguration config = new LoadConfiguration();
+		config.assets = assets;
+		config.registry = registry;
+		config.engine = entityEngine;
+		EntityGroupStorage.loadForEditing(file.path(), config);
 	}
 
 }

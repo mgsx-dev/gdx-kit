@@ -13,6 +13,7 @@ import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.utils.Array;
 
 import net.mgsx.game.core.storage.EntityGroupStorage;
+import net.mgsx.game.core.storage.LoadConfiguration;
 import net.mgsx.game.plugins.camera.components.CameraComponent;
 import net.mgsx.game.plugins.camera.components.CullingComponent;
 import net.mgsx.game.plugins.camera.components.RenderingComponent;
@@ -128,7 +129,14 @@ public class GameScreen extends ScreenAdapter
 		if(file != null){
 			String name = file.path();
 			pendingGroups.add(name);
-			EntityGroupStorage.load(assets, registry, name);
+			
+			LoadConfiguration config = new LoadConfiguration();
+			config.assets = assets;
+			config.registry = registry;
+			config.engine = entityEngine;
+			config.loadSystemSettings = true;
+			
+			EntityGroupStorage.load(name, config);
 		}
 	}
 

@@ -75,26 +75,26 @@ public class EntityGroupStorage
 	 * @param fileName
 	 * @return
 	 */
-	public static Array<Entity> loadForEditing(AssetManager assets, GameRegistry registry, Engine engine, String fileName)
+	public static Array<Entity> loadForEditing(String fileName, LoadConfiguration config)
 	{
 		// first clone entity group and add repository flag.
 		// then create transients (referenced from proxies.
-		EntityGroup group = loadNow(assets, registry, fileName);
+		EntityGroup group = loadNow(fileName, config);
 		Array<Entity> entities = new Array<Entity>();
 		EntityGroup clones = new EntityGroup();
 		for(Entity template : group.entities)
 		{
 			// clone template and add repository flag
-			Entity entity = EntityHelper.clone(engine, template, group, clones, true);
+			Entity entity = EntityHelper.clone(config.engine, template, group, clones, true);
 			Repository repository = new Repository(); // no pool here (not required ?)
 			entity.add(repository);
 			
 			// in case of proxy, create referenced entities recursively as transient (non repository)
 			ProxyComponent proxy = ProxyComponent.components.get(entity);
 			if(proxy != null){
-				EntityGroup proxyGroup = assets.get(proxy.ref, EntityGroup.class);
+				EntityGroup proxyGroup = config.assets.get(proxy.ref, EntityGroup.class);
 				proxy.template = proxyGroup;
-				proxy.clones = create(entities, assets, engine, proxyGroup, entity);
+				proxy.clones = create(entities, config.assets, config.engine, proxyGroup, entity);
 			}
 			
 			entities.add(entity);
@@ -112,11 +112,11 @@ public class EntityGroupStorage
 	 * @param fileName
 	 * @return
 	 */
-	public static Array<Entity> loadTransient(AssetManager assets, GameRegistry registry, Engine engine, String fileName)
+	public static Array<Entity> loadTransient(String fileName, LoadConfiguration config)
 	{
-		EntityGroup group = loadNow(assets, registry, fileName);
+		EntityGroup group = loadNow(fileName, config);
 		Array<Entity> entities = new Array<Entity>();
-		create(entities, assets, engine, group, null);
+		create(entities, config.assets, config.engine, group, null);
 		return entities;
 	}
 
@@ -130,31 +130,31 @@ public class EntityGroupStorage
 	 * @return all entities added to the engine, at least the proxy entity which is the
 	 * only entity having proxy component, this is always the last component.
 	 */
-	public static Array<Entity> loadAsProxy(AssetManager assets, GameRegistry registry, Engine engine, String fileName, Vector2 position) 
+	public static Array<Entity> loadAsProxy(String fileName, Vector2 position, LoadConfiguration config) 
 	{
 		// case of proxy : we load entities as non persited but we create a proxy entity which will be stored.
 		// create the special proxy entity
-		Entity proxyEntity = engine.createEntity();
-		ProxyComponent proxy = engine.createComponent(ProxyComponent.class);
+		Entity proxyEntity = config.engine.createEntity();
+		ProxyComponent proxy = config.engine.createComponent(ProxyComponent.class);
 		proxy.ref = fileName; // TODO could use AssetSerializer ?
 		proxyEntity.add(proxy);
-		proxyEntity.add(engine.createComponent(Repository.class));
-		Transform2DComponent transform = engine.createComponent(Transform2DComponent.class);
+		proxyEntity.add(config.engine.createComponent(Repository.class));
+		Transform2DComponent transform = config.engine.createComponent(Transform2DComponent.class);
 		transform.position.set(position);
 		proxyEntity.add(transform);
 		
 		// first instanciate group and remove any proxy components (de reference)
-		EntityGroup group = loadNow(assets, registry, fileName);
+		EntityGroup group = loadNow(fileName, config);
 		proxy.template = group;
 		
 		Array<Entity> entities = new Array<Entity>();
-		proxy.clones = create(entities, assets, engine, group, proxyEntity);
+		proxy.clones = create(entities, config.assets, config.engine, group, proxyEntity);
 		for(Entity entity : entities){
 			entity.remove(ProxyComponent.class);
 		}
 		
 		entities.add(proxyEntity);
-		engine.addEntity(proxyEntity);
+		config.engine.addEntity(proxyEntity);
 		
 		return entities;
 	}
@@ -166,11 +166,11 @@ public class EntityGroupStorage
 	 * @param fileName
 	 * @return
 	 */
-	public static EntityGroup loadNow(AssetManager assets, GameRegistry registry, String fileName)
+	public static EntityGroup loadNow(String fileName, LoadConfiguration config)
 	{
-		load(assets, registry, fileName);
-		assets.finishLoadingAsset(fileName);
-		return assets.get(fileName, EntityGroup.class);
+		load(fileName, config);
+		config.assets.finishLoadingAsset(fileName);
+		return config.assets.get(fileName, EntityGroup.class);
 	}
 	
 	/**
@@ -183,12 +183,12 @@ public class EntityGroupStorage
 	 * @param fileName
 	 * @return
 	 */
-	public static void load(AssetManager assets, GameRegistry registry, String fileName) 
+	public static void load(String fileName, LoadConfiguration config) 
 	{
-		if(!assets.isLoaded(fileName)){
-			EntityGroupLoaderParameters parameters = new EntityGroupLoaderParameters(registry);
+		if(!config.assets.isLoaded(fileName)){
+			EntityGroupLoaderParameters parameters = new EntityGroupLoaderParameters(config.registry);
 			AssetDescriptor<EntityGroup> descriptor = new AssetDescriptor<EntityGroup>(fileName, EntityGroup.class, parameters);
-			assets.load(descriptor);
+			config.assets.load(descriptor);
 		}
 	}
 	

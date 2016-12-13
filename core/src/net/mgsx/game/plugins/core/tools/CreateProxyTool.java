@@ -7,6 +7,7 @@ import net.mgsx.game.core.EditorScreen;
 import net.mgsx.game.core.helpers.NativeService;
 import net.mgsx.game.core.helpers.NativeService.DefaultCallback;
 import net.mgsx.game.core.storage.EntityGroupStorage;
+import net.mgsx.game.core.storage.LoadConfiguration;
 import net.mgsx.game.core.tools.ClickTool;
 
 public class CreateProxyTool extends ClickTool {
@@ -41,6 +42,10 @@ public class CreateProxyTool extends ClickTool {
 	@Override
 	protected void create(final Vector2 position) 
 	{
-		EntityGroupStorage.loadAsProxy(editor.assets, editor.registry, editor.entityEngine, file.path(), position);
+		LoadConfiguration config = new LoadConfiguration();
+		config.assets = editor.assets;
+		config.registry = editor.registry;
+		config.engine = editor.entityEngine;
+		EntityGroupStorage.loadAsProxy(file.path(), position, config);
 	}
 }

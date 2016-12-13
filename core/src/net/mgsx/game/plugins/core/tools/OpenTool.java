@@ -3,24 +3,32 @@ package net.mgsx.game.plugins.core.tools;
 import com.badlogic.gdx.files.FileHandle;
 
 import net.mgsx.game.core.EditorScreen;
+import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.core.helpers.NativeService;
 import net.mgsx.game.core.helpers.NativeService.DefaultCallback;
 import net.mgsx.game.core.storage.EntityGroupStorage;
+import net.mgsx.game.core.storage.LoadConfiguration;
 import net.mgsx.game.core.tools.Tool;
 
+@Editable
 public class OpenTool extends Tool
 {
-
 	public OpenTool(EditorScreen editor) {
 		super("Open", editor);
 	}
 	
-	@Override
-	protected void activate() {
+	@Editable
+	public void load(){
 		NativeService.instance.openSaveDialog(new DefaultCallback() {
 			@Override
 			public void selected(FileHandle file) {
-				EntityGroupStorage.loadForEditing(editor.assets, editor.registry, editor.entityEngine, file.path());
+				LoadConfiguration config = new LoadConfiguration();
+				config.assets = editor.assets;
+				config.engine = editor.entityEngine;
+				config.registry = editor.registry;
+				
+				EntityGroupStorage.loadForEditing(file.path(), config);
+				end();
 				// TODO ? rebuild();
 			}
 			@Override
@@ -32,7 +40,7 @@ public class OpenTool extends Tool
 				return "Patch files (json)";
 			}
 		});
-		end();
 	}
+	
 
 }
