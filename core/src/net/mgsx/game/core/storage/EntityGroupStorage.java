@@ -273,7 +273,7 @@ public class EntityGroupStorage
 			try {
 				writer.append(json.prettyPrint(group));
 			} catch (IOException e) {
-				throw new Error(e);
+				throw new Error(e); // TODO fail safe !
 			}
 		}else
 			json.toJson(group, writer);

@@ -148,7 +148,7 @@ class EntityGroupSerializer implements Json.Serializer<EntityGroup>
 				if(fileName.startsWith(base)){
 					refName = fileName.substring(base.length() + 1);
 				}else{
-					Gdx.app.error("Storage", "can't strip path : " + fileName);
+					config.warn("can't strip path : " + fileName);
 				}
 			}
 		}
