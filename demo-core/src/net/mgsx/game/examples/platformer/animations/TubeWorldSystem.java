@@ -33,6 +33,9 @@ public class TubeWorldSystem extends TransactionSystem
 	
 	@Editable public float radius = 30;
 	@Editable public float offset = 0;
+	@Editable public float start = 0;
+	@Editable public int loops = 1;
+	@Editable public boolean limits;
 	
 	@Editable 
 	public Mode mode = Mode.None;
@@ -46,17 +49,24 @@ public class TubeWorldSystem extends TransactionSystem
 	@Override
 	public void addedToEngine(Engine engine) {
 		super.addedToEngine(engine);
-		models = engine.getEntitiesFor(Family.all(G3DModel.class).get());
+		models = engine.getEntitiesFor(Family.all(G3DModel.class).exclude(TubeComponent.class).get());
 		cameras = engine.getEntitiesFor(Family.all(CameraComponent.class, CullingComponent.class).get());
 	}
 	
 	private void project(Vector3 position, Quaternion direction){
 		
 		if(mode == Mode.Y){
-			float r = position.z - radius;
-			float t = offset - position.x / (radius * MathUtils.PI2);
-			position.set(MathUtils.sin(t * MathUtils.PI2) * r, position.y, MathUtils.cos(t * MathUtils.PI2) * r + radius);
-			direction.setFromAxisRad(new Vector3(0,1,0), t * MathUtils.PI2);
+			float r = (position.z - offset) - radius;
+			float t = (position.x - start) / (radius * MathUtils.PI2);
+			
+			if(limits && position.x < start){
+				// do nothing
+			}else if(limits && Math.abs(t) > loops){
+				position.x -= loops * Math.abs(radius * MathUtils.PI2);
+			}else{
+				position.set(start - (float)Math.sin(t * MathUtils.PI2) * r, position.y, (float)Math.cos(t * MathUtils.PI2) * r + radius);
+				direction.setFromAxisRad(new Vector3(0,-1,0), t * MathUtils.PI2);
+			}
 		}else if(mode == Mode.Z){
 			
 			float r = position.y - radius;
