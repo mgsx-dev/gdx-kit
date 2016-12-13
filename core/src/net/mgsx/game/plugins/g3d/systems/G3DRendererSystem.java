@@ -22,6 +22,7 @@ import net.mgsx.game.core.GamePipeline;
 import net.mgsx.game.core.GameScreen;
 import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.core.annotations.EditableSystem;
+import net.mgsx.game.core.annotations.Storable;
 import net.mgsx.game.core.components.Hidden;
 import net.mgsx.game.plugins.core.components.Transform2DComponent;
 import net.mgsx.game.plugins.g3d.components.DirectionalLightComponent;
@@ -33,6 +34,7 @@ import net.mgsx.game.plugins.g3d.components.ShadowCasting;
 
 // TODO supress warning for shadows ... have to watch new API when out.
 @SuppressWarnings("deprecation")
+@Storable("g3d.rendering")
 @EditableSystem("G3D Rendering")
 public class G3DRendererSystem extends IteratingSystem 
 {

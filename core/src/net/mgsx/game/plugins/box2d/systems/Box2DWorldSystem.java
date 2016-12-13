@@ -3,18 +3,40 @@ package net.mgsx.game.plugins.box2d.systems;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntitySystem;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 
 import net.mgsx.game.core.GamePipeline;
+import net.mgsx.game.core.annotations.Editable;
+import net.mgsx.game.core.annotations.EditableSystem;
+import net.mgsx.game.core.annotations.Storable;
 import net.mgsx.game.plugins.box2d.components.Box2DBodyModel;
 import net.mgsx.game.plugins.box2d.components.Box2DFixtureModel;
 
 //TODO should own the world ?
+
+@Storable("box2d.world")
+@EditableSystem
 public class Box2DWorldSystem extends EntitySystem {
 	
+	@Editable
+	public boolean runSimulation = true;
+	
+	@Editable
+	public Vector2 gravity = new Vector2(0, -9.807f); // earth gravity
+	
+	@Editable
+	public float timeStep = 1.f / 60.f;
+	
+	@Editable
+	public int velocityIterations = 8;
+	
+	@Editable
+	public int positionIterations = 3;
+
 	
 	private final Box2DWorldContext worldContext;
 	
@@ -37,18 +59,15 @@ public class Box2DWorldSystem extends EntitySystem {
 
 	@Override
 	public void update(float deltaTime) {
-		worldContext.world.setGravity(worldContext.settings.world.gravity);
+		worldContext.world.setGravity(gravity);
 		worldContext.update();
 		
 		
 		
 		// update physics
-		if(worldContext.settings.world.runSimulation)
+		if(runSimulation)
 		{
-			worldContext.world.step(
-					worldContext.settings.world.timeStep, 
-					worldContext.settings.world.velocityIterations, 
-					worldContext.settings.world.positionIterations);
+			worldContext.world.step(timeStep, velocityIterations, positionIterations);
 			
 			for(Runnable runnable : worldContext.scheduled){
 				runnable.run();

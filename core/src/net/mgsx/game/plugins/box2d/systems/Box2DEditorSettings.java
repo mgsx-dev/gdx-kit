@@ -1,21 +1,10 @@
 package net.mgsx.game.plugins.box2d.systems;
 
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 
 public class Box2DEditorSettings 
 {
-	public static class WorldSettings{
-		public boolean runSimulation = true;
-		public Vector2 gravity = new Vector2(0, -9.807f); // earth gravity
-		public float timeStep = 1.f / 60.f;
-		public int velocityIterations = 8;
-		public int positionIterations = 3;
-	}
-	
-	
-	public WorldSettings world = new WorldSettings();
 	public BodyDef bodyDef = new BodyDef();
 	public FixtureDef fixtureDef = new FixtureDef();
 	

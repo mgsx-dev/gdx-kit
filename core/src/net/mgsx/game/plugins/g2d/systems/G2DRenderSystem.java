@@ -9,10 +9,12 @@ import net.mgsx.game.core.GamePipeline;
 import net.mgsx.game.core.GameScreen;
 import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.core.annotations.EditableSystem;
+import net.mgsx.game.core.annotations.Storable;
 import net.mgsx.game.core.components.Hidden;
 import net.mgsx.game.plugins.boundary.components.BoundaryComponent;
 import net.mgsx.game.plugins.g2d.components.SpriteModel;
 
+@Storable("g2d.render")
 @EditableSystem("G2D Render")
 public class G2DRenderSystem extends IteratingSystem {
 	private final GameScreen engine;

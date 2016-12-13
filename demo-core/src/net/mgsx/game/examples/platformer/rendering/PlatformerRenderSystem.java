@@ -9,9 +9,11 @@ import com.badlogic.gdx.graphics.g3d.utils.ShaderProvider;
 import net.mgsx.game.core.GamePipeline;
 import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.core.annotations.EditableSystem;
+import net.mgsx.game.core.annotations.Storable;
 import net.mgsx.game.core.helpers.FilesShader;
 import net.mgsx.game.plugins.g3d.systems.G3DRendererSystem;
 
+@Storable("example.platformer.rendering")
 @EditableSystem
 public class PlatformerRenderSystem extends EntitySystem
 {

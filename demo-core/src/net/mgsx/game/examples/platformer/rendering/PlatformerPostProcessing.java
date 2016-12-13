@@ -29,11 +29,13 @@ import net.mgsx.game.core.GamePipeline;
 import net.mgsx.game.core.GameScreen;
 import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.core.annotations.EditableSystem;
+import net.mgsx.game.core.annotations.Storable;
 import net.mgsx.game.examples.platformer.sensors.WaterZone;
 import net.mgsx.game.plugins.g3d.components.G3DModel;
 import net.mgsx.game.plugins.g3d.systems.G3DRendererSystem;
 
 // TODO refactor things up here ... FBO ... shaders ...
+@Storable("example.platformer.post-processing")
 @EditableSystem("Post Processing Effects")
 public class PlatformerPostProcessing extends EntitySystem
 {
@@ -78,7 +80,7 @@ public class PlatformerPostProcessing extends EntitySystem
 //	private Array<ModelInstance> nonWaterModels = new Array<ModelInstance>();
 	
 	
-	public class Settings
+	public static class Settings
 	{
 		@Editable public float speed = 1.5f;
 		@Editable public float frequency = 100f;

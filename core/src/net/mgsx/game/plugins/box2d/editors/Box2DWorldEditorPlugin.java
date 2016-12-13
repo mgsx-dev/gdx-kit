@@ -13,6 +13,7 @@ import net.mgsx.game.core.tools.Tool;
 import net.mgsx.game.core.ui.EntityEditor;
 import net.mgsx.game.core.ui.widgets.TabPane;
 import net.mgsx.game.plugins.box2d.systems.Box2DWorldContext;
+import net.mgsx.game.plugins.box2d.systems.Box2DWorldSystem;
 import net.mgsx.game.plugins.box2d.tools.EditBodyTool;
 import net.mgsx.game.plugins.box2d.tools.joints.JointDistanceTool;
 import net.mgsx.game.plugins.box2d.tools.joints.JointFrictionTool;
@@ -80,9 +81,7 @@ public class Box2DWorldEditorPlugin implements GlobalEditorPlugin {
 		allTools.addAll(jointTools);
 		
 		// remaining...
-		EntityEditor worldEditor = new EntityEditor(skin);
-		worldEditor.setEntity(worldItem.settings.world);
-		
+		EntityEditor worldEditor = new EntityEditor(editor.entityEngine.getSystem(Box2DWorldSystem.class), true, skin);
 
 		
 		VerticalGroup shapePaneButtons = new VerticalGroup();

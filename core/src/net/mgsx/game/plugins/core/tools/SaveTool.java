@@ -7,6 +7,7 @@ import net.mgsx.game.core.EditorScreen;
 import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.core.helpers.NativeService;
 import net.mgsx.game.core.helpers.NativeService.DefaultCallback;
+import net.mgsx.game.core.storage.EngineStorage;
 import net.mgsx.game.core.storage.EntityGroupStorage;
 import net.mgsx.game.core.storage.SaveConfiguration;
 import net.mgsx.game.core.storage.SaveConfiguration.Message;
@@ -40,8 +41,8 @@ public class SaveTool extends Tool
 		}
 		
 	}
-	@Editable("Save As...")
-	public void save(){
+	@Editable("Save Entities...")
+	public void saveEntities(){
 		NativeService.instance.openSaveDialog(new DefaultCallback() {
 			@Override
 			public void selected(FileHandle file) {
@@ -68,5 +69,35 @@ public class SaveTool extends Tool
 		});
 		
 	}
+	
+	@Editable("Save Settings...")
+	public void saveSettings(){
+		NativeService.instance.openSaveDialog(new DefaultCallback() {
+			@Override
+			public void selected(FileHandle file) {
+				config = new SaveConfiguration();
+				config.assets = editor.assets;
+				config.engine = editor.entityEngine;
+				config.registry = editor.registry;
+				
+				config.pretty = pretty;
+				config.stripPaths = stripPaths;
+				
+				EngineStorage.save(file, config);
+				
+				printDiagnostic();
+			}
+			@Override
+			public boolean match(FileHandle file) {
+				return file.extension().equals("json");
+			}
+			@Override
+			public String description() {
+				return "Patch files (json)";
+			}
+		});
+		
+	}
+
 
 }

@@ -30,7 +30,7 @@ public class Box2DWorldContext
 	
 	public void initialize() {
 		if(world == null){
-			world = new World(settings.world.gravity, true); // TODO settings for doSleep 
+			world = new World(new Vector2(), true); // TODO settings for doSleep 
 		}
 	}
 	

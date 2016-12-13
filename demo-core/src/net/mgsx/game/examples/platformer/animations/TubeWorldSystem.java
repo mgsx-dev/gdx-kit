@@ -13,11 +13,13 @@ import com.badlogic.gdx.math.Vector3;
 import net.mgsx.game.core.GamePipeline;
 import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.core.annotations.EditableSystem;
+import net.mgsx.game.core.annotations.Storable;
 import net.mgsx.game.core.helpers.systems.TransactionSystem;
 import net.mgsx.game.plugins.camera.components.CameraComponent;
 import net.mgsx.game.plugins.camera.components.CullingComponent;
 import net.mgsx.game.plugins.g3d.components.G3DModel;
 
+@Storable("example.platformer.tube")
 @EditableSystem
 public class TubeWorldSystem extends TransactionSystem
 {
