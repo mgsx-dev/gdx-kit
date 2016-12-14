@@ -68,3 +68,8 @@ build/
 ## OS Specific
 .DS_Store
 Thumbs.db
+
+## Blender
+*.fbx
+*.blend1
+*.blend2

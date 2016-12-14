@@ -1,0 +1,20 @@
+import patrol:"net.mgsx.game.examples.platformer.tasks.PatrolTask"
+import mortar:"net.mgsx.game.examples.platformer.tasks.MortarTask"
+import nearPlayer:"net.mgsx.game.examples.platformer.tasks.NearPlayer"
+import farPlayer:"net.mgsx.game.examples.platformer.tasks.FarPlayer"
+import idle:"net.mgsx.game.examples.platformer.tasks.IdleTask"
+import animation:"net.mgsx.game.examples.platformer.tasks.AnimationTask"
+
+untilFail
+  selector
+    sequence
+      nearPlayer distance:6.0
+      animation id:"Armature|prepare"
+      mortar
+      animation id:"Armature|launch"
+      wait seconds:0.5
+      animation id:"Armature|reload"
+    parallel
+      farPlayer distance:10.0
+      patrol
+    wait seconds:0.5

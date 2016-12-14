@@ -1,0 +1,42 @@
+{
+entities: [
+	{
+		id: 0
+		g3d: {
+			modelInstance: cake/nut.g3dj
+			origin: {}
+			blended: false
+			culling: false
+		}
+		2d: {}
+		box2d: {
+			id: Circle
+			def: {
+				type: KinematicBody
+			}
+			fixtures: [
+				{
+					def: {
+						shape: {
+							type: Circle
+							position: {
+								x: -0.0052993596
+								y: -0.004712224
+							}
+							radius: 0.35454205
+						}
+						density: 1
+						filter: {}
+					}
+				}
+			]
+		}
+	}
+]
+assets: [
+	{
+		type: com.badlogic.gdx.graphics.g3d.Model
+		name: cake/nut.g3dj
+	}
+]
+}

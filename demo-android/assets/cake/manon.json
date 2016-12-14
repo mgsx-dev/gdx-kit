@@ -1,0 +1,71 @@
+{
+entities: [
+	{
+		id: 0
+		g3d: {
+			modelInstance: cake/manon.g3dj
+			origin: {}
+			blended: false
+			culling: false
+		}
+		2d: {
+			position: {
+				x: 0.09757119
+				y: 0.21538651
+			}
+		}
+		demo.platformer.character: {}
+		example.platformer.walking: {
+			animation: Armature|walk
+		}
+		box2d: {
+			id: Polygon
+			def: {
+				type: KinematicBody
+				fixedRotation: true
+			}
+			fixtures: [
+				{
+					def: {
+						shape: {
+							type: Polygon
+							vertex: [
+								{
+									x: 0.9715438
+									y: -0.012535559
+								}
+								{
+									x: 0.9590082
+									y: 0.8398836
+								}
+								{
+									x: -0.018804096
+									y: 1.140737
+								}
+								{
+									x: -0.9840794
+									y: 0.8398836
+								}
+								{
+									x: -0.9840794
+								}
+							]
+						}
+						density: 1
+						filter: {}
+					}
+				}
+			]
+		}
+		cake.shoot: {
+			shootAnimation: Armature|launch
+		}
+	}
+]
+assets: [
+	{
+		type: com.badlogic.gdx.graphics.g3d.Model
+		name: cake/manon.g3dj
+	}
+]
+}
