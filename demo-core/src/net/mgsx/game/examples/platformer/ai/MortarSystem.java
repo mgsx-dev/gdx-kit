@@ -35,6 +35,7 @@ public class MortarSystem extends IteratingSystem
 	@Override
 	protected void processEntity(Entity entity, float deltaTime) {
 		MortarComponent mortar = MortarComponent.components.get(entity);
+		MortarState state = MortarState.components.get(entity);
 		Transform2DComponent parentTransform = Transform2DComponent.components.get(entity);
 		G3DModel model = G3DModel.components.get(entity);
 		if(mortar.time > 0){
@@ -46,7 +47,9 @@ public class MortarSystem extends IteratingSystem
 			Entity playerEntity = players.first();
 			Transform2DComponent playerTransform = Transform2DComponent.components.get(playerEntity);
 			
-			if(playerTransform.position.dst(parentTransform.position) > mortar.distance) return;
+			// if(playerTransform.position.dst(parentTransform.position) > mortar.distance) return;
+			
+			state.count++;
 			
 			model.animationController.allowSameAnimation = true;
 			model.animationController.animate(mortar.shootAnimation, 1, 4, null, 0.1f);

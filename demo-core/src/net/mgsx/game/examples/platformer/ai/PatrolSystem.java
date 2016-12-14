@@ -27,6 +27,11 @@ public class PatrolSystem extends IteratingSystem
 			
 			@Override
 			public void entityRemoved(Entity entity) {
+				entity.remove(WalkingState.class);
+				Box2DBodyModel physics = Box2DBodyModel.components.get(entity);
+				if(physics != null){
+					physics.body.setLinearVelocity(0, 0);
+				}
 			}
 			
 			@Override

@@ -10,9 +10,7 @@ import com.badlogic.gdx.ai.btree.Task;
 import com.badlogic.gdx.ai.btree.Task.Status;
 import com.badlogic.gdx.ai.btree.branch.Sequence;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Cell;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -24,18 +22,20 @@ public class BTreeEditor implements EntityEditorPlugin {
 
 	public Actor createEditor(Entity entity, Skin skin) {
 		BTreeModel model = entity.getComponent(BTreeModel.class);
-		BehaviorTree<Entity> bTree = model.tree;
+		BehaviorTree<EntityBlackboard> bTree = model.tree;
 		Table table = new Table(skin);
 		createEditor(table, bTree, bTree, skin, 0);
 		return table;
 	}
-	public void createEditor(final Table parent, BehaviorTree<Entity> tree, final Task<Entity> task, Skin skin, int depth) 
+	public void createEditor(final Table parent, BehaviorTree<EntityBlackboard> tree, final Task<EntityBlackboard> task, Skin skin, int depth) 
 	{
 		final Label taskLabel = new Label(task.getClass().getSimpleName(), parent.getSkin());
-		taskLabel.getStyle().background = parent.getSkin().getDrawable("default");
-		tree.addListener(new Listener<Entity>() {
+		// taskLabel.getStyle().background = parent.getSkin().getDrawable("default");
+		
+		
+		tree.addListener(new Listener<EntityBlackboard>() {
 			@Override
-			public void statusUpdated(Task<Entity> currentTask, Status previousStatus) {
+			public void statusUpdated(Task<EntityBlackboard> currentTask, Status previousStatus) {
 				if(currentTask == task){
 					Color color = new Color();
 					switch(currentTask.getStatus()){
@@ -64,25 +64,28 @@ public class BTreeEditor implements EntityEditorPlugin {
 					}
 					// color.mul(0.5f);
 					if(!color.equals(taskLabel.getColor())){
-						Action delegate = Actions.addAction(
-								Actions.parallel(
-										Actions.color(color, 0.1f), 
-										Actions.sequence(
-												Actions.scaleTo(2, 2),
-												Actions.scaleTo(1, 1, 0.25f)
-										)
-								), taskLabel
-						);
-						parent.addAction(Actions.after(Actions.sequence(delegate, Actions.delay(0.5f))));
+						taskLabel.setColor(color);
+//						Action delegate = Actions.addAction(
+//								Actions.parallel(
+//										Actions.color(color, 0.1f), 
+//										Actions.sequence(
+//												Actions.scaleTo(2, 2),
+//												Actions.scaleTo(1, 1, 0.25f)
+//										)
+//								), taskLabel
+//						);
+//						parent.addAction(Actions.after(Actions.sequence(delegate, Actions.delay(0.5f))));
 					}
 				}
 			}
 
 			@Override
-			public void childAdded(Task<Entity> task, int index) {
+			public void childAdded(Task<EntityBlackboard> task, int index) {
 				// TODO unsupported ...
 			}
 		});
+		
+		
 		Cell cell = parent.add(taskLabel).padLeft(depth * 60); // TODO nb pixels
 		// TODO add status ... ?
 		if(task instanceof Sequence){
@@ -97,7 +100,7 @@ public class BTreeEditor implements EntityEditorPlugin {
 			
 		}
 		else if(task instanceof Decorator){
-			Task<Entity> decorated = task.getChild(0);
+			Task<EntityBlackboard> decorated = task.getChild(0);
 			createEditor(parent, tree, decorated, skin, depth); // TODO +1 or not ?
 			parent.row();
 		}else if(task instanceof BranchTask || task instanceof BehaviorTree){
