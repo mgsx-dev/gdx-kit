@@ -208,15 +208,15 @@ entities: [
 	{
 		id: 5
 		g3d: {
-			modelInstance: "/home/germain/git/box2d-editor/demo-android/assets/cake/cupcake.g3dj"
+			modelInstance: cake/cupcake.g3dj
 			origin: {}
 			blended: false
-			culling: true
+			culling: false
 		}
 		2d: {
 			position: {
-				x: 6.791866
-				y: -0.5712689
+				x: 16.617506
+				y: -2.4721346
 			}
 			angle: -75.455765
 		}
@@ -267,7 +267,9 @@ entities: [
 			speedScale: 0.99956596
 			animation: skeleton|walking
 		}
-		demo.platformer.character: {}
+		demo.platformer.character: {
+			rightToLeft: true
+		}
 		g3d.shadow-casting: {}
 	}
 	{
@@ -290,9 +292,9 @@ entities: [
 					a: 1
 				}
 				direction: {
-					x: 0.21645615
-					y: 0.35253045
-					z: -0.7706391
+					x: -0.06346534
+					y: -0.16141894
+					z: -0.07502499
 				}
 			}
 			shadow: true
@@ -342,10 +344,10 @@ entities: [
 	{
 		id: 9
 		g3d: {
-			modelInstance: "/home/germain/git/box2d-editor/demo-android/assets/cake/background.g3dj"
+			modelInstance: cake/background.g3dj
 			origin: {}
 			blended: false
-			culling: true
+			culling: false
 		}
 		2d: {
 			position: {
@@ -481,10 +483,10 @@ entities: [
 	{
 		id: 13
 		g3d: {
-			modelInstance: "/home/germain/git/box2d-editor/demo-android/assets/cake/chocos.g3dj"
+			modelInstance: cake/chocos.g3dj
 			origin: {}
 			blended: false
-			culling: true
+			culling: false
 		}
 		2d: {
 			position: {
@@ -737,10 +739,10 @@ entities: [
 	{
 		id: 18
 		g3d: {
-			modelInstance: "/home/germain/git/box2d-editor/demo-android/assets/cake/chocos.g3dj"
+			modelInstance: cake/chocos.g3dj
 			origin: {}
 			blended: false
-			culling: true
+			culling: false
 		}
 		2d: {
 			position: {
@@ -831,10 +833,10 @@ entities: [
 	{
 		id: 19
 		g3d: {
-			modelInstance: "/home/germain/git/box2d-editor/demo-android/assets/cake/chocos.g3dj"
+			modelInstance: cake/chocos.g3dj
 			origin: {}
 			blended: false
-			culling: true
+			culling: false
 		}
 		2d: {
 			position: {
@@ -922,19 +924,371 @@ entities: [
 		}
 		g3d.shadow-casting: {}
 	}
+	{
+		id: 20
+		box2d: {
+			id: Rectangle
+			def: {
+				position: {
+					x: 32.85187
+					y: -2.8276777
+				}
+			}
+			fixtures: [
+				{
+					def: {
+						shape: {
+							type: Polygon
+							vertex: [
+								{
+									x: 21.464275
+									y: -0.31258667
+								}
+								{
+									x: 21.464275
+									y: 0.31258667
+								}
+								{
+									x: -21.464275
+									y: 0.31258667
+								}
+								{
+									x: -21.464275
+									y: -0.31258667
+								}
+							]
+						}
+						density: 1
+						filter: {}
+					}
+				}
+			]
+		}
+	}
+	{
+		id: 21
+		box2d: {
+			id: Chain
+			def: {
+				position: {
+					x: 26.69884
+					y: -2.7132463
+				}
+			}
+			fixtures: [
+				{
+					def: {
+						shape: {
+							type: Chain
+							loop: false
+							vertex: [
+								{}
+								{
+									x: -0.041542053
+									y: 2.1872787
+								}
+								{
+									x: 1.5647507
+									y: 2.2011223
+								}
+								{
+									x: 1.5509033
+									y: 3.862347
+								}
+								{
+									x: 2.8525543
+									y: 3.862347
+								}
+								{
+									x: 2.8940964
+									y: 5.3851357
+								}
+								{
+									x: 6.0512943
+									y: 5.343605
+								}
+								{
+									x: 6.0512943
+									y: 3.862347
+								}
+								{
+									x: 7.366789
+									y: 3.8346598
+								}
+								{
+									x: 7.339094
+									y: 3.64085
+								}
+								{
+									x: 5.7743435
+									y: 3.5024147
+								}
+								{
+									x: 5.6081753
+									y: 5.052891
+								}
+								{
+									x: 3.2818222
+									y: 5.0667343
+								}
+								{
+									x: 3.157196
+									y: 3.5024147
+								}
+								{
+									x: 1.9109344
+									y: 3.5301018
+								}
+								{
+									x: 1.7863083
+									y: 1.8135033
+								}
+								{
+									x: 0.26309967
+									y: 1.882721
+								}
+								{
+									x: 0.37387848
+									y: 0.4983673
+								}
+								{
+									x: 8.585356
+									y: 0.51221085
+								}
+								{
+									x: 8.585356
+									y: 1.8550339
+								}
+								{
+									x: 7.17293
+									y: 1.8135033
+								}
+								{
+									x: 6.812895
+									y: 2.4087758
+								}
+								{
+									x: 7.2837048
+									y: 2.450306
+								}
+								{
+									x: 7.4360294
+									y: 2.1734352
+								}
+								{
+									x: 8.959238
+									y: 2.1595917
+								}
+								{
+									x: 8.973082
+									y: 0.08306122
+								}
+							]
+						}
+						density: 1
+						filter: {}
+					}
+				}
+			]
+		}
+	}
+	{
+		id: 22
+		box2d: {
+			id: Chain
+			def: {
+				position: {
+					x: 17.575077
+					y: -2.634849
+				}
+			}
+			fixtures: [
+				{
+					def: {
+						shape: {
+							type: Chain
+							loop: false
+							vertex: [
+								{}
+								{
+									y: 1.9244099
+								}
+								{
+									x: 0.6412468
+									y: 1.9457922
+								}
+								{
+									x: 0.5984974
+									y: 2.9721437
+								}
+								{
+									x: 1.1542454
+									y: 2.9721437
+								}
+								{
+									x: 1.1328716
+									y: 3.84882
+								}
+								{
+									x: 1.9023685
+									y: 3.8915844
+								}
+								{
+									x: 1.8809929
+									y: 4.704113
+								}
+								{
+									x: 2.7359905
+									y: 4.6613483
+								}
+								{
+									x: 2.7359905
+									y: 3.870202
+								}
+								{
+									x: 3.5054893
+									y: 3.8060553
+								}
+								{
+									x: 3.5054893
+									y: 2.993527
+								}
+								{
+									x: 4.018488
+									y: 2.9507613
+								}
+								{
+									x: 4.082611
+									y: 1.9457922
+								}
+								{
+									x: 4.638361
+									y: 1.9030275
+								}
+								{
+									x: 4.638361
+									y: -0.042764664
+								}
+							]
+						}
+						density: 1
+						filter: {}
+					}
+				}
+			]
+		}
+	}
+	{
+		id: 23
+		g3d: {
+			modelInstance: cake/manon.g3dj
+			origin: {}
+			blended: false
+			culling: false
+		}
+		2d: {
+			position: {
+				x: 24.758968
+				y: -2.4875555
+			}
+		}
+		demo.platformer.character: {
+			rightToLeft: true
+		}
+		example.platformer.walking: {
+			animation: Armature|walk
+		}
+		box2d: {
+			id: Polygon
+			def: {
+				type: KinematicBody
+				fixedRotation: true
+			}
+			fixtures: [
+				{
+					def: {
+						shape: {
+							type: Polygon
+							vertex: [
+								{
+									x: 0.9715438
+									y: -0.012535559
+								}
+								{
+									x: 0.9590082
+									y: 0.8398836
+								}
+								{
+									x: -0.018804096
+									y: 1.140737
+								}
+								{
+									x: -0.9840794
+									y: 0.8398836
+								}
+								{
+									x: -0.9840794
+								}
+							]
+						}
+						density: 1
+						filter: {}
+					}
+				}
+			]
+		}
+		cake.shoot: {
+			shootAnimation: Armature|launch
+			angle: 80.974525
+			speed: 12.088901
+			projectile: {
+				ref: cake/nut.json
+			}
+			offset: {
+				y: 1.0077032
+			}
+			target: {
+				x: 23.255823
+				y: -2.4721284
+			}
+		}
+		demo.platformer.patrol: {
+			horizon: 1.7102257
+			rayStart: {
+				y: 0.4169779
+			}
+			timeout: -5.5879354E-7
+			speed: 6
+		}
+		btree: {
+			library: btree/manon.json
+		}
+	}
 ]
 assets: [
 	{
 		type: com.badlogic.gdx.graphics.g3d.Model
-		name: "/home/germain/git/box2d-editor/demo-android/assets/cake/cupcake.g3dj"
+		name: cake/chocos.g3dj
 	}
 	{
 		type: com.badlogic.gdx.graphics.g3d.Model
-		name: "/home/germain/git/box2d-editor/demo-android/assets/cake/chocos.g3dj"
+		name: cake/background.g3dj
+	}
+	{
+		type: net.mgsx.game.core.storage.EntityGroup
+		name: cake/nut.json
 	}
 	{
 		type: com.badlogic.gdx.graphics.g3d.Model
-		name: "/home/germain/git/box2d-editor/demo-android/assets/cake/background.g3dj"
+		name: cake/cupcake.g3dj
+	}
+	{
+		type: com.badlogic.gdx.ai.btree.BehaviorTree
+		name: btree/manon.json
+	}
+	{
+		type: com.badlogic.gdx.graphics.g3d.Model
+		name: cake/manon.g3dj
 	}
 ]
 }

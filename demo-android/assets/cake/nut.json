@@ -6,7 +6,7 @@ entities: [
 			modelInstance: cake/nut.g3dj
 			origin: {}
 			blended: false
-			culling: false
+			culling: true
 		}
 		2d: {}
 		box2d: {
@@ -31,6 +31,7 @@ entities: [
 				}
 			]
 		}
+		g3d.shadow-casting: {}
 	}
 ]
 assets: [
