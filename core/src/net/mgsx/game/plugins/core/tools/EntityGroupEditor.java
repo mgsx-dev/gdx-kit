@@ -27,7 +27,8 @@ public class EntityGroupEditor implements FieldEditor
 	@Override
 	public Actor create(final Accessor accessor, Skin skin) 
 	{
-		TextButton btOpen = new TextButton("Find", skin);
+		EntityGroupRef ref = (EntityGroupRef)accessor.get();
+		TextButton btOpen = new TextButton(ref == null ? "..." : ref.ref, skin);
 		btOpen.addListener(new ChangeListener() {
 			
 			@Override

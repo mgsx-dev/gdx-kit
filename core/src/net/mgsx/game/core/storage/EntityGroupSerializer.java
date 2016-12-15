@@ -11,7 +11,7 @@ import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.ObjectMap.Entry;
 
-class EntityGroupSerializer implements Json.Serializer<EntityGroup>
+public class EntityGroupSerializer implements Json.Serializer<EntityGroup>
 {
 	private SaveConfiguration config;
 	

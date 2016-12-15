@@ -1,5 +1,6 @@
 package net.mgsx.game.core.helpers;
 
+import com.badlogic.gdx.assets.AssetDescriptor;
 import com.badlogic.gdx.assets.AssetLoaderParameters;
 import com.badlogic.gdx.assets.AssetManager;
 
@@ -14,6 +15,11 @@ public class AssetHelper {
 		assets.load(fileName, type, parameters);
 		assets.finishLoadingAsset(fileName);
 		return assets.get(fileName, type);
+	}
+	public static <T> T loadAssetNow(AssetManager assets, AssetDescriptor<T> desc) {
+		assets.load(desc);
+		assets.finishLoadingAsset(desc.fileName);
+		return assets.get(desc.fileName, desc.type);
 	}
 
 }

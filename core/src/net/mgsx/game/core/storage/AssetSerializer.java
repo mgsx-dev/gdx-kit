@@ -2,7 +2,6 @@ package net.mgsx.game.core.storage;
 
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.utils.Json;
-import com.badlogic.gdx.utils.Json.Serializer;
 import com.badlogic.gdx.utils.JsonValue;
 
 /**
@@ -12,11 +11,9 @@ import com.badlogic.gdx.utils.JsonValue;
  *
  * @param <T>
  */
-public class AssetSerializer<T> implements Serializer<T>
+public class AssetSerializer<T> extends AssetAwareSerializer<T>
 {
 	private Class<T> type;
-	AssetManager assets;
-	EntityGroupSerializer parent;
 	
 	public AssetSerializer(Class<T> type) {
 		super();

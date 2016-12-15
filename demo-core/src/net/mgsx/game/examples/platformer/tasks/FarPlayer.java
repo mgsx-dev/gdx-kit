@@ -6,7 +6,9 @@ import com.badlogic.gdx.ai.btree.annotation.TaskAttribute;
 import net.mgsx.game.examples.platformer.logic.PlayerSensor;
 import net.mgsx.game.plugins.btree.BTreePlugin.EntityLeafTask;
 import net.mgsx.game.plugins.btree.EntityBlackboard;
+import net.mgsx.game.plugins.btree.annotations.TaskAlias;
 
+@TaskAlias("farPlayer")
 public class FarPlayer extends EntityLeafTask
 {
 	@TaskAttribute

@@ -22,6 +22,35 @@ public class BTreeTool extends Tool
 		super("Behavor Tree", editor);
 	}
 	
+	public static void load(EditorScreen editor, FileHandle file){
+		Entity entity = editor.currentEntity();
+		EntityBlackboard blackboard = new EntityBlackboard();
+		blackboard.engine = editor.entityEngine;
+		blackboard.entity = entity;
+		blackboard.assets = editor.assets;
+		
+		if(!editor.assets.isLoaded(file.path())){
+			BehaviorTreeParameter params = new BehaviorTreeParameter(blackboard, new BehaviorTreeParser<EntityBlackboard>());
+			try{
+				new BehaviorTreeParser<EntityBlackboard>(BehaviorTreeParser.DEBUG_LOW).parse(file, null);
+			}catch(SerializationException e){
+				// TODO raise UI Error ...
+				Gdx.app.error("BTree", "Error parsing file", e);
+				return;
+			}
+			
+			BehaviorTree tree = editor.loadAssetNow(file.path(), BehaviorTree.class, params);
+			BehaviorTreeLibraryManager.getInstance().getLibrary().registerArchetypeTree(file.path(), tree);
+		}
+		
+		BTreeModel model = editor.entityEngine.createComponent(BTreeModel.class);
+		
+		model.libraryName = file.path();
+		model.tree = BehaviorTreeLibraryManager.getInstance().createBehaviorTree(file.path(), blackboard);
+		
+		entity.add(model);
+	}
+	
 	@Override
 	protected void activate() {
 		
@@ -31,32 +60,7 @@ public class BTreeTool extends Tool
 		NativeService.instance.openLoadDialog(new DefaultCallback() {
 			@Override
 			public void selected(FileHandle file) {
-				Entity entity = editor.currentEntity();
-				EntityBlackboard blackboard = new EntityBlackboard();
-				blackboard.engine = getEngine();
-				blackboard.entity = entity;
-				blackboard.assets = editor.assets;
-				
-				if(!editor.assets.isLoaded(file.path())){
-					BehaviorTreeParameter params = new BehaviorTreeParameter(blackboard, new BehaviorTreeParser<EntityBlackboard>());
-					try{
-						new BehaviorTreeParser<EntityBlackboard>(BehaviorTreeParser.DEBUG_LOW).parse(file, null);
-					}catch(SerializationException e){
-						// TODO raise UI Error ...
-						Gdx.app.error("BTree", "Error parsing file", e);
-						return;
-					}
-					
-					BehaviorTree tree = editor.loadAssetNow(file.path(), BehaviorTree.class, params);
-					BehaviorTreeLibraryManager.getInstance().getLibrary().registerArchetypeTree(file.path(), tree);
-				}
-				
-				BTreeModel model = getEngine().createComponent(BTreeModel.class);
-				
-				model.libraryName = file.path();
-				model.tree = BehaviorTreeLibraryManager.getInstance().createBehaviorTree(file.path(), blackboard);
-				
-				entity.add(model);
+				load(editor, file);
 			}
 			@Override
 			public boolean match(FileHandle file) {

@@ -4,7 +4,8 @@ import com.badlogic.ashley.core.Entity;
 
 import net.mgsx.game.examples.platformer.ai.PatrolState;
 import net.mgsx.game.plugins.btree.BTreePlugin.EntityLeafTask;
-
+import net.mgsx.game.plugins.btree.annotations.TaskAlias;
+@TaskAlias("patrol")
 public class PatrolTask extends EntityLeafTask
 {
 	@Override

@@ -302,8 +302,8 @@ public class EntityGroupStorage
 			Entry<Class, Serializer> entry = entries.next();
 			Serializer serializer = entry.value;
 			
-			if(serializer instanceof AssetSerializer){
-				AssetSerializer assetSerializer = (AssetSerializer)serializer;
+			if(serializer instanceof AssetAwareSerializer){
+				AssetAwareSerializer assetSerializer = (AssetAwareSerializer)serializer;
 				assetSerializer.assets = config.assets;
 				assetSerializer.parent = entityGroupSerializer;
 			}
@@ -321,8 +321,8 @@ public class EntityGroupStorage
 			Class type = entry.key;
 			Serializer serializer = entry.value;
 			
-			if(serializer instanceof AssetSerializer){
-				AssetSerializer assetSerializer = (AssetSerializer)serializer;
+			if(serializer instanceof AssetAwareSerializer){
+				AssetAwareSerializer assetSerializer = (AssetAwareSerializer)serializer;
 				assetSerializer.assets = assets;
 			}
 			else if(serializer instanceof ContextualSerializer){

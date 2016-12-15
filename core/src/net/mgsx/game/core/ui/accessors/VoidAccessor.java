@@ -5,7 +5,7 @@ import java.lang.reflect.Method;
 import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.core.helpers.ReflectionHelper;
 
-public class VoidAccessor implements Accessor
+public class VoidAccessor extends AccessorBase
 {
 	private final Object object;
 	private final Method method;
@@ -46,5 +46,5 @@ public class VoidAccessor implements Accessor
 	public Editable config() {
 		return method.getAnnotation(Editable.class);
 	}
-	
+
 }

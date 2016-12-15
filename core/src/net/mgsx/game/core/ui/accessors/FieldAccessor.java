@@ -5,7 +5,7 @@ import java.lang.reflect.Field;
 import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.core.helpers.ReflectionHelper;
 
-public class FieldAccessor implements Accessor
+public class FieldAccessor extends AccessorBase
 {
 	private Object object;
 	private Field field;

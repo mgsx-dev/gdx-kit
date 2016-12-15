@@ -7,8 +7,10 @@ import com.badlogic.gdx.graphics.g3d.utils.AnimationController.AnimationListener
 
 import net.mgsx.game.plugins.btree.BTreePlugin.EntityLeafTask;
 import net.mgsx.game.plugins.btree.EntityBlackboard;
+import net.mgsx.game.plugins.btree.annotations.TaskAlias;
 import net.mgsx.game.plugins.g3d.components.G3DModel;
 
+@TaskAlias("animation")
 public class AnimationTask extends EntityLeafTask implements AnimationListener
 {
 	@TaskAttribute(required=true)

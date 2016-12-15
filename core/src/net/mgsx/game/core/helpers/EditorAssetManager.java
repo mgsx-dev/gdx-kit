@@ -1,8 +1,11 @@
 package net.mgsx.game.core.helpers;
 
+import com.badlogic.gdx.assets.AssetDescriptor;
+import com.badlogic.gdx.assets.AssetLoaderParameters;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.FileHandleResolver;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.ObjectMap;
 
 public class EditorAssetManager extends AssetManager
 {
@@ -59,6 +62,15 @@ public class EditorAssetManager extends AssetManager
 		for(AssetManagerListener listener : listeners) listener.added(fileName, type);
 	}
 	
+	private ObjectMap<String, AssetDescriptor> loadings = new ObjectMap<String, AssetDescriptor>();
+	
+	@Override
+	public synchronized <T> void load(String fileName, Class<T> type, AssetLoaderParameters<T> parameter) {
+		AssetDescriptor<T> desc = new AssetDescriptor<T>(fileName, type, parameter);
+		loadings.put(fileName, desc);
+		super.load(fileName, type, parameter);
+	}
+	
 	@Override
 	public synchronized void unload(String fileName) {
 		super.unload(fileName);
@@ -76,7 +88,8 @@ public class EditorAssetManager extends AssetManager
 			System.err.println("!!!"); return;
 		}
 		unload(fileName);
-		Object asset = AssetHelper.loadAssetNow(this, fileName, type);
+		
+		Object asset = AssetHelper.loadAssetNow(this, loadings.get(fileName));
 		for(ReloadListener listener : reloadListeners.getFor(type)){
 			listener.reload(asset);
 		}

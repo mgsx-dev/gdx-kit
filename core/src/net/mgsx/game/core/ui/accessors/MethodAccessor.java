@@ -5,7 +5,7 @@ import java.lang.reflect.Method;
 import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.core.helpers.ReflectionHelper;
 
-public class MethodAccessor implements Accessor
+public class MethodAccessor extends AccessorBase
 {
 	private Object object;
 	private String name;

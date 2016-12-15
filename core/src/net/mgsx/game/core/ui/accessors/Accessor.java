@@ -9,4 +9,5 @@ public interface Accessor
 	public String getName();
 	public Class getType();
 	public Editable config();
+	public <T> T get(Class<T> type);
 }
