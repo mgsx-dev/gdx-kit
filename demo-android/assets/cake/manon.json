@@ -59,10 +59,35 @@ entities: [
 		}
 		cake.shoot: {
 			shootAnimation: Armature|launch
+			angle: 80.974525
+			speed: 12.088901
+			projectile: {
+				ref: cake/nut.json
+			}
+			offset: {
+				y: 1.0077032
+			}
+		}
+		demo.platformer.patrol: {
+			horizon: 1.7102257
+			rayStart: {
+				y: 0.4169779
+			}
+		}
+		btree: {
+			library: btree/manon.json
 		}
 	}
 ]
 assets: [
+	{
+		type: com.badlogic.gdx.ai.btree.BehaviorTree
+		name: btree/manon.json
+	}
+	{
+		type: net.mgsx.game.core.storage.EntityGroup
+		name: cake/nut.json
+	}
 	{
 		type: com.badlogic.gdx.graphics.g3d.Model
 		name: cake/manon.g3dj
