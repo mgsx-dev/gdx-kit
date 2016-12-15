@@ -36,7 +36,7 @@ public class FloatWidget extends Label
 			public void drag(InputEvent event, float x, float y, int pointer) {
 				onDrag(getDeltaX(), getDeltaY());
 				// prevent other widget (like ScrollPane) to act during dragging value
-				getStage().cancelTouchFocusExcept(this, FloatWidget.this);
+				if(getStage() != null) getStage().cancelTouchFocusExcept(this, FloatWidget.this);
 			}
 			@Override
 			public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
