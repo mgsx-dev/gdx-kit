@@ -38,4 +38,7 @@ public class MortarComponent implements Component{
 	public float expiry = 4;
 	@Editable
 	public Vector2 offset = new Vector2();
+	
+	/** dynamic target */
+	public Vector2 target = new Vector2();
 }

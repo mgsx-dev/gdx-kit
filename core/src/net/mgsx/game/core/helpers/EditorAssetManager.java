@@ -89,7 +89,7 @@ public class EditorAssetManager extends AssetManager
 		}
 		unload(fileName);
 		
-		Object asset = AssetHelper.loadAssetNow(this, loadings.get(fileName));
+		Object asset = AssetHelper.loadAssetNow(this, fileName, type);
 		for(ReloadListener listener : reloadListeners.getFor(type)){
 			listener.reload(asset);
 		}

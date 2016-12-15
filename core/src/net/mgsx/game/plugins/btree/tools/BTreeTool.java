@@ -4,7 +4,6 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ai.btree.BehaviorTree;
 import com.badlogic.gdx.ai.btree.utils.BehaviorTreeLibraryManager;
-import com.badlogic.gdx.ai.btree.utils.BehaviorTreeLoader.BehaviorTreeParameter;
 import com.badlogic.gdx.ai.btree.utils.BehaviorTreeParser;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.SerializationException;
@@ -24,13 +23,8 @@ public class BTreeTool extends Tool
 	
 	public static void load(EditorScreen editor, FileHandle file){
 		Entity entity = editor.currentEntity();
-		EntityBlackboard blackboard = new EntityBlackboard();
-		blackboard.engine = editor.entityEngine;
-		blackboard.entity = entity;
-		blackboard.assets = editor.assets;
 		
 		if(!editor.assets.isLoaded(file.path())){
-			BehaviorTreeParameter params = new BehaviorTreeParameter(blackboard, new BehaviorTreeParser<EntityBlackboard>());
 			try{
 				new BehaviorTreeParser<EntityBlackboard>(BehaviorTreeParser.DEBUG_LOW).parse(file, null);
 			}catch(SerializationException e){
@@ -39,14 +33,15 @@ public class BTreeTool extends Tool
 				return;
 			}
 			
-			BehaviorTree tree = editor.loadAssetNow(file.path(), BehaviorTree.class, params);
-			BehaviorTreeLibraryManager.getInstance().getLibrary().registerArchetypeTree(file.path(), tree);
+			editor.loadAssetNow(file.path(), BehaviorTree.class);
+		}
+		BTreeModel model = BTreeModel.components.get(entity);
+		if(model == null){
+			model = editor.entityEngine.createComponent(BTreeModel.class);
 		}
 		
-		BTreeModel model = editor.entityEngine.createComponent(BTreeModel.class);
-		
 		model.libraryName = file.path();
-		model.tree = BehaviorTreeLibraryManager.getInstance().createBehaviorTree(file.path(), blackboard);
+		model.tree = BehaviorTreeLibraryManager.getInstance().createBehaviorTree(file.path());
 		
 		entity.add(model);
 	}

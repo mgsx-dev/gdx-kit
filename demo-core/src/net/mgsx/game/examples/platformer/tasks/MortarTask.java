@@ -21,16 +21,18 @@ public class MortarTask extends EntityLeafTask
 	public Status execute() 
 	{
 		Entity entity = getObject().entity;
+		MortarComponent mortar = MortarComponent.components.get(entity);
 	
 		ImmutableArray<Entity> players = getEngine().getEntitiesFor(Family.all(PlayerController.class, Transform2DComponent.class).get());
 		
-		if(players.size() <= 0) return Status.FAILED;
+		if(players.size() > 0){
+			Entity playerEntity = players.first();
+			Transform2DComponent playerTransform = Transform2DComponent.components.get(playerEntity);
+			mortar.target.set(playerTransform.position);
+		}
 		
-		Entity playerEntity = players.first();
-		Transform2DComponent playerTransform = Transform2DComponent.components.get(playerEntity);
 		
 		Transform2DComponent parentTransform = Transform2DComponent.components.get(entity);
-		MortarComponent mortar = MortarComponent.components.get(entity);
 
 		if(mortar.projectile != null){
 			for(Entity child : mortar.projectile.group.create(getObject().assets, getObject().engine)){
@@ -46,7 +48,7 @@ public class MortarTask extends EntityLeafTask
 						childTransform.position.add(parentTransform.position).add(mortar.offset);
 					}
 					childPhysics.def.linearVelocity.set(new Vector2(mortar.speed, 0).setAngle(mortar.angle));
-					if(playerTransform.position.x < parentTransform.position.x)
+					if(mortar.target.x < parentTransform.position.x)
 						childPhysics.def.linearVelocity.x = -childPhysics.def.linearVelocity.x;
 				}
 			}
