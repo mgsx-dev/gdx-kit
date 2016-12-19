@@ -3,7 +3,6 @@ package net.mgsx.game.core.storage;
 import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.assets.AssetDescriptor;
-import com.badlogic.gdx.assets.AssetLoaderParameters;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.AsynchronousAssetLoader;
 import com.badlogic.gdx.assets.loaders.FileHandleResolver;
@@ -14,13 +13,18 @@ import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.JsonValue.JsonIterator;
 
+import net.mgsx.game.core.GameRegistry;
 import net.mgsx.game.core.helpers.ReflectionHelper;
 
 public class EntityGroupLoader extends AsynchronousAssetLoader<EntityGroup, EntityGroupLoaderParameters>
 {
-	
-	public EntityGroupLoader(FileHandleResolver resolver) {
+	final GameRegistry registry;
+	EntityGroup entityGroup;
+	JsonValue jsonData;
+
+	public EntityGroupLoader(FileHandleResolver resolver, GameRegistry registry) {
 		super(resolver);
+		this.registry = registry;
 	}
 
 	@Override
@@ -30,22 +34,17 @@ public class EntityGroupLoader extends AsynchronousAssetLoader<EntityGroup, Enti
 		Json json = EntityGroupStorage.setup();
 		
 		// load json file and return asset part
-		parameter.entityGroup = new EntityGroup();
-		parameter.jsonData = new JsonReader().parse(file);
-		if(parameter.jsonData.has("assets")){
-			for(JsonIterator i = parameter.jsonData.get("assets").iterator() ; i.hasNext() ; ){
+		jsonData = new JsonReader().parse(file);
+		if(jsonData.has("assets")){
+			for(JsonIterator i = jsonData.get("assets").iterator() ; i.hasNext() ; ){
 				JsonValue asset = i.next();
 				String typeName = asset.get("type").asString();
 				Class assetType = json.getClass(typeName);
 				if(assetType == null) assetType = ReflectionHelper.forName(typeName);
 				String name = asset.get("name").asString();
-				AssetLoaderParameters parameters = null;
-				if(assetType == EntityGroup.class){
-					parameters = new EntityGroupLoaderParameters(parameter.registry);
-				}
 				// TODO do the same for other types (Textures ...)
 				
-				assets.add(new AssetDescriptor(name, assetType, parameters));
+				assets.add(new AssetDescriptor(name, assetType));
 			}
 		}
 		
@@ -55,18 +54,19 @@ public class EntityGroupLoader extends AsynchronousAssetLoader<EntityGroup, Enti
 	@Override
 	public void loadAsync(AssetManager manager, String fileName, FileHandle file, EntityGroupLoaderParameters parameter) {
 		
-		Json json = EntityGroupStorage.setup(manager, parameter.registry, parameter.entityGroup);
-		
-		if(parameter.jsonData.has("entities")){
-			for(JsonIterator entityIteractor = parameter.jsonData.get("entities").iterator() ; entityIteractor.hasNext() ; ){
+		entityGroup = new EntityGroup();
+		Json json = EntityGroupStorage.setup(manager, registry, entityGroup);
+		jsonData = new JsonReader().parse(file);
+		if(jsonData.has("entities")){
+			for(JsonIterator entityIteractor = jsonData.get("entities").iterator() ; entityIteractor.hasNext() ; ){
 				JsonValue value = entityIteractor.next();
 				Entity entity = new Entity(); // we don't need pool since it is a duplicable template.
-				parameter.entityGroup.add(entity);
+				entityGroup.add(entity);
 				for(JsonIterator i = value.iterator() ; i.hasNext() ; ){
 					JsonValue cvalue = i.next();
 					String typeName = cvalue.name;
 					if("id".equals(typeName)) continue; // skip id tag
-					Class<? extends Component> componentType = parameter.registry.typeMap.get(typeName);
+					Class<? extends Component> componentType = registry.typeMap.get(typeName);
 					if(componentType != null)
 					{
 						Component component = json.readValue(componentType, cvalue);
@@ -89,7 +89,8 @@ public class EntityGroupLoader extends AsynchronousAssetLoader<EntityGroup, Enti
 	@Override
 	public EntityGroup loadSync(AssetManager manager, String fileName, FileHandle file, EntityGroupLoaderParameters parameter) {
 		// TODO maybe initialize ??
-		return parameter.entityGroup;
+		// TODO clean all references
+		return entityGroup;
 	}
 
 }

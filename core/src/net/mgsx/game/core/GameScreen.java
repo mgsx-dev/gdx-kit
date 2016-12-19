@@ -12,6 +12,8 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.utils.Array;
 
+import net.mgsx.game.core.storage.EntityGroup;
+import net.mgsx.game.core.storage.EntityGroupLoader;
 import net.mgsx.game.core.storage.EntityGroupStorage;
 import net.mgsx.game.core.storage.LoadConfiguration;
 import net.mgsx.game.plugins.camera.components.CameraComponent;
@@ -127,6 +129,8 @@ public class GameScreen extends ScreenAdapter
 	public void load(FileHandle file) 
 	{
 		if(file != null){
+			assets.setLoader(EntityGroup.class, new EntityGroupLoader(assets.getFileHandleResolver(), registry));
+			
 			String name = file.path();
 			pendingGroups.add(name);
 			

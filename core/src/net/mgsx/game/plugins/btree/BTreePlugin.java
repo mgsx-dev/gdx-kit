@@ -11,6 +11,7 @@ import org.reflections.util.ConfigurationBuilder;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
+import com.badlogic.gdx.ai.btree.AnnotationBasedTaskCloner;
 import com.badlogic.gdx.ai.btree.BehaviorTree;
 import com.badlogic.gdx.ai.btree.LeafTask;
 import com.badlogic.gdx.ai.btree.Task;
@@ -80,12 +81,17 @@ public class BTreePlugin extends EditorPlugin
 		public Engine getEngine(){
 			return getObject().engine;
 		}
+		public Entity getEntity(){
+			return getObject().entity;
+		}
 	}
 	
 	@Override
 	public void initialize(final EditorScreen editor) 
 	{
 		BehaviorTreeLibraryManager.getInstance().setLibrary(library);
+		
+		Task.TASK_CLONER = new AnnotationBasedTaskCloner();
 		
 		EntityEditor.defaultTypeEditors.put(FloatDistribution.class, new FloatDistributionEditor());
 		

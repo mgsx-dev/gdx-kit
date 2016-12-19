@@ -27,7 +27,7 @@ public class EditorApplication extends Game
 	public void create() 
 	{
 		assetManager = new EditorAssetManager();
-		assetManager.setLoader(EntityGroup.class, new EntityGroupLoader(assetManager.getFileHandleResolver()));
+		assetManager.setLoader(EntityGroup.class, new EntityGroupLoader(assetManager.getFileHandleResolver(), config.registry));
 		
 		Texture.setAssetManager(assetManager);
 		

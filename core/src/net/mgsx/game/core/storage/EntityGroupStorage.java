@@ -186,7 +186,7 @@ public class EntityGroupStorage
 	public static void load(String fileName, LoadConfiguration config) 
 	{
 		if(!config.assets.isLoaded(fileName)){
-			EntityGroupLoaderParameters parameters = new EntityGroupLoaderParameters(config.registry);
+			EntityGroupLoaderParameters parameters = new EntityGroupLoaderParameters();
 			AssetDescriptor<EntityGroup> descriptor = new AssetDescriptor<EntityGroup>(fileName, EntityGroup.class, parameters);
 			config.assets.load(descriptor);
 		}

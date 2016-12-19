@@ -24,6 +24,9 @@ public class BTreeModel implements Component, Duplicable, Poolable
 	@Editable
 	public boolean enabled = false; // XXX
 	
+	@Editable
+	public boolean remove = false;
+	
 	@Editable("Manual Step")
 	public void step(){
 		tree.step();
@@ -35,6 +38,11 @@ public class BTreeModel implements Component, Duplicable, Poolable
 		clone.tree = engine.getSystem(BTreeSystem.class).createBehaviorTree(libraryName); 
 		clone.libraryName = libraryName;
 		return clone;
+	}
+	
+	@Editable
+	public void resetTree(){
+		tree.reset();
 	}
 
 	@Override

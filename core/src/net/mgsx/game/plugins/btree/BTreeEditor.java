@@ -121,11 +121,11 @@ public class BTreeEditor implements EntityEditorPlugin {
 					}
 					@Override
 					public boolean match(FileHandle file) {
-						return file.extension().equals("json");
+						return file.extension().equals("btree");
 					}
 					@Override
 					public String description() {
-						return "BehaviorTree files (json)";
+						return "BehaviorTree files (btree)";
 					}
 				});
 			}
@@ -145,11 +145,11 @@ public class BTreeEditor implements EntityEditorPlugin {
 					}
 					@Override
 					public boolean match(FileHandle file) {
-						return file.extension().equals("json");
+						return file.extension().equals("btree");
 					}
 					@Override
 					public String description() {
-						return "BehaviorTree files (json)";
+						return "BehaviorTree files (btree)";
 					}
 				});
 			}

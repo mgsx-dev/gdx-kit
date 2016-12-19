@@ -40,7 +40,7 @@ public class EntityGroupLoaderTest {
 				
 				// load this file
 				assets = new AssetManager();
-				assets.setLoader(EntityGroup.class, new EntityGroupLoader(assets.getFileHandleResolver()));
+				assets.setLoader(EntityGroup.class, new EntityGroupLoader(assets.getFileHandleResolver(), registry));
 				
 				engine = new Engine();
 				GameScreen screen = new GameScreen(assets, engine);
@@ -49,7 +49,7 @@ public class EntityGroupLoaderTest {
 				registry.init(screen);
 				
 				FileHandle file = Gdx.files.classpath("egl-test1.json");
-				EntityGroupLoaderParameters params = new EntityGroupLoaderParameters(registry);
+				EntityGroupLoaderParameters params = new EntityGroupLoaderParameters();
 				
 				asset = new AssetDescriptor<EntityGroup>(file, EntityGroup.class, params);
 				assets.load(asset);

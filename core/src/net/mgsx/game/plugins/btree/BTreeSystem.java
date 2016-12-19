@@ -6,6 +6,7 @@ import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.ai.GdxAI;
 import com.badlogic.gdx.ai.btree.BehaviorTree;
+import com.badlogic.gdx.ai.btree.Task.Status;
 import com.badlogic.gdx.ai.btree.utils.BehaviorTreeLibraryManager;
 
 import net.mgsx.game.core.GamePipeline;
@@ -37,7 +38,12 @@ public class BTreeSystem extends IteratingSystem
 		blackboard.entity = entity;
 		BTreeModel model = BTreeModel.components.get(entity);
 		model.tree.setObject(blackboard);
-		if(model.enabled) model.tree.step();
+		if(model.enabled){
+			model.tree.step();
+			if(model.remove && model.tree.getStatus() != Status.RUNNING){
+				getEngine().removeEntity(entity);
+			}
+		}
 	}
 
 	public BehaviorTree<EntityBlackboard> createBehaviorTree(String libraryName) {
