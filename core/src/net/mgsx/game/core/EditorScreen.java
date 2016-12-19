@@ -7,6 +7,7 @@ import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntityListener;
+import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
@@ -30,6 +31,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Array;
@@ -57,6 +59,7 @@ import net.mgsx.game.core.storage.LoadConfiguration;
 import net.mgsx.game.core.tools.ComponentTool;
 import net.mgsx.game.core.tools.Tool;
 import net.mgsx.game.core.tools.ToolGroup;
+import net.mgsx.game.core.ui.EntityEditor;
 import net.mgsx.game.core.ui.widgets.TabPane;
 import net.mgsx.game.plugins.core.tools.UndoTool;
 
@@ -85,6 +88,7 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 	protected Table outline;
 	protected TabPane global;
 	private Table superGlobal;
+	private VerticalGroup pinStack;
 	
 	private SpriteBatch editorBatch;
 	
@@ -137,6 +141,9 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 		style.fontColor.set(Color.DARK_GRAY);
 		status.setStyle(style);
 		
+		pinStack = new VerticalGroup();
+		pinStack.fill();
+		
 		Table table = new Table(skin);
 		table.add(panel).expand().left().top().row();
 		
@@ -144,7 +151,13 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 		table.add(toolOutline).left().row();
 		table.add(status).left();
 		// table.add(scroll).expand().right().top();
-		return table;
+		
+		Table rootTable = new Table(skin);
+		
+		rootTable.add(table).expand().fillY().left();
+		rootTable.add(new ScrollPane(pinStack, skin)).expandY().fill();
+		
+		return rootTable;
 	}
 	
 	private void init()
@@ -437,6 +450,18 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 					}
 				}
 			});
+			
+			final Button btPin = new Button(skin, "node");
+			btPin.add("Pin");
+			
+			headerTable.add(btPin).padRight(4);
+			btPin.addListener(new ChangeListener() {
+				@Override
+				public void changed(ChangeEvent event, Actor actor) 
+				{
+					pinEditor(entity, component);
+				}
+			});
 		}
 		
 		Button btRemove = new Button(skin.getDrawable("tree-minus"));
@@ -462,6 +487,123 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 		return group;
 	}
 	
+	public void pinEditor(Entity entity, Component component) 
+	{
+		pinStack.addActor(createPinEditor(entity, component));
+		
+	}
+	public void pinEditor(Actor editor) 
+	{
+		pinStack.addActor(editor);
+	}
+	public void pinEditor(EntitySystem system) 
+	{
+		pinStack.addActor(createPinEditor(system));
+		
+	}
+	
+	public void unpinEditor(Actor editor){
+		pinStack.removeActor(editor);
+	}
+
+	private Actor createPinEditor(final Entity entity, final Component component) 
+	{
+		final boolean hasEditors = registry.editablePlugins.get(component.getClass()) != null;
+		
+		final Table group = new Table(skin);
+
+		
+		final Table bodyTable = new Table(skin);
+		bodyTable.setBackground(skin.getDrawable("default-window-body"));
+		
+		final Table headerTable = new Table(skin);
+		if(hasEditors){
+			final Button btOpenClose = new Button(skin, "node");
+			
+			headerTable.add(btOpenClose).padRight(4);
+			btOpenClose.addListener(new ChangeListener() {
+				@Override
+				public void changed(ChangeEvent event, Actor actor) 
+				{
+					if(btOpenClose.isChecked()){
+						createComponentEditor(bodyTable, entity, component);
+					}else{
+						bodyTable.clear();
+					}
+				}
+			});
+			
+			btOpenClose.setChecked(true);
+		}
+		
+		Button btRemove = new Button(skin.getDrawable("tree-minus"));
+		btRemove.addListener(new ChangeListener(){
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				unpinEditor(group);
+			}
+		});
+		
+		headerTable.add(component.getClass().getSimpleName()).expandX().left();
+		headerTable.add(btRemove);
+		
+		headerTable.setBackground(skin.getDrawable("default-window-header"));
+		
+		
+		group.add(headerTable).expandX().fill().row();
+		group.add(bodyTable).expandX().fill();
+		
+		
+		return group;
+	}
+	private Actor createPinEditor(final EntitySystem system) 
+	{
+		final Table group = new Table(skin);
+		
+		final Table bodyTable = new Table(skin);
+		bodyTable.setBackground(skin.getDrawable("default-window-body"));
+		
+		final Table headerTable = new Table(skin);
+		final Button btOpenClose = new Button(skin, "node");
+		
+		headerTable.add(btOpenClose).padRight(4);
+		btOpenClose.addListener(new ChangeListener() {
+			@Override
+			public void changed(ChangeEvent event, Actor actor) 
+			{
+				if(btOpenClose.isChecked()){
+					createSystemEditor(bodyTable, system);
+				}else{
+					bodyTable.clear();
+				}
+			}
+		});
+			
+		Button btRemove = new Button(skin.getDrawable("tree-minus"));
+		btRemove.addListener(new ChangeListener(){
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				unpinEditor(group);
+			}
+		});
+		
+		headerTable.add(system.getClass().getSimpleName()).expandX().left();
+		headerTable.add(btRemove);
+		
+		headerTable.setBackground(skin.getDrawable("default-window-header"));
+		
+		
+		group.add(headerTable).expandX().fill().row();
+		group.add(bodyTable).expandX().fill();
+		
+		btOpenClose.setChecked(true);
+		
+		return group;
+	}
+	protected void createSystemEditor(Table table, EntitySystem system) {
+		table.add(new EntityEditor(system, true, skin));
+	}
+
 	private void createComponentEditor(Table table, Entity entity, Component component)
 	{
 		Array<EntityEditorPlugin> editors = registry.editablePlugins.get(component.getClass());

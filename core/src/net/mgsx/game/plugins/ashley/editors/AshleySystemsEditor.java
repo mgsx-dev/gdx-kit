@@ -84,7 +84,7 @@ public class AshleySystemsEditor implements GlobalEditorPlugin
 				edit.addListener(new ChangeListener(){
 					@Override
 					public void changed(ChangeEvent event, Actor actor) {
-						buildView(editor, table, skin, system);
+						editor.pinEditor(system);
 					}
 				});
 			}else{
@@ -118,29 +118,5 @@ public class AshleySystemsEditor implements GlobalEditorPlugin
 		return systemName;
 	}
 
-	protected void buildView(final EditorScreen editor, final Table table, final Skin skin, final EntitySystem system) 
-	{
-		
-		
-		table.clearChildren();
-		
-		TextButton btBack = new TextButton("Show all systems", skin);
-		
-		table.add(btBack).row();
-		
-		btBack.addListener(new ChangeListener() {
-			
-			@Override
-			public void changed(ChangeEvent event, Actor actor) {
-				rebuildUI(editor, table, skin);
-			}
-		});
-		
-		// TODO refactor things to have name, priority ... table.add(config.value())
-		table.add(name(system));
-		
-		table.add(new EntityEditor(system, true, skin)).row();
-		
-	}
 
 }
