@@ -1,5 +1,7 @@
 package net.mgsx.game.plugins.core;
 
+import com.badlogic.gdx.math.Interpolation;
+
 import net.mgsx.game.core.EditorScreen;
 import net.mgsx.game.core.annotations.PluginDef;
 import net.mgsx.game.core.plugins.EditorPlugin;
@@ -7,7 +9,9 @@ import net.mgsx.game.core.storage.EntityGroupRef;
 import net.mgsx.game.core.storage.LoadConfiguration;
 import net.mgsx.game.core.tools.NoTool;
 import net.mgsx.game.core.ui.EntityEditor;
+import net.mgsx.game.core.ui.widgets.StaticFieldSelector;
 import net.mgsx.game.plugins.camera.CameraEditorPlugin;
+import net.mgsx.game.plugins.core.math.Signal;
 import net.mgsx.game.plugins.core.systems.PolygonRenderSystem;
 import net.mgsx.game.plugins.core.systems.SelectionRenderSystem;
 import net.mgsx.game.plugins.core.tools.CreateProxyTool;
@@ -32,10 +36,14 @@ import net.mgsx.game.plugins.core.tools.ZoomTool;
 @PluginDef(dependencies={CorePlugin.class, CameraEditorPlugin.class})
 public class CoreEditorPlugin extends EditorPlugin
 {
+	public static Class interpolationRegistry = Interpolation.class;
 
 	@Override
 	public void initialize(EditorScreen editor) 
 	{
+		
+		EntityEditor.defaultTypeEditors.put(Interpolation.class, new StaticFieldSelector<Interpolation>(Signal.class, Interpolation.class));
+		
 		// systems
 		editor.entityEngine.addSystem(new SelectionRenderSystem(editor));
 		editor.entityEngine.addSystem(new PolygonRenderSystem(editor));
@@ -74,5 +82,5 @@ public class CoreEditorPlugin extends EditorPlugin
 		
 		EntityEditor.defaultTypeEditors.put(EntityGroupRef.class, new EntityGroupEditor(config));
 	}
-
+	
 }
