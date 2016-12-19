@@ -1,0 +1,68 @@
+{
+entities: [
+	{
+		id: 0
+		2d: {}
+		g3d: {
+			modelInstance: cake/churros.g3dj
+			origin: {}
+			blended: false
+			culling: false
+		}
+		box2d: {
+			id: Polygon
+			def: {}
+			fixtures: [
+				{
+					def: {
+						shape: {
+							type: Polygon
+							vertex: [
+								{
+									x: 1.1721203
+									y: 0.025071118
+								}
+								{
+									x: 0.83364666
+									y: 0.5515654
+								}
+								{
+									x: -0.8587192
+									y: 0.56410056
+								}
+								{
+									x: -1.2097286
+									y: -0.012535559
+								}
+								{
+									x: -0.8336473
+									y: -0.57663614
+								}
+								{
+									x: 0.84618366
+									y: -0.57663614
+								}
+							]
+						}
+						density: 1
+						filter: {}
+					}
+				}
+			]
+		}
+		btree: {
+			library: btree/churros.btree
+		}
+	}
+]
+assets: [
+	{
+		type: com.badlogic.gdx.graphics.g3d.Model
+		name: cake/churros.g3dj
+	}
+	{
+		type: com.badlogic.gdx.ai.btree.BehaviorTree
+		name: btree/churros.btree
+	}
+]
+}

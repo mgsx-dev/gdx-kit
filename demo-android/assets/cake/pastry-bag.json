@@ -1,0 +1,31 @@
+{
+entities: [
+	{
+		id: 0
+		2d: {}
+		g3d: {
+			modelInstance: cake/pastry-bag.g3dj
+			origin: {}
+			blended: false
+			culling: false
+		}
+		btree: {
+			library: btree/pastry-bag.btree
+		}
+	}
+]
+assets: [
+	{
+		type: com.badlogic.gdx.graphics.g3d.Model
+		name: cake/pastry-bag.g3dj
+	}
+	{
+		type: com.badlogic.gdx.ai.btree.BehaviorTree
+		name: btree/pastry-bag.btree
+	}
+	{
+		type: net.mgsx.game.core.storage.EntityGroup
+		name: cake/churros.json
+	}
+]
+}

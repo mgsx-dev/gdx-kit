@@ -1,0 +1,7 @@
+import physicsType:"net.mgsx.game.examples.platformer.tasks.PhysicTypeTask"
+
+sequence
+  physicsType dynamic:false
+  wait seconds:4
+  physicsType dynamic:true
+  wait seconds:2

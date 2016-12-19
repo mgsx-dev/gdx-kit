@@ -1,0 +1,3 @@
+import emitAtDistance:"net.mgsx.game.examples.platformer.tasks.EmitAtDistanceTask"
+
+emitAtDistance particle:"cake/churros.json" distance:2.2608275
