@@ -1261,7 +1261,7 @@ entities: [
 			speed: 6
 		}
 		btree: {
-			library: btree/manon.json
+			library: btree/manon.btree
 		}
 	}
 ]
@@ -1284,7 +1284,7 @@ assets: [
 	}
 	{
 		type: com.badlogic.gdx.ai.btree.BehaviorTree
-		name: btree/manon.json
+		name: btree/manon.btree
 	}
 	{
 		type: com.badlogic.gdx.graphics.g3d.Model
