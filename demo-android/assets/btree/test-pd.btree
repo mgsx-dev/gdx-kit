@@ -1,0 +1,4 @@
+import pdPhysics:"net.mgsx.game.plugins.pd.tasks.PdPhysicStateTask"
+
+untilFail
+  pdPhysics symbol:"physics"
