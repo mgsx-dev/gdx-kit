@@ -1,3 +1,14 @@
+import moveTo:"net.mgsx.game.plugins.core.tasks.MoveToTask"
 import emitAtDistance:"net.mgsx.game.examples.platformer.tasks.EmitAtDistanceTask"
+import move:"net.mgsx.game.plugins.core.tasks.MoveTask"
 
-emitAtDistance particle:"cake/churros.json" distance:2.2608275
+sequence
+  moveTo ty:10.1889305
+  untilFail
+    parallel
+      emitAtDistance particle:"cake/churros.json" distance:2.3007407
+      sequence
+        move speed:16.91951 duration:2.0
+        move speed:16.557892 angle:31.059128 duration:0.7376196
+        move speed:16.489204 duration:2.0
+        move speed:16.431108 angle:-45.0 duration:3.3859427

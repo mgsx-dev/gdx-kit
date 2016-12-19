@@ -42,8 +42,13 @@ public class EmitAtDistanceTask extends EntityLeafTask
 	{
 		Transform2DComponent transform = Transform2DComponent.components.get(getEntity());
 		if(transform != null){
+			Vector2 dif = new Vector2().set(transform.position).sub(lastDropPosition);
+			transform.angle = dif.angleRad();
 			if(lastDropPosition.dst(transform.position) >= distance){
 				// drop
+				
+				
+				
 				lastDropPosition.set(transform.position);
 				EntityGroup template = getObject().assets.get(particle, EntityGroup.class);
 				for(Entity entity : template.create(getObject().assets, getEngine())){
@@ -54,10 +59,13 @@ public class EmitAtDistanceTask extends EntityLeafTask
 					Box2DBodyModel childPhysics = Box2DBodyModel.components.get(entity);
 					if(childPhysics != null){
 						childPhysics.def.position.set(lastDropPosition);
+						childPhysics.def.angle = dif.angleRad();
 					}
 					Transform2DComponent t = Transform2DComponent.components.get(entity);
 					if(transform != null){
 						t.position.add(lastDropPosition);
+						t.rotation = true;
+						t.angle = dif.angleRad();
 					}
 					BTreeModel btree = BTreeModel.components.get(entity);
 					if(btree!=null){

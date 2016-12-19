@@ -1,5 +1,11 @@
-import moveBy:"net.mgsx.game.plugins.core.tasks.MoveTask"
+import moveTo:"net.mgsx.game.plugins.core.tasks.MoveToTask"
+import move:"net.mgsx.game.plugins.core.tasks.MoveTask"
 
 sequence
-  moveBy tx:3.0551317 ty:0.1 duration:2.099836
-  moveBy duration:2.2339602 interpolation:"linear"
+  moveTo tx: 0 ty:0 duration:0
+  untilFail
+    sequence
+      move speed:1 angle:0 duration:2
+      move speed:1 angle:45 duration:2
+      move speed:1 angle:0 duration:2
+      move speed:1 angle:-45 duration:2

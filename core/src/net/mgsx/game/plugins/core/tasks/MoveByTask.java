@@ -9,8 +9,8 @@ import net.mgsx.game.plugins.btree.BTreePlugin.EntityLeafTask;
 import net.mgsx.game.plugins.btree.annotations.TaskAlias;
 import net.mgsx.game.plugins.core.components.Transform2DComponent;
 
-@TaskAlias("moveTo")
-public class MoveToTask extends EntityLeafTask
+@TaskAlias("moveBy")
+public class MoveByTask extends EntityLeafTask
 {
 	@TaskAttribute
 	public float tx, ty;
@@ -40,12 +40,12 @@ public class MoveToTask extends EntityLeafTask
 		Transform2DComponent transform = Transform2DComponent.components.get(getEntity());
 		if(transform != null){
 			if(time > duration){
-				transform.position.set(tx, ty);
+				transform.position.set(origin).add(tx, ty);
 				time = 0;
 				return Status.SUCCEEDED;
 			}
 			float t = time / duration;
-			transform.position.set(interpolation.apply(origin.x, tx, t), interpolation.apply(origin.y, ty, t));
+			transform.position.set(origin).add(tx * interpolation.apply(t), ty * interpolation.apply(t));
 		}
 		return Status.RUNNING;
 	}
