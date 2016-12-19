@@ -1,0 +1,7 @@
+import pdRun:"net.mgsx.game.plugins.pd.tasks.PdRunTask"
+import playMusic:"net.mgsx.game.plugins.audio.tasks.PlayMusicTask"
+
+parallel
+  pdRun path:"pdmidi/midiplayer.pd"
+  sequence
+    playMusic asset:"MuteCity.mid"

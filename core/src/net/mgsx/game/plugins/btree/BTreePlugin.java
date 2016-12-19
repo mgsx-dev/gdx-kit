@@ -72,7 +72,7 @@ public class BTreePlugin extends EditorPlugin
 	public abstract static class EntityLeafTask extends LeafTask<EntityBlackboard>{
 		@Override
 		public Status execute() {
-			return null;
+			return Status.SUCCEEDED;
 		}
 		@Override
 		protected Task<EntityBlackboard> copyTo(Task<EntityBlackboard> task) {

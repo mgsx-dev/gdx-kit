@@ -5,7 +5,7 @@ import net.mgsx.game.core.annotations.PluginDef;
 import net.mgsx.game.core.plugins.EditorPlugin;
 import net.mgsx.game.plugins.pd.editors.PdEditor;
 
-@PluginDef
+@PluginDef(dependencies=PdPlugin.class)
 public class PdEditorPlugin extends EditorPlugin
 {
 
