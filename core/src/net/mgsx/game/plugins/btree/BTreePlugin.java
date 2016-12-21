@@ -1,13 +1,5 @@
 package net.mgsx.game.plugins.btree;
 
-import java.net.URL;
-import java.util.Collection;
-
-import org.reflections.Reflections;
-import org.reflections.scanners.SubTypesScanner;
-import org.reflections.util.ClasspathHelper;
-import org.reflections.util.ConfigurationBuilder;
-
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
@@ -23,6 +15,7 @@ import com.badlogic.gdx.utils.ObjectMap;
 import net.mgsx.game.core.EditorScreen;
 import net.mgsx.game.core.annotations.PluginDef;
 import net.mgsx.game.core.helpers.EditorAssetManager.ReloadListener;
+import net.mgsx.game.core.meta.ClassRegistry;
 import net.mgsx.game.core.plugins.EditorPlugin;
 import net.mgsx.game.core.ui.EntityEditor;
 import net.mgsx.game.plugins.btree.storage.BehaviorTreeSerializer;
@@ -48,13 +41,7 @@ public class BTreePlugin extends EditorPlugin
 	private static void scan(){
 		if(tasks == null){
 			tasks = new ObjectMap<String, Class<? extends Task<EntityBlackboard>>>();
-			Collection<URL> urls = ClasspathHelper.getUrlsForPackagePrefix("net.mgsx.game");
-			urls.addAll(ClasspathHelper.getUrlsForPackagePrefix("com.badlogic.gdx.ai.btree"));
-			Reflections reflections = new Reflections(
-					new ConfigurationBuilder()
-				     .setUrls(urls)
-				     .setScanners(new SubTypesScanner()));
-			for(Class<? extends Task> type : reflections.getSubTypesOf(Task.class)){
+			for(Class<? extends Task> type : ClassRegistry.instance.getSubTypesOf(Task.class)){
 				
 				String key = type.getSimpleName();
 				tasks.put(key, (Class<? extends Task<EntityBlackboard>>)type);

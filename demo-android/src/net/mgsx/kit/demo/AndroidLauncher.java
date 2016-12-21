@@ -1,0 +1,53 @@
+package net.mgsx.kit.demo;
+
+import com.badlogic.gdx.backends.android.AndroidApplication;
+import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
+
+import android.os.Bundle;
+import net.mgsx.game.core.EditorApplication;
+import net.mgsx.game.core.EditorConfiguration;
+import net.mgsx.game.core.helpers.NativeService;
+import net.mgsx.game.core.helpers.NativeService.DialogCallback;
+import net.mgsx.game.core.helpers.NativeService.NativeServiceInterface;
+import net.mgsx.game.examples.platformer.PlatformerEditorPlugin;
+import net.mgsx.pd.Pd;
+import net.mgsx.pd.PdAudioAndroid;
+import net.mgsx.pd.PdConfiguration;
+import net.mgsx.pd.midi.DefaultPdMidi;
+
+public class AndroidLauncher extends AndroidApplication {
+	@Override
+	protected void onCreate (Bundle savedInstanceState) {
+		
+		
+		NativeService.instance = new NativeServiceInterface() {
+			
+			@Override
+			public void openSaveDialog(DialogCallback callback) {
+				callback.cancel();
+			}
+			
+			@Override
+			public void openLoadDialog(DialogCallback callback) {
+				callback.cancel();
+			}
+		};
+		
+		EditorConfiguration editConfig = new EditorConfiguration();
+		editConfig.plugins.add(new PlatformerEditorPlugin());
+		editConfig.path = null;
+		
+		
+		super.onCreate(savedInstanceState);
+		Pd.audio = new PdAudioAndroid(this);
+		Pd.midi = new DefaultPdMidi();
+		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
+		initialize(new EditorApplication(editConfig){
+			@Override
+			public void create() {
+				Pd.audio.create(new PdConfiguration());
+				super.create();
+			}
+		}, config);
+	}
+}

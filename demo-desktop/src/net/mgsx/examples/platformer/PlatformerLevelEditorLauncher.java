@@ -7,8 +7,10 @@ import net.mgsx.box2d.editor.desktop.DesktopNativeInterface;
 import net.mgsx.game.core.EditorApplication;
 import net.mgsx.game.core.EditorConfiguration;
 import net.mgsx.game.core.helpers.NativeService;
+import net.mgsx.game.core.meta.ClassRegistry;
 import net.mgsx.game.examples.platformer.PlatformerEditorPlugin;
 import net.mgsx.gdx.pd.PdAudioDesktop;
+import net.mgsx.kit.ReflectionClassRegistry;
 import net.mgsx.pd.Pd;
 import net.mgsx.pd.PdConfiguration;
 
@@ -21,6 +23,8 @@ public class PlatformerLevelEditorLauncher {
 
 	public static void main (String[] args) 
 	{
+		ClassRegistry.instance = new ReflectionClassRegistry();
+		
 		DesktopNativeInterface nativeService = new DesktopNativeInterface(); 
 		NativeService.instance = nativeService; 
 		

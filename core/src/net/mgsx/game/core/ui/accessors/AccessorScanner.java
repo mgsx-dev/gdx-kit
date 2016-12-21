@@ -40,7 +40,7 @@ public class AccessorScanner {
 			return;
 		}
 		
-		if(editable != null && method.getReturnType() == void.class && method.getParameterCount() == 0){
+		if(editable != null && method.getReturnType() == void.class && method.getParameterTypes().length == 0){
 			if(editable.value().isEmpty())
 				accessors.add(new VoidAccessor(entity, method));
 			else

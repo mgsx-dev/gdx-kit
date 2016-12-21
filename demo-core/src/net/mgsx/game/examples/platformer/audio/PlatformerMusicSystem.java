@@ -21,7 +21,6 @@ import net.mgsx.game.core.annotations.EditableSystem;
 import net.mgsx.game.plugins.core.components.Transform2DComponent;
 import net.mgsx.pd.Pd;
 import net.mgsx.pd.midi.MidiMusicLoader;
-import net.mgsx.pd.midi.PdMidiMusic;
 import net.mgsx.pd.patch.PatchLoader;
 import net.mgsx.pd.patch.PdPatch;
 
@@ -34,7 +33,7 @@ public class PlatformerMusicSystem extends EntitySystem
 	private Vector2 position = new Vector2(), v1 = new Vector2(), v2 = new Vector2();
 	private float lastDensity = 0;
 	
-	private PdMidiMusic song;
+	private Music song;
 	
 	public PlatformerMusicSystem(GameScreen game) {
 		super();
@@ -138,7 +137,7 @@ public class PlatformerMusicSystem extends EntitySystem
 		assets.load(songAsset);
 		assets.finishLoading();
 		
-		song = (PdMidiMusic)assets.get(songAsset);
+		song = (Music)assets.get(songAsset);
 		
 		song.play();
 		

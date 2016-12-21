@@ -1,11 +1,5 @@
 package net.mgsx.game.core;
 
-import org.reflections.Reflections;
-import org.reflections.scanners.SubTypesScanner;
-import org.reflections.scanners.TypeAnnotationsScanner;
-import org.reflections.util.ClasspathHelper;
-import org.reflections.util.ConfigurationBuilder;
-
 import com.badlogic.ashley.core.Component;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
@@ -17,6 +11,7 @@ import net.mgsx.game.core.annotations.PluginDef;
 import net.mgsx.game.core.annotations.Storable;
 import net.mgsx.game.core.helpers.ReflectionHelper;
 import net.mgsx.game.core.helpers.TypeMap;
+import net.mgsx.game.core.meta.ClassRegistry;
 import net.mgsx.game.core.plugins.Plugin;
 import net.mgsx.game.core.storage.serializers.AnnotationBasedSerializer;
 
@@ -109,18 +104,13 @@ public class GameRegistry {
 	
 	public void scanPackages()
 	{
-		Reflections reflections = new Reflections(
-				new ConfigurationBuilder()
-			     .setUrls(ClasspathHelper.getUrlsForPackagePrefix("net.mgsx.game"))
-			     .setScanners(new SubTypesScanner(), new TypeAnnotationsScanner()));
+		// XXX not used : ClassRegistry.instance.getTypesAnnotatedWith(PluginDef.class);
 		
-		reflections.getTypesAnnotatedWith(PluginDef.class);
-		
-		for(Class<? extends Plugin> type : reflections.getSubTypesOf(Plugin.class)){
+		for(Class<? extends Plugin> type : ClassRegistry.instance.getSubTypesOf(Plugin.class)){
 			registerPlugin(type);
 		}
 		
-		for(Class<? extends Component> type : reflections.getSubTypesOf(Component.class)){
+		for(Class<? extends Component> type : ClassRegistry.instance.getSubTypesOf(Component.class)){
 			register(type);
 		}
 	}
