@@ -20,6 +20,7 @@ import net.mgsx.game.core.plugins.EditorPlugin;
 import net.mgsx.game.core.ui.EntityEditor;
 import net.mgsx.game.plugins.btree.storage.BehaviorTreeSerializer;
 import net.mgsx.game.plugins.btree.storage.EntityBehaviorTreeLoader;
+import net.mgsx.game.plugins.btree.storage.EntityBehaviorTreeXMLLoader;
 import net.mgsx.game.plugins.btree.tools.BTreeTool;
 import net.mgsx.game.plugins.btree.ui.FloatDistributionEditor;
 
@@ -100,7 +101,8 @@ public class BTreePlugin extends EditorPlugin
 		
 		editor.registry.addSerializer(BTreeModel.class, new BehaviorTreeSerializer(editor.entityEngine));
 		
-		editor.assets.setLoader(BehaviorTree.class, new EntityBehaviorTreeLoader(editor.assets.getFileHandleResolver()));
+		editor.assets.setLoader(BehaviorTree.class, "btree", new EntityBehaviorTreeLoader(editor.assets.getFileHandleResolver()));
+		editor.assets.setLoader(BehaviorTree.class, "xml", new EntityBehaviorTreeXMLLoader(editor.assets.getFileHandleResolver()));
 	}
 	
 	

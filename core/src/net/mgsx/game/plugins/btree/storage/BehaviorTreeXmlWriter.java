@@ -1,20 +1,23 @@
 package net.mgsx.game.plugins.btree.storage;
 
-import java.io.FileNotFoundException;
-import java.io.PrintWriter;
+import java.io.IOException;
+import java.io.Writer;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.Comparator;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ai.btree.BehaviorTree;
 import com.badlogic.gdx.ai.btree.Task;
 import com.badlogic.gdx.ai.btree.annotation.TaskAttribute;
 import com.badlogic.gdx.ai.utils.random.ConstantFloatDistribution;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.ObjectSet;
+import com.badlogic.gdx.utils.XmlWriter;
 
 import net.mgsx.game.core.helpers.ArrayHelper;
 import net.mgsx.game.core.helpers.ReflectionHelper;
@@ -22,12 +25,12 @@ import net.mgsx.game.core.meta.ClassRegistry;
 import net.mgsx.game.plugins.btree.annotations.TaskAlias;
 
 /**
- * Write behavior tree to file using native GdxAI syntax.
+ * Write behavior tree to file using XML format.
  * 
  * @author mgsx
  *
  */
-public class BehaviorTreeWriter {
+public class BehaviorTreeXmlWriter {
 
 	private ObjectSet<Class> types = new ObjectSet<Class>();
 	private ObjectMap<Class, String> typeNames = new ObjectMap<Class, String>();
@@ -39,14 +42,16 @@ public class BehaviorTreeWriter {
 			scan(task.getChild(i));
 	}
 	
-	public void write(BehaviorTree tree, FileHandle file){
-		
-		PrintWriter writer;
+	public void write(BehaviorTree tree, FileHandle file) {
 		try {
-			writer = new PrintWriter(file.file());
-		} catch (FileNotFoundException e) {
+			write(tree, Gdx.files.absolute(file.file().getAbsolutePath()).writer(false));
+		} catch (IOException e) {
 			throw new GdxRuntimeException(e);
 		}
+	}
+	private void write(BehaviorTree tree, Writer w) throws IOException{
+		
+		XmlWriter writer = new XmlWriter(w);
 		
 		// first scan all types in tree
 		scan(tree);
@@ -80,29 +85,34 @@ public class BehaviorTreeWriter {
 			}
 		});
 		
+		writer.element("BehaviorTree");
+		
+		writer.element("imports");
+		
 		// write imports (for annotated types)
 		for(Class type : sortedClasses){
-			if(type.getPackage().getName().startsWith("com.badlogic.gdx.ai.btree"))
-				writer.print("# ");
-			writer.println("import " + typeNames.get(type) + ":" + "\"" + type.getName() + "\"");
+			writer.element("import");
+			writer.attribute("alias", typeNames.get(type));
+			writer.attribute("type", type.getName());
+			writer.pop();
 		}
-		writer.println();
+		writer.pop();
 		
 		
 		// write tree using mapped names
 		// write fields annotated with @TaskAttribute
+		writer.element("root");
 		writeTree(writer, tree.getChild(0), 0);
-		
+		writer.pop();
 		
 		writer.close();
 		
 		// note that distribution and sub tree reference can't be preserved.
 	}
 
-	private void writeTree(PrintWriter writer, Task task, int level) 
+	private void writeTree(XmlWriter writer, Task task, int level) throws IOException 
 	{
-		for(int i=0 ; i<level ; i++) writer.print("  ");
-		writer.print(typeNames.get(task.getClass()));
+		writer.element(typeNames.get(task.getClass()));
 		
 		Task def = ReflectionHelper.newInstance(task.getClass());
 		
@@ -115,23 +125,30 @@ public class BehaviorTreeWriter {
 					continue;
 				}
 				String name = attribute.name().isEmpty() ? field.getName() : attribute.name();
-				String fmtValue;
-				if(value instanceof String || field.getType().isEnum()){
-					fmtValue = "\"" + value + "\"";
-				}else if(value instanceof ConstantFloatDistribution){
+				String fmtValue = null;
+				if(value instanceof ConstantFloatDistribution){
 					ConstantFloatDistribution distrib = (ConstantFloatDistribution)value;
 					fmtValue = String.valueOf(distrib.getValue());
 					// TODO other ... need to check every types ...
-				}else{
+				}else if(value instanceof Interpolation){
+					for(Field f : Interpolation.class.getFields()){
+						if(Modifier.isStatic(f.getModifiers()) && Interpolation.class.isAssignableFrom(f.getType())){
+							if(value == ReflectionHelper.get(null, f)){
+								fmtValue = f.getName();
+							}
+						}
+					}
+				}
+				if(fmtValue == null){
 					fmtValue = value.toString();
 				}
-				writer.print(" " + name + ":" + fmtValue);
+				writer.attribute(name, fmtValue);
 			}
 		}
-		writer.println();
 		
 		for(int i=0 ; i<task.getChildCount() ; i++){
 			writeTree(writer, task.getChild(i), level+1);
 		}
+		writer.pop();
 	}
 }

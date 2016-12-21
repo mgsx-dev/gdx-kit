@@ -63,12 +63,14 @@ public class BTreeTool extends Tool
 		Entity entity = editor.currentEntity();
 		
 		if(!editor.assets.isLoaded(file.path())){
-			try{
-				new BehaviorTreeParser<EntityBlackboard>(BehaviorTreeParser.DEBUG_LOW).parse(file, null);
-			}catch(SerializationException e){
-				// TODO raise UI Error ...
-				Gdx.app.error("BTree", "Error parsing file", e);
-				return;
+			if(file.extension().equals("btree")){
+				try{
+					new BehaviorTreeParser<EntityBlackboard>(BehaviorTreeParser.DEBUG_LOW).parse(file, null);
+				}catch(SerializationException e){
+					// TODO raise UI Error ...
+					Gdx.app.error("BTree", "Error parsing file", e);
+					return;
+				}
 			}
 			
 			editor.loadAssetNow(file.path(), BehaviorTree.class);

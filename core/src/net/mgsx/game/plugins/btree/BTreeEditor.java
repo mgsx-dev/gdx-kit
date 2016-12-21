@@ -23,6 +23,7 @@ import net.mgsx.game.core.plugins.EntityEditorPlugin;
 import net.mgsx.game.core.ui.widgets.TreeEditor;
 import net.mgsx.game.core.ui.widgets.TreeNode;
 import net.mgsx.game.plugins.btree.storage.BehaviorTreeWriter;
+import net.mgsx.game.plugins.btree.storage.BehaviorTreeXmlWriter;
 import net.mgsx.game.plugins.btree.tools.BTreeTool;
 import net.mgsx.game.plugins.btree.ui.TaskEditor;
 
@@ -106,7 +107,32 @@ public class BTreeEditor implements EntityEditorPlugin {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
 				BTreeModel model = entity.getComponent(BTreeModel.class);
-				new BehaviorTreeWriter().write(model.tree, Gdx.files.internal(model.libraryName));
+				FileHandle file = Gdx.files.internal(model.libraryName);
+				if(file.extension().equals("xml"))
+					new BehaviorTreeXmlWriter().write(entity.getComponent(BTreeModel.class).tree, file);
+				else
+					new BehaviorTreeWriter().write(model.tree, Gdx.files.internal(model.libraryName));
+			}
+		});
+		
+		TextButton btSaveXML = new TextButton("Save as XML...", skin);
+		btSaveXML.addListener(new ChangeListener() {
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				NativeService.instance.openSaveDialog(new DefaultCallback() {
+					@Override
+					public void selected(FileHandle file) {
+						new BehaviorTreeXmlWriter().write(entity.getComponent(BTreeModel.class).tree, file);
+					}
+					@Override
+					public boolean match(FileHandle file) {
+						return file.extension().equals("xml");
+					}
+					@Override
+					public String description() {
+						return "BehaviorTree files (xml)";
+					}
+				});
 			}
 		});
 		
@@ -151,17 +177,18 @@ public class BTreeEditor implements EntityEditorPlugin {
 					@Override
 					public void selected(FileHandle file) {
 						BTreeTool.load(editor, file);
+						entity.getComponent(BTreeModel.class).libraryName = file.path();
 						libraryLabel.setText(entity.getComponent(BTreeModel.class).libraryName);
 						BehaviorTree<EntityBlackboard> btree = entity.getComponent(BTreeModel.class).tree;
 						treeEditor.setRoot(convertToTree(btree, btree));
 					}
 					@Override
 					public boolean match(FileHandle file) {
-						return file.extension().equals("btree");
+						return file.extension().equals("btree") || file.extension().equals("xml");
 					}
 					@Override
 					public String description() {
-						return "BehaviorTree files (btree)";
+						return "BehaviorTree files (btree, xml)";
 					}
 				});
 			}
@@ -182,6 +209,7 @@ public class BTreeEditor implements EntityEditorPlugin {
 		menu.add(btNew);
 		menu.add(btReload);
 		menu.add(btSave);
+		menu.add(btSaveXML);
 		menu.add(btLoad);
 		menu.add(btSaveAs);
 		menu.add(libraryLabel);
