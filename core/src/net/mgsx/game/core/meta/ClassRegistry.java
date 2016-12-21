@@ -17,6 +17,10 @@ abstract public class ClassRegistry {
 		public Array<Class> getSubTypesOf(Class type) {
 			return new Array<Class>();
 		}
+		@Override
+		public Array<Class<?>> getClasses() {
+			return new Array<Class<?>>();
+		}
 	};
 	
 	public static ClassRegistry instance = none;
@@ -24,4 +28,5 @@ abstract public class ClassRegistry {
 	
 	abstract public Array<Class> getSubTypesOf(Class type);
 	abstract public Array<Class<?>> getTypesAnnotatedWith(Class<? extends Annotation> annotation);
+	abstract public Array<Class<?>> getClasses();
 }

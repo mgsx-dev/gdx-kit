@@ -14,4 +14,10 @@ public class ArrayHelper {
 		addAll(array, elements);
 		return array;
 	}
+	public static <T> Array<T> array(T elements[])
+	{
+		Array<T> array = new Array<T>();
+		for(T element : elements) array.add(element);
+		return array;
+	}
 }

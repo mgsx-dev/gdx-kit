@@ -19,6 +19,7 @@ import net.mgsx.game.plugins.core.tools.DeleteTool;
 import net.mgsx.game.plugins.core.tools.DuplicateTool;
 import net.mgsx.game.plugins.core.tools.EntityEmitterTool;
 import net.mgsx.game.plugins.core.tools.EntityGroupEditor;
+import net.mgsx.game.plugins.core.tools.ExportClassesTool;
 import net.mgsx.game.plugins.core.tools.FollowSelectionTool;
 import net.mgsx.game.plugins.core.tools.ImportPatchTool;
 import net.mgsx.game.plugins.core.tools.OpenTool;
@@ -74,6 +75,8 @@ public class CoreEditorPlugin extends EditorPlugin
 		editor.addSuperTool(new ImportPatchTool(editor));;
 
 		editor.addSuperTool(new CreateProxyTool(editor));
+
+		editor.addSuperTool(new ExportClassesTool(editor));;
 
 		LoadConfiguration config = new LoadConfiguration();
 		config.assets = editor.assets;

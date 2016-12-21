@@ -3,6 +3,7 @@ package net.mgsx.kit;
 import java.lang.annotation.Annotation;
 import java.net.URL;
 import java.util.Collection;
+import java.util.Map.Entry;
 
 import org.reflections.Reflections;
 import org.reflections.scanners.SubTypesScanner;
@@ -13,6 +14,7 @@ import org.reflections.util.ConfigurationBuilder;
 import com.badlogic.gdx.utils.Array;
 
 import net.mgsx.game.core.helpers.ArrayHelper;
+import net.mgsx.game.core.helpers.ReflectionHelper;
 import net.mgsx.game.core.meta.ClassRegistry;
 
 public class ReflectionClassRegistry extends ClassRegistry
@@ -38,6 +40,16 @@ public class ReflectionClassRegistry extends ClassRegistry
 	@Override
 	public Array<Class<?>> getTypesAnnotatedWith(Class<? extends Annotation> annotation) {
 		return ArrayHelper.array(reflections.getTypesAnnotatedWith(annotation));
+	}
+
+
+	@Override
+	public Array<Class<?>> getClasses() {
+		Array<Class<?>> r = new Array<Class<?>>();
+		for(Entry<String, String> entry : reflections.getStore().get(TypeAnnotationsScanner.class).entries()){
+			r.add(ReflectionHelper.forName(entry.getValue()));
+		}
+		return r;
 	}
 
 }

@@ -9,7 +9,10 @@ import net.mgsx.game.core.EditorConfiguration;
 import net.mgsx.game.core.helpers.NativeService;
 import net.mgsx.game.core.helpers.NativeService.DialogCallback;
 import net.mgsx.game.core.helpers.NativeService.NativeServiceInterface;
+import net.mgsx.game.core.meta.ClassRegistry;
+import net.mgsx.game.core.meta.StaticClassRegistry;
 import net.mgsx.game.examples.platformer.PlatformerEditorPlugin;
+import net.mgsx.kit.KitClass;
 import net.mgsx.pd.Pd;
 import net.mgsx.pd.PdAudioAndroid;
 import net.mgsx.pd.PdConfiguration;
@@ -19,6 +22,7 @@ public class AndroidLauncher extends AndroidApplication {
 	@Override
 	protected void onCreate (Bundle savedInstanceState) {
 		
+		ClassRegistry.instance = new StaticClassRegistry(KitClass.class);
 		
 		NativeService.instance = new NativeServiceInterface() {
 			
@@ -35,7 +39,7 @@ public class AndroidLauncher extends AndroidApplication {
 		
 		EditorConfiguration editConfig = new EditorConfiguration();
 		editConfig.plugins.add(new PlatformerEditorPlugin());
-		editConfig.path = null;
+		editConfig.path = "cake/all-test.json";
 		
 		
 		super.onCreate(savedInstanceState);
