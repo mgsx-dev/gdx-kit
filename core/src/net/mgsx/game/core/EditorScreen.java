@@ -155,7 +155,7 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 		Table rootTable = new Table(skin);
 		
 		rootTable.add(table).expand().fillY().left();
-		rootTable.add(new ScrollPane(pinStack, skin)).expandY().fill();
+		rootTable.add(new ScrollPane(pinStack, skin, "light")).expandY().top().fillX();
 		
 		return rootTable;
 	}
@@ -451,8 +451,7 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 				}
 			});
 			
-			final Button btPin = new Button(skin, "node");
-			btPin.add("Pin");
+			final Button btPin = new TextButton("pin", skin);
 			
 			headerTable.add(btPin).padRight(4);
 			btPin.addListener(new ChangeListener() {
@@ -545,7 +544,7 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 		});
 		
 		headerTable.add(component.getClass().getSimpleName()).expandX().left();
-		headerTable.add(btRemove);
+		headerTable.add(btRemove).padRight(24);
 		
 		headerTable.setBackground(skin.getDrawable("default-window-header"));
 		

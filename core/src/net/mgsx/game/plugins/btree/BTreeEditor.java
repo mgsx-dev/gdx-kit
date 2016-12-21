@@ -4,6 +4,7 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ai.btree.BehaviorTree;
 import com.badlogic.gdx.ai.btree.Task;
+import com.badlogic.gdx.ai.btree.leaf.Success;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -109,6 +110,17 @@ public class BTreeEditor implements EntityEditorPlugin {
 			}
 		});
 		
+		TextButton btNew = new TextButton("New", skin);
+		btNew.addListener(new ChangeListener() {
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				BTreeModel model = entity.getComponent(BTreeModel.class);
+				model.tree = new BehaviorTree<EntityBlackboard>();
+				model.tree.addChild(new Success<EntityBlackboard>());
+				treeEditor.setRoot(convertToTree(model.tree, model.tree));
+			}
+		});
+		
 
 		TextButton btSaveAs = new TextButton("Save As...", skin);
 		btSaveAs.addListener(new ChangeListener() {
@@ -167,6 +179,7 @@ public class BTreeEditor implements EntityEditorPlugin {
 		
 		Table menu = new Table(skin);
 		
+		menu.add(btNew);
 		menu.add(btReload);
 		menu.add(btSave);
 		menu.add(btLoad);

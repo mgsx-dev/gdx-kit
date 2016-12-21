@@ -9,16 +9,54 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.SerializationException;
 
 import net.mgsx.game.core.EditorScreen;
+import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.core.helpers.NativeService;
 import net.mgsx.game.core.helpers.NativeService.DefaultCallback;
 import net.mgsx.game.core.tools.Tool;
 import net.mgsx.game.plugins.btree.BTreeModel;
 import net.mgsx.game.plugins.btree.EntityBlackboard;
 
+@Editable
 public class BTreeTool extends Tool
 {
 	public BTreeTool(EditorScreen editor) {
 		super("Behavor Tree", editor);
+	}
+	@Editable
+	public void load(){
+		NativeService.instance.openLoadDialog(new DefaultCallback() {
+			@Override
+			public void selected(FileHandle file) {
+				load(editor, file);
+			}
+			@Override
+			public boolean match(FileHandle file) {
+				return file.extension().equals("btree");
+			}
+			@Override
+			public String description() {
+				return "BehaviorTree files (btree)";
+			}
+		});
+	}
+	
+	@Editable
+	public void empty(){
+		NativeService.instance.openSaveDialog(new DefaultCallback() {
+			@Override
+			public void selected(FileHandle file) {
+				file.writeString("success", false);
+				load(editor, file);
+			}
+			@Override
+			public boolean match(FileHandle file) {
+				return file.extension().equals("btree");
+			}
+			@Override
+			public String description() {
+				return "BehaviorTree files (btree)";
+			}
+		});
 	}
 	
 	public static void load(EditorScreen editor, FileHandle file){
@@ -46,25 +84,4 @@ public class BTreeTool extends Tool
 		entity.add(model);
 	}
 	
-	@Override
-	protected void activate() {
-		
-		// TODO open texture region selector if any registered
-		
-		// else auto open import window
-		NativeService.instance.openLoadDialog(new DefaultCallback() {
-			@Override
-			public void selected(FileHandle file) {
-				load(editor, file);
-			}
-			@Override
-			public boolean match(FileHandle file) {
-				return file.extension().equals("btree");
-			}
-			@Override
-			public String description() {
-				return "BehaviorTree files (btree)";
-			}
-		});
-	}
 }

@@ -10,6 +10,7 @@ import net.mgsx.game.core.GamePipeline;
 import net.mgsx.game.plugins.camera.components.CameraComponent;
 import net.mgsx.game.plugins.camera.components.CullingComponent;
 import net.mgsx.game.plugins.camera.components.RenderingComponent;
+import net.mgsx.game.plugins.core.components.Transform2DComponent;
 
 public class CameraSystem extends IteratingSystem
 {
@@ -42,6 +43,13 @@ public class CameraSystem extends IteratingSystem
 	protected void processEntity(Entity entity, float deltaTime) 
 	{
 		CameraComponent camera = CameraComponent.components.get(entity);
+		
+		Transform2DComponent transform = Transform2DComponent.components.get(entity);
+		if(transform != null){
+			camera.camera.position.x = transform.position.x;
+			camera.camera.position.y = transform.position.y;
+		}
+		
 		if(camera.frustumDirty){
 			camera.camera.update(true);
 		}

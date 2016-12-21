@@ -3,17 +3,22 @@ package net.mgsx.game.plugins.btree.storage;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+import java.util.Comparator;
 
 import com.badlogic.gdx.ai.btree.BehaviorTree;
 import com.badlogic.gdx.ai.btree.Task;
 import com.badlogic.gdx.ai.btree.annotation.TaskAttribute;
 import com.badlogic.gdx.ai.utils.random.ConstantFloatDistribution;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.ObjectSet;
 
+import net.mgsx.game.core.helpers.ArrayHelper;
 import net.mgsx.game.core.helpers.ReflectionHelper;
+import net.mgsx.game.core.meta.ClassRegistry;
 import net.mgsx.game.plugins.btree.annotations.TaskAlias;
 
 public class BehaviorTreeWriter {
@@ -40,10 +45,16 @@ public class BehaviorTreeWriter {
 		// first scan all types in tree
 		scan(tree);
 		
+		types.addAll(ClassRegistry.instance.getSubTypesOf(Task.class));
+		
 		// map some names (gdx-ai builtin types and annotated with @TaskAlias)
 		for(Class type : types){
+			if(Modifier.isAbstract(type.getModifiers())) continue;
+			
 			if(type.getPackage().getName().startsWith("com.badlogic.gdx.ai.btree")){
-				typeNames.put(type, type.getSimpleName().substring(0, 1).toLowerCase() + type.getSimpleName().substring(1, type.getSimpleName().length()));
+				String alias = type.getSimpleName().substring(0, 1).toLowerCase() + type.getSimpleName().substring(1, type.getSimpleName().length());
+				typeNames.put(type, alias);
+				aliases.add(type);
 				continue;
 			}
 			TaskAlias alias = (TaskAlias)type.getAnnotation(TaskAlias.class);
@@ -55,8 +66,18 @@ public class BehaviorTreeWriter {
 			typeNames.put(type, type.getName());
 		}
 		
+		Array<Class> sortedClasses = ArrayHelper.array(aliases);
+		sortedClasses.sort(new Comparator<Class>() {
+			@Override
+			public int compare(Class o1, Class o2) {
+				return o1.getName().compareTo(o2.getName());
+			}
+		});
+		
 		// write imports (for annotated types)
-		for(Class type : aliases){
+		for(Class type : sortedClasses){
+			if(type.getPackage().getName().startsWith("com.badlogic.gdx.ai.btree"))
+				writer.print("# ");
 			writer.println("import " + typeNames.get(type) + ":" + "\"" + type.getName() + "\"");
 		}
 		writer.println();
