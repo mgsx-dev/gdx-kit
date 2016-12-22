@@ -32,6 +32,7 @@ public class AnimationTask extends EntityLeafTask implements AnimationListener
 		G3DModel model = G3DModel.components.get(getObject().entity);
 		if(model != null){
 			end = false;
+			model.animationController.paused = false;
 			model.animationController.allowSameAnimation = true;
 			model.animationController.animate(id, loops, speed, this, fade);
 		}
@@ -40,6 +41,10 @@ public class AnimationTask extends EntityLeafTask implements AnimationListener
 	@Override
 	public Status execute() 
 	{
+		// XXX bug with animation : onEnd not call if not remain ...
+		G3DModel model = G3DModel.components.get(getObject().entity);
+		
+		end |= model.animationController.current.speed == 0;
 		return end ? Status.SUCCEEDED : Status.RUNNING;
 	}
 	

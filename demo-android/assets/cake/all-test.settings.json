@@ -6,13 +6,13 @@ systems: [
 		gravity: {
 			y: -9.807
 		}
-		timeStep: 0.03275489
+		timeStep: 0.033333335
 		velocityIterations: 8
 		positionIterations: 3
 	}
 	{
 		type: example.platformer.rendering
-		shader: TOON
+		shader: FRAGMENT
 	}
 	{
 		type: example.platformer.tube

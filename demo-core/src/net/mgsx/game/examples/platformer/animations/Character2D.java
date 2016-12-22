@@ -17,4 +17,6 @@ public class Character2D implements Component
 	/** character orientation. 2D character maybe be rotated in 2D plan
 	 * but it can be mirrored in some way to reflect its direction. */
 	@Editable public boolean rightToLeft;
+	
+	public float angle;
 }

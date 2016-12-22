@@ -1,0 +1,66 @@
+# import behaviorTree:"com.badlogic.gdx.ai.btree.BehaviorTree"
+# import parallel:"com.badlogic.gdx.ai.btree.branch.Parallel"
+# import randomSelector:"com.badlogic.gdx.ai.btree.branch.RandomSelector"
+# import randomSequence:"com.badlogic.gdx.ai.btree.branch.RandomSequence"
+# import selector:"com.badlogic.gdx.ai.btree.branch.Selector"
+# import sequence:"com.badlogic.gdx.ai.btree.branch.Sequence"
+# import alwaysFail:"com.badlogic.gdx.ai.btree.decorator.AlwaysFail"
+# import alwaysSucceed:"com.badlogic.gdx.ai.btree.decorator.AlwaysSucceed"
+# import include:"com.badlogic.gdx.ai.btree.decorator.Include"
+# import invert:"com.badlogic.gdx.ai.btree.decorator.Invert"
+# import random:"com.badlogic.gdx.ai.btree.decorator.Random"
+# import repeat:"com.badlogic.gdx.ai.btree.decorator.Repeat"
+# import semaphoreGuard:"com.badlogic.gdx.ai.btree.decorator.SemaphoreGuard"
+# import untilFail:"com.badlogic.gdx.ai.btree.decorator.UntilFail"
+# import untilSuccess:"com.badlogic.gdx.ai.btree.decorator.UntilSuccess"
+# import failure:"com.badlogic.gdx.ai.btree.leaf.Failure"
+# import success:"com.badlogic.gdx.ai.btree.leaf.Success"
+# import wait:"com.badlogic.gdx.ai.btree.leaf.Wait"
+import alive:"net.mgsx.game.examples.platformer.tasks.AliveCondition"
+import animation:"net.mgsx.game.examples.platformer.tasks.AnimationTask"
+import emitAtDistance:"net.mgsx.game.examples.platformer.tasks.EmitAtDistanceTask"
+import farPlayer:"net.mgsx.game.examples.platformer.tasks.FarPlayer"
+import idle:"net.mgsx.game.examples.platformer.tasks.IdleTask"
+import mortar:"net.mgsx.game.examples.platformer.tasks.MortarTask"
+import nearPlayer:"net.mgsx.game.examples.platformer.tasks.NearPlayer"
+import onGround:"net.mgsx.game.examples.platformer.tasks.OnGroundCondition"
+import patrol:"net.mgsx.game.examples.platformer.tasks.PatrolTask"
+import physicsType:"net.mgsx.game.examples.platformer.tasks.PhysicTypeTask"
+import control:"net.mgsx.game.examples.platformer.tasks.PlayerControlTask"
+import priority:"net.mgsx.game.examples.platformer.tasks.PriorityLoop"
+import trackPlayer:"net.mgsx.game.examples.platformer.tasks.TrackPlayerTask"
+import waitFailure:"net.mgsx.game.examples.platformer.tasks.WaitFailure"
+import waitSuccess:"net.mgsx.game.examples.platformer.tasks.WaitSuccess"
+import walk:"net.mgsx.game.examples.platformer.tasks.WalkingTask"
+import playMusic:"net.mgsx.game.plugins.audio.tasks.PlayMusicTask"
+import moveBy:"net.mgsx.game.plugins.core.tasks.MoveByTask"
+import move:"net.mgsx.game.plugins.core.tasks.MoveTask"
+import moveTo:"net.mgsx.game.plugins.core.tasks.MoveToTask"
+import pdBang:"net.mgsx.game.plugins.pd.tasks.PdBangTask"
+import pdContact:"net.mgsx.game.plugins.pd.tasks.PdPhysicContacts"
+import pdPhysics:"net.mgsx.game.plugins.pd.tasks.PdPhysicStateTask"
+import pdRun:"net.mgsx.game.plugins.pd.tasks.PdRunTask"
+
+sequence
+  animation id:"skeleton|idle"
+  animation id:"skeleton|to-jump" speed:-0.10375105 fade:0.2739062
+  animation id:"skeleton|idle"
+  parallel
+    control
+    priority
+      idle
+      sequence
+        animation id:"skeleton|idle" fade:0.14296474
+        animation id:"skeleton|to-jump" speed:0.24843213 fade:0.22658554
+        animation id:"skeleton|idle" loops:4 speed:1.5957943 fade:0.4071336
+        animation id:"skeleton|to-jump" speed:-0.10375105 fade:0.2739062
+      success
+      onGround
+      sequence
+        walk
+      success
+      success
+      sequence
+        animation id:"skeleton|to-jump" fade:0.12692368
+        animation id:"skeleton|jump" loops:-1 speed:0.98280877 fade:0.70457137
+      animation id:"skeleton|to-jump" speed:-1.0042696 fade:0.01957107

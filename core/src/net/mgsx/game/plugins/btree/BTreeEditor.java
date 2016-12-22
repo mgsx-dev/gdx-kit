@@ -204,6 +204,26 @@ public class BTreeEditor implements EntityEditorPlugin {
 			}
 		});
 		
+		TextButton btManual = new TextButton("Manual Step", skin);
+		btManual.addListener(new ChangeListener() {
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				BehaviorTree<EntityBlackboard> btree = entity.getComponent(BTreeModel.class).tree;
+				btree.getObject().entity = entity;
+				btree.step();
+			}
+		});
+		
+		TextButton btResetTree = new TextButton("Reset Tree", skin);
+		btResetTree.addListener(new ChangeListener() {
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				BehaviorTree<EntityBlackboard> btree = entity.getComponent(BTreeModel.class).tree;
+				btree.getObject().entity = entity;
+				btree.reset();
+			}
+		});
+		
 		Table menu = new Table(skin);
 		
 		menu.add(btNew);
@@ -212,6 +232,8 @@ public class BTreeEditor implements EntityEditorPlugin {
 		menu.add(btSaveXML);
 		menu.add(btLoad);
 		menu.add(btSaveAs);
+		menu.add(btManual);
+		menu.add(btResetTree);
 		menu.add(libraryLabel);
 		
 		menu.add("task test : ");

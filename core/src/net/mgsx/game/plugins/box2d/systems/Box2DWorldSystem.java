@@ -29,7 +29,7 @@ public class Box2DWorldSystem extends EntitySystem {
 	public Vector2 gravity = new Vector2(0, -9.807f); // earth gravity
 	
 	@Editable
-	public float timeStep = 1.f / 60.f;
+	public float timeStep = 1.f / 30.f;
 	
 	@Editable
 	public int velocityIterations = 8;

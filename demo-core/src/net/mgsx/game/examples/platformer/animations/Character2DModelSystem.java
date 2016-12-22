@@ -3,6 +3,7 @@ package net.mgsx.game.examples.platformer.animations;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
+import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Vector3;
 
 import net.mgsx.game.core.GamePipeline;
@@ -26,7 +27,10 @@ public class Character2DModelSystem extends IteratingSystem
 		if(transform != null){
 			model.modelInstance.transform.translate(transform.position.x, transform.position.y, 0);
 		}
-		model.modelInstance.transform.rotate(Vector3.Y, character.rightToLeft ? -90 : 90);
+		float angle = 75;
+		float targetAngle = character.rightToLeft ? -angle : angle;
+		character.angle = Interpolation.linear.apply(character.angle, targetAngle, 0.15f);
+		model.modelInstance.transform.rotate(Vector3.Y, character.angle);
 	}
 
 }

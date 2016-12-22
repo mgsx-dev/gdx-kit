@@ -27,11 +27,6 @@ public class BTreeModel implements Component, Duplicable, Poolable
 	@Editable
 	public boolean remove = false;
 	
-	@Editable("Manual Step")
-	public void step(){
-		tree.step();
-	}
-
 	@Override
 	public Component duplicate(Engine engine) {
 		BTreeModel clone = engine.createComponent(BTreeModel.class);
@@ -40,11 +35,6 @@ public class BTreeModel implements Component, Duplicable, Poolable
 		return clone;
 	}
 	
-	@Editable
-	public void resetTree(){
-		tree.reset();
-	}
-
 	@Override
 	public void reset() {
 		// TODO release tree ?

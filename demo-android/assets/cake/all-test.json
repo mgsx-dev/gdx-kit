@@ -215,8 +215,8 @@ entities: [
 		}
 		2d: {
 			position: {
-				x: 16.617506
-				y: -2.4721346
+				x: 6.2657
+				y: -0.5712689
 			}
 			angle: -75.455765
 		}
@@ -261,7 +261,9 @@ entities: [
 				}
 			]
 		}
-		example.platformer.player-control: {}
+		btree: {
+			library: btree/player-level.btree
+		}
 		example.platformer.keyboard: {}
 		example.platformer.walking: {
 			speedScale: 0.99956596
@@ -271,6 +273,9 @@ entities: [
 			rightToLeft: true
 		}
 		g3d.shadow-casting: {}
+		example.platformer.player-control: {
+			onGround: true
+		}
 	}
 	{
 		id: 6
@@ -286,18 +291,18 @@ entities: [
 		g3d.light.dir: {
 			light: {
 				color: {
-					r: 1
-					g: 1
-					b: 1
+					r: 1.130363
+					g: 1.3455315
+					b: 5.795304
 					a: 1
 				}
 				direction: {
-					x: -0.06346534
-					y: -0.16141894
-					z: -0.07502499
+					x: 0.20055008
+					y: -0.081960045
+					z: -0.15419997
 				}
 			}
-			shadow: true
+			shadow: false
 		}
 	}
 	{
@@ -1269,6 +1274,10 @@ assets: [
 	{
 		type: com.badlogic.gdx.graphics.g3d.Model
 		name: cake/chocos.g3dj
+	}
+	{
+		type: com.badlogic.gdx.ai.btree.BehaviorTree
+		name: btree/player-level.btree
 	}
 	{
 		type: com.badlogic.gdx.graphics.g3d.Model

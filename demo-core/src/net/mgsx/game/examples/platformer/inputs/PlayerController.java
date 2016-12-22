@@ -19,6 +19,8 @@ public class PlayerController implements Component
 	public float jumpTime, jumpOrigin;
 	
 	public Vector2 groundRay;
+
+	public boolean onGround;
 	
 	/**
 	 * retrieve normalized direction accoring to left/right and up/down (right and up are positive)

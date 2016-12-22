@@ -1,8 +1,6 @@
 package net.mgsx.game.examples.platformer.inputs;
 
-import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
-import com.badlogic.ashley.core.EntityListener;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.math.Vector2;
@@ -13,7 +11,7 @@ import net.mgsx.game.plugins.box2d.components.Box2DBodyModel;
 import net.mgsx.game.plugins.box2d.helper.Box2DHelper;
 import net.mgsx.game.plugins.box2d.helper.RayCast;
 
-public class WalkingSystem extends IteratingSystem implements EntityListener
+public class WalkingSystem extends IteratingSystem
 {
 	private final static RayCast ray = new RayCast();
 	
@@ -22,24 +20,14 @@ public class WalkingSystem extends IteratingSystem implements EntityListener
 	}
 	
 	@Override
-	public void addedToEngine(Engine engine) {
-		super.addedToEngine(engine);
-		engine.addEntityListener(getFamily(), this);
-	}
-	
-	@Override
-	public void removedFromEngine(Engine engine) {
-		engine.removeEntityListener(this);
-		super.removedFromEngine(engine);
-	}
-	
-	@Override
 	protected void processEntity(Entity entity, float deltaTime) {
 		PlayerController player = PlayerController.components.get(entity);
 		Box2DBodyModel physics = Box2DBodyModel.components.get(entity);
 		Vector2 velocity = physics.body.getLinearVelocity().cpy();
 		
-		Box2DHelper.computeBoundary(physics.bounds, physics.body);
+		if(physics.bounds.area() <= 0){
+			Box2DHelper.computeBoundary(physics.bounds, physics.body);
+		}
 		
 		
 		// ray cast for ground
@@ -58,6 +46,8 @@ public class WalkingSystem extends IteratingSystem implements EntityListener
 		boolean onGround2 = physics.context.provider.rayCastFirst(ray) != null;
 		
 		boolean onGround = onGround1 || onGround2;
+		
+		player.onGround = onGround;
 		
 		// ray cast for walls
 		ray.start.set(physics.body.getPosition()).add(
@@ -149,19 +139,6 @@ public class WalkingSystem extends IteratingSystem implements EntityListener
 				physics.context.world.destroyJoint(physics.body.getJointList().get(0).joint);
 			}
 		}
-	}
-
-	@Override
-	public void entityAdded(Entity entity) 
-	{
-		// compute boundary to get ground, left and right
-		Box2DBodyModel physics = Box2DBodyModel.components.get(entity);
-		Box2DHelper.computeBoundary(physics.bounds, physics.body);
-	}
-
-	@Override
-	public void entityRemoved(Entity entity) {
-		
 	}
 
 }
