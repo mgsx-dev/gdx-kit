@@ -4,6 +4,7 @@ import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.JointEdge;
@@ -27,6 +28,8 @@ public class Box2DBodyModel implements Component, Duplicable, Poolable, Disposab
 	public Array<Box2DFixtureModel> fixtures = new Array<Box2DFixtureModel>();
 	public Entity entity;
 	public Box2DWorldContext context;
+
+	public Rectangle bounds = new Rectangle();
 	
 	public Box2DBodyModel(){}
 	public Box2DBodyModel(Box2DWorldContext context, Entity entity, String id, BodyDef def, Body body) {

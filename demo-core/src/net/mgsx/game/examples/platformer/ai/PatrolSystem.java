@@ -63,14 +63,14 @@ public class PatrolSystem extends IteratingSystem
 				
 				// check void
 				if(patrol.checkVoid){
-					if(physics.context.rayCastFirst(physics.body.getPosition().add(patrol.rayStart), direction.set(xDir, -1), patrol.horizon) == null)
+					if(physics.context.provider.rayCastFirst(physics.body.getPosition().add(patrol.rayStart), direction.set(xDir, -1), patrol.horizon) == null)
 					{
 						shouldChangeDirection = true;
 					}
 				}
 				// check walls
 				if(!shouldChangeDirection){
-					if(physics.context.rayCastFirst(physics.body.getPosition().add(patrol.rayStart), direction.set(xDir, 0), patrol.horizon) != null)
+					if(physics.context.provider.rayCastFirst(physics.body.getPosition().add(patrol.rayStart), direction.set(xDir, 0), patrol.horizon) != null)
 					{
 						shouldChangeDirection = true;
 					}

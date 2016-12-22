@@ -16,6 +16,10 @@ public class PlayerController implements Component
 	
 	public boolean left, right, up, down, jump, grab, justJump, justGrab;
 
+	public float jumpTime, jumpOrigin;
+	
+	public Vector2 groundRay;
+	
 	/**
 	 * retrieve normalized direction accoring to left/right and up/down (right and up are positive)
 	 * @param direction the result

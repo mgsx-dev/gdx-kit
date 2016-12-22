@@ -60,9 +60,6 @@ public class Box2DWorldSystem extends EntitySystem {
 	@Override
 	public void update(float deltaTime) {
 		worldContext.world.setGravity(gravity);
-		worldContext.update();
-		
-		
 		
 		// update physics
 		if(runSimulation)

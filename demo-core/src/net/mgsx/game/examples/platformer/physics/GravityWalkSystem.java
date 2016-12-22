@@ -8,7 +8,7 @@ import com.badlogic.gdx.math.Vector2;
 import net.mgsx.game.core.GamePipeline;
 import net.mgsx.game.examples.platformer.inputs.PlayerController;
 import net.mgsx.game.plugins.box2d.components.Box2DBodyModel;
-import net.mgsx.game.plugins.box2d.systems.Box2DWorldContext.RayCastResult;
+import net.mgsx.game.plugins.box2d.helper.RayCastResult;
 
 public class GravityWalkSystem extends IteratingSystem {
 
@@ -26,7 +26,7 @@ public class GravityWalkSystem extends IteratingSystem {
 		boolean ok = false;
 		if(player.right || player.left){
 			float spd = player.right ? 1 : player.left ? -1 : 0;
-			RayCastResult result = physics.context.rayCastFirstDetails(physics.body.getPosition(), force.set(gravity.groundNormal).scl(-1), 0.5f);
+			RayCastResult result = physics.context.provider.rayCastFirst(physics.body.getPosition(), force.set(gravity.groundNormal).scl(-1), 0.5f);
 			if(result.isValid()){
 				gravity.groundNormal.set(result.normal.nor());
 				if(gravity.groundNormal.y < .8f){

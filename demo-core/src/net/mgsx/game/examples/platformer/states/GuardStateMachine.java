@@ -42,7 +42,7 @@ public class GuardStateMachine
 			if(dist > 4.f){
 				ai.direction.x = diff.x < 0 ? -1 : 1;
 			}else{
-				if(physics.context.rayCastFirst(physics.body.getPosition(), ai.direction, 1.f) != null){
+				if(physics.context.provider.rayCastFirst(physics.body.getPosition(), ai.direction, 1.f) != null){
 					if(diff.x  * ai.direction.x > 0 ){
 						fsm.changeState(StateMachinePlugin.state(WAITING.class));
 					}

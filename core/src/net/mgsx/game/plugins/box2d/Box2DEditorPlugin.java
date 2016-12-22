@@ -8,6 +8,8 @@ import net.mgsx.game.plugins.box2d.components.Box2DJointModel;
 import net.mgsx.game.plugins.box2d.editors.Box2DBodyEditorPlugin;
 import net.mgsx.game.plugins.box2d.editors.Box2DJointEditorPlugin;
 import net.mgsx.game.plugins.box2d.editors.Box2DWorldEditorPlugin;
+import net.mgsx.game.plugins.box2d.systems.Box2DBoundaryDebugSystem;
+import net.mgsx.game.plugins.box2d.systems.Box2DRayCastDebugSystem;
 import net.mgsx.game.plugins.box2d.systems.Box2DRenderDebugSystem;
 import net.mgsx.game.plugins.box2d.systems.Box2DWorldContext;
 import net.mgsx.game.plugins.box2d.systems.Box2DWorldSystem;
@@ -22,6 +24,7 @@ public class Box2DEditorPlugin extends EditorPlugin
 	{
 		Box2DWorldContext context = editor.entityEngine.getSystem(Box2DWorldSystem.class).getWorldContext();
 		context.editor = editor;
+		// TODO change raycast here to get the debug data
 		
 		editor.registry.addGlobalEditor("Box2D", new Box2DWorldEditorPlugin(context));
 		
@@ -30,6 +33,8 @@ public class Box2DEditorPlugin extends EditorPlugin
 		editor.addSelector(new Box2DBodySelector(editor, context));
 		
 		editor.entityEngine.addSystem(new Box2DRenderDebugSystem(editor));
+		editor.entityEngine.addSystem(new Box2DBoundaryDebugSystem(editor));
+		editor.entityEngine.addSystem(new Box2DRayCastDebugSystem(editor, context));
 
 		editor.registry.registerPlugin(Box2DBodyModel.class, new Box2DBodyEditorPlugin());
 		editor.registry.registerPlugin(Box2DJointModel.class, new Box2DJointEditorPlugin());

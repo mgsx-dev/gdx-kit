@@ -22,7 +22,7 @@ public class Box2DBodySelector extends SelectorPlugin
 	public int getSelection(Array<Entity> entities, float screenX, float screenY) 
 	{
 		Vector2 worldPoint = editor.unproject(screenX, screenY);
-		Body body = worldItem.queryFirstBody(worldPoint); // TODO many ?, do all box2d stuff here ?
+		Body body = worldItem.provider.queryFirstBody(worldPoint); // TODO many ?, do all box2d stuff here ?
 		if(body != null)
 		{
 			Entity entity = (Entity)body.getUserData();

@@ -57,7 +57,7 @@ public class MoveShapeTool extends Tool
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) 
 	{
 		// temporariliy separte fixture
-		Fixture fixture = worldItem.queryFirstFixture(unproject(screenX, screenY));
+		Fixture fixture = worldItem.provider.queryFirstFixture(unproject(screenX, screenY));
 		if(fixture != null)
 		{
 			fixtureItem = (Box2DFixtureModel)fixture.getUserData();
