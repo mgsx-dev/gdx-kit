@@ -28,7 +28,7 @@ public class Character2DModelSystem extends IteratingSystem
 			model.modelInstance.transform.translate(transform.position.x, transform.position.y, 0);
 		}
 		float angle = character.angleRange;
-		float targetAngle = character.rightToLeft ? -angle : angle;
+		float targetAngle = character.facing ? 0 : (character.rightToLeft ? -angle : angle);
 		character.angle = Interpolation.linear.apply(character.angle, targetAngle, character.angularSpeed * deltaTime);
 		model.modelInstance.transform.rotate(Vector3.Y, character.angle);
 	}

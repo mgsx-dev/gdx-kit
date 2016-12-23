@@ -29,23 +29,27 @@ public class WalkingSystem extends IteratingSystem
 			Box2DHelper.computeBoundary(physics.bounds, physics.body);
 		}
 		
+		float groundSpace = 0.25f;
 		
 		// ray cast for ground
 		ray.start.set(physics.body.getPosition()).add(
-				physics.bounds.x + physics.bounds.width/2 - physics.bounds.width * 0.1f, 
+				physics.bounds.x + physics.bounds.width/2 - physics.bounds.width * groundSpace, 
 				physics.bounds.y + 0.1f);
 		ray.end.set(ray.start).y -= 0.2f;
 		
 		boolean onGround1 = physics.context.provider.rayCastFirst(ray) != null;
 		
 		ray.start.set(physics.body.getPosition()).add(
-				physics.bounds.x + physics.bounds.width/2 + physics.bounds.width * 0.1f, 
+				physics.bounds.x + physics.bounds.width/2 + physics.bounds.width * groundSpace, 
 				physics.bounds.y + 0.1f);
 		ray.end.set(ray.start).y -= 0.2f;
 		
 		boolean onGround2 = physics.context.provider.rayCastFirst(ray) != null;
 		
 		boolean onGround = onGround1 || onGround2;
+		
+		player.onGroundLeft = onGround1;
+		player.onGroundRight = onGround2;
 		
 		player.onGround = onGround;
 		
@@ -71,6 +75,9 @@ public class WalkingSystem extends IteratingSystem
 		ray.end.set(ray.start).y += 0.2f;
 		
 		// TODO boolean ceil = physics.context.provider.rayCastFirst(ray) != null;
+		
+		player.onWallLeft = wallLeft;
+		player.onWallRight = wallRight;
 		
 		
 		

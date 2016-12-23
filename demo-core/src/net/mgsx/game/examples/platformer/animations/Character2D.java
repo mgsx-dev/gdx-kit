@@ -33,4 +33,7 @@ public class Character2D implements Component
 
 	
 	public float angle;
+
+	@Editable
+	public boolean facing = false;
 }

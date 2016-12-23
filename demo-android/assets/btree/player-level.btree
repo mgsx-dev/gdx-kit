@@ -18,12 +18,15 @@
 # import wait:"com.badlogic.gdx.ai.btree.leaf.Wait"
 import alive:"net.mgsx.game.examples.platformer.tasks.AliveCondition"
 import animation:"net.mgsx.game.examples.platformer.tasks.AnimationTask"
+import characterFacing:"net.mgsx.game.examples.platformer.tasks.CharacterFacingTask"
 import emitAtDistance:"net.mgsx.game.examples.platformer.tasks.EmitAtDistanceTask"
 import farPlayer:"net.mgsx.game.examples.platformer.tasks.FarPlayer"
 import idle:"net.mgsx.game.examples.platformer.tasks.IdleTask"
 import mortar:"net.mgsx.game.examples.platformer.tasks.MortarTask"
 import nearPlayer:"net.mgsx.game.examples.platformer.tasks.NearPlayer"
+import onCliff:"net.mgsx.game.examples.platformer.tasks.OnCliffCondition"
 import onGround:"net.mgsx.game.examples.platformer.tasks.OnGroundCondition"
+import onWall:"net.mgsx.game.examples.platformer.tasks.OnWallCondition"
 import patrol:"net.mgsx.game.examples.platformer.tasks.PatrolTask"
 import physicsType:"net.mgsx.game.examples.platformer.tasks.PhysicTypeTask"
 import control:"net.mgsx.game.examples.platformer.tasks.PlayerControlTask"
@@ -42,25 +45,55 @@ import pdPhysics:"net.mgsx.game.plugins.pd.tasks.PdPhysicStateTask"
 import pdRun:"net.mgsx.game.plugins.pd.tasks.PdRunTask"
 
 sequence
-  animation id:"skeleton|idle"
-  animation id:"skeleton|to-jump" speed:-0.10375105 fade:0.2739062
-  animation id:"skeleton|idle"
+  parallel policy:"Selector"
+    characterFacing
+    sequence
+      animation id:"skeleton|idle" speed:4.073726
+      animation id:"skeleton|hello" speed:2.1533632 fade:0.08536343
   parallel
     control
     priority
       idle
-      sequence
-        animation id:"skeleton|idle" fade:0.14296474
-        animation id:"skeleton|to-jump" speed:0.24843213 fade:0.22658554
-        animation id:"skeleton|idle" loops:4 speed:1.5957943 fade:0.4071336
-        animation id:"skeleton|to-jump" speed:-0.10375105 fade:0.2739062
+      priority
+        onCliff
+        animation id:"skeleton|panic-down" loops:-1 speed:2.036273 fade:0.5722531
+        animation id:"skeleton|idle" loops:4 fade:0.14296474
+        success
+        sequence
+          animation id:"skeleton|idle" loops:4 fade:0.14296474
+          animation id:"skeleton|look-up" fade:0.14296474
+          animation id:"skeleton|look-up" speed:-3.0177634 fade:0.0022097805
+          animation id:"skeleton|idle" speed:0.9805913 fade:0.4071336
+          animation id:"skeleton|look-down" speed:1.0454451 fade:0.2739062
+          animation id:"skeleton|look-down" speed:-3.1579285 fade:0.012017203
+          parallel policy:"Selector"
+            characterFacing
+            sequence
+              animation id:"skeleton|idle" loops:4 speed:0.9805913 fade:0.4071336
+              animation id:"skeleton|hello" speed:1.513297 fade:0.22658554
+              animation id:"skeleton|idle" speed:0.9805913 fade:0.4071336
+              animation id:"skeleton|yes" speed:0.47888586 fade:0.2739062
+              animation id:"skeleton|idle" speed:0.9805913 fade:0.4071336
+              animation id:"skeleton|look-up" speed:1.0759662 fade:0.2739062
+              animation id:"skeleton|idle" speed:0.9805913 fade:0.4071336
+              animation id:"skeleton|look-down" speed:0.98627234 fade:0.2739062
+              animation id:"skeleton|idle" speed:0.9805913 fade:0.4071336
+        success
       success
       onGround
       sequence
         walk
       success
       success
-      sequence
-        animation id:"skeleton|to-jump" fade:0.12692368
-        animation id:"skeleton|jump" loops:-1 speed:0.98280877 fade:0.70457137
+      priority
+        onWall
+        sequence
+          animation id:"skeleton|wall-slide" speed:4.087476 fade:0.12692368
+          wait seconds:3.0
+        success
+        success
+        sequence
+          animation id:"skeleton|to-jump" speed:7.6959934 fade:0.12692368
+          animation id:"skeleton|jump" loops:-1 speed:0.98280877 fade:0.14346069
+        success
       animation id:"skeleton|to-jump" speed:-1.0042696 fade:0.01957107
