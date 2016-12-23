@@ -8,10 +8,12 @@ import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 
 import net.mgsx.game.core.EditorScreen;
+import net.mgsx.game.plugins.core.systems.GridDebugSystem;
 
 /**
  * A tool may be active in an editor.
@@ -58,6 +60,26 @@ abstract public class Tool extends InputAdapter
 	}
 	protected void desactivate(){
 		editor.setInfo("");
+	}
+	
+	protected Vector2 screenToWorldSnap(float screenX, float screenY)
+	{
+		return snap(unproject(screenX, screenY));
+	}
+	
+	private float snap(float x, float size) {
+		int n = MathUtils.round(x / size);
+		float t = (float)Math.abs(x / size - n - 0.5);
+		return t > 0.3f ? n * size : x;
+	}
+	protected Vector2 snap(Vector2 v) {
+		GridDebugSystem grid = getEngine().getSystem(GridDebugSystem.class);
+		if(grid.checkProcessing()){
+			float size = grid.size;
+			v.x = snap(v.x, size);
+			v.y = snap(v.y, size);
+		}
+		return v;
 	}
 	
 	/**

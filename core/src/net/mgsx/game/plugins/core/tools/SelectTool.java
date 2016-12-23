@@ -20,6 +20,9 @@ public class SelectTool extends Tool
 	protected Vector2 prev;
 	protected boolean moving = false;
 	
+	private Vector2 ghostPosition = new Vector2();
+	private Vector2 snapPosition = new Vector2();
+	
 	public SelectTool(EditorScreen editor) {
 		super("Select", editor);
 	}
@@ -69,6 +72,7 @@ public class SelectTool extends Tool
 				Movable movable = entity.getComponent(Movable.class);
 				if(movable != null) movable.moveBegin(entity);
 			}
+			ghostPosition = unproject(screenX, screenY);
 			prev = new Vector2(screenX, screenY);
 			return true;
 		}
@@ -82,18 +86,28 @@ public class SelectTool extends Tool
 			Vector2 pixel = pixelSize();
 			Vector3 delta = new Vector3(worldPos).sub(prev.x, prev.y, 0).scl(pixel.x, pixel.y, 1); // XXX 10f pixel screen
 			delta.z = 0; // XXX better fix by using vector 3 for prev as well ?
-			if(ctrl()){
-				delta.rotate(90, 1, 0, 0);
-			}else if(shift()){
-				delta.set(0, 0, delta.y);
-			}
+//			if(ctrl()){
+//				delta.rotate(90, 1, 0, 0);
+//			}else if(shift()){
+//				delta.set(0, 0, delta.y);
+//			}
+			
+			ghostPosition.add(delta.x, delta.y);
+			
+			snap(snapPosition.set(ghostPosition));
+			
 			for(Entity entity : editor.selection){
 				Movable movable = entity.getComponent(Movable.class);
-				if(movable != null) movable.move(entity, delta);
+				if(movable != null){
+					Vector3 p = new Vector3();
+					movable.getPosition(entity, p);
+					delta.set(snapPosition, 0).sub(p);
+					movable.move(entity, delta);
+				}
 				else{
 					Transform2DComponent transform = Transform2DComponent.components.get(entity);
 					if(transform != null){
-						transform.position.add(delta.x, delta.y);
+						transform.position.set(snapPosition);
 					}
 				}
 			}

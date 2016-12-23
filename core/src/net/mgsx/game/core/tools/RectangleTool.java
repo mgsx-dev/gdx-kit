@@ -26,7 +26,7 @@ abstract public class RectangleTool extends Tool
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
 		if(button == buttonFilter){
-			startPoint = unproject(screenX, screenY);
+			startPoint = snap(unproject(screenX, screenY));
 			begin(startPoint);
 			return true;
 		}
@@ -35,7 +35,7 @@ abstract public class RectangleTool extends Tool
 	@Override
 	public boolean touchDragged(int screenX, int screenY, int pointer) {
 		if(startPoint != null && Gdx.input.isButtonPressed(buttonFilter)){
-			endPoint = unproject(screenX, screenY);
+			endPoint = snap(unproject(screenX, screenY));
 		}
 		return super.touchDragged(screenX, screenY, pointer);
 	}

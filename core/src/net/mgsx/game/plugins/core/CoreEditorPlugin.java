@@ -12,6 +12,7 @@ import net.mgsx.game.core.ui.EntityEditor;
 import net.mgsx.game.core.ui.widgets.StaticFieldSelector;
 import net.mgsx.game.plugins.camera.CameraEditorPlugin;
 import net.mgsx.game.plugins.core.math.Signal;
+import net.mgsx.game.plugins.core.systems.GridDebugSystem;
 import net.mgsx.game.plugins.core.systems.PolygonRenderSystem;
 import net.mgsx.game.plugins.core.systems.SelectionRenderSystem;
 import net.mgsx.game.plugins.core.tools.CreateProxyTool;
@@ -21,6 +22,7 @@ import net.mgsx.game.plugins.core.tools.EntityEmitterTool;
 import net.mgsx.game.plugins.core.tools.EntityGroupEditor;
 import net.mgsx.game.plugins.core.tools.ExportClassesTool;
 import net.mgsx.game.plugins.core.tools.FollowSelectionTool;
+import net.mgsx.game.plugins.core.tools.GridTool;
 import net.mgsx.game.plugins.core.tools.ImportPatchTool;
 import net.mgsx.game.plugins.core.tools.OpenTool;
 import net.mgsx.game.plugins.core.tools.PanTool;
@@ -48,6 +50,7 @@ public class CoreEditorPlugin extends EditorPlugin
 		// systems
 		editor.entityEngine.addSystem(new SelectionRenderSystem(editor));
 		editor.entityEngine.addSystem(new PolygonRenderSystem(editor));
+		editor.entityEngine.addSystem(new GridDebugSystem(editor));
 		
 		editor.addTool(new EntityEmitterTool(editor));
 		editor.addTool(new ResetProxyTool(editor));
@@ -61,6 +64,7 @@ public class CoreEditorPlugin extends EditorPlugin
 		editor.addGlobalTool(new FollowSelectionTool(editor));
 		editor.addGlobalTool(new SwitchModeTool(editor));
 		editor.addGlobalTool(new ToggleHelpTool(editor));
+		editor.addGlobalTool(new GridTool(editor));
 
 		editor.addGlobalTool(new SwitchCameraTool(editor));
 		

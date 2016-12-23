@@ -38,7 +38,7 @@ abstract public class MultiClickTool extends Tool
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
 		if(button == Input.Buttons.LEFT){
-			Vector2 worldPosition = unproject(screenX, screenY);
+			Vector2 worldPosition = snap(unproject(screenX, screenY));
 			dots.add(worldPosition);
 			onNewDot(worldPosition);
 			running = true;

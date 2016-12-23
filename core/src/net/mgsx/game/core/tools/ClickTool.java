@@ -15,7 +15,7 @@ abstract public class ClickTool extends Tool
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
 		if(button == Input.Buttons.LEFT){
-			create(unproject(screenX, screenY));
+			create(snap(unproject(screenX, screenY)));
 			return true;
 		}
 		else if(button == Input.Buttons.RIGHT){
