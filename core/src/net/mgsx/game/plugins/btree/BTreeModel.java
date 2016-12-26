@@ -21,8 +21,7 @@ public class BTreeModel implements Component, Duplicable, Poolable
 	public String libraryName;
 	public BehaviorTree<EntityBlackboard> tree;
 	
-	@Editable
-	public boolean enabled = false; // XXX
+	public boolean enabled = false; // XXX should be enabled by default ? or use a command in normal game mode ?
 	
 	@Editable
 	public boolean remove = false;

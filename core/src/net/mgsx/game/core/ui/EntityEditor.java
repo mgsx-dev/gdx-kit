@@ -28,6 +28,7 @@ import net.mgsx.game.core.ui.accessors.AccessorScanner;
 import net.mgsx.game.core.ui.accessors.FieldAccessor;
 import net.mgsx.game.core.ui.widgets.BitsWidget;
 import net.mgsx.game.core.ui.widgets.BlendWidget;
+import net.mgsx.game.core.ui.widgets.BooleanWidget;
 import net.mgsx.game.core.ui.widgets.FloatWidget;
 import net.mgsx.game.core.ui.widgets.IntegerWidget;
 
@@ -240,17 +241,7 @@ public class EntityEditor extends Table
 			});
 			
 		}else if(accessor.getType() == boolean.class){
-			final Button btCheck = createBoolean(skin, (Boolean)accessor.get());
-			btCheck.addListener(new ChangeListener() {
-				
-				@Override
-				public void changed(ChangeEvent event, Actor actor) {
-					accessor.set(btCheck.isChecked());
-					// XXX table.fire(new EntityEvent(entity, accessor, btCheck.isChecked()));
-				}
-			});
-			table.add(btCheck);
-			
+			table.add(BooleanWidget.instance.create(accessor, skin));
 		}else if(accessor.getType() == Vector2.class){
 			Vector2 v = (Vector2)accessor.get();
 			Table sub = new Table(table.getSkin());

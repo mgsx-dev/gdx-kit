@@ -29,6 +29,7 @@ import net.mgsx.game.core.helpers.NativeService.DefaultCallback;
 import net.mgsx.game.core.helpers.ReflectionHelper;
 import net.mgsx.game.core.plugins.EntityEditorPlugin;
 import net.mgsx.game.core.ui.accessors.FieldAccessor;
+import net.mgsx.game.core.ui.widgets.BooleanWidget;
 import net.mgsx.game.core.ui.widgets.EnumWidget;
 import net.mgsx.game.core.ui.widgets.TreeEditor;
 import net.mgsx.game.core.ui.widgets.TreeNode;
@@ -248,6 +249,9 @@ public class BTreeEditor implements EntityEditorPlugin {
 			}
 		});
 		
+		Actor btEnabled = BooleanWidget.labeled("Stop", "Run").create(new FieldAccessor(model, "enabled"), skin);
+		
+		
 		TextButton btManual = new TextButton("Manual Step", skin);
 		btManual.addListener(new ChangeListener() {
 			@Override
@@ -312,6 +316,7 @@ public class BTreeEditor implements EntityEditorPlugin {
 		
 		Table menu = new Table(skin);
 		
+		menu.add(btEnabled);
 		menu.add(btNew);
 		menu.add(btReload);
 		menu.add(btSave);
