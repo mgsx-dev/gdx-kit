@@ -27,6 +27,7 @@ import net.mgsx.game.core.ui.accessors.Accessor;
 import net.mgsx.game.core.ui.accessors.AccessorScanner;
 import net.mgsx.game.core.ui.accessors.FieldAccessor;
 import net.mgsx.game.core.ui.widgets.BitsWidget;
+import net.mgsx.game.core.ui.widgets.BlendWidget;
 import net.mgsx.game.core.ui.widgets.FloatWidget;
 import net.mgsx.game.core.ui.widgets.IntegerWidget;
 
@@ -182,6 +183,8 @@ public class EntityEditor extends Table
 		if(accessorConfig != null ){
 			switch(accessorConfig.type()){
 			case BITS: table.add(BitsWidget.instance.create(accessor, skin)); return true;
+			case BLEND_MODE: table.add(BlendWidget.instance.create(accessor, skin)); return true;
+				// TODO others ...
 			default:
 			}
 			

@@ -10,8 +10,11 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
+import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalShadowLight;
+import com.badlogic.gdx.graphics.g3d.model.Node;
+import com.badlogic.gdx.graphics.g3d.model.NodePart;
 import com.badlogic.gdx.graphics.g3d.utils.DepthShaderProvider;
 import com.badlogic.gdx.graphics.g3d.utils.ShaderProvider;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
@@ -231,6 +234,18 @@ public class G3DRendererSystem extends IteratingSystem
 	protected void processEntity(Entity entity, float deltaTime) {
 		G3DModel model = G3DModel.components.get(entity);
 		if(model.inFrustum){
+			
+			for(Node node : model.modelInstance.nodes)
+				for(NodePart part : node.parts){
+					BlendingAttribute ba = (BlendingAttribute)part.material.get(BlendingAttribute.Type);
+					if(ba != null){
+						ba.blended = model.blended;
+						ba.sourceFunction = model.blendSrc;
+						ba.destFunction = model.blendDst;
+						ba.opacity = model.opacity; //TODO !
+					}
+				}
+			
 			modelBatch.render(model.modelInstance, environment);
 		}
 	}

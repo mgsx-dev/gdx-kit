@@ -19,5 +19,7 @@ public enum EnumType {
 	/** type considered as unit value : range from 0 to 1 for floats,
 	 * unit vector for Vector2 and Vector3.
 	 *  */
-	UNIT
+	UNIT,
+	
+	BLEND_MODE
 }
