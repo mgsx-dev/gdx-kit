@@ -26,6 +26,7 @@ public class AnimationTask extends EntityLeafTask implements AnimationListener
 	public float fade = 0;
 
 	public boolean end = false;
+	AnimationDesc desc;
 	
 	@Override
 	public void start() {
@@ -34,18 +35,24 @@ public class AnimationTask extends EntityLeafTask implements AnimationListener
 			end = false;
 			model.animationController.paused = false;
 			model.animationController.allowSameAnimation = true;
-			model.animationController.animate(id, loops, speed, this, fade);
+			desc = model.animationController.animate(id, loops, speed, this, fade);
 		}
 	}
 	
 	@Override
 	public Status execute() 
 	{
-		// XXX bug with animation : onEnd not call if not remain ...
+		// XXX bug with animation : onEnd not call if not remain time ...
 		G3DModel model = G3DModel.components.get(getObject().entity);
-		
 		end |= model.animationController.current.speed == 0;
+		end |= desc != model.animationController.current;
 		return end ? Status.SUCCEEDED : Status.RUNNING;
+	}
+	
+	@Override
+	public void end() {
+		desc = null;
+		super.end();
 	}
 	
 	@Override
@@ -62,6 +69,7 @@ public class AnimationTask extends EntityLeafTask implements AnimationListener
 	public void onEnd(AnimationDesc animation) {
 		end = true;
 	}
+	
 
 	@Override
 	public void onLoop(AnimationDesc animation) {
