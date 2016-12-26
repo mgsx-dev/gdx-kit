@@ -6,7 +6,6 @@ import com.badlogic.ashley.core.Engine;
 import com.badlogic.gdx.ai.btree.BehaviorTree;
 import com.badlogic.gdx.utils.Pool.Poolable;
 
-import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.core.annotations.EditableComponent;
 import net.mgsx.game.core.annotations.Storable;
 import net.mgsx.game.core.components.Duplicable;
@@ -23,7 +22,6 @@ public class BTreeModel implements Component, Duplicable, Poolable
 	
 	public boolean enabled = false; // XXX should be enabled by default ? or use a command in normal game mode ?
 	
-	@Editable
 	public boolean remove = false;
 	
 	@Override

@@ -250,6 +250,7 @@ public class BTreeEditor implements EntityEditorPlugin {
 		});
 		
 		Actor btEnabled = BooleanWidget.labeled("Stop", "Run").create(new FieldAccessor(model, "enabled"), skin);
+		Actor btRemove = BooleanWidget.labeled("Auto remove", "Auto reset").create(new FieldAccessor(model, "remove"), skin);
 		
 		
 		TextButton btManual = new TextButton("Manual Step", skin);
@@ -317,6 +318,7 @@ public class BTreeEditor implements EntityEditorPlugin {
 		Table menu = new Table(skin);
 		
 		menu.add(btEnabled);
+		menu.add(btRemove);
 		menu.add(btNew);
 		menu.add(btReload);
 		menu.add(btSave);
