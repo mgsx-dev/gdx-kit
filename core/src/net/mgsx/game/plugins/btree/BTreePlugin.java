@@ -44,7 +44,7 @@ public class BTreePlugin extends EditorPlugin
 			tasks = new ObjectMap<String, Class<? extends Task<EntityBlackboard>>>();
 			for(Class<? extends Task> type : ClassRegistry.instance.getSubTypesOf(Task.class)){
 				
-				String key = type.getSimpleName();
+				String key = type.getName();
 				tasks.put(key, (Class<? extends Task<EntityBlackboard>>)type);
 			}
 		}
