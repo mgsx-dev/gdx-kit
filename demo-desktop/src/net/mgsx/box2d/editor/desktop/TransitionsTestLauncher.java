@@ -105,7 +105,7 @@ public class TransitionsTestLauncher
 		public void create() 
 		{
 			assets = new AssetManager(new ClasspathFileHandleResolver());
-			Skin skin = AssetHelper.loadAssetNow(assets, "data/uiskin.json", Skin.class);
+			Skin skin = AssetHelper.loadAssetNow(assets, "uiskin.json", Skin.class);
 			setScreen(new TransitionsTestScreen(skin));
 		}
 	}

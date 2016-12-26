@@ -166,7 +166,7 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 		
 		shapeRenderer = new ShapeRenderer();
 		
-		skin = new Skin(Gdx.files.classpath("data/uiskin.json"));
+		skin = new Skin(Gdx.files.classpath("uiskin.json"));
 		
 		stage = new Stage(new ScreenViewport());
 		history = new CommandHistory();

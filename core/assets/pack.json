@@ -1,0 +1,15 @@
+{
+    pot: true,
+    paddingX: 1,
+    paddingY: 1,
+    minWidth: 16,
+    minHeight: 16,
+    maxWidth: 1024,
+    maxHeight: 1024,
+    square: true,
+    filterMin: Nearest,
+    filterMag: Nearest,
+    ignoreBlankImages: false,
+    combineSubdirectories: true,
+    flattenPaths: true
+}

@@ -3,8 +3,6 @@ package net.mgsx.game.core.ui.widgets;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 
 abstract public class TreeEditor<T> extends Table
 {
@@ -38,14 +36,14 @@ abstract public class TreeEditor<T> extends Table
 		}
 		if(maxChildren(node) < node.children.size){
 			
-			TextButton btAddChild = new TextButton("+", getSkin());
-			sub.add(btAddChild).row();
-			btAddChild.addListener(new ChangeListener() {
-				@Override
-				public void changed(ChangeEvent event, Actor actor) {
-					// TODO
-				}
-			});
+			// XXX no tree edit for now
+//			TextButton btAddChild = new TextButton("+", getSkin());
+//			sub.add(btAddChild).row();
+//			btAddChild.addListener(new ChangeListener() {
+//				@Override
+//				public void changed(ChangeEvent event, Actor actor) {
+//				}
+//			});
 		}
 		
 		return table;

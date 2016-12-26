@@ -1,11 +1,45 @@
+buildscript {
+	repositories {
+        mavenLocal()
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.badlogicgames.gdx:gdx-tools:1.9.4'
+    }
+}
+
 apply plugin: "java"
+
+def generatedResources = "$projectDir/res"
 
 sourceCompatibility = 1.6
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 
 sourceSets.main.java.srcDirs = [ "src/" ]
 sourceSets.test.java.srcDirs = [ "test/" ]
+sourceSets.main.resources.srcDirs = [ "res/" ]
 
+sourceSets {
+  main {
+    output.dir(generatedResources, builtBy: 'generateAssets')
+  }
+}
+
+import com.badlogic.gdx.tools.texturepacker.TexturePacker
+
+task generateAssets() {
+	doLast{
+		TexturePacker.main("$projectDir/assets", generatedResources, "uiskin")
+	}
+}
+
+import com.badlogic.gdx.tools.texturepacker.TextureUnpacker
+
+task unpack(){
+	doLast{
+		TextureUnpacker.main("$projectDir/src/data/uiskin.atlas", "$projectDir/src/data", "$projectDir/assets")
+	}
+}
 
 eclipse.project {
     name = appName + "-core"
