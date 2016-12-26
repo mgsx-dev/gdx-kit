@@ -278,6 +278,7 @@ public class EntityEditor extends Table
 			sub.add(")");
 			table.add(sub);
 		}else if(accessor.getType().isEnum()){
+			// TODO EnumWidget
 			final SelectBox<Object> selector = new SelectBox<Object>(skin);
 			Array<Object> values = new Array<Object>();
 			for(Object o : accessor.getType().getEnumConstants()) values.add(o);

@@ -1,10 +1,15 @@
 package net.mgsx.game.plugins.btree;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
+
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ai.btree.BehaviorTree;
 import com.badlogic.gdx.ai.btree.Task;
+import com.badlogic.gdx.ai.btree.Task.Status;
 import com.badlogic.gdx.ai.btree.leaf.Success;
+import com.badlogic.gdx.ai.btree.utils.BehaviorTreeParser;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -14,12 +19,17 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Clipboard;
+import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.SerializationException;
 
 import net.mgsx.game.core.EditorScreen;
 import net.mgsx.game.core.helpers.NativeService;
 import net.mgsx.game.core.helpers.NativeService.DefaultCallback;
 import net.mgsx.game.core.helpers.ReflectionHelper;
 import net.mgsx.game.core.plugins.EntityEditorPlugin;
+import net.mgsx.game.core.ui.accessors.FieldAccessor;
+import net.mgsx.game.core.ui.widgets.EnumWidget;
 import net.mgsx.game.core.ui.widgets.TreeEditor;
 import net.mgsx.game.core.ui.widgets.TreeNode;
 import net.mgsx.game.plugins.btree.storage.BehaviorTreeWriter;
@@ -30,6 +40,9 @@ import net.mgsx.game.plugins.btree.ui.TaskEditor;
 public class BTreeEditor implements EntityEditorPlugin {
 
 	private EditorScreen editor;
+	
+	// TODO should be in editor instance not this factory
+	public Status editStatus = null;
 	
 	public BTreeEditor(EditorScreen editor) {
 		super();
@@ -55,8 +68,39 @@ public class BTreeEditor implements EntityEditorPlugin {
 		final TreeEditor<Task<EntityBlackboard>> treeEditor = new TreeEditor<Task<EntityBlackboard>>(skin) {
 			
 			@Override
-			protected Actor createRenderer(TreeNode<Task<EntityBlackboard>> node) {
-				return new TaskEditor<EntityBlackboard>((BehaviorTree<EntityBlackboard>)node.root, node.object, getSkin());
+			protected Actor createRenderer(final TreeNode<Task<EntityBlackboard>> node) {
+				final TaskEditor e = new TaskEditor<EntityBlackboard>((BehaviorTree<EntityBlackboard>)node.root, node.object, getSkin());
+				e.addListener(new ChangeListener(){
+					@Override
+					public void changed(ChangeEvent event, Actor actor) {
+						if(actor == e){
+							if(editStatus != null){
+								switch(editStatus){
+								case CANCELLED:
+									node.object.cancel();
+									break;
+								case FAILED:
+									node.object.fail();
+									break;
+								case FRESH:
+									node.object.reset();
+									break;
+								case RUNNING:
+									node.object.running();
+									break;
+								case SUCCEEDED:
+									node.object.success();
+									break;
+								default:
+									break;
+								}
+								
+							}
+							
+						}
+					}
+				});
+				return e;
 			}
 
 			@Override
@@ -224,6 +268,48 @@ public class BTreeEditor implements EntityEditorPlugin {
 			}
 		});
 		
+		TextButton btCopy = new TextButton("To Freemind", skin);
+		btCopy.addListener(new ChangeListener() {
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				BehaviorTree<EntityBlackboard> btree = entity.getComponent(BTreeModel.class).tree;
+				StringWriter w = new StringWriter();
+				try{
+					new BehaviorTreeWriter().writeTree(btree, new PrintWriter(w));
+					String content = w.toString();
+					Gdx.app.getClipboard().setContents(content);
+				}catch(GdxRuntimeException e){
+					Gdx.app.error("BTreePlugin", "can't serialize tree", e);
+				}
+			}
+		});
+		
+		TextButton btPaste = new TextButton("From Freemind", skin);
+		btPaste.addListener(new ChangeListener() {
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				Clipboard clipboard = Gdx.app.getClipboard();
+				String freeMindContent = clipboard.getContents();
+				// freeMindContent = freeMindContent.replaceAll("\n    ", "\n").replaceFirst(".*\n", "");
+				try{
+					// add imports
+					StringWriter w = new StringWriter();
+					new BehaviorTreeWriter().writeAllImports(new PrintWriter(w));
+					w.write("\n");
+					w.write(freeMindContent);
+					BehaviorTree<EntityBlackboard> newtree = new BehaviorTreeParser<EntityBlackboard>().parse(w.toString(), null);
+					BehaviorTree<EntityBlackboard> btree = entity.getComponent(BTreeModel.class).tree = newtree;
+					treeEditor.setRoot(convertToTree(btree, btree));
+				}catch(SerializationException e){
+					
+					Gdx.app.error("BTreePlugin", "error parsing from clipboard : \n" + freeMindContent, e);
+				}
+			}
+		});
+		
+		Actor statusSelector = new EnumWidget<Task.Status>(Task.Status.class).create(new FieldAccessor(this, "editStatus"), skin);
+		
+		
 		Table menu = new Table(skin);
 		
 		menu.add(btNew);
@@ -234,6 +320,9 @@ public class BTreeEditor implements EntityEditorPlugin {
 		menu.add(btSaveAs);
 		menu.add(btManual);
 		menu.add(btResetTree);
+		menu.add(btCopy);
+		menu.add(btPaste);
+		menu.add(statusSelector);
 		menu.add(libraryLabel);
 		
 		menu.add("task test : ");
@@ -247,7 +336,7 @@ public class BTreeEditor implements EntityEditorPlugin {
 	}
 	public void createEditor(final Table parent, final BehaviorTree<EntityBlackboard> tree, final Task<EntityBlackboard> task, Skin skin, int depth) 
 	{
-		TaskEditor<EntityBlackboard> editor = new TaskEditor<EntityBlackboard>(tree, task, skin);
+		final TaskEditor<EntityBlackboard> editor = new TaskEditor<EntityBlackboard>(tree, task, skin);
 		
 		parent.add(editor);
 		
@@ -258,8 +347,6 @@ public class BTreeEditor implements EntityEditorPlugin {
 			createEditor(sub, tree, task.getChild(i), skin, 0);
 		}
 		parent.add(sub).expand().left().row();
-		
-		
 	}
 
 }

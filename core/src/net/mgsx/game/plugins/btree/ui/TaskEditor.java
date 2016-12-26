@@ -15,6 +15,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.badlogic.gdx.utils.Disposable;
 
 import net.mgsx.game.core.ui.EntityEditor;
@@ -22,12 +24,23 @@ import net.mgsx.game.core.ui.accessors.FieldAccessor;
 
 public class TaskEditor<T> extends Table implements Disposable, Listener<T>
 {
+	public static class TaskSelectEvent extends ChangeEvent
+	{
+		public Task task;
+
+		public TaskSelectEvent(Task task) {
+			super();
+			this.task = task;
+		}
+		
+	}
+	
 	private BehaviorTree<T> tree;
 	private Task<T> task;
 	private Color color = new Color();
 	private Actor taskLabel;
 	
-	public TaskEditor(BehaviorTree<T> tree, Task<T> task, Skin skin) {
+	public TaskEditor(BehaviorTree<T> tree, final Task<T> task, Skin skin) {
 		super(skin);
 		this.tree = tree;
 		this.task = task;
@@ -48,6 +61,13 @@ public class TaskEditor<T> extends Table implements Disposable, Listener<T>
 			}
 			
 		}
+		
+		taskLabel.addListener(new ChangeListener() {
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				TaskEditor.this.fire(new ChangeEvent());
+			}
+		});
 	}
 
 	@Override
