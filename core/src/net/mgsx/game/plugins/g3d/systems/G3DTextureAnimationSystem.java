@@ -26,8 +26,10 @@ public class G3DTextureAnimationSystem extends IteratingSystem {
 		for(Node node : model.modelInstance.nodes)
 			for(NodePart part : node.parts){
 				TextureAttribute ta = (TextureAttribute)part.material.get(TextureAttribute.Diffuse);
-				ta.offsetU = component.uOffset;
-				ta.offsetV = component.vOffset;
+				if(ta != null){
+					ta.offsetU = component.uOffset;
+					ta.offsetV = component.vOffset;
+				}
 			}
 	}
 }
