@@ -71,5 +71,11 @@ public class PriorityLoop<E> extends BranchTask<E>{
 		// TODO Auto-generated method stub
 		
 	}
+	
+	@Override
+	public void end() {
+		currentIndex = -1;
+		super.end();
+	}
 
 }
