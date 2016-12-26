@@ -4,12 +4,15 @@ import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 
 import net.mgsx.game.core.helpers.EditorAssetManager;
 import net.mgsx.game.core.plugins.Plugin;
 import net.mgsx.game.core.storage.EntityGroup;
 import net.mgsx.game.core.storage.EntityGroupLoader;
+import net.mgsx.game.core.storage.EntityGroupStorage;
+import net.mgsx.game.core.storage.SaveConfiguration;
 
 public class EditorApplication extends Game
 {
@@ -47,9 +50,31 @@ public class EditorApplication extends Game
 		
 		if(config.path != null) {
 			editorScreen.loadForEditing(Gdx.files.absolute(config.path));
+		}else{
+			FileHandle recovery = Gdx.files.absolute("/tmp/entities.json");
+			if(recovery.exists()){
+				editorScreen.loadForEditing(recovery);
+			}
 		}
 		
 		setScreen(editorScreen);
+	}
+	
+	@Override
+	public void dispose() 
+	{
+		// save all to temp dir
+		SaveConfiguration config = new SaveConfiguration();
+		config.assets = assetManager;
+		config.engine = engine;
+		config.registry = this.config.registry;
+		
+		config.pretty = true;
+		config.stripPaths = true;
+		
+		EntityGroupStorage.save(Gdx.files.absolute("/tmp/entities.json"), config); // TODO linux only
+		
+		super.dispose();
 	}
 
 }

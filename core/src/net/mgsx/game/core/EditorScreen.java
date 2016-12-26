@@ -785,6 +785,7 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 		config.assets = assets;
 		config.registry = registry;
 		config.engine = entityEngine;
+		config.failSafe = true; // TODO fail safe when load for editing to avoid crash always app
 		EntityGroupStorage.loadForEditing(file.path(), config);
 	}
 

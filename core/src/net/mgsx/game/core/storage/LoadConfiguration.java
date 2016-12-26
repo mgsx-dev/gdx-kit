@@ -10,4 +10,5 @@ public class LoadConfiguration {
 	public AssetManager assets;
 	public GameRegistry registry;
 	public Engine engine;
+	public boolean failSafe;
 }
