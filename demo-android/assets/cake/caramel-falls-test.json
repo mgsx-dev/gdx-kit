@@ -1,0 +1,44 @@
+{
+entities: [
+	{
+		id: 0
+		g3d: {
+			modelInstance: cake/caramel-falls.g3dj
+			origin: {}
+			blended: true
+			culling: false
+		}
+		g3d.texAnim: {
+			time: 846.5429
+			uOffset: 20.743853
+			vOffset: -205.47014
+			uPerSec: 8.311189E-8
+			vPerSec: -0.018383685
+		}
+	}
+	{
+		id: 1
+		g3d.light.dir: {
+			light: {
+				color: {
+					r: 1
+					g: 1
+					b: 1
+					a: 1
+				}
+				direction: {
+					y: 0.0100128865
+					z: 1
+				}
+			}
+			shadow: false
+		}
+	}
+]
+assets: [
+	{
+		type: com.badlogic.gdx.graphics.g3d.Model
+		name: cake/caramel-falls.g3dj
+	}
+]
+}
