@@ -25,6 +25,7 @@ import net.mgsx.game.examples.platformer.animations.WalkingComponent;
 import net.mgsx.game.examples.platformer.audio.CristalSoundSystem;
 import net.mgsx.game.examples.platformer.audio.PlatformerMusicSystem;
 import net.mgsx.game.examples.platformer.audio.WaterSoundSystem;
+import net.mgsx.game.examples.platformer.inputs.JoystickControllerSystem;
 import net.mgsx.game.examples.platformer.inputs.KeyboardControllerSystem;
 import net.mgsx.game.examples.platformer.inputs.WalkingSystem;
 import net.mgsx.game.examples.platformer.logic.BonusComponent;
@@ -121,6 +122,7 @@ public class PlatformerPlugin implements Plugin, DefaultPlugin
 		engine.entityEngine.addSystem(new PlatformerMusicSystem(engine));
 		
 		engine.entityEngine.addSystem(new WaterSoundSystem(engine));
+		engine.entityEngine.addSystem(new JoystickControllerSystem());
 		
 		// TODO HUD should not be in level screen
 		engine.entityEngine.addSystem(new PlatformerHUDSystem(engine.assets));

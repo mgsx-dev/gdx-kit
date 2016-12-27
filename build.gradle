@@ -46,6 +46,7 @@ project(":core") {
         compile "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-ai:$gdxAiVersion"
         compile "com.badlogicgames.ashley:ashley:$ashleyVersion"
+        compile "com.badlogicgames.gdx:gdx-controllers:$gdxVersion"
     }
 }
 
@@ -74,6 +75,9 @@ project(":demo-desktop") {
         compile "net.mgsx.gdx:gdx-pd-platform:$pdVersion:natives-desktop"
         
         compile group: 'org.reflections', name: 'reflections', version: '0.9.5-RC2'
+        
+        compile "com.badlogicgames.gdx:gdx-controllers-desktop:$gdxVersion"
+        compile "com.badlogicgames.gdx:gdx-controllers-platform:$gdxVersion:natives-desktop"
     }
 }
 
@@ -100,6 +104,8 @@ project(":demo-android") {
         
         compile "net.mgsx.gdx:gdx-pd-backend-android:$pdVersion"
         natives "net.mgsx.gdx:gdx-pd-platform:$pdVersion:natives-android"
+        
+        compile "com.badlogicgames.gdx:gdx-controllers-android:$gdxVersion"
         
     }
 
