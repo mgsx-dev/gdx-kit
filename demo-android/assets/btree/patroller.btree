@@ -1,0 +1,14 @@
+# import behaviorTree:"com.badlogic.gdx.ai.btree.BehaviorTree"
+# import parallel:"com.badlogic.gdx.ai.btree.branch.Parallel"
+# import selector:"com.badlogic.gdx.ai.btree.branch.Selector"
+import alive:"net.mgsx.game.examples.platformer.tasks.AliveCondition"
+import emitOnce:"net.mgsx.game.examples.platformer.tasks.EmitOnce"
+import patrol:"net.mgsx.game.examples.platformer.tasks.PatrolTask"
+import waitFailure:"net.mgsx.game.examples.platformer.tasks.WaitFailure"
+
+selector
+  parallel
+    waitFailure
+      alive
+    patrol
+  emitOnce particle:"particles/choco.json"

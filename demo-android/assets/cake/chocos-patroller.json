@@ -1,0 +1,121 @@
+{
+entities: [
+	{
+		id: 0
+		g3d: {
+			modelInstance: cake/chocos.g3dj
+			origin: {}
+			blended: false
+			culling: true
+		}
+		2d: {
+			position: {
+				x: 0.008883566
+				y: 6.7949295E-6
+			}
+		}
+		box2d: {
+			id: Rectangle
+			def: {
+				type: DynamicBody
+				position: {
+					x: 3.3887403
+					y: 0.1876927
+				}
+				fixedRotation: true
+			}
+			fixtures: [
+				{
+					def: {
+						shape: {
+							type: Polygon
+							vertex: [
+								{
+									x: 0.3374362
+									y: 0.13496402
+								}
+								{
+									x: 0.33743617
+									y: 0.86666703
+								}
+								{
+									x: -0.36940384
+									y: 0.86311567
+								}
+								{
+									x: -0.35874796
+									y: 0.12786129
+								}
+							]
+						}
+						density: 1
+						filter: {}
+					}
+				}
+				{
+					def: {
+						shape: {
+							type: Polygon
+							vertex: [
+								{
+									x: 0.3374362
+									y: 0.13496378
+								}
+								{
+									x: -0.35519615
+									y: 0.120762646
+								}
+								{
+									x: -0.16926178
+									y: 0.012640804
+								}
+								{
+									x: 0.15992752
+									y: 0.012640804
+								}
+							]
+						}
+						density: 1
+						filter: {}
+					}
+				}
+			]
+		}
+		demo.platformer.character: {
+			rightToLeft: true
+			angleRange: 45.70362
+			angle: -45.704044
+		}
+		game.enemy: {}
+		example.platformer.life: {}
+		btree: {
+			library: btree/patroller.btree
+		}
+		demo.platformer.patrol: {
+			checkVoid: true
+			rayStart: {
+				y: 0.16896679
+			}
+			timeout: -0.016957492
+			speed: 0.41984245
+		}
+		example.platformer.walking: {
+			speedScale: 0.99956596
+		}
+	}
+]
+assets: [
+	{
+		type: com.badlogic.gdx.graphics.g3d.Model
+		name: cake/chocos.g3dj
+	}
+	{
+		type: net.mgsx.game.core.storage.EntityGroup
+		name: particles/choco.json
+	}
+	{
+		type: com.badlogic.gdx.ai.btree.BehaviorTree
+		name: btree/patroller.btree
+	}
+]
+}
