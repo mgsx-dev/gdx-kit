@@ -12,6 +12,7 @@ import net.mgsx.game.core.helpers.NativeService.DefaultCallback;
 import net.mgsx.game.core.storage.EntityGroupStorage;
 import net.mgsx.game.core.storage.LoadConfiguration;
 import net.mgsx.game.core.tools.ClickTool;
+import net.mgsx.game.plugins.btree.BTreeModel;
 
 public class ImportPatchTool extends ClickTool {
 	private FileHandle file;
@@ -48,7 +49,12 @@ public class ImportPatchTool extends ClickTool {
 		for(Entity entity : EntityGroupStorage.loadForEditing(file.path(), config)){
 			Movable movable = entity.getComponent(Movable.class);
 			if(movable != null){
-				movable.move(entity, new Vector3(position.x, position.y, 0)); // sprite plan
+				movable.moveTo(entity, new Vector3(position.x, position.y, 0)); // sprite plan
+			}
+			BTreeModel btree = BTreeModel.components.get(entity);
+			if(btree != null){
+				btree.enabled = true;
+				btree.remove = true;
 			}
 		}
 		// TODO update things in GUI ?
