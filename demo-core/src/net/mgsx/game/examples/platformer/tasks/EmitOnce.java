@@ -12,6 +12,7 @@ import net.mgsx.game.plugins.btree.BTreeModel;
 import net.mgsx.game.plugins.btree.BTreePlugin.EntityLeafTask;
 import net.mgsx.game.plugins.btree.annotations.TaskAlias;
 import net.mgsx.game.plugins.core.components.Transform2DComponent;
+import net.mgsx.game.plugins.particle2d.components.Particle2DComponent;
 
 @TaskAlias("emitOnce")
 public class EmitOnce extends EntityLeafTask
@@ -43,6 +44,10 @@ public class EmitOnce extends EntityLeafTask
 				if(btree!=null){
 					btree.enabled = true;
 					btree.remove = true;
+				}
+				Particle2DComponent p = Particle2DComponent.components.get(entity);
+				if(p != null){
+					p.autoRemove = true;
 				}
 			}
 		}
