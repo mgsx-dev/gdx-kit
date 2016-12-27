@@ -10,7 +10,7 @@ import net.mgsx.game.core.ui.accessors.Accessor;
 
 abstract public class BooleanWidget implements FieldEditor
 {
-	public static final BooleanWidget instance = labeled("true", "flase");
+	public static final BooleanWidget instance = labeled("true", "false");
 	
 	public static BooleanWidget labeled(final String labelOn, final String labelOff){
 		return new BooleanWidget(){
