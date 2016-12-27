@@ -63,7 +63,8 @@ public class Particle2DPlugin implements Plugin
 				Particle2DComponent model = (Particle2DComponent)entity.remove(Particle2DComponent.class);
 				if(model != null){
 					// remove emitters (live particles!)
-					model.effect.free();
+					if(model.effect != null)
+						model.effect.free();
 					//effects.removeValue(model.effect, true);
 					model.effect = null;
 				}

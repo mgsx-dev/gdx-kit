@@ -23,9 +23,10 @@ public class P2DUpdateSystem extends IteratingSystem
 			if(p.effect.isComplete() && !p.paused){
 				p.effect.free();
 				p.effect = null;
-				// TODO auto die entity ?
+				if(p.autoRemove){ 
+					getEngine().removeEntity(entity);
+				}
 			}
 		}
-		
 	}
 }

@@ -19,6 +19,7 @@ public class P2DTransformSystem extends IteratingSystem {
 		Transform2DComponent t = entity.getComponent(Transform2DComponent.class);
 		Particle2DComponent p = entity.getComponent(Particle2DComponent.class);
 		p.position.set(t.position);
-		p.effect.setPosition(t.position.x, t.position.y);
+		if(p.effect != null)
+			p.effect.setPosition(t.position.x, t.position.y);
 	}
 }

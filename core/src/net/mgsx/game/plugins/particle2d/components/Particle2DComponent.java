@@ -22,25 +22,31 @@ public class Particle2DComponent implements Component, Duplicable
 	public PooledEffect effect;
 	final public BoundingBox localBox = new BoundingBox();
 	final public Vector2 position = new Vector2();
-	public boolean paused;
+	public boolean paused = false;
+	
+	@Editable
+	public boolean autoRemove = false;
 	
 	@Override
 	public Component duplicate(Engine engine) {
 		Particle2DComponent clone = engine.createComponent(Particle2DComponent.class);
 		clone.reference = reference;
+		clone.paused = paused;
+		clone.autoRemove = autoRemove;
 		return clone;
 	}
 	
 	@Editable
 	public void stop(){
 		paused = true;
-		effect.allowCompletion();
-		
+		if(effect != null)
+			effect.allowCompletion();
 	}
 	@Editable
 	public void start(){
 		paused = false;
-		effect.start();
+		if(effect != null)
+			effect.start();
 		
 	}
 

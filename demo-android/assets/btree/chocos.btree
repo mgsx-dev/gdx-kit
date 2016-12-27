@@ -1,0 +1,12 @@
+# import behaviorTree:"com.badlogic.gdx.ai.btree.BehaviorTree"
+# import sequence:"com.badlogic.gdx.ai.btree.branch.Sequence"
+# import alwaysSucceed:"com.badlogic.gdx.ai.btree.decorator.AlwaysSucceed"
+import alive:"net.mgsx.game.examples.platformer.tasks.AliveCondition"
+import emitOnce:"net.mgsx.game.examples.platformer.tasks.EmitOnce"
+import waitFailure:"net.mgsx.game.examples.platformer.tasks.WaitFailure"
+
+sequence
+  alwaysSucceed
+    waitFailure
+      alive
+  emitOnce particle:"particles/choco.json"

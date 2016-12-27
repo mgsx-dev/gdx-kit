@@ -23,6 +23,8 @@ public class PlayerController implements Component
 	public boolean onGround, onGroundLeft, onGroundRight;
 
 	public boolean onWallLeft, onWallRight;
+
+	public boolean isHurt;
 	
 	/**
 	 * retrieve normalized direction accoring to left/right and up/down (right and up are positive)

@@ -9,7 +9,7 @@ import net.mgsx.game.plugins.btree.annotations.TaskAlias;
 public class WaitSuccess<E> extends Decorator<E>
 {
 	@Override
-	public void childSuccess(Task<E> runningTask) {
+	public void childFail(Task<E> runningTask) {
 		running();
 	}
 }

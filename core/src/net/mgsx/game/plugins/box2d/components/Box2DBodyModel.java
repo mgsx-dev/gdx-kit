@@ -14,6 +14,7 @@ import com.badlogic.gdx.utils.Pool.Poolable;
 
 import net.mgsx.game.core.annotations.Storable;
 import net.mgsx.game.core.components.Duplicable;
+import net.mgsx.game.plugins.box2d.listeners.Box2DListener;
 import net.mgsx.game.plugins.box2d.systems.Box2DWorldContext;
 
 @Storable("box2d")
@@ -93,6 +94,11 @@ public class Box2DBodyModel implements Component, Duplicable, Poolable, Disposab
 		// TODO other fields ?
 		dispose();
 		
+	}
+	public void setListener(Box2DListener listener) {
+		for(Box2DFixtureModel fix : fixtures){
+			fix.fixture.setUserData(listener);
+		}
 	}
 
 

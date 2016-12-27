@@ -7,7 +7,7 @@ import net.mgsx.game.core.annotations.EditableComponent;
 import net.mgsx.game.core.annotations.Storable;
 
 @Storable("example.platformer.life")
-@EditableComponent
+@EditableComponent(autoClone=true)
 public class LifeComponent implements Component {
 	
 	

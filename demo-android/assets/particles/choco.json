@@ -1,0 +1,18 @@
+{
+entities: [
+	{
+		id: 0
+		p2d: {
+			autoRemove: true
+			reference: particles/choco.p
+		}
+		2d: {}
+	}
+]
+assets: [
+	{
+		type: com.badlogic.gdx.graphics.g2d.ParticleEffect
+		name: particles/choco.p
+	}
+]
+}

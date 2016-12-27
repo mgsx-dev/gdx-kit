@@ -211,7 +211,7 @@ entities: [
 			modelInstance: cake/cupcake.g3dj
 			origin: {}
 			blended: false
-			culling: false
+			culling: true
 		}
 		2d: {
 			position: {
@@ -271,10 +271,13 @@ entities: [
 		}
 		demo.platformer.character: {
 			rightToLeft: true
+			angle: -75.00033
 		}
 		g3d.shadow-casting: {}
 		example.platformer.player-control: {
 			onGround: true
+			onGroundLeft: true
+			onGroundRight: true
 		}
 	}
 	{
@@ -291,15 +294,13 @@ entities: [
 		g3d.light.dir: {
 			light: {
 				color: {
-					r: 1.130363
-					g: 1.3455315
-					b: 5.795304
+					r: 1
+					g: 1
+					b: 1
 					a: 1
 				}
 				direction: {
-					x: 0.20055008
-					y: -0.081960045
-					z: -0.15419997
+					z: -1
 				}
 			}
 			shadow: false
@@ -352,7 +353,7 @@ entities: [
 			modelInstance: cake/background.g3dj
 			origin: {}
 			blended: false
-			culling: false
+			culling: true
 		}
 		2d: {
 			position: {
@@ -491,12 +492,12 @@ entities: [
 			modelInstance: cake/chocos.g3dj
 			origin: {}
 			blended: false
-			culling: false
+			culling: true
 		}
 		2d: {
 			position: {
-				x: 5.2166862
-				y: -2.4797208
+				x: 0.20682728
+				y: -0.7372465
 			}
 		}
 		box2d: {
@@ -574,8 +575,15 @@ entities: [
 			timeout: -0.016957492
 			speed: 0.41984245
 		}
-		demo.platformer.character: {}
+		demo.platformer.character: {
+			angle: 75.00033
+		}
 		g3d.shadow-casting: {}
+		game.enemy: {}
+		example.platformer.life: {}
+		btree: {
+			library: btree/chocos.btree
+		}
 	}
 	{
 		id: 14
@@ -747,7 +755,7 @@ entities: [
 			modelInstance: cake/chocos.g3dj
 			origin: {}
 			blended: false
-			culling: false
+			culling: true
 		}
 		2d: {
 			position: {
@@ -832,6 +840,7 @@ entities: [
 		}
 		demo.platformer.character: {
 			rightToLeft: true
+			angle: -75.00033
 		}
 		g3d.shadow-casting: {}
 	}
@@ -841,7 +850,7 @@ entities: [
 			modelInstance: cake/chocos.g3dj
 			origin: {}
 			blended: false
-			culling: false
+			culling: true
 		}
 		2d: {
 			position: {
@@ -926,6 +935,7 @@ entities: [
 		}
 		demo.platformer.character: {
 			rightToLeft: true
+			angle: -75.00033
 		}
 		g3d.shadow-casting: {}
 	}
@@ -1189,7 +1199,7 @@ entities: [
 			modelInstance: cake/manon.g3dj
 			origin: {}
 			blended: false
-			culling: false
+			culling: true
 		}
 		2d: {
 			position: {
@@ -1199,6 +1209,7 @@ entities: [
 		}
 		demo.platformer.character: {
 			rightToLeft: true
+			angle: -75.00033
 		}
 		example.platformer.walking: {
 			animation: Armature|walk
@@ -1269,6 +1280,15 @@ entities: [
 			library: btree/manon.btree
 		}
 	}
+	{
+		id: 24
+		p2d: {
+			reference: particles/choco.p
+		}
+		2d: {
+			angle: -75.455765
+		}
+	}
 ]
 assets: [
 	{
@@ -1284,12 +1304,24 @@ assets: [
 		name: cake/background.g3dj
 	}
 	{
+		type: com.badlogic.gdx.ai.btree.BehaviorTree
+		name: btree/chocos.btree
+	}
+	{
 		type: net.mgsx.game.core.storage.EntityGroup
 		name: cake/nut.json
 	}
 	{
+		type: net.mgsx.game.core.storage.EntityGroup
+		name: particles/choco.json
+	}
+	{
 		type: com.badlogic.gdx.graphics.g3d.Model
 		name: cake/cupcake.g3dj
+	}
+	{
+		type: com.badlogic.gdx.graphics.g2d.ParticleEffect
+		name: particles/choco.p
 	}
 	{
 		type: com.badlogic.gdx.ai.btree.BehaviorTree
