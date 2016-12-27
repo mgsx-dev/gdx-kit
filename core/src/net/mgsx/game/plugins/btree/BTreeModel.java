@@ -29,6 +29,8 @@ public class BTreeModel implements Component, Duplicable, Poolable
 		BTreeModel clone = engine.createComponent(BTreeModel.class);
 		clone.tree = engine.getSystem(BTreeSystem.class).createBehaviorTree(libraryName); 
 		clone.libraryName = libraryName;
+		clone.remove = remove;
+		clone.enabled = enabled;
 		return clone;
 	}
 	
