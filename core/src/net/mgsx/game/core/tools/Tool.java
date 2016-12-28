@@ -47,7 +47,9 @@ abstract public class Tool extends InputAdapter
 	}
 
 	final protected void end(){
-		group.end(this);
+		if(group != null){
+			group.end(this);
+		}
 	}
 	
 	public Engine getEngine()
