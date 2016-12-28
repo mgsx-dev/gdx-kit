@@ -32,9 +32,10 @@ public class ResetProxyTool extends Tool
 		proxy.clones.entities().clear();
 		
 		// recreate clones
-		proxy.clones = EntityGroupStorage.create(new Array<Entity>(), editor.assets, getEngine(), proxy.template, master);
+		Array<Entity> clones = new Array<Entity>();
+		proxy.clones = EntityGroupStorage.create(clones, editor.assets, getEngine(), proxy.template, master);
 		
-		for(Entity entity : proxy.clones.entities()){
+		for(Entity entity : clones){
 			BTreeModel btree = BTreeModel.components.get(entity);
 			if(btree != null){
 				btree.enabled = true;

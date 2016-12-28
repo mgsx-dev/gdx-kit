@@ -33,23 +33,21 @@ public class ResetAllProxyTool extends Tool
 			getEngine().removeEntity(e);
 		}
 		
-		for(Entity master : getEngine().getEntities()){
+		Array<Entity> clones = new Array<Entity>();
+		
+		for(Entity master : ArrayHelper.array(getEngine().getEntities())){
 			
 			ProxyComponent proxy = ProxyComponent.components.get(master);
 			if(proxy == null) continue;
 			
-//			for(Entity entity : proxy.clones.entities()) editor.entityEngine.removeEntity(entity);
-//			proxy.clones.entities().clear();
-//			
-//			// recreate clones
-			proxy.clones = EntityGroupStorage.create(new Array<Entity>(), editor.assets, getEngine(), proxy.template, master);
-			
-			for(Entity entity : proxy.clones.entities()){
-				BTreeModel btree = BTreeModel.components.get(entity);
-				if(btree != null){
-					btree.enabled = true;
-					btree.remove = true;
-				}
+			proxy.clones = EntityGroupStorage.create(clones, editor.assets, getEngine(), proxy.template, master);
+		}
+		
+		for(Entity entity : clones){
+			BTreeModel btree = BTreeModel.components.get(entity);
+			if(btree != null){
+				btree.enabled = true;
+				btree.remove = true;
 			}
 		}
 		
