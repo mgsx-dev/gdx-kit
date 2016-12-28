@@ -3,6 +3,7 @@ package net.mgsx.game.plugins.btree;
 import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Engine;
+import com.badlogic.gdx.ai.btree.AnnotationBasedTaskCloner;
 import com.badlogic.gdx.ai.btree.BehaviorTree;
 import com.badlogic.gdx.utils.Pool.Poolable;
 
@@ -36,7 +37,7 @@ public class BTreeModel implements Component, Duplicable, Poolable
 	
 	@Override
 	public void reset() {
-		// TODO release tree ?
+		AnnotationBasedTaskCloner.free(tree);
 		enabled = false;
 	}
 
