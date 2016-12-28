@@ -8,6 +8,7 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.badlogic.gdx.physics.box2d.Joint;
 
 import net.mgsx.game.core.GamePipeline;
 import net.mgsx.game.core.annotations.Editable;
@@ -71,11 +72,14 @@ public class Box2DWorldSystem extends EntitySystem {
 			}
 			worldContext.scheduled.clear();
 			
-			for(Box2DBodyModel body : worldContext.scheduledForDeletion)
+			for(Joint joint : worldContext.jointsToDelete)
 			{
-				body.dispose();
+				worldContext.world.destroyJoint(joint);
 			}
-			worldContext.scheduledForDeletion.clear();
+			for(Body body : worldContext.bodiesToDelete)
+			{
+				worldContext.world.destroyBody(body);
+			}
 		}
 		
 	}

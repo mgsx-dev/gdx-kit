@@ -50,10 +50,6 @@ public class Box2DPlugin implements Plugin
 		engine.entityEngine.addEntityListener(Family.all(Box2DJointModel.class).get(), new EntityListener() {
 			@Override
 			public void entityRemoved(Entity entity) {
-				Box2DJointModel jm = (Box2DJointModel)entity.remove(Box2DJointModel.class);
-				if(jm != null){
-					jm.destroy();
-				}
 				entity.remove(Movable.class);
 			}
 			
@@ -62,6 +58,8 @@ public class Box2DPlugin implements Plugin
 				entity.add(new Movable(new Box2DJointMovable()));
 				
 				Box2DJointModel physics = Box2DJointModel.components.get(entity);
+				
+				physics.context = worldItem;
 				
 				// then create instances
 				// object.context = context;
@@ -89,11 +87,7 @@ public class Box2DPlugin implements Plugin
 			
 			@Override
 			public void entityRemoved(Entity entity) {
-				Box2DBodyModel model = (Box2DBodyModel)entity.remove(Box2DBodyModel.class);
-				if(model != null){
-					model.context.scheduleRemove(entity, model);
-					entity.remove(Movable.class); // because of body reference
-				}
+				entity.remove(Movable.class); // because of body reference
 			}
 			
 			@Override

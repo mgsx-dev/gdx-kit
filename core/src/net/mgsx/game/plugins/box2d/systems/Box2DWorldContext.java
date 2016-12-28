@@ -4,11 +4,15 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.Joint;
+import com.badlogic.gdx.physics.box2d.JointEdge;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.ObjectSet;
 
 import net.mgsx.game.core.EditorScreen;
 import net.mgsx.game.plugins.box2d.components.Box2DBodyModel;
+import net.mgsx.game.plugins.box2d.components.Box2DJointModel;
 import net.mgsx.game.plugins.box2d.helper.WorldProvider;
 import net.mgsx.game.plugins.core.components.Transform2DComponent;
 
@@ -20,7 +24,9 @@ public class Box2DWorldContext
 	public EditorScreen editor;
 	public WorldProvider provider;
 	
-	public Array<Box2DBodyModel> scheduledForDeletion = new Array<Box2DBodyModel>();
+	final ObjectSet<Body> bodiesToDelete = new ObjectSet<Body>();
+	final ObjectSet<Joint> jointsToDelete = new ObjectSet<Joint>();
+	
 	public Array<Runnable> scheduled= new Array<Runnable>();
 	
 	public Box2DWorldContext() {
@@ -62,11 +68,34 @@ public class Box2DWorldContext
 		return item;
 	}
 	
-	public void scheduleRemove(Entity entity, Box2DBodyModel body) 
-	{
-		scheduledForDeletion.add(body);
+	public void remove(Joint joint){
+		// TODO remove gears before joints ?
+		if(world.isLocked()){
+			jointsToDelete.add(joint);
+		}else{
+			world.destroyJoint(joint);
+		}
 	}
-
+	
+	public void remove(Body body){
+		// delete joints before.
+		for(JointEdge jointEdge : body.getJointList()){
+			//body.getWorld().isLocked()
+			
+			Object data = jointEdge.joint.getUserData();
+			if(data instanceof Entity){
+				Entity jointEntity = (Entity)data;
+				jointEntity.remove(Box2DJointModel.class);
+			}
+			
+		}
+		if(world.isLocked()){
+			bodiesToDelete.add(body);
+		}else{
+			world.destroyBody(body);
+		}
+	}
+	
 	public void schedule(Runnable runnable) 
 	{
 		scheduled.add(runnable);

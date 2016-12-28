@@ -7,7 +7,6 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
-import com.badlogic.gdx.physics.box2d.JointEdge;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.Pool.Poolable;
@@ -66,26 +65,16 @@ public class Box2DBodyModel implements Component, Duplicable, Poolable, Disposab
 	@Override
 	public void dispose() 
 	{
-		if(body != null)
-		{
-			// delete joints before.
-			for(JointEdge jointEdge : body.getJointList()){
-				//body.getWorld().isLocked()
-				
-				Object data = jointEdge.joint.getUserData();
-				if(data instanceof Entity){
-					Entity jointEntity = (Entity)data;
-					jointEntity.remove(Box2DJointModel.class);
-				}
-				
-			}
-			
-			
-			body.getWorld().destroyBody(body);
+		if(body != null){
+			context.remove(body);
 			body = null;
-			fixtures.clear();
 		}
-		
+		bounds.set(0, 0, 0, 0);
+		context = null;
+		def = null;
+		entity = null;
+		fixtures.clear();
+		id = null;
 	}
 	
 	@Override
