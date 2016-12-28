@@ -7,6 +7,7 @@ import com.badlogic.gdx.utils.Array;
 import net.mgsx.game.core.EditorScreen;
 import net.mgsx.game.core.storage.EntityGroupStorage;
 import net.mgsx.game.core.tools.Tool;
+import net.mgsx.game.plugins.btree.BTreeModel;
 import net.mgsx.game.plugins.core.components.ProxyComponent;
 
 public class ResetProxyTool extends Tool
@@ -26,11 +27,20 @@ public class ResetProxyTool extends Tool
 		
 		// remove clones
 		// TODO clones are not always set ! fix this in loaders
+		// TODO entities may be removed themself, entity reference is not valid anymore !!
 		for(Entity entity : proxy.clones.entities()) editor.entityEngine.removeEntity(entity);
 		proxy.clones.entities().clear();
 		
 		// recreate clones
 		proxy.clones = EntityGroupStorage.create(new Array<Entity>(), editor.assets, getEngine(), proxy.template, master);
+		
+		for(Entity entity : proxy.clones.entities()){
+			BTreeModel btree = BTreeModel.components.get(entity);
+			if(btree != null){
+				btree.enabled = true;
+				btree.remove = true;
+			}
+		}
 		
 		end();
 	}

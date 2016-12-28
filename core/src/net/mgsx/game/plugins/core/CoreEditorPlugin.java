@@ -26,6 +26,7 @@ import net.mgsx.game.plugins.core.tools.GridTool;
 import net.mgsx.game.plugins.core.tools.ImportPatchTool;
 import net.mgsx.game.plugins.core.tools.OpenTool;
 import net.mgsx.game.plugins.core.tools.PanTool;
+import net.mgsx.game.plugins.core.tools.ResetAllProxyTool;
 import net.mgsx.game.plugins.core.tools.ResetProxyTool;
 import net.mgsx.game.plugins.core.tools.ResetTool;
 import net.mgsx.game.plugins.core.tools.SaveTool;
@@ -54,6 +55,7 @@ public class CoreEditorPlugin extends EditorPlugin
 		
 		editor.addTool(new EntityEmitterTool(editor));
 		editor.addTool(new ResetProxyTool(editor));
+		editor.addTool(new ResetAllProxyTool(editor));
 		editor.addTool(new UnproxyTool(editor));
 		
 		// order is very important !
