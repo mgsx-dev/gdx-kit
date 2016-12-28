@@ -150,7 +150,8 @@ public class EntityGroupStorage
 		Array<Entity> entities = new Array<Entity>();
 		proxy.clones = create(entities, config.assets, config.engine, group, proxyEntity);
 		for(Entity entity : entities){
-			entity.remove(ProxyComponent.class);
+			if(ProxyComponent.components.has(entity)) // XXX workaround for 64 bag limit
+				entity.remove(ProxyComponent.class);
 		}
 		
 		entities.add(proxyEntity);
