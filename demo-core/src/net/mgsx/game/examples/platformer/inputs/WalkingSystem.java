@@ -4,12 +4,14 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Fixture;
 
 import net.mgsx.game.core.GamePipeline;
 import net.mgsx.game.examples.platformer.animations.WalkingComponent;
 import net.mgsx.game.plugins.box2d.components.Box2DBodyModel;
 import net.mgsx.game.plugins.box2d.helper.Box2DHelper;
 import net.mgsx.game.plugins.box2d.helper.RayCast;
+import net.mgsx.game.plugins.box2d.helper.RayCastResult;
 
 public class WalkingSystem extends IteratingSystem
 {
@@ -25,26 +27,40 @@ public class WalkingSystem extends IteratingSystem
 		Box2DBodyModel physics = Box2DBodyModel.components.get(entity);
 		Vector2 velocity = physics.body.getLinearVelocity().cpy();
 		
+		player.lastGroundFixture = null;
+		
 		if(physics.bounds.area() <= 0){
 			Box2DHelper.computeBoundary(physics.bounds, physics.body);
 		}
 		
 		float groundSpace = 0.25f;
+		float groundBefore = .5f;
+		float groundAfter = groundBefore + .2f;
 		
 		// ray cast for ground
 		ray.start.set(physics.body.getPosition()).add(
-				physics.bounds.x + physics.bounds.width/2 - physics.bounds.width * groundSpace, 
-				physics.bounds.y + 0.1f);
-		ray.end.set(ray.start).y -= 0.2f;
+				physics.bounds.x + physics.bounds.width/2, 
+				physics.bounds.y + groundBefore);
+		ray.end.set(ray.start).y -= groundAfter;
+		ray.end.x -= physics.bounds.width * groundSpace;
 		
-		boolean onGround1 = physics.context.provider.rayCastFirst(ray) != null;
+		RayCastResult result;
+		
+		result = physics.context.provider.rayCastFirst(ray);
+		Fixture leftFixture = result == null ? null : result.fixture;
+		if(player.lastGroundFixture == null) player.lastGroundFixture = leftFixture;
+		boolean onGround1 = leftFixture != null;
 		
 		ray.start.set(physics.body.getPosition()).add(
-				physics.bounds.x + physics.bounds.width/2 + physics.bounds.width * groundSpace, 
-				physics.bounds.y + 0.1f);
-		ray.end.set(ray.start).y -= 0.2f;
+				physics.bounds.x + physics.bounds.width/2, 
+				physics.bounds.y + groundBefore);
+		ray.end.set(ray.start).y -= groundAfter;
+		ray.end.x += physics.bounds.width * groundSpace;
 		
-		boolean onGround2 = physics.context.provider.rayCastFirst(ray) != null;
+		result = physics.context.provider.rayCastFirst(ray);
+		Fixture rightFixture = result == null ? null : result.fixture;
+		if(player.lastGroundFixture == null) player.lastGroundFixture = rightFixture;
+		boolean onGround2 = rightFixture != null;
 		
 		boolean onGround = onGround1 || onGround2;
 		

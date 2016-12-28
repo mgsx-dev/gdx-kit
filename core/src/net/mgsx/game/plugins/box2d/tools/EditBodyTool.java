@@ -52,6 +52,8 @@ public class EditBodyTool extends ComponentTool
 			fixtureEntity.add(shapeComponent);
 			shapeComponent.fixture = fixture;
 			PolygonComponent polygon = editor.entityEngine.createComponent(PolygonComponent.class);
+			
+			// TODO other : circle, loop, edge ...etc
 			if(fixture.def.shape instanceof PolygonShape){
 				polygon.loop = true;
 				PolygonShape shape = ((PolygonShape)fixture.def.shape);

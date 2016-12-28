@@ -1,0 +1,51 @@
+{
+entities: [
+	{
+		id: 0
+		2d: {}
+		g3d: {
+			modelInstance: sugar/dunes.g3dj
+			origin: {}
+			blended: false
+			culling: false
+		}
+		box2d: {
+			id: Chain Loop
+			def: {}
+			fixtures: [
+				{
+					def: {
+						shape: {
+							type: Chain
+							loop: true
+							vertex: [
+								{
+									x: -5.283944
+									y: 0.17551774
+								}
+								{
+									x: -0.006268263
+									y: 2.569721
+								}
+								{
+									x: 5.346624
+									y: 0.125377
+								}
+							]
+						}
+						density: 1
+						filter: {}
+					}
+				}
+			]
+		}
+		example.platformer.sugar-zone: {}
+	}
+]
+assets: [
+	{
+		type: com.badlogic.gdx.graphics.g3d.Model
+		name: sugar/dunes.g3dj
+	}
+]
+}

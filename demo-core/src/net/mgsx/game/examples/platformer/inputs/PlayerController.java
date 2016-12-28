@@ -3,13 +3,14 @@ package net.mgsx.game.examples.platformer.inputs;
 import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Fixture;
 
 import net.mgsx.game.core.annotations.EditableComponent;
 import net.mgsx.game.core.annotations.Storable;
 import net.mgsx.game.core.helpers.MathHelper;
 
-@Storable("example.platformer.player-control")
-@EditableComponent(autoClone=true)
+@Storable(value="example.platformer.player-control", auto=true)
+@EditableComponent(autoClone=false)
 public class PlayerController implements Component
 {
 	public static ComponentMapper<PlayerController> components = ComponentMapper.getFor(PlayerController.class);
@@ -25,6 +26,8 @@ public class PlayerController implements Component
 	public boolean onWallLeft, onWallRight;
 
 	public boolean isHurt;
+	
+	public Fixture lastGroundFixture;
 	
 	/**
 	 * retrieve normalized direction accoring to left/right and up/down (right and up are positive)

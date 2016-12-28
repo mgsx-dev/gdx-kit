@@ -37,7 +37,8 @@ public class P2DRenderSystem extends IteratingSystem {
 	@Override
 	public void update(float deltaTime) 
 	{
-		Gdx.gl.glEnable(GL20.GL_DEPTH_TEST);
+		// TODO separate front and back particles ?
+		// Gdx.gl.glEnable(GL20.GL_DEPTH_TEST);
 		batch.setProjectionMatrix(engine.getRenderCamera().combined);
 		batch.begin();
 		super.update(deltaTime);

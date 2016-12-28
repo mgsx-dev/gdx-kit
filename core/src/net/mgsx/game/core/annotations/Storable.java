@@ -17,6 +17,8 @@ public @interface Storable
 
 	/**
 	 * Define whether a {@link AnnotationBasedSerializer} should be created for this type. Default is false.
+	 * When auto, only fields annotated with {@link Storable} will be serialized. When not auto, all
+	 * fields will be serialized.
 	 */
 	boolean auto() default false;
 }
