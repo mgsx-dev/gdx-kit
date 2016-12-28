@@ -26,6 +26,7 @@ import net.mgsx.game.core.components.Repository;
 import net.mgsx.game.core.helpers.EntityHelper;
 import net.mgsx.game.plugins.core.components.ProxyComponent;
 import net.mgsx.game.plugins.core.components.Transform2DComponent;
+import net.mgsx.game.plugins.core.systems.DependencySystem;
 import net.mgsx.game.plugins.spline.blender.BlenderCurve;
 
 /**
@@ -94,7 +95,7 @@ public class EntityGroupStorage
 			if(proxy != null){
 				EntityGroup proxyGroup = config.assets.get(proxy.ref, EntityGroup.class);
 				proxy.template = proxyGroup;
-				proxy.clones = create(entities, config.assets, config.engine, proxyGroup, entity);
+				create(entities, config.assets, config.engine, proxyGroup, entity);
 			}
 			
 			entities.add(entity);
@@ -148,7 +149,7 @@ public class EntityGroupStorage
 		proxy.template = group;
 		
 		Array<Entity> entities = new Array<Entity>();
-		proxy.clones = create(entities, config.assets, config.engine, group, proxyEntity);
+		create(entities, config.assets, config.engine, group, proxyEntity);
 		for(Entity entity : entities){
 			if(ProxyComponent.components.has(entity)) // XXX workaround for 64 bag limit
 				entity.remove(ProxyComponent.class);
@@ -246,9 +247,14 @@ public class EntityGroupStorage
 			if(proxy != null){
 				EntityGroup proxyGroup = assets.get(proxy.ref, EntityGroup.class);
 				proxy.template = proxyGroup;
-				proxy.clones = create(entities, assets, engine, proxyGroup, entity);
+				create(entities, assets, engine, proxyGroup, entity);
 			}
 		}
+		// link proxy with its parent
+		if(parent != null && ProxyComponent.components.has(parent))
+			for(Entity clone : clones.entities){
+				engine.getSystem(DependencySystem.class).link(parent, clone);
+			}
 		return clones;
 	}
 	

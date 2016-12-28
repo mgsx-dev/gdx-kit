@@ -9,6 +9,7 @@ import net.mgsx.game.core.storage.EntityGroupStorage;
 import net.mgsx.game.core.tools.Tool;
 import net.mgsx.game.plugins.btree.BTreeModel;
 import net.mgsx.game.plugins.core.components.ProxyComponent;
+import net.mgsx.game.plugins.core.systems.DependencySystem;
 
 public class ResetProxyTool extends Tool
 {
@@ -26,14 +27,11 @@ public class ResetProxyTool extends Tool
 		ProxyComponent proxy = ProxyComponent.components.get(master);
 		
 		// remove clones
-		// TODO clones are not always set ! fix this in loaders
-		// TODO entities may be removed themself, entity reference is not valid anymore !!
-		for(Entity entity : proxy.clones.entities()) editor.entityEngine.removeEntity(entity);
-		proxy.clones.entities().clear();
+		getEngine().getSystem(DependencySystem.class).removeChildren(master);
 		
 		// recreate clones
 		Array<Entity> clones = new Array<Entity>();
-		proxy.clones = EntityGroupStorage.create(clones, editor.assets, getEngine(), proxy.template, master);
+		EntityGroupStorage.create(clones, editor.assets, getEngine(), proxy.template, master);
 		
 		for(Entity entity : clones){
 			BTreeModel btree = BTreeModel.components.get(entity);

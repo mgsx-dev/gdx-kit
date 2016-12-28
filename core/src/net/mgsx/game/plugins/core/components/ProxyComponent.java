@@ -17,7 +17,7 @@ public class ProxyComponent implements Component, Duplicable, Poolable
 	
 	public final static ComponentMapper<ProxyComponent> components = ComponentMapper.getFor(ProxyComponent.class);
 	
-	public EntityGroup template, clones;
+	public EntityGroup template;
 	
 	public String ref;
 
@@ -31,7 +31,7 @@ public class ProxyComponent implements Component, Duplicable, Poolable
 
 	@Override
 	public void reset() {
-		template = clones = null;
+		template = null;
 		ref = null;
 	}
 }

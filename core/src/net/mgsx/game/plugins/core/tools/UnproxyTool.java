@@ -7,6 +7,7 @@ import net.mgsx.game.core.EditorScreen;
 import net.mgsx.game.core.components.Repository;
 import net.mgsx.game.core.tools.Tool;
 import net.mgsx.game.plugins.core.components.ProxyComponent;
+import net.mgsx.game.plugins.core.systems.DependencySystem;
 
 public class UnproxyTool extends Tool
 {
@@ -23,9 +24,7 @@ public class UnproxyTool extends Tool
 		
 		Entity entity = editor.getSelected();
 		
-		ProxyComponent proxy = ProxyComponent.components.get(entity);
-		
-		for(Entity clone : proxy.clones.entities()){
+		for(Entity clone : getEngine().getSystem(DependencySystem.class).unlinkChildren(entity)){
 			clone.add(getEngine().createComponent(Repository.class));
 		}
 		

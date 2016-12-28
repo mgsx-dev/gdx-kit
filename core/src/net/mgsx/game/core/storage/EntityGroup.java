@@ -36,6 +36,10 @@ public class EntityGroup {
 	public void add(Entity entity) {
 		entities.add(entity);
 	}
+	
+	public void remove(Entity entity){
+		entities.removeValue(entity, true);
+	}
 
 
 	public Entity get(int index) {
