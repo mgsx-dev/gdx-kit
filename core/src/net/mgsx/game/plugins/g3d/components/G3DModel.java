@@ -102,6 +102,9 @@ public class G3DModel implements Component, Duplicable, Serializable, Poolable
 		this.localBoundary = null;
 		this.inFrustum = false;
 		this.modelInstance = null;
+		this.opacity = 1;
+		this.blendSrc = GL20.GL_SRC_ALPHA;
+		this.blendDst = GL20.GL_ONE_MINUS_SRC_ALPHA;
 		this.origin.setZero();
 	}
 	
