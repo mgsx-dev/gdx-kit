@@ -1,7 +1,9 @@
 package net.mgsx.game.plugins.core.tools;
 
+import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.utils.Array;
 
 import net.mgsx.game.core.EditorScreen;
 import net.mgsx.game.core.annotations.Editable;
@@ -22,6 +24,9 @@ public class SaveTool extends Tool
 	
 	@Editable(doc="JSON pretty format")
 	public boolean pretty = true;
+	
+	@Editable()
+	public boolean selection = false;
 	
 	private SaveConfiguration config;
 	
@@ -54,6 +59,9 @@ public class SaveTool extends Tool
 				config.pretty = pretty;
 				config.stripPaths = stripPaths;
 				
+				if(selection){
+					config.entities = new Array<Entity>(editor.selection);
+				}
 				EntityGroupStorage.save(file, config);
 				
 				printDiagnostic();

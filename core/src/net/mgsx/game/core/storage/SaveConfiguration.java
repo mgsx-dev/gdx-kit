@@ -4,6 +4,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 
 import com.badlogic.ashley.core.Engine;
+import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.utils.Array;
 
@@ -15,7 +16,7 @@ public class SaveConfiguration {
 	public GameRegistry registry;
 	public boolean pretty;
 	public boolean stripPaths;
-	
+	public Array<Entity> entities;
 	public Array<Message> messages = new Array<Message>();
 	
 	public static class Message{
