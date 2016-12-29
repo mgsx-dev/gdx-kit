@@ -30,6 +30,7 @@ import net.mgsx.game.core.GameScreen;
 import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.core.annotations.EditableSystem;
 import net.mgsx.game.core.annotations.Storable;
+import net.mgsx.game.core.components.Hidden;
 import net.mgsx.game.examples.platformer.sensors.WaterZone;
 import net.mgsx.game.plugins.g3d.components.G3DModel;
 import net.mgsx.game.plugins.g3d.systems.G3DRendererSystem;
@@ -73,8 +74,8 @@ public class PlatformerPostProcessing extends EntitySystem
 	}
 	
 	
-	private Family waterEntity = Family.all(G3DModel.class, WaterZone.class).get();
-	private Family nonwaterEntity = Family.all(G3DModel.class).exclude(WaterZone.class).get();
+	private Family waterEntity = Family.all(G3DModel.class, WaterZone.class).exclude(Hidden.class).get();
+	private Family nonwaterEntity = Family.all(G3DModel.class).exclude(WaterZone.class).exclude(Hidden.class).get();
 	
 //	private Array<ModelInstance> waterModels = new Array<ModelInstance>();
 //	private Array<ModelInstance> nonWaterModels = new Array<ModelInstance>();
