@@ -4,6 +4,7 @@ import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Pool.Poolable;
 
 import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.core.annotations.EditableComponent;
@@ -12,7 +13,7 @@ import net.mgsx.game.core.components.Duplicable;
 
 @Storable("2d")
 @EditableComponent(name="2D Transform")
-public class Transform2DComponent implements Component, Duplicable
+public class Transform2DComponent implements Component, Duplicable, Poolable
 {
 	
 	public static ComponentMapper<Transform2DComponent> components = ComponentMapper.getFor(Transform2DComponent.class);
@@ -32,6 +33,15 @@ public class Transform2DComponent implements Component, Duplicable
 		clone.enabled = enabled;
 		clone.origin.set(origin);
 		return clone;
+	}
+
+	@Override
+	public void reset() {
+		position.setZero();
+		angle = 0;
+		rotation = true;
+		enabled = true;
+		origin.setZero();
 	}
 
 }
