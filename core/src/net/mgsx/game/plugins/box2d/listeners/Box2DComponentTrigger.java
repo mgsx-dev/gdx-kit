@@ -28,6 +28,15 @@ public abstract class Box2DComponentTrigger<T extends Component> extends Box2DCo
 		contactCounter++;
 	}
 
+	/**
+	 * 
+	 * @param contact
+	 * @param self
+	 * @param other
+	 * @param otherEntity
+	 * @param otherComponent
+	 * @param b always true (not used) TODO remove ?
+	 */
 	protected abstract void enter(Contact contact, Fixture self, Fixture other, Entity otherEntity, T otherComponent, boolean b);
 
 	@Override
@@ -36,6 +45,15 @@ public abstract class Box2DComponentTrigger<T extends Component> extends Box2DCo
 		if(contactCounter == 0) exit(contact, self, other, otherEntity, otherComponent, true);
 	}
 
+	/**
+	 * 
+	 * @param contact
+	 * @param self
+	 * @param other
+	 * @param otherEntity
+	 * @param otherComponent
+	 * @param b always true (not used) TODO remove ?
+	 */
 	protected abstract void exit(Contact contact, Fixture self, Fixture other, Entity otherEntity, T otherComponent, boolean b);
 
 

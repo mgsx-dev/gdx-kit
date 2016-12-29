@@ -47,6 +47,7 @@ import net.mgsx.game.examples.platformer.physics.MagnetComponent;
 import net.mgsx.game.examples.platformer.physics.MagnetSystem;
 import net.mgsx.game.examples.platformer.physics.OneWay;
 import net.mgsx.game.examples.platformer.physics.OneWaySystem;
+import net.mgsx.game.examples.platformer.physics.PlayerPhysicSensorListener;
 import net.mgsx.game.examples.platformer.physics.PulleyComponent;
 import net.mgsx.game.examples.platformer.physics.PulleySystem;
 import net.mgsx.game.examples.platformer.physics.SpeedWalk;
@@ -139,6 +140,7 @@ public class PlatformerPlugin implements Plugin, DefaultPlugin
 		
 		engine.entityEngine.addSystem(new SecretRenderSystem(engine));
 
+		engine.entityEngine.addSystem(new PlayerPhysicSensorListener());
 		
 		// add a processor for player
 		// TODO could be automated with a generic component and abstract behavior attached to it ?
