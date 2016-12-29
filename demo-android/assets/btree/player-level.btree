@@ -30,7 +30,7 @@ parallel
         animation id:"skeleton|idle" speed:4.073726
         animation id:"skeleton|hello" speed:2.1533632 fade:0.08536343
     parallel
-      control
+      control bonusParticle:"particles/bonus.p"
       untilFail
         sequence
           waitSuccess

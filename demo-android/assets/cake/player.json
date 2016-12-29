@@ -1,0 +1,94 @@
+{
+entities: [
+	{
+		id: 0
+		g3d: {
+			modelInstance: cake/cupcake.g3dj
+			origin: {}
+			blended: false
+			culling: false
+		}
+		2d: {
+			position: {
+				x: -0.77993596
+				y: 0.34366363
+			}
+			angle: -75.455765
+		}
+		box2d: {
+			id: Circle
+			def: {
+				type: DynamicBody
+				position: {
+					x: -0.07521629
+					y: -0.6643853
+				}
+				fixedRotation: true
+			}
+			fixtures: [
+				{
+					def: {
+						shape: {
+							type: Circle
+							position: {
+								x: -0.031336978
+								y: 1.0529927
+							}
+							radius: 0.54078215
+						}
+						density: 1
+						filter: {}
+					}
+				}
+				{
+					def: {
+						shape: {
+							type: Circle
+							position: {
+								x: -0.018801704
+								y: 0.28831366
+							}
+							radius: 0.3268917
+						}
+						density: 1
+						filter: {}
+					}
+				}
+			]
+		}
+		btree: {
+			library: btree/player-level.btree
+		}
+		example.platformer.keyboard: {}
+		example.platformer.walking: {
+			speedScale: 0.99956596
+			animation: skeleton|walking
+		}
+		demo.platformer.character: {
+			rightToLeft: true
+			angle: 5.93E-43
+			facing: true
+		}
+		g3d.shadow-casting: {}
+		example.platformer.player-control: {}
+	}
+]
+assets: [
+	{
+		type: com.badlogic.gdx.graphics.g2d.ParticleEffect
+		name: particles/sugar.p
+	}
+	{
+		type: com.badlogic.gdx.ai.btree.BehaviorTree
+		name: btree/player-level.btree
+	}
+	{
+		type: com.badlogic.gdx.graphics.g3d.Model
+		name: cake/cupcake.g3dj
+	}
+	{
+		type: com.badlogic.gdx.graphics.g2d.ParticleEffect
+		name: particles/bonus.p
+	}
+]
+}
