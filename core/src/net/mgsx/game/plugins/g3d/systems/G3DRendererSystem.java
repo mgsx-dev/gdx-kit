@@ -72,7 +72,7 @@ public class G3DRendererSystem extends IteratingSystem
 	
 	
 	
-	private ModelBatch modelBatch;
+	public ModelBatch modelBatch;
 	public Environment environment;
 	
 	private GameScreen engine;

@@ -33,6 +33,7 @@ import net.mgsx.game.examples.platformer.logic.BonusSystem;
 import net.mgsx.game.examples.platformer.logic.EnemyComponent;
 import net.mgsx.game.examples.platformer.logic.PlayerComponent;
 import net.mgsx.game.examples.platformer.logic.PlayerSensorSystem;
+import net.mgsx.game.examples.platformer.logic.SecretRenderSystem;
 import net.mgsx.game.examples.platformer.logic.SpiderComponent;
 import net.mgsx.game.examples.platformer.logic.SpiderSystem;
 import net.mgsx.game.examples.platformer.logic.TreeComponent;
@@ -135,6 +136,9 @@ public class PlatformerPlugin implements Plugin, DefaultPlugin
 		engine.entityEngine.addSystem(new TubeWorldSystem());
 		engine.entityEngine.addSystem(new MortarSystem(engine));
 		engine.entityEngine.addSystem(new PlayerSensorSystem());
+		
+		engine.entityEngine.addSystem(new SecretRenderSystem(engine));
+
 		
 		// add a processor for player
 		// TODO could be automated with a generic component and abstract behavior attached to it ?
