@@ -1,0 +1,301 @@
+{
+entities: [
+	{
+		id: 0
+		box2d: {
+			id: Rectangle
+			def: {
+				position: {
+					x: 1.5
+					y: -2.5
+				}
+			}
+			fixtures: [
+				{
+					def: {
+						shape: {
+							type: Polygon
+							vertex: [
+								{
+									x: -6.5
+									y: -0.5
+								}
+								{
+									x: 6.5
+									y: -0.5
+								}
+								{
+									x: 6.5
+									y: 0.5
+								}
+								{
+									x: -6.5
+									y: 0.5
+								}
+							]
+						}
+						density: 1
+						filter: {}
+					}
+				}
+			]
+		}
+	}
+	{
+		id: 1
+		box2d: {
+			id: Rectangle
+			def: {
+				position: {
+					x: 7.5
+				}
+			}
+			fixtures: [
+				{
+					def: {
+						shape: {
+							type: Polygon
+							vertex: [
+								{
+									x: -0.5
+									y: -3
+								}
+								{
+									x: 0.5
+									y: -3
+								}
+								{
+									x: 0.5
+									y: 3
+								}
+								{
+									x: -0.5
+									y: 3
+								}
+							]
+						}
+						density: 1
+						filter: {}
+					}
+				}
+			]
+		}
+	}
+	{
+		id: 2
+		box2d: {
+			id: Rectangle
+			def: {
+				position: {
+					x: 13
+					y: -2.5
+				}
+			}
+			fixtures: [
+				{
+					def: {
+						shape: {
+							type: Polygon
+							vertex: [
+								{
+									x: -5
+									y: -0.5
+								}
+								{
+									x: 5
+									y: -0.5
+								}
+								{
+									x: 5
+									y: 0.5
+								}
+								{
+									x: -5
+									y: 0.5
+								}
+							]
+						}
+						density: 1
+						filter: {}
+					}
+				}
+			]
+		}
+	}
+	{
+		id: 3
+		proxy: {
+			ref: cake/player.json
+		}
+		2d: {
+			position: {
+				x: -3
+			}
+		}
+	}
+	{
+		id: 4
+		box2d: {
+			id: Rectangle
+			def: {
+				position: {
+					x: 2.5
+					y: 7.5
+				}
+			}
+			fixtures: [
+				{
+					def: {
+						shape: {
+							type: Polygon
+							vertex: [
+								{
+									x: -0.5
+									y: -6.5
+								}
+								{
+									x: 0.5
+									y: -6.5
+								}
+								{
+									x: 0.5
+									y: 6.5
+								}
+								{
+									x: -0.5
+									y: 6.5
+								}
+							]
+						}
+						density: 1
+						filter: {}
+					}
+				}
+			]
+		}
+	}
+	{
+		id: 5
+		box2d: {
+			id: Rectangle
+			def: {
+				position: {
+					x: 7.5
+					y: 8.5
+				}
+			}
+			fixtures: [
+				{
+					def: {
+						shape: {
+							type: Polygon
+							vertex: [
+								{
+									x: -0.5
+									y: -5.5
+								}
+								{
+									x: 0.5
+									y: -5.5
+								}
+								{
+									x: 0.5
+									y: 5.5
+								}
+								{
+									x: -0.5
+									y: 5.5
+								}
+							]
+						}
+						density: 1
+						filter: {}
+					}
+				}
+			]
+		}
+	}
+	{
+		id: 6
+		proxy: {
+			ref: sugar/bonus-pink.json
+		}
+		2d: {
+			position: {
+				x: 4
+				y: -1
+			}
+		}
+	}
+	{
+		id: 7
+		proxy: {
+			ref: sugar/bonus-pink.json
+		}
+		2d: {
+			position: {
+				x: 6
+				y: 9
+			}
+		}
+	}
+	{
+		id: 8
+		proxy: {
+			ref: sugar/bonus-pink.json
+		}
+		2d: {
+			position: {
+				x: 4
+				y: 3
+			}
+		}
+	}
+	{
+		id: 9
+		proxy: {
+			ref: sugar/bonus-pink.json
+		}
+		2d: {
+			position: {
+				x: 6
+				y: 1
+			}
+		}
+	}
+	{
+		id: 10
+		proxy: {
+			ref: sugar/bonus-pink.json
+		}
+		2d: {
+			position: {
+				x: 6
+				y: 5
+			}
+		}
+	}
+	{
+		id: 11
+		proxy: {
+			ref: sugar/bonus-pink.json
+		}
+		2d: {
+			position: {
+				x: 4
+				y: 7
+			}
+		}
+	}
+]
+assets: [
+	{
+		type: net.mgsx.game.core.storage.EntityGroup
+		name: sugar/bonus-pink.json
+	}
+	{
+		type: net.mgsx.game.core.storage.EntityGroup
+		name: cake/player.json
+	}
+]
+}
