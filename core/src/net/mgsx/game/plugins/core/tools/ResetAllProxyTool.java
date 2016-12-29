@@ -25,6 +25,8 @@ public class ResetAllProxyTool extends Tool
 		
 		// TODO refactor as helper to recreate clones (static method in proxy component ?)
 		
+		// TODO ther is a bug, sometimes entities are not reset and never die ... !
+		
 		for(Entity e : getEngine().getEntitiesFor(Family.all(ProxyComponent.class).get())){
 			getEngine().getSystem(DependencySystem.class).removeChildren(e);
 		}

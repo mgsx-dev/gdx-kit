@@ -27,24 +27,33 @@ public class AnnotationBasedTaskCloner implements TaskCloner {
 	// TODO refactor as type pools ?
 	private static final ObjectMap<Class, Pool<Task>> pools = new ObjectMap<Class, Pool<Task>>();
 	
+	// TODO problem with pool gdx ai task can't be pooled because they don't clear their children !
+	public static boolean enablePool = false;
+	
 	private static <T> Task<T> obtain(final Class type){
-		Pool<Task> pool = pools.get(type);
-		if(pool == null) pools.put(type, new Pool<Task>(){
-			@Override
-			protected Task newObject() {
-				return ReflectionHelper.newInstance(type);
-			}
-		});
-		return pool.obtain();
+		if(enablePool){
+			Pool<Task> pool = pools.get(type);
+			if(pool == null) pools.put(type, pool = new Pool<Task>(){
+				@Override
+				protected Task newObject() {
+					return ReflectionHelper.newInstance(type);
+				}
+			});
+			return pool.obtain();
+		}else{
+			return ReflectionHelper.newInstance(type);
+		}
 	}
 	
 	public static void free(Task task) {
-		Pool<Task> pool = pools.get(task.getClass());
-		if(pool != null){
-			pool.free(task);
-		}
-		for(int i=0 ; i<task.getChildCount() ; i++){
-			free(task.getChild(i));
+		if(enablePool){
+			Pool<Task> pool = pools.get(task.getClass());
+			if(pool != null){
+				pool.free(task);
+			}
+			for(int i=0 ; i<task.getChildCount() ; i++){
+				free(task.getChild(i));
+			}
 		}
 	}
 	
@@ -52,6 +61,8 @@ public class AnnotationBasedTaskCloner implements TaskCloner {
 	public <T> Task<T> cloneTask(Task<T> task) 
 	{
 		Task<T> clone = obtain(task.getClass());
+		
+		// TODO cache class scanning for fast copy
 		for(Field field : task.getClass().getFields()){
 			TaskAttribute attr = field.getAnnotation(TaskAttribute.class);
 			if(attr != null){

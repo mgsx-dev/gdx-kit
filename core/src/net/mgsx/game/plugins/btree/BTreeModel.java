@@ -38,6 +38,7 @@ public class BTreeModel implements Component, Duplicable, Poolable
 	@Override
 	public void reset() {
 		AnnotationBasedTaskCloner.free(tree);
+		tree = null;
 		enabled = false;
 	}
 
