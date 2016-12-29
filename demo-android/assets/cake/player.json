@@ -9,11 +9,6 @@ entities: [
 			culling: false
 		}
 		2d: {
-			position: {
-				x: -0.77993596
-				y: 0.34366363
-			}
-			angle: -75.455765
 		}
 		box2d: {
 			id: Circle
@@ -61,16 +56,21 @@ entities: [
 		}
 		example.platformer.keyboard: {}
 		example.platformer.walking: {
-			speedScale: 0.99956596
+			speedScale: 0.7636664
 			animation: skeleton|walking
 		}
 		demo.platformer.character: {
-			rightToLeft: true
-			angle: 5.93E-43
+			angle: -1.7203733E-19
 			facing: true
 		}
 		g3d.shadow-casting: {}
 		example.platformer.player-control: {}
+		cake.secret.discovery: {
+			radius: 1.7580582
+			offset: {
+				y: 0.46837386
+			}
+		}
 	}
 ]
 assets: [
