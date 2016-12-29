@@ -47,7 +47,8 @@ public class EntityBehaviorTreeLoader extends BehaviorTreeLoader {
 			Asset asset = field.getAnnotation(Asset.class);
 			if(asset != null && field.getType() == String.class){
 				String fileName = ReflectionHelper.get(task, field, String.class);
-				deps.add(new AssetDescriptor(fileName, asset.value()));
+				if(fileName != null)
+					deps.add(new AssetDescriptor(fileName, asset.value())); // TODO else warning ?
 			}
 		}
 		

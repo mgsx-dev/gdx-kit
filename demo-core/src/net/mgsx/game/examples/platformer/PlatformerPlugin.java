@@ -29,7 +29,6 @@ import net.mgsx.game.examples.platformer.inputs.JoystickControllerSystem;
 import net.mgsx.game.examples.platformer.inputs.KeyboardControllerSystem;
 import net.mgsx.game.examples.platformer.inputs.WalkingSystem;
 import net.mgsx.game.examples.platformer.logic.BonusComponent;
-import net.mgsx.game.examples.platformer.logic.BonusSystem;
 import net.mgsx.game.examples.platformer.logic.EnemyComponent;
 import net.mgsx.game.examples.platformer.logic.PlayerComponent;
 import net.mgsx.game.examples.platformer.logic.PlayerSensorSystem;
@@ -64,7 +63,6 @@ import net.mgsx.game.examples.platformer.states.FlyingControlSystem;
 import net.mgsx.game.examples.platformer.states.FlyingState;
 import net.mgsx.game.examples.platformer.ui.PlatformerHUDSystem;
 import net.mgsx.game.plugins.DefaultPlugin;
-import net.mgsx.game.plugins.boundary.components.BoundaryComponent;
 import net.mgsx.game.plugins.boundary.systems.AbstractBoundaryLogicSystem;
 import net.mgsx.game.plugins.box2d.components.Box2DBodyModel;
 import net.mgsx.game.plugins.g3d.components.G3DModel;
@@ -185,17 +183,6 @@ public class PlatformerPlugin implements Plugin, DefaultPlugin
 			
 		});
 		
-		// TODO how to generalize ? state machine ? just logic ?
-		engine.entityEngine.addSystem(new IteratingSystem(Family.all(BonusComponent.class, BoundaryComponent.class).get(), GamePipeline.LOGIC) {
-			@Override
-			protected void processEntity(Entity entity, float deltaTime) {
-				if(BoundaryComponent.components.get(entity).justOutside)
-					entity.getComponent(BonusComponent.class).exit(entity);
-				else if(BoundaryComponent.components.get(entity).justInside)
-					entity.getComponent(BonusComponent.class).enter(entity);
-			}
-		});
-
 		
 		engine.entityEngine.addSystem(new PulleySystem());
 		engine.entityEngine.addSystem(new CavernSystem(engine));
@@ -208,7 +195,6 @@ public class PlatformerPlugin implements Plugin, DefaultPlugin
 		
 		engine.entityEngine.addSystem(new KeyboardControllerSystem());
 		engine.entityEngine.addSystem(new FlyingControlSystem());
-		engine.entityEngine.addSystem(new BonusSystem());
 		engine.entityEngine.addSystem(new TreeSystem());
 		
 		

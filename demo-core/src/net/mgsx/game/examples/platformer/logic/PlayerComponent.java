@@ -20,7 +20,6 @@ import net.mgsx.game.examples.platformer.animations.PlatformComponent;
 import net.mgsx.game.examples.platformer.sensors.ClimbZone;
 import net.mgsx.game.examples.platformer.sensors.LianaZone;
 import net.mgsx.game.examples.platformer.sensors.WaterZone;
-import net.mgsx.game.examples.platformer.ui.PlatformerHUDSystem;
 import net.mgsx.game.plugins.box2d.components.Box2DBodyModel;
 import net.mgsx.game.plugins.box2d.listeners.Box2DAdapter;
 import net.mgsx.game.plugins.box2d.listeners.Box2DComponentListener;
@@ -102,25 +101,6 @@ public class PlayerComponent implements Component, Initializable
 				}
 			}
 		});
-		
-		Box2DListener bonusListener = new Box2DComponentListener<BonusComponent>(BonusComponent.class) {
-
-			@Override
-			protected void beginContact(Contact contact, Fixture self, Fixture other, Entity otherEntity, BonusComponent bonus) 
-			{
-				if(bonus.isCatchable()){
-					bonus.setCatch(otherEntity);
-					// TODO add score from bonus settings, call game state machine instead of HUD !
-					engine.getSystem(PlatformerHUDSystem.class).addScore(1000);
-					contact.setEnabled(false);
-					return;
-				}
-			}
-
-			@Override
-			protected void endContact(Contact contact, Fixture self, Fixture other, Entity otherEntity, BonusComponent otherComponent) {
-			}
-		};
 		
 		Box2DListener enemyListener = new Box2DComponentListener<EnemyComponent>(EnemyComponent.class) {
 
@@ -208,7 +188,7 @@ public class PlayerComponent implements Component, Initializable
 		};
 		
 
-		physics.fixtures.get(0).fixture.setUserData(new Box2DMultiplexer(platformListener, lianaListener, bonusListener, enemyListener, climbListener, swimListener));
+		physics.fixtures.get(0).fixture.setUserData(new Box2DMultiplexer(platformListener, lianaListener, enemyListener, climbListener, swimListener));
 		
 		model = entity.getComponent(G3DModel.class);
 		model.animationController.allowSameAnimation = true;
