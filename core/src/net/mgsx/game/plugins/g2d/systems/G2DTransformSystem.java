@@ -10,7 +10,7 @@ import net.mgsx.game.plugins.g2d.components.SpriteModel;
 
 public class G2DTransformSystem extends IteratingSystem {
 	public G2DTransformSystem() {
-		super(Family.all(SpriteModel.class, Transform2DComponent.class).get(), GamePipeline.BEFORE_RENDER);
+		super(Family.all(SpriteModel.class, Transform2DComponent.class).get(), GamePipeline.BEFORE_CULLING);
 	}
 
 	@Override

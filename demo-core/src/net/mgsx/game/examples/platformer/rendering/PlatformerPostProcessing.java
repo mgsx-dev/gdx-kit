@@ -119,7 +119,7 @@ public class PlatformerPostProcessing extends EntitySystem
 		Gdx.gl.glClearColor(0,0,0,0);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 		
-		modelBatch.begin(engine.getRenderCamera());
+		modelBatch.begin(engine.camera);
 		Gdx.gl.glEnable(GL20.GL_DEPTH_TEST);
 		Gdx.gl.glDepthMask(true);
 		
@@ -130,8 +130,8 @@ public class PlatformerPostProcessing extends EntitySystem
 		for(Entity e : getEngine().getEntitiesFor(waterEntity)){
 			modelBatch.render(e.getComponent(G3DModel.class).modelInstance, flatShader);
 		}
-		engine.getRenderCamera().near = 1f;
-		engine.getRenderCamera().far = 200.f;
+		engine.camera.near = 1f;
+		engine.camera.far = 200.f;
 		modelBatch.flush();
 		flatProgram.end();
 		flatProgram.begin();
@@ -175,9 +175,9 @@ public class PlatformerPostProcessing extends EntitySystem
 		
 		time += deltaTime * settings.speed;
 		
-		float d = engine.getRenderCamera().unproject(new Vector3()).z;
+		float d = engine.camera.unproject(new Vector3()).z;
 		d = 4;
-		Vector3 v = engine.getRenderCamera().project(new Vector3(0,0,d));
+		Vector3 v = engine.camera.project(new Vector3(0,0,d));
 		world.set(-v.x / Gdx.graphics.getWidth(), -v.y / Gdx.graphics.getHeight());
 		
 		batch.setShader(postProcessShader);
@@ -193,7 +193,7 @@ public class PlatformerPostProcessing extends EntitySystem
 		blurB.getColorBufferTexture().bind(GL20.GL_TEXTURE2);
 		Gdx.gl.glActiveTexture(GL20.GL_TEXTURE0);
 		
-		PerspectiveCamera perspective = (PerspectiveCamera)engine.getRenderCamera();
+		PerspectiveCamera perspective = (PerspectiveCamera)engine.camera;
 		
 		Vector2 near = new Vector2(
 				(settings.nearStart + perspective.position.z - perspective.near) / (perspective.far - perspective.near),

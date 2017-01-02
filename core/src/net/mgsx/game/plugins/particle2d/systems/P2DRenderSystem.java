@@ -39,7 +39,7 @@ public class P2DRenderSystem extends IteratingSystem {
 	{
 		// TODO separate front and back particles ?
 		// Gdx.gl.glEnable(GL20.GL_DEPTH_TEST);
-		batch.setProjectionMatrix(engine.getRenderCamera().combined);
+		batch.setProjectionMatrix(engine.camera.combined);
 		batch.begin();
 		super.update(deltaTime);
 		batch.end();

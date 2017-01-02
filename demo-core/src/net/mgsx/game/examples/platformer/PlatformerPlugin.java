@@ -132,7 +132,7 @@ public class PlatformerPlugin implements Plugin, DefaultPlugin
 		engine.entityEngine.addSystem(new Character2DModelSystem());
 		engine.entityEngine.addSystem(new WalkingAnimationSystem());
 		engine.entityEngine.addSystem(new PatrolSystem());
-		engine.entityEngine.addSystem(new TubeWorldSystem());
+		engine.entityEngine.addSystem(new TubeWorldSystem(engine));
 		engine.entityEngine.addSystem(new MortarSystem(engine));
 		engine.entityEngine.addSystem(new PlayerSensorSystem());
 		

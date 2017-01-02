@@ -19,7 +19,7 @@ public class PlatformerCameraSystem extends IteratingSystem
 	
 	public PlatformerCameraSystem() 
 	{
-		super(Family.all(CameraComponent.class, PlayerTracker.class).get(), GamePipeline.BEFORE_RENDER);
+		super(Family.all(CameraComponent.class, PlayerTracker.class).get(), GamePipeline.BEFORE_CULLING);
 	}
 	
 	@Override

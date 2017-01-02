@@ -16,10 +16,6 @@ import net.mgsx.game.core.storage.EntityGroup;
 import net.mgsx.game.core.storage.EntityGroupLoader;
 import net.mgsx.game.core.storage.EntityGroupStorage;
 import net.mgsx.game.core.storage.LoadConfiguration;
-import net.mgsx.game.plugins.camera.components.CameraComponent;
-import net.mgsx.game.plugins.camera.components.CullingComponent;
-import net.mgsx.game.plugins.camera.components.RenderingComponent;
-import net.mgsx.game.plugins.camera.systems.CameraSystem;
 
 /**
  * Base screen for managed game scene.
@@ -36,44 +32,13 @@ public class GameScreen extends ScreenAdapter
 	
 	final public Engine entityEngine;
 	public GameRegistry registry;
-	private Entity camera;
 	
-	private CameraSystem cameraSystem;
+	public Camera camera;
 	
 	public GameScreen(AssetManager assets, Engine engine) {
 		super();
 		this.assets = assets;
 		this.entityEngine = engine;
-		init();
-	}
-	
-	
-	protected <T extends Component> T addComponent(Entity entity, Class<T> type){
-		T component = entityEngine.createComponent(type);
-		entity.add(component);
-		return component;
-	}
-	
-	private void init()
-	{
-		createCamera();
-	}
-	
-	@Override
-	public void show() {
-		super.show();
-		cameraSystem = entityEngine.getSystem(CameraSystem.class);
-	}
-	
-	public Camera getRenderCamera()
-	{
-		Entity cameraEntity = cameraSystem.getRenderCamera();
-		CameraComponent camera = CameraComponent.components.get(cameraEntity);
-		return camera.camera;
-	}
-	
-	void createCamera() 
-	{
 		Camera gameCamera = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		gameCamera.position.set(0, 0, 10);
 		gameCamera.up.set(0,1,0);
@@ -82,21 +47,15 @@ public class GameScreen extends ScreenAdapter
 		gameCamera.far = 3000f;
 		gameCamera.update(true);
 		
-		camera = entityEngine.createEntity();
-		addComponent(camera, CameraComponent.class).camera = gameCamera;
-		addComponent(camera, RenderingComponent.class);
-		addComponent(camera, CullingComponent.class);
-		entityEngine.addEntity(camera);
-	}
-
-
-	public Camera getCullingCamera()
-	{
-		Entity cameraEntity = cameraSystem.getCullingCamera();
-		CameraComponent camera = CameraComponent.components.get(cameraEntity);
-		return camera.camera;
+		camera = gameCamera;
 	}
 	
+	
+	protected <T extends Component> T addComponent(Entity entity, Class<T> type){
+		T component = entityEngine.createComponent(type);
+		entity.add(component);
+		return component;
+	}
 	
 	// TODO remove ?
 	@Override
@@ -120,10 +79,9 @@ public class GameScreen extends ScreenAdapter
 	{
 		super.resize(width, height);
 		
-		CameraComponent c = CameraComponent.components.get(camera);
-		c.camera.viewportWidth = Gdx.graphics.getWidth();
-		c.camera.viewportHeight = Gdx.graphics.getHeight();
-		c.camera.update(true);
+		camera.viewportWidth = Gdx.graphics.getWidth();
+		camera.viewportHeight = Gdx.graphics.getHeight();
+		camera.update(true);
 	}
 
 	public void load(FileHandle file) 

@@ -60,7 +60,7 @@ public class SecretRenderSystem extends EntitySystem
 		Gdx.gl.glClearDepthf(1);
 		Gdx.gl.glClear(GL20.GL_DEPTH_BUFFER_BIT);
 		Gdx.gl.glClearDepthf(1); // restore to default
-		shape.setProjectionMatrix(engine.getRenderCamera().combined);
+		shape.setProjectionMatrix(engine.camera.combined);
 		shape.begin(ShapeType.Filled);
 		Gdx.gl.glColorMask(false, false, false, false); // XXX debug here
 		Gdx.gl.glDepthMask(true);
@@ -77,7 +77,7 @@ public class SecretRenderSystem extends EntitySystem
 		Gdx.gl.glDepthRangef(0,1); // restore back
 		
 		// write secrets with depth test
-		modelRenderer.modelBatch.begin(engine.getRenderCamera());
+		modelRenderer.modelBatch.begin(engine.camera);
 		for(Entity entity : secrets){
 			G3DModel model = G3DModel.components.get(entity);
 			modelRenderer.modelBatch.render(model.modelInstance, modelRenderer.environment);

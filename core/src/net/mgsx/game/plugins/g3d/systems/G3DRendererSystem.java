@@ -192,7 +192,7 @@ public class G3DRendererSystem extends IteratingSystem
 		environment.set(new ColorAttribute(ColorAttribute.AmbientLight, ambient));
 		
 		
-		Camera camera = engine.getRenderCamera();
+		Camera camera = engine.camera;
 		
 		if(shadow)
 		{

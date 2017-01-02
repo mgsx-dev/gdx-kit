@@ -24,7 +24,7 @@ public class G3DCullingSystem extends IteratingSystem
 	
 	private final GameScreen engine;
 	public G3DCullingSystem(GameScreen engine) {
-		super(Family.all(G3DModel.class).exclude(Hidden.class).get(), GamePipeline.BEFORE_RENDER);
+		super(Family.all(G3DModel.class).exclude(Hidden.class).get(), GamePipeline.CULLING);
 		this.engine = engine;
 	}
 
@@ -58,10 +58,10 @@ public class G3DCullingSystem extends IteratingSystem
 		if(culling)
 		{
 			model.globalBoundary.set(model.localBoundary).mul(model.modelInstance.transform);
-			model.inFrustum = engine.getCullingCamera().frustum.boundsInFrustum(model.globalBoundary);
+			model.inFrustum = engine.camera.frustum.boundsInFrustum(model.globalBoundary);
 			if(model.inFrustum){
 				for(NodeBoundary b : model.boundary)
-					b.update(model.modelInstance, engine.getCullingCamera().frustum);
+					b.update(model.modelInstance, engine.camera.frustum);
 			}
 		}
 		else

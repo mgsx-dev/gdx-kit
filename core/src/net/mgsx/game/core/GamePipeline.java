@@ -36,8 +36,15 @@ final public class GamePipeline
 	// after logic could be matrix updates
 	public static final int AFTER_LOGIC = LOGIC + SLOTS;
 
+	// culling act before logic and rendering and update some components
+	// computing collision with frustum.
+	public static final int BEFORE_CULLING = AFTER_LOGIC + SLOTS;
+	public static final int CULLING = BEFORE_CULLING + SLOTS;
+	public static final int AFTER_CULLING = CULLING + SLOTS;
+	
+	
 	// then render (normal rendering and over rendering (debug, tools, ... always on top)
-	public static final int BEFORE_RENDER = AFTER_LOGIC + SLOTS; // alias
+	public static final int BEFORE_RENDER = AFTER_CULLING + SLOTS; // alias
 	public static final int RENDER_OPAQUE = BEFORE_RENDER + SLOTS;
 	public static final int RENDER_TRANSPARENT = RENDER_OPAQUE + SLOTS;
 	public static final int AFTER_RENDER = RENDER_TRANSPARENT + SLOTS;

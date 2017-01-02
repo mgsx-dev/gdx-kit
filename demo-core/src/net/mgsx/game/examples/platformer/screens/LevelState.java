@@ -12,7 +12,7 @@ import net.mgsx.game.core.helpers.EntityHelper;
 import net.mgsx.game.examples.platformer.inputs.KeyboardControllerSystem;
 import net.mgsx.game.examples.platformer.ui.PlatformerHUDSystem;
 import net.mgsx.game.plugins.camera.components.CameraComponent;
-import net.mgsx.game.plugins.camera.components.RenderingComponent;
+import net.mgsx.game.plugins.camera.components.ActiveCamera;
 import net.mgsx.game.plugins.core.components.Transform3DComponent;
 import net.mgsx.game.plugins.core.components.Translation3D;
 
@@ -35,7 +35,7 @@ public enum LevelState implements State<LevelScreen>
 		{
 			screen.entityEngine.getSystem(KeyboardControllerSystem.class).setProcessing(false);
 			
-			Entity camera = EntityHelper.first(screen.entityEngine, Family.all(CameraComponent.class, RenderingComponent.class).get());
+			Entity camera = EntityHelper.first(screen.entityEngine, Family.all(CameraComponent.class, ActiveCamera.class).get());
 			if(camera != null){
 				CameraComponent cam = CameraComponent.components.get(camera);
 				
@@ -55,7 +55,7 @@ public enum LevelState implements State<LevelScreen>
 		@Override
 		public void update(LevelScreen screen) 
 		{
-			Entity camera = EntityHelper.first(screen.entityEngine, Family.all(CameraComponent.class, RenderingComponent.class, Translation3D.class).get());
+			Entity camera = EntityHelper.first(screen.entityEngine, Family.all(CameraComponent.class, ActiveCamera.class, Translation3D.class).get());
 			if(camera != null){
 				Translation3D animation = Translation3D.components.get(camera);
 				if(animation.time > animation.duration){

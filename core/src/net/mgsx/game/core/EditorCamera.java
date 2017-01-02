@@ -1,7 +1,5 @@
 package net.mgsx.game.core;
 
-import com.badlogic.ashley.core.Engine;
-import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -10,37 +8,24 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
 
 import net.mgsx.game.core.tools.Tool;
-import net.mgsx.game.plugins.camera.components.CameraComponent;
-import net.mgsx.game.plugins.camera.components.RenderingComponent;
-import net.mgsx.game.plugins.camera.systems.CameraSystem;
 
 public class EditorCamera 
 {
-	private Engine entityEngine;
 
+	private boolean active;
 	private boolean orthoMode;
-	private Entity gameCamera, editorCamera;
 
 	private OrthographicCamera orthographicCamera;
 	private PerspectiveCamera perspectiveCamera;
-
 	
-	
-	public EditorCamera(Engine entityEngine) {
+	public EditorCamera() {
 		super();
-		this.entityEngine = entityEngine;
 		createCamera();
 	}
 
 	private void createCamera()
 	{
-		gameCamera = entityEngine.getSystem(CameraSystem.class).getRenderCamera();
-		gameCamera.remove(RenderingComponent.class);
-		
-		editorCamera = entityEngine.createEntity();
-		
-		CameraComponent camera = entityEngine.createComponent(CameraComponent.class);
-		RenderingComponent render = entityEngine.createComponent(RenderingComponent.class);
+		active = true;
 		
 		PerspectiveCamera pc = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		pc.position.set(0, 0, 10);
@@ -49,16 +34,10 @@ public class EditorCamera
 		pc.near = 1f;
 		pc.far = 3000f;
 		pc.update();
-		camera.camera = pc;
 		
 		perspectiveCamera = pc;
 		
 		orthographicCamera = new OrthographicCamera();
-		
-		editorCamera.add(camera);
-		editorCamera.add(render);
-		
-		entityEngine.addEntity(editorCamera);
 	}
 	
 	public void zoom(float rate) {
@@ -73,11 +52,14 @@ public class EditorCamera
 			
 		}else{
 			perspectiveCamera.translate(0, 0, -rate);
+			perspectiveCamera.update(false);
 		}
 	}
 	
 	public void fov(float rate) 
 	{
+		if(orthoMode) return;
+		
 		rate *= 360; // degree scale
 		
 		syncPerspective(false);
@@ -133,36 +115,25 @@ public class EditorCamera
 
 	public void switchCamera()
 	{
-		CameraComponent camera = CameraComponent.components.get(editorCamera);
 		if(!orthoMode)
 		{
 			syncOrtho(true);
-			
-			
-			camera.camera = orthographicCamera;
 			orthoMode = true;
 		}
 		else
 		{
 			syncPerspective(true);
-			
-			camera.camera = perspectiveCamera;
 			orthoMode = false;
 		}
 	}
 	
 	public void switchCameras()
 	{
-		Entity currentCamera = entityEngine.getSystem(CameraSystem.class).getRenderCamera();
-		currentCamera.remove(RenderingComponent.class);
-		
-		if(currentCamera == editorCamera)
-		{
-			currentCamera = gameCamera;
-		}else{
-			currentCamera = editorCamera;
-		}
-		currentCamera.add(entityEngine.createComponent(RenderingComponent.class));
+		active = !active;
+	}
+	
+	public boolean isActive(){
+		return active;
 	}
 
 	public void resize(int width, int height) 

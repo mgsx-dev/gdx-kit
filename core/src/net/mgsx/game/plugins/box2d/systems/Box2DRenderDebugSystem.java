@@ -32,6 +32,6 @@ public class Box2DRenderDebugSystem extends EntitySystem
 
 	@Override
 	public void update(float deltaTime) {
-		box2dRenderer.render(context.world, editor.getRenderCamera().combined);
+		box2dRenderer.render(context.world, editor.getGameCamera().combined);
 	}
 }

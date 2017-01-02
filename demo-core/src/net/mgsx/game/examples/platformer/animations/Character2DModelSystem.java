@@ -14,7 +14,7 @@ public class Character2DModelSystem extends IteratingSystem
 {
 
 	public Character2DModelSystem() {
-		super(Family.all(Character2D.class, G3DModel.class).get(), GamePipeline.BEFORE_RENDER);
+		super(Family.all(Character2D.class, G3DModel.class).get(), GamePipeline.BEFORE_CULLING);
 	}
 	
 	@Override

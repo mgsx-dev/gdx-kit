@@ -130,7 +130,7 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 		this.serializers = config.registry.serializers;
 		this.registry = config.registry;
 		this.current = this.game;
-		editorCamera = new EditorCamera(entityEngine);
+		editorCamera = new EditorCamera();
 		init();
 	}
 	
@@ -286,7 +286,7 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 			updateSelection();
 		}
 		
-		shapeRenderer.setProjectionMatrix(getRenderCamera().combined);
+		shapeRenderer.setProjectionMatrix(getGameCamera().combined);
 		
 		current.render(deltaTime);
 
@@ -295,7 +295,7 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 		
 		// TODO use systems instead (used by sprite tools ...)
 		
-		editorBatch.setProjectionMatrix(getRenderCamera().combined);
+		editorBatch.setProjectionMatrix(getGameCamera().combined);
 		editorBatch.begin();
 		for(ToolGroup g : tools){
 			g.render(editorBatch);
@@ -325,11 +325,6 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 	public EditorCamera getEditorCamera() {
 		return editorCamera;
 	}
-	
-	public Camera getCullingCamera(){
-		return game.getCullingCamera();
-	}
-	
 	
 	@Override
 	public void resize(int width, int height) 
@@ -698,7 +693,7 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 	}
 
 	public Vector2 unproject(float screenX, float screenY) {
-		return Tool.unproject(getRenderCamera(), screenX, screenY);
+		return Tool.unproject(getGameCamera(), screenX, screenY);
 	}
 
 	public void addSelector(SelectorPlugin selector) {
@@ -736,20 +731,12 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 		history.add(command);
 	}
 
-	public Camera getRenderCamera() {
-		Camera camera = game.getRenderCamera();
-		if(camera == null) return editorCamera.camera();
-		return camera;
-	}
-
 	public void reset() 
 	{
 		entityEngine.removeAllEntities();
 		
 		// clear all assets used by engine (not these loaded by editor).
 		assets.clear();
-		
-		game.createCamera();
 		
 		editorCamera.reset();
 		
@@ -787,6 +774,10 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 		config.engine = entityEngine;
 		config.failSafe = true; // TODO fail safe when load for editing to avoid crash always app
 		EntityGroupStorage.loadForEditing(file.path(), config);
+	}
+
+	public Camera getGameCamera() { // TODO rename getCamera
+		return editorCamera.isActive() ? editorCamera.camera() : game.camera;
 	}
 
 }

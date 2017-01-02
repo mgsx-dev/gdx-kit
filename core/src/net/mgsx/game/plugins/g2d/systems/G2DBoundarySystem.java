@@ -19,7 +19,7 @@ public class G2DBoundarySystem extends IteratingSystem
 	public G2DBoundarySystem() {
 		// we don't need transform since it is already applied to sprite, but we don't want to
 		// process static ones. So this is just a tag filter.
-		super(Family.all(SpriteModel.class, BoundaryComponent.class, Transform2DComponent.class).get(), GamePipeline.BEFORE_RENDER);
+		super(Family.all(SpriteModel.class, BoundaryComponent.class, Transform2DComponent.class).get(), GamePipeline.CULLING);
 	}
 	
 	@Override

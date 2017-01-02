@@ -58,7 +58,7 @@ public class PlatformerMusicSystem extends EntitySystem
 	public void update(float deltaTime) {
 		super.update(deltaTime);
 		
-		Vector3 cam = game.getCullingCamera().position;
+		Vector3 cam = game.camera.position;
 		position.set(cam.x, cam.y);
 		
 		// check where we are

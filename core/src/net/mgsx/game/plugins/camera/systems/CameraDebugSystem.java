@@ -15,7 +15,6 @@ import net.mgsx.game.plugins.camera.components.CameraComponent;
 public class CameraDebugSystem extends IteratingSystem
 {
 	private EditorScreen editor;
-	private Entity currentCamera;
 
 	public CameraDebugSystem(EditorScreen editor) {
 		super(Family.all(CameraComponent.class).get(), GamePipeline.RENDER_DEBUG);
@@ -25,21 +24,17 @@ public class CameraDebugSystem extends IteratingSystem
 	@Override
 	public void update(float deltaTime) 
 	{
-		currentCamera = getEngine().getSystem(CameraSystem.class).getRenderCamera();
 		editor.shapeRenderer.setColor(0, 0, 1, 1f);
 		editor.shapeRenderer.begin(ShapeType.Line);
 		super.update(deltaTime);
 		editor.shapeRenderer.end();
-		currentCamera = null;
 	}
 
 	@Override
 	protected void processEntity(Entity entity, float deltaTime) 
 	{
-		if(entity != currentCamera){
-			CameraComponent camera = CameraComponent.components.get(entity);
-			RenderDebugHelper.frustum(editor.shapeRenderer, camera.camera.frustum);
-		}
+		CameraComponent camera = CameraComponent.components.get(entity);
+		RenderDebugHelper.frustum(editor.shapeRenderer, camera.camera.frustum);
 	}
 
 }

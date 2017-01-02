@@ -11,12 +11,13 @@ import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
 
 import net.mgsx.game.core.GamePipeline;
+import net.mgsx.game.core.GameScreen;
 import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.core.annotations.EditableSystem;
 import net.mgsx.game.core.annotations.Storable;
 import net.mgsx.game.core.helpers.systems.TransactionSystem;
+import net.mgsx.game.plugins.camera.components.ActiveCamera;
 import net.mgsx.game.plugins.camera.components.CameraComponent;
-import net.mgsx.game.plugins.camera.components.CullingComponent;
 import net.mgsx.game.plugins.g3d.components.G3DModel;
 
 @Storable("example.platformer.tube")
@@ -27,6 +28,7 @@ public class TubeWorldSystem extends TransactionSystem
 		X,Y,Z, None
 	}
 	
+	private GameScreen game;
 	private ImmutableArray<Entity> models, tubes;
 	private ImmutableArray<Entity> cameras;
 	
@@ -44,8 +46,9 @@ public class TubeWorldSystem extends TransactionSystem
 	
 	private Camera backup = new PerspectiveCamera();
 	
-	public TubeWorldSystem() {
-		super(GamePipeline.BEFORE_RENDER + 1, GamePipeline.AFTER_RENDER + 1);
+	public TubeWorldSystem(GameScreen game) {
+		super(GamePipeline.BEFORE_RENDER + 1, new AfterSystem(GamePipeline.LAST + 1){});
+		this.game = game;
 	}
 	
 	@Override
@@ -53,7 +56,7 @@ public class TubeWorldSystem extends TransactionSystem
 		super.addedToEngine(engine);
 		models = engine.getEntitiesFor(Family.all(G3DModel.class).exclude(TubeComponent.class).get());
 		tubes = engine.getEntitiesFor(Family.all(G3DModel.class, TubeComponent.class).get());
-		cameras = engine.getEntitiesFor(Family.all(CameraComponent.class, CullingComponent.class).get());
+		cameras = engine.getEntitiesFor(Family.all(CameraComponent.class, ActiveCamera.class).get());
 	}
 	
 	private void project(Vector3 position, Quaternion direction){
@@ -104,35 +107,100 @@ public class TubeWorldSystem extends TransactionSystem
 			model.modelInstance.transform.rotate(rotation);
 		}
 		
+		if(cameras.size() == 0) return false;
 		
-		CameraComponent camera = CameraComponent.components.get(cameras.first());
+		Camera camera = CameraComponent.components.get(cameras.first()).camera;
 		
-		backup.combined.set(camera.camera.combined);
-		backup.position.set(camera.camera.position);
-		backup.direction.set(camera.camera.direction);
-		backup.up.set(camera.camera.up);
+		backup.combined.set(camera.combined);
+		backup.position.set(camera.position);
+		backup.direction.set(camera.direction);
+		backup.up.set(camera.up);
+		
+		
+//		backup.position.set(camera.position);
+//		backup.direction.set(camera.direction);
+//		backup.combined.set(camera.combined);
+//		backup.invProjectionView.set(camera.invProjectionView);
+//		backup.projection.set(camera.projection);
+//		backup.up.set(camera.up);
+//		backup.view.set(camera.view);
+//		backup.viewportHeight = camera.viewportHeight;
+//		backup.far = camera.far;
+//		backup.near = camera.near;
+//		backup.viewportWidth = camera.viewportWidth;
+//		backup.frustum.update(camera.invProjectionView);
+		
+		
 		rotation.set(Vector3.Z, 0);
-		project(camera.camera.position, rotation);
+		project(camera.position, rotation);
 
-		rotation.transform(camera.camera.direction);
-		rotation.transform(camera.camera.up);
-		camera.camera.update();
+		rotation.transform(camera.direction);
+		rotation.transform(camera.up);
+		camera.update();
 		
 		for(Entity entity : tubes){
 			G3DModel model = G3DModel.components.get(entity);
-			model.inFrustum = camera.camera.frustum.boundsInFrustum(model.globalBoundary);
+			model.inFrustum = camera.frustum.boundsInFrustum(model.globalBoundary);
 		}
+		
+		
+		game.camera.position.set(camera.position);
+		game.camera.direction.set(camera.direction);
+		game.camera.combined.set(camera.combined);
+		game.camera.invProjectionView.set(camera.invProjectionView);
+		game.camera.projection.set(camera.projection);
+		game.camera.up.set(camera.up);
+		game.camera.view.set(camera.view);
+		game.camera.viewportHeight = camera.viewportHeight;
+		game.camera.far = camera.far;
+		game.camera.near = camera.near;
+		game.camera.viewportWidth = camera.viewportWidth;
+		game.camera.frustum.update(camera.invProjectionView);
+
 		
 		return true;
 	}
 
 	@Override
 	protected void updateAfter(float deltaTime) {
-		CameraComponent camera = CameraComponent.components.get(cameras.first());
-		camera.camera.position.set(backup.position);
-		camera.camera.direction.set(backup.direction);
-		camera.camera.up.set(backup.up);
-		camera.camera.combined.set(backup.combined);
+		if(cameras.size() == 0) return;
+		Camera camera = CameraComponent.components.get(cameras.first()).camera;
+		
+		
+//		camera.position.set(backup.position);
+//		camera.direction.set(backup.direction);
+//		camera.combined.set(backup.combined);
+//		camera.invProjectionView.set(backup.invProjectionView);
+//		camera.projection.set(backup.projection);
+//		camera.up.set(backup.up);
+//		camera.view.set(backup.view);
+//		camera.viewportHeight = camera.viewportHeight;
+//		camera.far = camera.far;
+//		camera.near = camera.near;
+//		camera.viewportWidth = camera.viewportWidth;
+//		camera.frustum.update(backup.invProjectionView);
+		
+		
+		camera.position.set(backup.position);
+		camera.direction.set(backup.direction);
+		camera.up.set(backup.up);
+		camera.combined.set(backup.combined);
+		//camera.update(true);
+		
+//		game.camera.position.set(camera.position);
+//		game.camera.direction.set(camera.direction);
+//		game.camera.combined.set(camera.combined);
+//		game.camera.invProjectionView.set(camera.invProjectionView);
+//		game.camera.projection.set(camera.projection);
+//		game.camera.up.set(camera.up);
+//		game.camera.view.set(camera.view);
+//		game.camera.viewportHeight = camera.viewportHeight;
+//		game.camera.far = camera.far;
+//		game.camera.near = camera.near;
+//		game.camera.viewportWidth = camera.viewportWidth;
+//		game.camera.frustum.update(camera.invProjectionView);
+
+
 	}
 
 }

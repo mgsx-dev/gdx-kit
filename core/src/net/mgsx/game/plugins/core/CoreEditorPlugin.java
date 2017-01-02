@@ -21,7 +21,6 @@ import net.mgsx.game.plugins.core.tools.DuplicateTool;
 import net.mgsx.game.plugins.core.tools.EntityEmitterTool;
 import net.mgsx.game.plugins.core.tools.EntityGroupEditor;
 import net.mgsx.game.plugins.core.tools.ExportClassesTool;
-import net.mgsx.game.plugins.core.tools.FollowSelectionTool;
 import net.mgsx.game.plugins.core.tools.GridTool;
 import net.mgsx.game.plugins.core.tools.ImportPatchTool;
 import net.mgsx.game.plugins.core.tools.OpenTool;
@@ -63,7 +62,6 @@ public class CoreEditorPlugin extends EditorPlugin
 		editor.addGlobalTool(new ZoomTool(editor));
 		editor.addGlobalTool(new PanTool(editor));
 		editor.addGlobalTool(new DuplicateTool(editor));
-		editor.addGlobalTool(new FollowSelectionTool(editor));
 		editor.addGlobalTool(new SwitchModeTool(editor));
 		editor.addGlobalTool(new ToggleHelpTool(editor));
 		editor.addGlobalTool(new GridTool(editor));

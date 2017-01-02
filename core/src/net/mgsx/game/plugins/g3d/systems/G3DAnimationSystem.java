@@ -8,7 +8,7 @@ import net.mgsx.game.plugins.g3d.components.G3DModel;
 
 public class G3DAnimationSystem extends ComponentIteratingSystem<G3DModel> {
 	public G3DAnimationSystem() {
-		super(G3DModel.class, GamePipeline.BEFORE_RENDER);
+		super(G3DModel.class, GamePipeline.BEFORE_CULLING);
 	}
 
 	@Override

@@ -29,7 +29,7 @@ public class G2DRenderSystem extends IteratingSystem {
 
 	@Override
 	public void update(float deltaTime) {
-		batch.setProjectionMatrix(engine.getRenderCamera().combined);
+		batch.setProjectionMatrix(engine.camera.combined);
 		batch.begin();
 		super.update(deltaTime);
 		batch.end();

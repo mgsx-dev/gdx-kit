@@ -34,7 +34,7 @@ public class ParallaxPlugin extends EditorPlugin {
 				ParallaxModel parallax = ParallaxModel.components.get(entity);
 				Transform2DComponent transform = Transform2DComponent.components.get(entity);
 				
-				camPos.set(editor.getRenderCamera().position);
+				camPos.set(editor.getGameCamera().position);
 				pos
 				.set(parallax.cameraOrigin)
 				.sub(camPos)

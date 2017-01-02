@@ -53,7 +53,7 @@ public class SelectTool extends Tool
 				}
 				else continue;
 				Vector2 s = new Vector2(5, 5); // size of displayed knot !
-				Vector3 v = editor.getRenderCamera().project(pos);
+				Vector3 v = editor.getGameCamera().project(pos);
 				if(new Rectangle(v.x-s.x, v.y-s.y, 2*s.x, 2*s.y).contains(screenX, Gdx.graphics.getHeight() - screenY)){
 					selection.add(entity);
 				}

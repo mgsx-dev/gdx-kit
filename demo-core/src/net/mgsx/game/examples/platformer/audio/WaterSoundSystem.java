@@ -69,7 +69,7 @@ public class WaterSoundSystem extends IteratingSystem
 	{
 		Transform2DComponent transform = Transform2DComponent.components.get(entity);
 		
-		Camera camera = game.getCullingCamera();
+		Camera camera = game.camera;
 		
 		position.set(transform.position, 0).sub(camera.position);
 		

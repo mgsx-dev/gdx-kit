@@ -7,7 +7,6 @@ import com.badlogic.gdx.graphics.PerspectiveCamera;
 import net.mgsx.game.core.EditorScreen;
 import net.mgsx.game.core.tools.Tool;
 import net.mgsx.game.plugins.camera.components.CameraComponent;
-import net.mgsx.game.plugins.camera.components.CullingComponent;
 
 public class Camera2DTool extends Tool {
 	public Camera2DTool(EditorScreen editor) {
@@ -19,7 +18,6 @@ public class Camera2DTool extends Tool {
 		
 		Entity entity = editor.currentEntity();
 		CameraComponent camera = editor.entityEngine.createComponent(CameraComponent.class);
-		CullingComponent culling = editor.entityEngine.createComponent(CullingComponent.class);
 		
 		PerspectiveCamera pc = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		pc.position.set(0, 0, 10);
@@ -31,7 +29,6 @@ public class Camera2DTool extends Tool {
 		camera.camera = pc;
 		
 		entity.add(camera);
-		entity.add(culling);
 		
 		end();
 	}

@@ -12,7 +12,7 @@ import net.mgsx.game.plugins.g3d.components.G3DModel;
 
 public class G3DTransformSystem extends IteratingSystem {
 	public G3DTransformSystem() {
-		super(Family.all(G3DModel.class, Transform2DComponent.class).exclude(Hidden.class).get(), GamePipeline.BEFORE_RENDER);
+		super(Family.all(G3DModel.class, Transform2DComponent.class).exclude(Hidden.class).get(), GamePipeline.BEFORE_CULLING);
 	}
 
 	@Override

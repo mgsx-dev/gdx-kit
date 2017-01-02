@@ -12,7 +12,7 @@ public class P2DCullingSystem extends IteratingSystem
 {
 
 	public P2DCullingSystem() {
-		super(Family.all(Particle2DComponent.class, BoundaryComponent.class).get(), GamePipeline.AFTER_LOGIC);
+		super(Family.all(Particle2DComponent.class, BoundaryComponent.class).get(), GamePipeline.CULLING);
 	}
 
 	@Override

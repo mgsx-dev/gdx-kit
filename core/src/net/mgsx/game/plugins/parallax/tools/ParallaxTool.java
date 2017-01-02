@@ -17,7 +17,7 @@ public class ParallaxTool extends ComponentTool {
 	protected Component createComponent(Entity entity) {
 		Transform2DComponent transform = Transform2DComponent.components.get(entity);
 		ParallaxModel model = new ParallaxModel();
-		model.cameraOrigin.set(editor.getRenderCamera().position);
+		model.cameraOrigin.set(editor.getGameCamera().position);
 		model.objectOrigin.set(transform.position.x, transform.position.y, 0);
 		return model;
 	}
