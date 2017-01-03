@@ -6,13 +6,16 @@ import com.badlogic.gdx.graphics.Camera;
 
 import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.core.annotations.EditableComponent;
+import net.mgsx.game.core.annotations.Storable;
 
-@EditableComponent(autoTool=false)
+@Storable(value="camera", auto=true)
+@EditableComponent(autoTool=false, autoClone=true)
 public class CameraComponent implements Component
 {
 	
 	public static final ComponentMapper<CameraComponent> components = ComponentMapper.getFor(CameraComponent.class);
 	
+	@Storable
 	@Editable public Camera camera;
 	public boolean frustumDirty;
 }
