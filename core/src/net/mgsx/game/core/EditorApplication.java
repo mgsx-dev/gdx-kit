@@ -9,9 +9,11 @@ import com.badlogic.gdx.graphics.Texture;
 
 import net.mgsx.game.core.helpers.EditorAssetManager;
 import net.mgsx.game.core.plugins.Plugin;
+import net.mgsx.game.core.storage.EngineStorage;
 import net.mgsx.game.core.storage.EntityGroup;
 import net.mgsx.game.core.storage.EntityGroupLoader;
 import net.mgsx.game.core.storage.EntityGroupStorage;
+import net.mgsx.game.core.storage.LoadConfiguration;
 import net.mgsx.game.core.storage.SaveConfiguration;
 
 public class EditorApplication extends Game
@@ -51,9 +53,18 @@ public class EditorApplication extends Game
 		if(config.path != null) {
 			editorScreen.loadForEditing(Gdx.files.absolute(config.path));
 		}else{
-			FileHandle recovery = Gdx.files.absolute("/tmp/entities.json");
+			FileHandle recovery = Gdx.files.absolute("/tmp/entities.json"); // TODO linux only
 			if(recovery.exists()){
 				editorScreen.loadForEditing(recovery);
+			}
+			FileHandle settingsRecovery = Gdx.files.absolute("/tmp/settings.json"); // TODO linux only
+			if(settingsRecovery.exists()){
+				LoadConfiguration cfg = new LoadConfiguration();
+				cfg.assets = assetManager;
+				cfg.registry = config.registry;
+				cfg.engine = engine;
+				cfg.failSafe = true; 
+				EngineStorage.load(settingsRecovery, cfg);
 			}
 		}
 		
@@ -73,6 +84,8 @@ public class EditorApplication extends Game
 		config.stripPaths = true;
 		
 		EntityGroupStorage.save(Gdx.files.absolute("/tmp/entities.json"), config); // TODO linux only
+		
+		EngineStorage.save(Gdx.files.absolute("/tmp/settings.json"), config); // TODO linux only
 		
 		super.dispose();
 	}
