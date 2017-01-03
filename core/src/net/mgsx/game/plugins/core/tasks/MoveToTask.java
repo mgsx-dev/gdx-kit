@@ -18,7 +18,6 @@ public class MoveToTask extends EntityLeafTask
 	@TaskAttribute
 	public float duration;
 	
-	@TaskAttribute
 	public Interpolation interpolation;
 	
 	private Vector2 origin = new Vector2();
