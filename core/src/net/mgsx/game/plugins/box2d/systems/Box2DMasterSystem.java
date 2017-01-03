@@ -18,7 +18,7 @@ public class Box2DMasterSystem extends IteratingSystem {
 	public void processEntity(Entity entity, float deltaTime) {
 		Box2DBodyModel physic = entity.getComponent(Box2DBodyModel.class);
 		Transform2DComponent t = entity.getComponent(Transform2DComponent.class);
-		if(physic.body != null){
+		if(physic.body != null && t.enabled){
 			t.position.set(physic.body.getPosition());
 			t.angle = physic.body.getAngle();
 		}
