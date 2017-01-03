@@ -8,7 +8,6 @@ import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.utils.Array;
 
@@ -57,7 +56,6 @@ public class GameScreen extends ScreenAdapter
 		return component;
 	}
 	
-	// TODO remove ?
 	@Override
 	public void render(float delta) 
 	{
@@ -66,10 +64,6 @@ public class GameScreen extends ScreenAdapter
 			EntityGroupStorage.get(assets, entityEngine, pendingGroups.removeIndex(0));
 		}
 		
-		// TODO in systems
-		Gdx.gl.glClearColor(.2f, .2f, .2f, 1);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
-
 		// run the engine
 		entityEngine.update(Gdx.graphics.getDeltaTime());
 	}
