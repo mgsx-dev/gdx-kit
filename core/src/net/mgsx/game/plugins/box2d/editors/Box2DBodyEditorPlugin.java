@@ -2,7 +2,6 @@ package net.mgsx.game.plugins.box2d.editors;
 
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.physics.box2d.Filter;
-import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -19,12 +18,12 @@ public class Box2DBodyEditorPlugin implements EntityEditorPlugin
 	@Editable
 	public static class FixtureEditor
 	{
-		private Fixture fixture;
+		private Box2DFixtureModel model;
 		
-		public FixtureEditor(Fixture fixture) {
+		public FixtureEditor(Box2DFixtureModel model) {
 			super();
-			this.fixture = fixture;
-			Filter filter = fixture.getFilterData();
+			this.model = model;
+			Filter filter = model.fixture.getFilterData();
 			categoryBits = filter.categoryBits;
 			maskBits = filter.maskBits;
 			groupIndex = filter.groupIndex;
@@ -42,11 +41,18 @@ public class Box2DBodyEditorPlugin implements EntityEditorPlugin
 		
 		@Editable
 		public void applyFilter(){
-			Filter filter = fixture.getFilterData();
+			Filter filter = model.fixture.getFilterData();
 			filter.categoryBits = categoryBits;
 			filter.maskBits = maskBits;
 			filter.groupIndex = groupIndex;
-			fixture.setFilterData(filter);
+			model.fixture.setFilterData(filter);
+		}
+		@Editable
+		public void applyFilterDef(){
+			Filter filter = model.def.filter;
+			filter.categoryBits = categoryBits;
+			filter.maskBits = maskBits;
+			filter.groupIndex = groupIndex;
 		}
 	}
 	
@@ -62,7 +68,7 @@ public class Box2DBodyEditorPlugin implements EntityEditorPlugin
 		for(final Box2DFixtureModel fix : model.fixtures){
 			table.row();
 			
-			FixtureEditor fixtureEditor = new FixtureEditor(fix.fixture);
+			FixtureEditor fixtureEditor = new FixtureEditor(fix);
 			
 			table.add(new EntityEditor(fixtureEditor, true, skin));
 			
