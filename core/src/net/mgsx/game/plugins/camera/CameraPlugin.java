@@ -1,5 +1,6 @@
 package net.mgsx.game.plugins.camera;
 
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 
@@ -21,6 +22,7 @@ public class CameraPlugin implements Plugin
 		engine.entityEngine.addSystem(new CameraTransformSystem());
 		engine.entityEngine.addSystem(new CameraSystem(engine));
 		
+		engine.registry.serializers.put(Camera.class, new CameraSerializer());
 		engine.registry.serializers.put(PerspectiveCamera.class, new CameraSerializer());
 		engine.registry.serializers.put(OrthographicCamera.class, new CameraSerializer());
 	}
