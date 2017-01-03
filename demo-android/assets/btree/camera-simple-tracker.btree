@@ -1,0 +1,10 @@
+# import behaviorTree:"com.badlogic.gdx.ai.btree.BehaviorTree"
+# import sequence:"com.badlogic.gdx.ai.btree.branch.Sequence"
+import trackPlayer:"net.mgsx.game.examples.platformer.tasks.TrackPlayerTask"
+import moveBy:"net.mgsx.game.plugins.core.tasks.MoveByTask"
+import moveTo:"net.mgsx.game.plugins.core.tasks.MoveToTask"
+
+sequence
+  moveTo
+  moveBy tx:5.0 duration:2.0
+  trackPlayer smooth:0.048361953 oy:3.2291355

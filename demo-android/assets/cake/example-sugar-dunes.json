@@ -155,8 +155,8 @@ entities: [
 		}
 		2d: {
 			position: {
-				x: 5
-				y: 8
+				x: -3.0532687
+				y: 10.177563
 			}
 		}
 	}
@@ -167,8 +167,8 @@ entities: [
 		}
 		2d: {
 			position: {
-				x: 9
-				y: 8
+				x: 1.0177562
+				y: 9.504153
 			}
 		}
 	}
@@ -339,24 +339,28 @@ entities: [
 					a: 1
 				}
 				direction: {
-					x: 0.4131576
-					y: -1.3231277
-					z: -0.22291416
+					x: 0.331795
+					y: -0.8951153
+					z: -0.29134563
 				}
 			}
 			shadow: true
 		}
 	}
+	{
+		id: 29
+		proxy: {
+			ref: cake/camera.json
+		}
+		2d: {
+			position: {
+				x: -8.14205
+				y: 17.301855
+			}
+		}
+	}
 ]
 assets: [
-	{
-		type: net.mgsx.game.core.storage.EntityGroup
-		name: sugar/bonus-pink.json
-	}
-	{
-		type: net.mgsx.game.core.storage.EntityGroup
-		name: cake/player.json
-	}
 	{
 		type: net.mgsx.game.core.storage.EntityGroup
 		name: cake/chocos-patroller.json
@@ -364,6 +368,18 @@ assets: [
 	{
 		type: net.mgsx.game.core.storage.EntityGroup
 		name: sugar/dunes.json
+	}
+	{
+		type: net.mgsx.game.core.storage.EntityGroup
+		name: cake/camera.json
+	}
+	{
+		type: net.mgsx.game.core.storage.EntityGroup
+		name: sugar/bonus-pink.json
+	}
+	{
+		type: net.mgsx.game.core.storage.EntityGroup
+		name: cake/player.json
 	}
 ]
 }

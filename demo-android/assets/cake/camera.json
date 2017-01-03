@@ -1,0 +1,74 @@
+{
+entities: [
+	{
+		id: 0
+		2d: {
+			position: {
+				x: 3.6921217
+				y: 0.7791408
+			}
+			enabled: false
+			origin: {
+				y: 0.018235337
+			}
+		}
+		camera: {
+			camera: {
+				fieldOfView: 48.880737
+				position: {
+					x: 3.6921217
+					y: 0.7791408
+					z: 19.812637
+				}
+				direction: {
+					z: -1
+				}
+				up: {
+					y: 1
+				}
+				near: 1
+				far: 100
+				viewportWidth: 640
+				viewportHeight: 363.5764
+			}
+		}
+		active: {}
+		btree: {
+			library: btree/camera-simple-tracker.btree
+		}
+		box2d: {
+			id: Circle
+			def: {
+				type: DynamicBody
+				position: {
+					x: 2
+				}
+				fixedRotation: true
+				active: false
+			}
+			fixtures: [
+				{
+					def: {
+						shape: {
+							type: Circle
+							position: {}
+							radius: 5
+						}
+						density: 1
+						filter: {
+							categoryBits: 0
+							groupIndex: 1
+						}
+					}
+				}
+			]
+		}
+	}
+]
+assets: [
+	{
+		type: com.badlogic.gdx.ai.btree.BehaviorTree
+		name: btree/camera-simple-tracker.btree
+	}
+]
+}

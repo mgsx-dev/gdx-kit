@@ -1,0 +1,62 @@
+{
+entities: [
+	{
+		id: 0
+		proxy: {
+			ref: cake/chocos-patroller.json
+		}
+		2d: {
+			position: {
+				x: -0.33015665
+				y: -0.33015665
+			}
+			angle: -75.455765
+		}
+	}
+	{
+		id: 1
+		proxy: {
+			ref: cake/chocos-patroller.json
+		}
+		2d: {
+			position: {
+				x: 0.33015665
+				y: -0.33015665
+			}
+			angle: -75.455765
+		}
+	}
+	{
+		id: 2
+		proxy: {
+			ref: cake/chocos-patroller.json
+		}
+		2d: {
+			position: {
+				x: 0.33015665
+				y: 0.33015665
+			}
+			angle: -75.455765
+		}
+	}
+	{
+		id: 3
+		proxy: {
+			ref: cake/chocos-patroller.json
+		}
+		2d: {
+			position: {
+				x: -0.33015665
+				y: 0.33015665
+			}
+			angle: -75.455765
+		}
+	}
+]
+assets: [
+	{
+		type: net.mgsx.game.core.storage.EntityGroup
+		name: cake/chocos-patroller.json
+	}
+]
+}
