@@ -9,10 +9,10 @@ import net.mgsx.game.core.EditorConfiguration;
 import net.mgsx.game.core.helpers.NativeService;
 import net.mgsx.game.core.meta.ClassRegistry;
 import net.mgsx.game.examples.platformer.PlatformerEditorPlugin;
-import net.mgsx.gdx.pd.PdAudioDesktop;
 import net.mgsx.kit.ReflectionClassRegistry;
 import net.mgsx.pd.Pd;
 import net.mgsx.pd.PdConfiguration;
+import net.mgsx.pd.audio.PdAudioNone;
 
 /**
  * Desktop launcher for level editor
@@ -28,8 +28,9 @@ public class PlatformerLevelEditorLauncher {
 		DesktopNativeInterface nativeService = new DesktopNativeInterface(); 
 		NativeService.instance = nativeService; 
 		
-		// enable pd at the same time !
-		Pd.audio = new PdAudioDesktop(); 
+		// set no Pd audio by default to allow running Pd and game at the same time.
+		// all real audio implementations (java or openAL) will lock audio.
+		Pd.audio = new PdAudioNone();
 		LwjglApplicationConfiguration.disableAudio = true;
 
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();

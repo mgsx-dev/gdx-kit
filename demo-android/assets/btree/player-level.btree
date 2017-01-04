@@ -21,6 +21,8 @@ import priority:"net.mgsx.game.examples.platformer.tasks.PriorityLoop"
 import resetHurt:"net.mgsx.game.examples.platformer.tasks.ResetHurt"
 import waitSuccess:"net.mgsx.game.examples.platformer.tasks.WaitSuccess"
 import walk:"net.mgsx.game.examples.platformer.tasks.WalkingTask"
+import pdBang:"net.mgsx.game.plugins.pd.tasks.PdBangTask"
+import pdPhysics:"net.mgsx.game.plugins.pd.tasks.PdPhysicStateTask"
 
 parallel
   sequence
@@ -89,8 +91,11 @@ parallel
       onSugar
       invert
         idle
-    particleAttach particle:"particles/sugar.p"
+    parallel
+      particleAttach particle:"particles/sugar.p"
+      pdBang symbol:"sugar"
+    pdBang symbol:"no-sugar"
     success
     success
     success
-    success
+  pdPhysics symbol:"player-physics"

@@ -79,6 +79,12 @@ public class PdAudioRemote implements PdAudio
 
 	@Override
 	public void sendBang(String arg0) {
+		OSCMessage msg = new OSCMessage("/send/" + arg0);
+		try {
+			sender.send(msg);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
