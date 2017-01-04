@@ -44,6 +44,10 @@ public class FloatWidget extends Label
 					setValue(-getValue());
 					fireChange();
 					return true;
+				}else if(button == Input.Buttons.MIDDLE){
+					setValue(0);
+					fireChange();
+					return true;
 				}
 				return super.touchDown(event, x, y, pointer, button);
 			}
