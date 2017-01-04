@@ -6,6 +6,7 @@ import net.mgsx.game.core.plugins.Plugin;
 import net.mgsx.game.plugins.g2d.components.Animation2DComponent;
 import net.mgsx.game.plugins.g2d.components.SpriteModel;
 import net.mgsx.game.plugins.g2d.systems.Animation2DSystem;
+import net.mgsx.game.plugins.g2d.systems.Background2DSystem;
 import net.mgsx.game.plugins.g2d.systems.G2DBoundarySystem;
 import net.mgsx.game.plugins.g2d.systems.G2DRenderSystem;
 import net.mgsx.game.plugins.g2d.systems.G2DTransformSystem;
@@ -24,6 +25,7 @@ public class G2DPlugin implements Plugin
 		engine.entityEngine.addSystem(new G2DRenderSystem(engine));
 		engine.entityEngine.addSystem(new G2DBoundarySystem());
 		engine.entityEngine.addSystem(new Animation2DSystem());
+		engine.entityEngine.addSystem(new Background2DSystem(engine));
 	}
 
 }

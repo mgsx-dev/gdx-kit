@@ -45,8 +45,14 @@ final public class GamePipeline
 	
 	// then render (normal rendering and over rendering (debug, tools, ... always on top)
 	public static final int BEFORE_RENDER = AFTER_CULLING + SLOTS; // alias
-	public static final int RENDER_OPAQUE = BEFORE_RENDER + SLOTS;
-	public static final int RENDER_TRANSPARENT = RENDER_OPAQUE + SLOTS;
+	
+	
+	public static final int BEFORE_RENDER_OPAQUE = BEFORE_RENDER + SLOTS;
+	public static final int RENDER_OPAQUE = BEFORE_RENDER_OPAQUE + SLOTS;
+	public static final int AFTER_RENDER_OPAQUE = RENDER_OPAQUE + SLOTS;
+	
+	
+	public static final int RENDER_TRANSPARENT = AFTER_RENDER_OPAQUE + SLOTS;
 	public static final int AFTER_RENDER = RENDER_TRANSPARENT + SLOTS;
 	public static final int HUD = AFTER_RENDER + SLOTS;
 	

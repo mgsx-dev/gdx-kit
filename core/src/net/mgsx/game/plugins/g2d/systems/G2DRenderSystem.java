@@ -12,6 +12,7 @@ import net.mgsx.game.core.annotations.EditableSystem;
 import net.mgsx.game.core.annotations.Storable;
 import net.mgsx.game.core.components.Hidden;
 import net.mgsx.game.plugins.boundary.components.BoundaryComponent;
+import net.mgsx.game.plugins.g2d.components.BehindComponent;
 import net.mgsx.game.plugins.g2d.components.SpriteModel;
 
 @Storable("g2d.render")
@@ -23,7 +24,7 @@ public class G2DRenderSystem extends IteratingSystem {
 	@Editable public boolean culling = false;
 	
 	public G2DRenderSystem(GameScreen engine) {
-		super(Family.all(SpriteModel.class).exclude(Hidden.class).get(), GamePipeline.RENDER + 1);
+		super(Family.all(SpriteModel.class).exclude(Hidden.class, BehindComponent.class).get(), GamePipeline.RENDER + 1); // TODO transparent ?
 		this.engine = engine;
 	}
 

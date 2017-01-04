@@ -26,7 +26,7 @@ public class SecretRenderSystem extends EntitySystem
 	private GameScreen engine;
 	
 	public SecretRenderSystem(GameScreen engine) {
-		super(GamePipeline.RENDER + 1); // TODO use custom pipeline (inherit from base pipeline ?)
+		super(GamePipeline.AFTER_RENDER_OPAQUE); // TODO use custom pipeline (inherit from base pipeline ?) TODO after opaque anyway !!
 		this.engine = engine;
 	}
 	
