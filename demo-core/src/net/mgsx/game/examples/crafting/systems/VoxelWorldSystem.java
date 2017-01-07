@@ -1,6 +1,8 @@
 package net.mgsx.game.examples.crafting.systems;
 
 import com.badlogic.ashley.core.EntitySystem;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.RenderableProvider;
 import com.badlogic.gdx.math.Vector2;
@@ -39,7 +41,7 @@ public class VoxelWorldSystem extends EntitySystem
 	@Editable public float cubeSize = .9f;
 	@Editable public float cubeSpace = 300f;
 	@Editable public float lacunarity = .05f;
-	@Editable public float planarity = 300f;
+	@Editable public float planarity = 140f;
 	@Editable public float freq2D = .01f;
 	@Editable public float freq3D = .01f;
 	@Editable public Vector3 offset = new Vector3();
@@ -104,9 +106,24 @@ public class VoxelWorldSystem extends EntitySystem
 	@Override
 	public void update(float deltaTime) 
 	{
+//		game.camera.direction.setFromSpherical(
+//				((float)Gdx.input.getY() / (float)Gdx.graphics.getHeight() -.5f) * 360 * MathUtils.degreesToRadians,
+//				- * MathUtils.degreesToRadians
+//				);
+		
+		if(Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT)){
+			game.camera.direction.set(Vector3.Z);
+			game.camera.direction.rotate(Vector3.X, ((float)Gdx.input.getY() / (float)Gdx.graphics.getHeight() -.5f) * 360);
+			game.camera.direction.rotate(Vector3.Y, -(float)Gdx.input.getX() / (float)Gdx.graphics.getWidth() * 2 * 360);
+		}
+		Vector3 tan = new Vector3(game.camera.direction).crs(game.camera.up);
+		if(Gdx.input.isKeyPressed(Input.Keys.Z)) game.camera.position.mulAdd(game.camera.direction, 1f);
+		if(Gdx.input.isKeyPressed(Input.Keys.S)) game.camera.position.mulAdd(game.camera.direction, -1f);
+		if(Gdx.input.isKeyPressed(Input.Keys.Q)) game.camera.position.mulAdd(tan, -1f);
+		if(Gdx.input.isKeyPressed(Input.Keys.D)) game.camera.position.mulAdd(tan, 1f);
 		
 		// set cube in bounds : min
-		game.camera.far = 500f;
+		game.camera.far = 600f;
 		game.camera.update(true);
 		//view.set(offset);
 		BoundingBox box = new BoundingBox();
