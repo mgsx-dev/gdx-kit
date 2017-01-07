@@ -45,7 +45,7 @@ import pdPhysics:"net.mgsx.game.plugins.pd.tasks.PdPhysicStateTask"
 import pdRun:"net.mgsx.game.plugins.pd.tasks.PdRunTask"
 
 sequence
-  moveTo tx:20.692783 ty:-1.7328459 interpolation:com.badlogic.gdx.math.Interpolation$1@7c9e1f37
+  moveTo tx:20.692783 ty:-1.7328459
   untilFail
     parallel
       emitAtDistance particle:"cake/churros.json" distance:1.7704557
