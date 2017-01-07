@@ -42,7 +42,7 @@ public class Noise {
 		int iz2 = (ix + zoffset + 1);
 		
 		float n1 = MathUtils.lerp(
-				randomTable[(ix1 + iy1 + iz1) % randomTable.length], 
+				randomTable[(ix1 + iy1 + iz1) % randomTable.length], // TODO double modulo
 				randomTable[(ix2 + iy1 + iz1) % randomTable.length], 
 				rx);
 		float n2 = MathUtils.lerp(

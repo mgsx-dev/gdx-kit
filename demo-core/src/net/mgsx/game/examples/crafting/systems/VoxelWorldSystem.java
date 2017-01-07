@@ -1,22 +1,19 @@
 package net.mgsx.game.examples.crafting.systems;
 
 import com.badlogic.ashley.core.EntitySystem;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.VertexAttribute;
-import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.RenderableProvider;
-import com.badlogic.gdx.graphics.g3d.utils.MeshPartBuilder;
-import com.badlogic.gdx.graphics.g3d.utils.ShapeCache;
-import com.badlogic.gdx.graphics.g3d.utils.shapebuilders.BoxShapeBuilder;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.utils.Array;
 
 import net.mgsx.game.core.GamePipeline;
 import net.mgsx.game.core.GameScreen;
 import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.core.annotations.EditableSystem;
+import net.mgsx.game.examples.crafting.utils.Cube;
+import net.mgsx.game.examples.crafting.utils.Index3;
 import net.mgsx.game.examples.crafting.utils.Noise;
 import net.mgsx.game.plugins.g3d.systems.G3DRendererSystem;
 
@@ -27,90 +24,79 @@ public class VoxelWorldSystem extends EntitySystem
 	private GameScreen game;
 	private Array<RenderableProvider> renderables = new Array<RenderableProvider>();
 	
-	private Noise noise;
+	public static class VoxelInfo{
+		public boolean solid;
+		public boolean full;
+		public Vector3 position = new Vector3();
+	}
 	
-	private int [] data;
+	private Cube<VoxelPart> view;
 	
-	@Editable public int SIZE = 10;
+	Noise noise;
+	
+	@Editable public int WORLD_SIZE = 4;
+	@Editable public int VIEW_SIZE = 8;
 	@Editable public float cubeSize = .9f;
-	@Editable public float cubeSpace = 1f;
+	@Editable public float cubeSpace = 300f;
 	@Editable public float lacunarity = .05f;
-	@Editable public float planarity = .1f;
-	@Editable public float freq2D = .15f;
-	@Editable public float freq3D = .15f;
+	@Editable public float planarity = 300f;
+	@Editable public float freq2D = .01f;
+	@Editable public float freq3D = .01f;
+	@Editable public Vector3 offset = new Vector3();
 	
 	@Editable
 	public void regen(){
 		noise = new Noise();
-		renderables.clear();
-		final int cubes = SIZE*SIZE*SIZE;
-		
-		data = new int[cubes];
-		
-		Vector3 p = new Vector3();
-		Vector2 p2 = new Vector2();
-		
-		// max 2^15-1 : 11^3 * 24
-		if(SIZE > 11) SIZE = 11;
-		
-		for(int z=0 ; z<SIZE ; z++){
-			for(int x=0 ; x<SIZE ; x++){
-				float n2 = noise.apply(p2.set(x, z).scl(freq2D)) * planarity + .5f - planarity / 2;
-				for(int y=0 ; y<SIZE && y<n2*SIZE ; y++)
-				{
-					
-					float n = noise.apply(p.set(x, y, z).scl(freq3D));
-					
-					if(n>lacunarity){
-						int index = (z * SIZE + y) * SIZE + x;
-						data[index] = 1;
-					}
-					
-				}
-			}
-		}
-		
-		
-		
-		
-		
-		ShapeCache r = new ShapeCache(6 * 4 * cubes, 6 * 6 * cubes, new VertexAttributes(VertexAttribute.Position(), VertexAttribute.Normal()), GL20.GL_TRIANGLES);
-		MeshPartBuilder mpb = r.begin(GL20.GL_TRIANGLES);
-		int cnt = 0;
-		int SIZE2 = SIZE * SIZE;
-		for(int z=0 ; z<SIZE ; z++)
-			for(int y=0 ; y<SIZE ; y++)
-				for(int x=0 ; x<SIZE ; x++){
-					int index = (z * SIZE + y) * SIZE + x;
-					if(data[index] > 0){
-						int neigh = 0;
-						if(x > 0 && data[index-1]>0) neigh++;
-						if(x < SIZE-1 && data[index+1]>0) neigh++;
-						if(y > 0 && data[index-SIZE]>0) neigh++;
-						if(y < SIZE-1 && data[index+SIZE]>0) neigh++;
-						if(z > 0 && data[index-SIZE2]>0) neigh++;
-						if(z < SIZE-1 && data[index+SIZE2]>0) neigh++;
-						if(neigh < 6){
-							BoxShapeBuilder.build(mpb, x * cubeSpace, y* cubeSpace, z* cubeSpace, cubeSize, cubeSize, cubeSize);
-							cnt++;
-						}
-					}
-				}
-		r.end();
-		
-		System.out.println(cnt + "/" + cubes);
-		
-		renderables.add(r);
+		view.regenerate();
 	}
+	
+	private void create(){
+		view = new Cube<VoxelPart>(WORLD_SIZE, cubeSpace * 1.f) { // TODO debug separate
+			@Override
+			protected void generate(VoxelPart data, Index3 index, Vector3 position) 
+			{
+				data.reset();
+//				float n2 = noise.apply(p2.set(position.x, position.z).scl(freq2D)) * planarity + .5f - planarity / 2;
+//
+//				if(position.y<n2*VIEW_SIZE){
+					data.generateData(VoxelWorldSystem.this, position);
+					data.generateMesh(cubeSize * cubeSpace / VIEW_SIZE, cubeSpace / VIEW_SIZE);
+					genCount++;
+					System.out.println(genCount);
+//				}
+			}
+			
+			@Override
+			protected VoxelPart create() {
+				VoxelPart part = new VoxelPart(VIEW_SIZE, cubeSpace / VIEW_SIZE);
+				renderables.add(part);
+				return part;
+			}
+		};
+	}
+	
+	@Editable
+	public void recreate(){
+		
+		renderables.clear();
+		
+		create();
+		
+		view.regenerate();
+	}
+	
+	
+	
+	Vector3 p = new Vector3();
+	Vector2 p2 = new Vector2();
+	
+	private int genCount = 0;
 	
 	public VoxelWorldSystem(GameScreen game) {
 		super(GamePipeline.RENDER);
 		this.game = game;
-		
-		//MeshBuilder b = new MeshBuilder();
-		//b.begin(VertexAttributes.Usage.Position | VertexAttributes.Usage.ColorPacked);
-		
-		regen();
+		noise = new Noise();
+		create();
 		
 		batch = new ModelBatch();
 	}
@@ -118,6 +104,20 @@ public class VoxelWorldSystem extends EntitySystem
 	@Override
 	public void update(float deltaTime) 
 	{
+		
+		// set cube in bounds : min
+		game.camera.far = 500f;
+		game.camera.update(true);
+		//view.set(offset);
+		BoundingBox box = new BoundingBox();
+		box.set(game.camera.frustum.planePoints[0], game.camera.frustum.planePoints[0]);
+		for(int i=0 ; i<game.camera.frustum.planePoints.length ; i++) box.ext(game.camera.frustum.planePoints[i]);
+		
+		
+		
+		Vector3 center = box.getCenter(new Vector3());
+		view.set(offset.cpy().add(box.min));
+		
 		batch.begin(game.camera);
 		
 		batch.render(renderables, getEngine().getSystem(G3DRendererSystem.class).environment);
