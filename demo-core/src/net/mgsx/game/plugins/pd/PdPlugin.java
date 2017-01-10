@@ -5,6 +5,7 @@ import com.badlogic.gdx.audio.Music;
 import net.mgsx.game.core.GameScreen;
 import net.mgsx.game.core.annotations.PluginDef;
 import net.mgsx.game.core.plugins.Plugin;
+import net.mgsx.game.plugins.pd.systems.MidiSequencerSystem;
 import net.mgsx.pd.midi.MidiMusicLoader;
 import net.mgsx.pd.patch.PatchLoader;
 import net.mgsx.pd.patch.PdPatch;
@@ -18,6 +19,7 @@ public class PdPlugin implements Plugin
 		engine.assets.setLoader(Music.class, "mid", new MidiMusicLoader(engine.assets.getFileHandleResolver()));
 		engine.assets.setLoader(PdPatch.class, "pd", new PatchLoader(engine.assets.getFileHandleResolver()));
 
+		engine.entityEngine.addSystem(new MidiSequencerSystem(engine));
 	}
 
 }

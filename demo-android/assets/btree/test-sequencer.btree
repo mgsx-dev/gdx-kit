@@ -1,0 +1,16 @@
+# import behaviorTree:"com.badlogic.gdx.ai.btree.BehaviorTree"
+# import sequence:"com.badlogic.gdx.ai.btree.branch.Sequence"
+# import alwaysSucceed:"com.badlogic.gdx.ai.btree.decorator.AlwaysSucceed"
+import playerSensor:"net.mgsx.game.examples.platformer.tasks.PlayerSensorTask"
+import waitFailure:"net.mgsx.game.examples.platformer.tasks.WaitFailure"
+import waitSuccess:"net.mgsx.game.examples.platformer.tasks.WaitSuccess"
+import midiLoop:"net.mgsx.game.plugins.pd.tasks.MidiLoopTask"
+
+sequence
+  waitSuccess
+    playerSensor
+  midiLoop start:"MyClip.start" end:"MyClip.end"
+  alwaysSucceed
+    waitFailure
+      playerSensor
+  midiLoop start:"First2Measures.start" end:"First2Measures.end"
