@@ -6,6 +6,8 @@ import com.leff.midi.MidiFile;
 import com.leff.midi.MidiTrack;
 import com.leff.midi.util.MidiEventListener;
 
+import net.mgsx.game.plugins.pd.systems.MidiEventMultiplexer;
+
 public class LiveSequencer extends BaseSequencer
 {
 	private final Array<LiveTrack> tracks = new Array<LiveTrack>();
@@ -29,7 +31,7 @@ public class LiveSequencer extends BaseSequencer
 		resolution = file.getResolution(); // TODO resolution may change between files but not in tracks !
 		
 		for(MidiTrack track : file.getTracks()){
-			LiveTrack t = new LiveTrack(this, file, track, listener);
+			LiveTrack t = new LiveTrack(this, file, track, new MidiEventMultiplexer(listener));
 			tracks.add(t);
 			if(t.name != null) tracksByName.put(t.name, t);
 		}
@@ -113,5 +115,17 @@ public class LiveSequencer extends BaseSequencer
 		tracks.clear();
 	}
 
+	/**
+	 * get sequencer position
+	 * @param division requested resolution (1 => result in beats, 4 => result in 16th note)
+	 * @return position in request unit
+	 */
+	public long position(int division) {
+		return position(position, division);
+	}
+
+	public long position(long position, int division) {
+		return division * position / resolution;
+	}
 
 }

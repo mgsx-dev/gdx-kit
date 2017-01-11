@@ -7,10 +7,14 @@ public abstract class BaseSequencer
 	protected final MidiEventListener listener;
 	protected volatile long position;
 
+	public long getPosition() {
+		return position;
+	}
 
 	public BaseSequencer(MidiEventListener listener) {
 		super();
 		this.listener = listener;
 	}
 
+	
 }

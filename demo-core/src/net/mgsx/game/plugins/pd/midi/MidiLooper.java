@@ -106,7 +106,5 @@ public abstract class MidiLooper extends BaseSequencer
 		// TODO may jump ...
 	}
 
-	public long getPosition() {
-		return position;
-	}
+	
 }

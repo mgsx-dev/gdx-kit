@@ -10,6 +10,8 @@ import com.leff.midi.event.meta.Tempo;
 import com.leff.midi.event.meta.TrackName;
 import com.leff.midi.util.MidiEventListener;
 
+import net.mgsx.game.plugins.pd.systems.MidiEventMultiplexer;
+
 public class LiveTrack extends MidiLooper
 {
 	public long loopStart, loopEnd, trackEnd;
@@ -30,7 +32,7 @@ public class LiveTrack extends MidiLooper
 	private ResetNote off = new ResetNote();
 	private final LiveSequencer master;
 	
-	public LiveTrack(LiveSequencer master, MidiFile file, MidiTrack track, MidiEventListener listener) {
+	public LiveTrack(LiveSequencer master, MidiFile file, MidiTrack track, MidiEventMultiplexer listener) {
 		super(listener);
 		this.master = master;
 		events = new Array<MidiEvent>();
@@ -45,6 +47,13 @@ public class LiveTrack extends MidiLooper
 		index = loopStartIndex = 0;
 		resolution = file.getResolution();
 		prePos = 0;
+	}
+	
+	public void addListener(MidiEventListener listener){
+		((MidiEventMultiplexer)this.listener).listeners.add(listener);
+	}
+	public void removeListener(MidiEventListener listener){
+		((MidiEventMultiplexer)this.listener).listeners.removeValue(listener, true);
 	}
 	
 	@Override

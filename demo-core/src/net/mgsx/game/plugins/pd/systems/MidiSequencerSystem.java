@@ -32,6 +32,16 @@ public class MidiSequencerSystem extends EntitySystem
 	public SequenceDesc sequenceDesc;
 	private GameScreen game;
 	
+	@Editable
+	public void setBpm(float bpm){
+		sequencer.bpm = bpm;
+	}
+	
+	@Editable
+	public float getBpm(){
+		return sequencer.bpm;
+	}
+	
 	
 	
 	@Editable
