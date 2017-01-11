@@ -1,0 +1,8 @@
+# import behaviorTree:"com.badlogic.gdx.ai.btree.BehaviorTree"
+# import sequence:"com.badlogic.gdx.ai.btree.branch.Sequence"
+import animation:"net.mgsx.game.examples.platformer.tasks.AnimationTask"
+import waitMidiMarker:"net.mgsx.game.plugins.pd.tasks.WaitMidiMarkerTask"
+
+sequence
+  waitMidiMarker track:"Staff-1" marker:"mark2"
+  animation id:"skeleton|tempo-bang" speed:0.9528621

@@ -1,0 +1,10 @@
+# import behaviorTree:"com.badlogic.gdx.ai.btree.BehaviorTree"
+# import sequence:"com.badlogic.gdx.ai.btree.branch.Sequence"
+import animation:"net.mgsx.game.examples.platformer.tasks.AnimationTask"
+import midiAnimation:"net.mgsx.game.plugins.pd.tasks.MidiAnimationTask"
+
+midiAnimation
+  sequence
+    animation id:"skeleton|tempo" loops:4 speed:8.265806
+    animation id:"skeleton|hello" loops:3 speed:8.265806
+    animation id:"skeleton|tempo" speed:8.265806

@@ -1,0 +1,8 @@
+# import behaviorTree:"com.badlogic.gdx.ai.btree.BehaviorTree"
+# import sequence:"com.badlogic.gdx.ai.btree.branch.Sequence"
+import animation:"net.mgsx.game.examples.platformer.tasks.AnimationTask"
+import waitMidiNote:"net.mgsx.game.plugins.pd.tasks.WaitMidiNoteTask"
+
+sequence
+  waitMidiNote track:"Staff-1"
+  animation id:"skeleton|tempo-bang" speed:1.9472573

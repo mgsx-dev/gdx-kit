@@ -1,0 +1,14 @@
+# import behaviorTree:"com.badlogic.gdx.ai.btree.BehaviorTree"
+# import randomSelector:"com.badlogic.gdx.ai.btree.branch.RandomSelector"
+# import sequence:"com.badlogic.gdx.ai.btree.branch.Sequence"
+import animation:"net.mgsx.game.examples.platformer.tasks.AnimationTask"
+import midiAnimation:"net.mgsx.game.plugins.pd.tasks.MidiAnimationTask"
+
+midiAnimation ticks:2
+  sequence
+    animation id:"skeleton|tempo" speed:8.265806
+    randomSelector
+      animation id:"skeleton|hello" loops:2 speed:8.265806
+      animation id:"skeleton|hurt" loops:2 speed:8.265806 fade:0.20175481
+      animation id:"skeleton|tempo" loops:2 speed:8.265806
+    animation id:"skeleton|tempo" speed:8.265806

@@ -1,0 +1,10 @@
+# import behaviorTree:"com.badlogic.gdx.ai.btree.BehaviorTree"
+# import randomSequence:"com.badlogic.gdx.ai.btree.branch.RandomSequence"
+import animation:"net.mgsx.game.examples.platformer.tasks.AnimationTask"
+import midiAnimation:"net.mgsx.game.plugins.pd.tasks.MidiAnimationTask"
+
+midiAnimation ticks:8
+  randomSequence
+    animation id:"skeleton|tempo-half" speed:8.265806 fade:0.13342425
+    animation id:"skeleton|tempo-swing" loops:2 speed:8.265806 fade:0.12444718
+    animation id:"skeleton|tempo-bang" speed:8.265806 fade:0.17112428
