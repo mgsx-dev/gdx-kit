@@ -22,6 +22,7 @@ import net.mgsx.game.plugins.pd.midi.PdMidiSynth;
 import net.mgsx.game.plugins.pd.midi.QTractorSequenceReader;
 import net.mgsx.game.plugins.pd.midi.SequenceDesc;
 import net.mgsx.game.plugins.pd.midi.SequenceMarker;
+import net.mgsx.pd.Pd;
 import net.mgsx.pd.patch.PatchLoader;
 import net.mgsx.pd.patch.PdPatch;
 
@@ -110,6 +111,9 @@ public class MidiSequencerSystem extends EntitySystem
 	@Override
 	public void update(float deltaTime) 
 	{
-		// TODO ...
+		// simply send bpm to pd in order to apply some sync FX (delay, tremolo ...)
+		// TODO maybe send only when changed ?
+		Pd.audio.sendFloat("bpm", sequencer.bpm);
+		
 	}
 }
