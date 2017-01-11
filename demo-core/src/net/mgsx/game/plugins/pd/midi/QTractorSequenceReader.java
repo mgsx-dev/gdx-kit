@@ -2,50 +2,74 @@ package net.mgsx.game.plugins.pd.midi;
 
 import java.io.IOException;
 
+import com.badlogic.gdx.Application;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.XmlReader;
 import com.badlogic.gdx.utils.XmlReader.Element;
 
 public class QTractorSequenceReader
 {
-	// TODO maybe get markers from XML ... 
+	protected int sampleRate, bpm, midiResolution;
+	
+	public QTractorSequenceReader(int midiResolution) {
+		super();
+		this.midiResolution = midiResolution;
+	}
+
+	protected long convertTick(long qtrTick)
+	{
+		double time = qtrTick / (double)sampleRate;
+		double beat = time * bpm / 60.f;
+		double midiTick = beat * midiResolution;
+		long result = Math.round(midiTick);
+		return result;
+	}
+
+
 	public SequenceDesc read(FileHandle file) throws IOException{
 		SequenceDesc desc = new SequenceDesc();
 		XmlReader xml = new XmlReader();
 		Element root = xml.parse(file);
 		
-		// TODO get from header.
-		int bpm = 95;
-		int sampleRate = 48000;
-		int tickPerBeat = 96;
+		Element sessionProperties = root.getChildByName("properties");
+		sampleRate = Integer.parseInt(sessionProperties.getChildByName("sample-rate").getText());
+		bpm = Integer.parseInt(sessionProperties.getChildByName("tempo").getText());
 		
+		for(Element marker : root.getChildByName("markers").getChildrenByName("marker")){
+			SequenceMarker m = new SequenceMarker();
+			m.name = marker.getChildByName("text").getText();
+			m.tick = convertTick(Long.parseLong(marker.get("frame")));
+			
+			desc.markers.put(m.name, m);
+		}
 		for(Element track : root.getChildByName("tracks").getChildrenByName("track")){
 			if("midi".equals(track.get("type"))){
 				for(Element clip : track.getChildByName("clips").getChildrenByName("clip")){
 					Element props = clip.getChildByName("properties");
 					
 					String clipName = props.get("name");
-					long start = Long.parseLong(props.get("start"));
-					long offset = Long.parseLong(props.get("offset"));
-					long length = Long.parseLong(props.get("length"));
-					
-					
-					start = ((tickPerBeat * start * bpm) / 60) / sampleRate;
-					offset = ((tickPerBeat * offset * bpm) / 60) / sampleRate;
-					length = ((tickPerBeat * length * bpm) / 60) / sampleRate;
+					long start = convertTick(Long.parseLong(props.get("start")));
+					long length = convertTick(Long.parseLong(props.get("length")));
 					
 					SequenceMarker markerStart = new SequenceMarker();
 					markerStart.name = clipName + ".start";
-					markerStart.tick = offset + start;
+					markerStart.tick = start;
 					SequenceMarker markerEnd = new SequenceMarker();
 					markerEnd.name = clipName + ".end";
-					markerEnd.tick = offset + start + length;
+					markerEnd.tick = start + length;
 					
 					desc.markers.put(markerStart.name, markerStart);
 					desc.markers.put(markerEnd.name, markerEnd);
 				}
 			}
 		}
+		if(Gdx.app.getLogLevel() == Application.LOG_DEBUG){
+			for(SequenceMarker m : desc.markers.values()){
+				Gdx.app.debug("MIDI", m.toString());
+			}
+		}
+		
 		return desc;
 	}
 }

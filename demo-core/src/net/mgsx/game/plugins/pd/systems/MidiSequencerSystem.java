@@ -71,8 +71,9 @@ public class MidiSequencerSystem extends EntitySystem
 			game.assets.finishLoading();
 			
 			
-			sequenceDesc = new QTractorSequenceReader().read(Gdx.files.internal("MuteCity.qtr"));
 			MidiFile midiFile = new MidiFile(Gdx.files.internal("MuteCity.mid").file());
+			int midiRes = midiFile.getResolution();
+			sequenceDesc = new QTractorSequenceReader(midiRes).read(Gdx.files.internal("MuteCity.qtr"));
 			sequencer.load(midiFile);
 			
 			for(MidiTrack track : midiFile.getTracks()){

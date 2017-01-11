@@ -91,11 +91,14 @@
      <audio-output-auto-connect>1</audio-output-auto-connect>
     </output-plugins>
     <output-connects/>
-    <midi-map/>
    </midi-bus>
   </midi-engine>
  </devices>
  <markers>
+  <marker frame="848842">
+   <text>mark0</text>
+   <color>#808080</color>
+  </marker>
   <marker frame="970105">
    <text>mark1</text>
    <color>#808080</color>
@@ -111,7 +114,7 @@
    <horizontal-zoom>70</horizontal-zoom>
    <vertical-zoom>100</vertical-zoom>
    <snap-per-beat>1</snap-per-beat>
-   <edit-head>939790</edit-head>
+   <edit-head>848842</edit-head>
    <edit-tail>939790</edit-tail>
   </view>
   <track type="midi" name="Staff">
