@@ -1,0 +1,538 @@
+<!DOCTYPE qtractorSession>
+<session version="Qtractor 0.7.1" name="title">
+ <properties>
+  <directory>/home/berenger/gdx-pd-interacive-music/qtracktor/title</directory>
+  <description>MIDI file import "Enharmonic.mid" on janv. 11 2017 14:40:18.
+MIDI file import "title-export-1.mid" on janv. 12 2017 11:18:09.
+</description>
+  <sample-rate>44100</sample-rate>
+  <tempo>188</tempo>
+  <ticks-per-beat>960</ticks-per-beat>
+  <beats-per-bar>4</beats-per-bar>
+  <beat-divisor>2</beat-divisor>
+ </properties>
+ <state>
+  <loop-start>0</loop-start>
+  <loop-end>1801532</loop-end>
+  <punch-in>0</punch-in>
+  <punch-out>0</punch-out>
+ </state>
+ <files>
+  <audio-list/>
+  <midi-list>
+   <file name="Enharmonic.mid">Enharmonic.mid</file>
+   <file name="title-Chords-1.mid">title-Chords-1.mid</file>
+   <file name="title-Drums-1.mid">title-Drums-1.mid</file>
+   <file name="title-export-1.mid">title-export-1.mid</file>
+  </midi-list>
+ </files>
+ <devices>
+  <audio-engine>
+   <audio-control>
+    <transport-mode>duplex</transport-mode>
+    <timebase>1</timebase>
+   </audio-control>
+   <audio-bus mode="duplex" name="Master">
+    <monitor>0</monitor>
+    <channels>2</channels>
+    <auto-connect>1</auto-connect>
+    <input-gain>1</input-gain>
+    <input-panning>0</input-panning>
+    <input-controllers/>
+    <input-plugins/>
+    <input-connects>
+     <connect index="0">
+      <client>system</client>
+      <port>capture_1</port>
+     </connect>
+     <connect index="1">
+      <client>system</client>
+      <port>capture_2</port>
+     </connect>
+    </input-connects>
+    <output-gain>1</output-gain>
+    <output-panning>0</output-panning>
+    <output-controllers/>
+    <output-plugins/>
+    <output-connects>
+     <connect index="0">
+      <client>system</client>
+      <port>playback_1</port>
+     </connect>
+     <connect index="1">
+      <client>system</client>
+      <port>playback_2</port>
+     </connect>
+    </output-connects>
+   </audio-bus>
+  </audio-engine>
+  <midi-engine>
+   <midi-control>
+    <mmc-mode>duplex</mmc-mode>
+    <mmc-device>127</mmc-device>
+    <spp-mode>duplex</spp-mode>
+    <clock-mode>none</clock-mode>
+   </midi-control>
+   <midi-bus mode="duplex" name="Master">
+    <monitor>0</monitor>
+    <input-gain>1</input-gain>
+    <input-panning>0</input-panning>
+    <input-controllers/>
+    <input-plugins>
+     <audio-output-bus-name></audio-output-bus-name>
+     <audio-output-bus>0</audio-output-bus>
+     <audio-output-auto-connect>1</audio-output-auto-connect>
+    </input-plugins>
+    <input-connects/>
+    <output-gain>1</output-gain>
+    <output-panning>0</output-panning>
+    <output-controllers/>
+    <output-plugins>
+     <bank>0</bank>
+     <program>51</program>
+     <audio-output-bus-name></audio-output-bus-name>
+     <audio-output-bus>0</audio-output-bus>
+     <audio-output-auto-connect>1</audio-output-auto-connect>
+    </output-plugins>
+    <output-connects/>
+    <midi-map/>
+   </midi-bus>
+  </midi-engine>
+ </devices>
+ <markers>
+  <marker frame="0">
+   <text>A1</text>
+   <color>#808080</color>
+  </marker>
+  <marker frame="450383">
+   <text>A2</text>
+   <color>#808080</color>
+  </marker>
+  <marker frame="900766">
+   <text>B</text>
+   <color>#808080</color>
+  </marker>
+  <marker frame="1351149">
+   <text>A3</text>
+   <color>#808080</color>
+  </marker>
+ </markers>
+ <tracks>
+  <view>
+   <pixels-per-beat>32</pixels-per-beat>
+   <horizontal-zoom>40</horizontal-zoom>
+   <vertical-zoom>100</vertical-zoom>
+   <snap-per-beat>1</snap-per-beat>
+   <edit-head>0</edit-head>
+   <edit-tail>1801532</edit-tail>
+  </view>
+  <track type="midi" name="Chords">
+   <properties>
+    <input-bus>Master</input-bus>
+    <output-bus>Master</output-bus>
+    <midi-omni>0</midi-omni>
+    <midi-channel>3</midi-channel>
+    <midi-program>5</midi-program>
+   </properties>
+   <state>
+    <mute>0</mute>
+    <solo>0</solo>
+    <record>0</record>
+    <monitor>0</monitor>
+    <gain>1</gain>
+    <panning>0</panning>
+   </state>
+   <view>
+    <height>72</height>
+    <background-color>#99ffff</background-color>
+    <foreground-color>#4c7f7f</foreground-color>
+   </view>
+   <controllers/>
+   <clips>
+    <clip name="Enharmonic">
+     <properties>
+      <name>Enharmonic</name>
+      <start>0</start>
+      <offset>0</offset>
+      <length>450383</length>
+      <gain>1</gain>
+      <fade-in type="InQuad">0</fade-in>
+      <fade-out type="OutQuad">0</fade-out>
+     </properties>
+     <midi-clip>
+      <filename>Enharmonic.mid</filename>
+      <track-channel>1</track-channel>
+      <revision>0</revision>
+      <editor-pos>372,137</editor-pos>
+      <editor-size>840,600</editor-size>
+     </midi-clip>
+    </clip>
+    <clip name="Enharmonic">
+     <properties>
+      <name>Enharmonic</name>
+      <start>450383</start>
+      <offset>450383</offset>
+      <length>450383</length>
+      <gain>1</gain>
+      <fade-in type="InQuad">0</fade-in>
+      <fade-out type="OutQuad">0</fade-out>
+     </properties>
+     <midi-clip>
+      <filename>Enharmonic.mid</filename>
+      <track-channel>1</track-channel>
+      <revision>0</revision>
+      <editor-pos>0,0</editor-pos>
+     </midi-clip>
+    </clip>
+    <clip name="Enharmonic">
+     <properties>
+      <name>Enharmonic</name>
+      <start>900766</start>
+      <offset>900766</offset>
+      <length>450383</length>
+      <gain>1</gain>
+      <fade-in type="InQuad">0</fade-in>
+      <fade-out type="OutQuad">0</fade-out>
+     </properties>
+     <midi-clip>
+      <filename>Enharmonic.mid</filename>
+      <track-channel>1</track-channel>
+      <revision>0</revision>
+      <editor-pos>0,0</editor-pos>
+     </midi-clip>
+    </clip>
+    <clip name="Enharmonic">
+     <properties>
+      <name>Enharmonic</name>
+      <start>1351149</start>
+      <offset>1351149</offset>
+      <length>450500</length>
+      <gain>1</gain>
+      <fade-in type="InQuad">0</fade-in>
+      <fade-out type="OutQuad">0</fade-out>
+     </properties>
+     <midi-clip>
+      <filename>title-Chords-1.mid</filename>
+      <track-channel>1</track-channel>
+      <revision>1</revision>
+      <editor-pos>0,24</editor-pos>
+      <editor-size>1920,1056</editor-size>
+     </midi-clip>
+    </clip>
+   </clips>
+   <plugins>
+    <bank>0</bank>
+    <program>5</program>
+    <audio-output-bus-name></audio-output-bus-name>
+    <audio-output-bus>0</audio-output-bus>
+    <audio-output-auto-connect>1</audio-output-auto-connect>
+   </plugins>
+  </track>
+  <track type="midi" name="Bass">
+   <properties>
+    <input-bus>Master</input-bus>
+    <output-bus>Master</output-bus>
+    <midi-omni>0</midi-omni>
+    <midi-channel>6</midi-channel>
+    <midi-program>32</midi-program>
+   </properties>
+   <state>
+    <mute>0</mute>
+    <solo>0</solo>
+    <record>0</record>
+    <monitor>0</monitor>
+    <gain>1</gain>
+    <panning>0</panning>
+   </state>
+   <view>
+    <height>72</height>
+    <background-color>#ffccff</background-color>
+    <foreground-color>#7f667f</foreground-color>
+   </view>
+   <controllers/>
+   <clips>
+    <clip name="Enharmonic">
+     <properties>
+      <name>Enharmonic</name>
+      <start>0</start>
+      <offset>0</offset>
+      <length>450383</length>
+      <gain>1</gain>
+      <fade-in type="InQuad">0</fade-in>
+      <fade-out type="OutQuad">0</fade-out>
+     </properties>
+     <midi-clip>
+      <filename>Enharmonic.mid</filename>
+      <track-channel>2</track-channel>
+      <revision>0</revision>
+      <editor-pos>0,0</editor-pos>
+     </midi-clip>
+    </clip>
+    <clip name="Enharmonic">
+     <properties>
+      <name>Enharmonic</name>
+      <start>450383</start>
+      <offset>450383</offset>
+      <length>450383</length>
+      <gain>1</gain>
+      <fade-in type="InQuad">0</fade-in>
+      <fade-out type="OutQuad">0</fade-out>
+     </properties>
+     <midi-clip>
+      <filename>Enharmonic.mid</filename>
+      <track-channel>2</track-channel>
+      <revision>0</revision>
+      <editor-pos>0,0</editor-pos>
+     </midi-clip>
+    </clip>
+    <clip name="Enharmonic">
+     <properties>
+      <name>Enharmonic</name>
+      <start>900766</start>
+      <offset>900766</offset>
+      <length>450383</length>
+      <gain>1</gain>
+      <fade-in type="InQuad">0</fade-in>
+      <fade-out type="OutQuad">0</fade-out>
+     </properties>
+     <midi-clip>
+      <filename>Enharmonic.mid</filename>
+      <track-channel>2</track-channel>
+      <revision>0</revision>
+      <editor-pos>0,0</editor-pos>
+     </midi-clip>
+    </clip>
+    <clip name="Enharmonic">
+     <properties>
+      <name>Enharmonic</name>
+      <start>1351149</start>
+      <offset>1351149</offset>
+      <length>450383</length>
+      <gain>1</gain>
+      <fade-in type="InQuad">0</fade-in>
+      <fade-out type="OutQuad">0</fade-out>
+     </properties>
+     <midi-clip>
+      <filename>Enharmonic.mid</filename>
+      <track-channel>2</track-channel>
+      <revision>0</revision>
+      <editor-pos>0,0</editor-pos>
+     </midi-clip>
+    </clip>
+   </clips>
+   <plugins>
+    <bank>0</bank>
+    <program>32</program>
+    <audio-output-bus-name></audio-output-bus-name>
+    <audio-output-bus>0</audio-output-bus>
+    <audio-output-auto-connect>1</audio-output-auto-connect>
+   </plugins>
+  </track>
+  <track type="midi" name="Lead">
+   <properties>
+    <input-bus>Master</input-bus>
+    <output-bus>Master</output-bus>
+    <midi-omni>0</midi-omni>
+    <midi-channel>0</midi-channel>
+    <midi-program>11</midi-program>
+   </properties>
+   <state>
+    <mute>0</mute>
+    <solo>0</solo>
+    <record>0</record>
+    <monitor>0</monitor>
+    <gain>1</gain>
+    <panning>0</panning>
+   </state>
+   <view>
+    <height>72</height>
+    <background-color>#ccccff</background-color>
+    <foreground-color>#66667f</foreground-color>
+   </view>
+   <controllers/>
+   <clips>
+    <clip name="Enharmonic">
+     <properties>
+      <name>Enharmonic</name>
+      <start>0</start>
+      <offset>0</offset>
+      <length>450383</length>
+      <gain>1</gain>
+      <fade-in type="InQuad">0</fade-in>
+      <fade-out type="OutQuad">0</fade-out>
+     </properties>
+     <midi-clip>
+      <filename>Enharmonic.mid</filename>
+      <track-channel>3</track-channel>
+      <revision>1</revision>
+      <editor-pos>0,0</editor-pos>
+      <editor-size>1920,1056</editor-size>
+     </midi-clip>
+    </clip>
+    <clip name="Enharmonic">
+     <properties>
+      <name>Enharmonic</name>
+      <start>450383</start>
+      <offset>450383</offset>
+      <length>450383</length>
+      <gain>1</gain>
+      <fade-in type="InQuad">0</fade-in>
+      <fade-out type="OutQuad">0</fade-out>
+     </properties>
+     <midi-clip>
+      <filename>Enharmonic.mid</filename>
+      <track-channel>3</track-channel>
+      <revision>0</revision>
+      <editor-pos>0,0</editor-pos>
+     </midi-clip>
+    </clip>
+    <clip name="Enharmonic">
+     <properties>
+      <name>Enharmonic</name>
+      <start>900766</start>
+      <offset>900766</offset>
+      <length>450383</length>
+      <gain>1</gain>
+      <fade-in type="InQuad">0</fade-in>
+      <fade-out type="OutQuad">0</fade-out>
+     </properties>
+     <midi-clip>
+      <filename>Enharmonic.mid</filename>
+      <track-channel>3</track-channel>
+      <revision>0</revision>
+      <editor-pos>0,0</editor-pos>
+      <editor-size>840,600</editor-size>
+     </midi-clip>
+    </clip>
+    <clip name="Enharmonic">
+     <properties>
+      <name>Enharmonic</name>
+      <start>1351149</start>
+      <offset>1351149</offset>
+      <length>450383</length>
+      <gain>1</gain>
+      <fade-in type="InQuad">0</fade-in>
+      <fade-out type="OutQuad">0</fade-out>
+     </properties>
+     <midi-clip>
+      <filename>Enharmonic.mid</filename>
+      <track-channel>3</track-channel>
+      <revision>0</revision>
+      <editor-pos>0,0</editor-pos>
+     </midi-clip>
+    </clip>
+   </clips>
+   <plugins>
+    <bank>0</bank>
+    <program>11</program>
+    <audio-output-bus-name></audio-output-bus-name>
+    <audio-output-bus>0</audio-output-bus>
+    <audio-output-auto-connect>1</audio-output-auto-connect>
+   </plugins>
+  </track>
+  <track type="midi" name="Drums">
+   <properties>
+    <input-bus>Master</input-bus>
+    <output-bus>Master</output-bus>
+    <midi-omni>0</midi-omni>
+    <midi-channel>9</midi-channel>
+    <midi-program>51</midi-program>
+   </properties>
+   <state>
+    <mute>0</mute>
+    <solo>0</solo>
+    <record>0</record>
+    <monitor>0</monitor>
+    <gain>1</gain>
+    <panning>0</panning>
+   </state>
+   <view>
+    <height>72</height>
+    <background-color>#99ccff</background-color>
+    <foreground-color>#4c667f</foreground-color>
+   </view>
+   <controllers/>
+   <clips>
+    <clip name="Enharmonic">
+     <properties>
+      <name>Enharmonic</name>
+      <start>0</start>
+      <offset>0</offset>
+      <length>450383</length>
+      <gain>1</gain>
+      <fade-in type="InQuad">0</fade-in>
+      <fade-out type="OutQuad">0</fade-out>
+     </properties>
+     <midi-clip>
+      <filename>Enharmonic.mid</filename>
+      <track-channel>4</track-channel>
+      <revision>2</revision>
+      <editor-pos>0,24</editor-pos>
+      <editor-size>1920,1056</editor-size>
+     </midi-clip>
+    </clip>
+    <clip name="Enharmonic">
+     <properties>
+      <name>Enharmonic</name>
+      <start>450383</start>
+      <offset>450383</offset>
+      <length>450383</length>
+      <gain>1</gain>
+      <fade-in type="InQuad">0</fade-in>
+      <fade-out type="OutQuad">0</fade-out>
+     </properties>
+     <midi-clip>
+      <filename>Enharmonic.mid</filename>
+      <track-channel>4</track-channel>
+      <revision>2</revision>
+      <editor-pos>0,0</editor-pos>
+      <editor-size>1920,1056</editor-size>
+     </midi-clip>
+    </clip>
+    <clip name="Enharmonic">
+     <properties>
+      <name>Enharmonic</name>
+      <start>900766</start>
+      <offset>900766</offset>
+      <length>450383</length>
+      <gain>1</gain>
+      <fade-in type="InQuad">0</fade-in>
+      <fade-out type="OutQuad">0</fade-out>
+     </properties>
+     <midi-clip>
+      <filename>Enharmonic.mid</filename>
+      <track-channel>4</track-channel>
+      <revision>2</revision>
+      <editor-pos>0,24</editor-pos>
+      <editor-size>1920,1056</editor-size>
+     </midi-clip>
+    </clip>
+    <clip name="Enharmonic-Drums-A">
+     <properties>
+      <name>Enharmonic-Drums-A</name>
+      <start>1351149</start>
+      <offset>1351149</offset>
+      <length>450383</length>
+      <gain>1</gain>
+      <fade-in type="InQuad">0</fade-in>
+      <fade-out type="OutQuad">0</fade-out>
+     </properties>
+     <midi-clip>
+      <filename>title-Drums-1.mid</filename>
+      <track-channel>4</track-channel>
+      <revision>1</revision>
+      <editor-size>1918,1027</editor-size>
+     </midi-clip>
+    </clip>
+   </clips>
+   <plugins>
+    <bank>0</bank>
+    <program>51</program>
+    <audio-output-bus-name></audio-output-bus-name>
+    <audio-output-bus>0</audio-output-bus>
+    <audio-output-auto-connect>1</audio-output-auto-connect>
+   </plugins>
+  </track>
+ </tracks>
+</session>
+
