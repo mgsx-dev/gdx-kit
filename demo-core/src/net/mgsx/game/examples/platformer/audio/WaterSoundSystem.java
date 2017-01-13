@@ -36,7 +36,7 @@ public class WaterSoundSystem extends IteratingSystem
 	@Override
 	public void addedToEngine(Engine engine) {
 		super.addedToEngine(engine);
-		patch = Pd.audio.open(Gdx.files.internal("audio/engine.pd"));
+		patch = Pd.audio.open(Gdx.files.internal("audio/sfx/engine.pd"));
 	}
 	
 	@Override

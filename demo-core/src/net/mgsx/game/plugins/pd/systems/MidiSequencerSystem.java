@@ -76,15 +76,15 @@ public class MidiSequencerSystem extends EntitySystem
 			
 			game.assets.setLoader(PdPatch.class, "pd", new PatchLoader(game.assets.getFileHandleResolver()));
 			
-			AssetDescriptor<PdPatch> patchAsset = new AssetDescriptor<PdPatch>("pdmidi/midiplayer.pd", PdPatch.class);
+			AssetDescriptor<PdPatch> patchAsset = new AssetDescriptor<PdPatch>("audio/music/midiplayer.pd", PdPatch.class);
 			
 			game.assets.load(patchAsset);
 			game.assets.finishLoading();
 			
 			
-			MidiFile midiFile = new MidiFile(Gdx.files.internal("MuteCity.mid").file());
+			MidiFile midiFile = new MidiFile(Gdx.files.internal("audio/midi/title-export-1.mid").file());
 			int midiRes = midiFile.getResolution();
-			sequenceDesc = new QTractorSequenceReader(midiRes).read(Gdx.files.internal("MuteCity.qtr"));
+			sequenceDesc = new QTractorSequenceReader(midiRes).read(Gdx.files.internal("audio/midi/title.qtr"));
 			sequencer.load(midiFile);
 			
 			for(MidiTrack track : midiFile.getTracks()){
