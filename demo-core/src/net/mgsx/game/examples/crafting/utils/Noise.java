@@ -9,13 +9,14 @@ import com.badlogic.gdx.math.Vector3;
 
 public class Noise {
 
-	private Random random = new RandomXS128();
+	private Random random;
 	
 	private float [] randomTable = new float [2048];
 	
 	private int xoffset, yoffset, zoffset;
-	
-	public Noise() {
+
+	public Noise(long seed) {
+		random = new RandomXS128(seed);
 		for(int i=0 ; i<randomTable.length ; i++)
 			randomTable[i] = random.nextFloat();
 		xoffset = random.nextInt(randomTable.length);
@@ -23,39 +24,43 @@ public class Noise {
 		zoffset = random.nextInt(randomTable.length);
 	}
 	
+	private float random(int i){
+		return randomTable[(i % randomTable.length + randomTable.length) % randomTable.length];
+	}
+	
 	public float apply(Vector3 position)
 	{
-		int ix = (int)(position.x);
+		int ix = MathUtils.floor(position.x);
 		float rx = position.x - ix;
-		int iy = (int)(position.y);
+		int iy = MathUtils.floor(position.y);
 		float ry = position.y - iy;
-		int iz = (int)(position.z);
+		int iz = MathUtils.floor(position.z);
 		float rz = position.z - iz;
 		
 		int ix1 = (ix + xoffset);
 		int ix2 = (ix + xoffset + 1) ;
 		
-		int iy1 = (ix + yoffset) ;
-		int iy2 = (ix + yoffset + 1) ;
+		int iy1 = (iy + yoffset) + randomTable.length / 3 ;
+		int iy2 = (iy + yoffset + 1) ;
 		
-		int iz1 = (ix + zoffset) ;
-		int iz2 = (ix + zoffset + 1);
+		int iz1 = (iz + zoffset) + 2 * randomTable.length / 3 ;
+		int iz2 = (iz + zoffset + 1);
 		
 		float n1 = MathUtils.lerp(
-				randomTable[(ix1 + iy1 + iz1) % randomTable.length], // TODO double modulo
-				randomTable[(ix2 + iy1 + iz1) % randomTable.length], 
+				random(ix1 + iy1 + iz1),
+				random(ix2 + iy1 + iz1), 
 				rx);
 		float n2 = MathUtils.lerp(
-				randomTable[(ix1 + iy2 + iz1) % randomTable.length], 
-				randomTable[(ix2 + iy2 + iz1) % randomTable.length], 
+				random(ix1 + iy2 + iz1), 
+				random(ix2 + iy2 + iz1), 
 				rx);
 		float n3 = MathUtils.lerp(
-				randomTable[(ix1 + iy1 + iz2) % randomTable.length], 
-				randomTable[(ix2 + iy1 + iz2) % randomTable.length], 
+				random(ix1 + iy1 + iz2), 
+				random(ix2 + iy1 + iz2), 
 				rx);
 		float n4 = MathUtils.lerp(
-				randomTable[(ix1 + iy2 + iz2) % randomTable.length], 
-				randomTable[(ix2 + iy2 + iz2) % randomTable.length], 
+				random(ix1 + iy2 + iz2), 
+				random(ix2 + iy2 + iz2), 
 				rx);
 		
 		float n5 = MathUtils.lerp(n1, n2, ry);
@@ -67,32 +72,32 @@ public class Noise {
 
 	public float apply(Vector2 position)
 	{
-		int ix = (int)(position.x);
+		int ix = MathUtils.floor(position.x);
 		float rx = position.x - ix;
-		int iy = (int)(position.y);
+		int iy = MathUtils.floor(position.y);
 		float ry = position.y - iy;
 		
 		int ix1 = (ix + xoffset);
 		int ix2 = (ix + xoffset + 1) ;
 		
-		int iy1 = (ix + yoffset) ;
-		int iy2 = (ix + yoffset + 1) ;
+		int iy1 = (iy + yoffset) + randomTable.length / 3;
+		int iy2 = (iy + yoffset + 1) ;
 		
 		
 		float n1 = MathUtils.lerp(
-				randomTable[(ix1 + iy1) % randomTable.length], 
-				randomTable[(ix2 + iy1) % randomTable.length], 
+				random(ix1 + iy1), 
+				random(ix2 + iy1), 
 				rx);
 		float n2 = MathUtils.lerp(
-				randomTable[(ix1 + iy2) % randomTable.length], 
-				randomTable[(ix2 + iy2) % randomTable.length], 
+				random(ix1 + iy2), 
+				random(ix2 + iy2), 
 				rx);
 		
 		return MathUtils.lerp(n1, n2, ry);
 	}
 	public float apply(float position)
 	{
-		int ix = (int)(position);
+		int ix = MathUtils.floor(position);
 		float rx = position - ix;
 		
 		int ix1 = (ix + xoffset);
@@ -100,8 +105,8 @@ public class Noise {
 		
 		
 		return MathUtils.lerp(
-				randomTable[(ix1) % randomTable.length], 
-				randomTable[(ix2) % randomTable.length], 
+				random(ix1), 
+				random(ix2), 
 				rx);
 		
 	}

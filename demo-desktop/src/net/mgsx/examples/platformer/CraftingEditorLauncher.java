@@ -34,7 +34,8 @@ public class CraftingEditorLauncher {
 		LwjglApplicationConfiguration.disableAudio = true;
 
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-
+		config.width = 1024;
+		config.height = 768;
 		
 		EditorConfiguration editConfig = new EditorConfiguration();
 		editConfig.plugins.add(new CraftingEditorPlugin());

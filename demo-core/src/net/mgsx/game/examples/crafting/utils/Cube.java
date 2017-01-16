@@ -1,5 +1,6 @@
 package net.mgsx.game.examples.crafting.utils;
 
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
 
 abstract public class Cube<T> 
@@ -113,20 +114,30 @@ abstract public class Cube<T>
 		return pos;
 	}
 	private Index3 index(Index3 i, Vector3 pos) {
-		i.x = (int)(pos.x / chunkSize);
-		i.y = (int)(pos.y / chunkSize);
-		i.z = (int)(pos.z / chunkSize);
+		i.x = MathUtils.floor(pos.x / chunkSize);
+		i.y = MathUtils.floor(pos.y / chunkSize);
+		i.z = MathUtils.floor(pos.z / chunkSize);
 		return i;
 	}
 
 	abstract protected T create();
 	abstract protected void  generate(T data, Index3 index, Vector3 position);
+	abstract protected void  update(T data, Index3 index, Vector3 position);
 
 	public T get(Index3 i) {
 		return (T)data[index(index.set(i).wrap(chunkCount))];
 	}
 	public T get(Vector3 v) {
 		return get(index(index, v));
+	}
+
+	public void updateAll() {
+		for(int z=0 ; z<chunkCount ; z++)
+			for(int y=0 ; y<chunkCount ; y++)
+				for(int x=0 ; x<chunkCount ; x++){
+					index.set(x,y,z).add(current);
+					update((T)data[index(wrapped.set(index).wrap(chunkCount))], index, position(pos, index));
+				}
 	}
 
 }
