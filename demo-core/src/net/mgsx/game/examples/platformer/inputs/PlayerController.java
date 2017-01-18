@@ -17,7 +17,7 @@ public class PlayerController implements Component
 	
 	public boolean left, right, up, down, jump, grab, justJump, justGrab;
 
-	public float jumpTime, jumpOrigin;
+	public float jumpMax, jumpOrigin;
 	
 	public Vector2 groundRay;
 
@@ -28,6 +28,8 @@ public class PlayerController implements Component
 	public boolean isHurt;
 	
 	public Fixture lastGroundFixture;
+	
+	public boolean canJump;
 	
 	/**
 	 * retrieve normalized direction accoring to left/right and up/down (right and up are positive)

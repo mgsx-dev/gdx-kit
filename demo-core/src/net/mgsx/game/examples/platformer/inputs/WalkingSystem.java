@@ -95,41 +95,44 @@ public class WalkingSystem extends IteratingSystem
 		player.onWallLeft = wallLeft;
 		player.onWallRight = wallRight;
 		
+		if(onGround){
+			player.jumpMax = physics.body.getPosition().y + 1f;
+			if(!player.jump) player.canJump = true;
+		}
 		
-		
-		float duration = 0.15f;
 		if(player.jump){
-			player.jumpTime += deltaTime;
+			
 			float vlc = 100;
-			if(player.jumpTime > duration){
-				if(wallLeft && velocity.y < vlc  && player.justJump){
-					player.jumpTime = duration/2;
+			
+				
+				if(!onGround && wallLeft && velocity.y < vlc  && player.justJump){
+					player.jumpMax = physics.body.getPosition().y + .5f;
+					player.canJump = true;
 					velocity.x = 15;
 					physics.body.setLinearVelocity(Vector2.Zero);
 					physics.body.applyLinearImpulse(new Vector2(8,8), physics.body.getWorldCenter(), true);
 				}
-				else if(wallRight && velocity.y < vlc && player.justJump){
-					player.jumpTime = duration/2;
+				else if(!onGround && wallRight && velocity.y < vlc && player.justJump){
+					player.jumpMax = physics.body.getPosition().y + .5f;
+					player.canJump = true;
 					velocity.x = -15;
+					velocity.y = velocity.y < 0 ? 0 : velocity.y;
 					physics.body.setLinearVelocity(Vector2.Zero);
 					physics.body.applyLinearImpulse(new Vector2(-8,8), physics.body.getWorldCenter(), true);
 				}
-				else if(velocity.y < -2){
-					velocity.y = -2;
-					physics.body.setLinearVelocity(velocity);
-					//physics.body.applyLinearImpulse(new Vector2(0,0.3f), physics.body.getWorldCenter(), true);
+				else if(player.canJump){
+					if(physics.body.getPosition().y < player.jumpMax && velocity.y >= -1){
+						float force = 2f; //.05f *  Math.min(40, player.jumpMax - physics.body.getPosition().y);
+						physics.body.applyLinearImpulse(new Vector2(0,force), physics.body.getWorldCenter(), true);
+					}else player.canJump = false;
 				}
-			}else if(velocity.y < 8){
-				physics.body.applyLinearImpulse(new Vector2(0,1.5f), physics.body.getWorldCenter(), true);
-			}
-		}else{
-			if(onGround){
-				player.jumpTime = 0;
-			}else{
-				player.jumpTime = duration;
-			}
+				else if(velocity.y < -1){
+					velocity.y = -1;
+					physics.body.setLinearVelocity(velocity);
+				}
 			
 		}
+			
 		float hforce = onGround ? .4f : .18f; // .18 just enough to not climb on single side.
 		if(player.left){
 			physics.body.applyLinearImpulse(new Vector2(-hforce,0), physics.body.getWorldCenter(), true);
