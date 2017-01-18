@@ -10,12 +10,11 @@ import net.mgsx.game.plugins.btree.annotations.TaskAlias;
 @TaskAlias("physicsType")
 public class PhysicTypeTask extends EntityLeafTask
 {
-	@TaskAttribute(required=true)
+	@TaskAttribute
 	public boolean dynamic;
 	
 	@Override
 	public Status execute() {
-		
 		Box2DBodyModel physics = Box2DBodyModel.components.get(getObject().entity);
 		if(physics != null){
 			physics.body.setType(dynamic ? BodyType.DynamicBody : BodyType.KinematicBody);
