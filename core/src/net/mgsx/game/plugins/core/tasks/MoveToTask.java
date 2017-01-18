@@ -13,7 +13,7 @@ import net.mgsx.game.plugins.core.components.Transform2DComponent;
 public class MoveToTask extends EntityLeafTask
 {
 	@TaskAttribute
-	public float tx, ty;
+	public float tx, ty, tz;
 	
 	@TaskAttribute
 	public float duration;
@@ -21,6 +21,7 @@ public class MoveToTask extends EntityLeafTask
 	public Interpolation interpolation;
 	
 	private Vector2 origin = new Vector2();
+	private float originDepth;
 	private float time;
 	
 	@Override
@@ -30,6 +31,7 @@ public class MoveToTask extends EntityLeafTask
 		Transform2DComponent transform = Transform2DComponent.components.get(getEntity());
 		if(transform != null){
 			origin.set(transform.position);
+			originDepth = transform.depth;
 		}
 	}
 	
@@ -45,6 +47,7 @@ public class MoveToTask extends EntityLeafTask
 			}
 			float t = time / duration;
 			transform.position.set(interpolation.apply(origin.x, tx, t), interpolation.apply(origin.y, ty, t));
+			transform.depth = interpolation.apply(originDepth, tz, t);
 		}
 		return Status.RUNNING;
 	}

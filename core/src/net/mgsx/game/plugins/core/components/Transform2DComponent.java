@@ -19,6 +19,10 @@ public class Transform2DComponent implements Component, Duplicable, Poolable
 	public static ComponentMapper<Transform2DComponent> components = ComponentMapper.getFor(Transform2DComponent.class);
 	
 	@Editable public Vector2 position = new Vector2();
+	
+	/* depth in (Z component) : 0 is sprite plan, positive is backround, negative is foreground */
+	@Editable public float depth = 0;
+	
 	@Editable public float angle;
 	@Editable public boolean rotation = true;
 	@Editable public boolean enabled = true;
@@ -32,6 +36,7 @@ public class Transform2DComponent implements Component, Duplicable, Poolable
 		clone.rotation = rotation;
 		clone.enabled = enabled;
 		clone.origin.set(origin);
+		clone.depth = depth;
 		return clone;
 	}
 
@@ -42,6 +47,7 @@ public class Transform2DComponent implements Component, Duplicable, Poolable
 		rotation = true;
 		enabled = true;
 		origin.setZero();
+		depth = 0;
 	}
 
 }

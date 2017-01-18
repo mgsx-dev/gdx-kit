@@ -2,26 +2,29 @@ package net.mgsx.game.plugins.core.tasks;
 
 import com.badlogic.gdx.ai.GdxAI;
 import com.badlogic.gdx.ai.btree.annotation.TaskAttribute;
+import com.badlogic.gdx.graphics.g3d.Material;
+import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.math.Interpolation;
-import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.MathUtils;
 
 import net.mgsx.game.plugins.btree.BTreePlugin.EntityLeafTask;
 import net.mgsx.game.plugins.btree.annotations.TaskAlias;
 import net.mgsx.game.plugins.core.components.Transform2DComponent;
+import net.mgsx.game.plugins.g3d.components.G3DModel;
 
-@TaskAlias("moveBy")
-public class MoveByTask extends EntityLeafTask
+@TaskAlias("depthTo")
+public class DepthToTask extends EntityLeafTask
 {
 	@TaskAttribute
-	public float tx, ty, tz;
+	public float depth;
 	
 	@TaskAttribute
 	public float duration;
 	
 	public Interpolation interpolation;
 	
-	private Vector2 origin = new Vector2();
-	private float time, depthOrigin;
+	private float origin;
+	private float time;
 	
 	@Override
 	public void start() {
@@ -29,8 +32,7 @@ public class MoveByTask extends EntityLeafTask
 		if(interpolation == null) interpolation = Interpolation.linear;
 		Transform2DComponent transform = Transform2DComponent.components.get(getEntity());
 		if(transform != null){
-			origin.set(transform.position);
-			depthOrigin = transform.depth;
+			origin = transform.depth;
 		}
 	}
 	
@@ -40,15 +42,23 @@ public class MoveByTask extends EntityLeafTask
 		Transform2DComponent transform = Transform2DComponent.components.get(getEntity());
 		if(transform != null){
 			if(time > duration){
-				transform.position.set(origin).add(tx, ty);
-				transform.depth = tz;
-				time = 0;
-				return Status.SUCCEEDED;
+				transform.depth = depth;
+				
+			}else{
+				float t = time / duration;
+				transform.depth = interpolation.apply(origin, depth, t);
 			}
-			float t = time / duration;
-			transform.position.set(origin).add(tx * interpolation.apply(t), ty * interpolation.apply(t));
-			transform.depth = interpolation.apply(depthOrigin, tz, t);
+			
+			G3DModel model = G3DModel.components.get(getEntity());
+			if(model != null){
+				for(Material mat : model.modelInstance.materials){
+					ColorAttribute color = (ColorAttribute)mat.get(ColorAttribute.Diffuse);
+					float f = MathUtils.lerp(1, .2f, MathUtils.clamp(-transform.depth * 2, 0, 1));
+					if(color != null)
+					color.color.set(f, f, f, 1);
+				}
+			}
 		}
-		return Status.RUNNING;
+		return time >= duration ? Status.SUCCEEDED : Status.RUNNING;
 	}
 }
