@@ -1,17 +1,17 @@
 package net.mgsx.game.plugins.tiles;
 
-import net.mgsx.game.core.EditorScreen;
-import net.mgsx.game.core.plugins.EditorPlugin;
-import net.mgsx.game.plugins.tiles.tools.ImportAsTileTool;
+import net.mgsx.game.core.GameScreen;
+import net.mgsx.game.core.annotations.PluginDef;
+import net.mgsx.game.core.plugins.Plugin;
+import net.mgsx.game.plugins.tiles.systems.TileMapSystem;
 
-public class TilesPlugin extends EditorPlugin
+@PluginDef
+public class TilesPlugin implements Plugin
 {
 
 	@Override
-	public void initialize(EditorScreen editor) {
-		
-		editor.addTool(new ImportAsTileTool(editor));
-		
+	public void initialize(GameScreen engine) {
+		engine.entityEngine.addSystem(new TileMapSystem(engine));
 	}
-	
+
 }

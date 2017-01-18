@@ -13,6 +13,7 @@ import net.mgsx.game.plugins.g3d.G3DEditorPlugin;
 import net.mgsx.game.plugins.particle2d.Particle2DEditorPlugin;
 import net.mgsx.game.plugins.profiling.ProfilerPlugin;
 import net.mgsx.game.plugins.spline.SplineEditorPlugin;
+import net.mgsx.game.plugins.tiles.TilesEditorPlugin;
 
 /**
  *  Default plugin configuration, import all "built-in" editor plugins and core plugins
@@ -32,7 +33,8 @@ import net.mgsx.game.plugins.spline.SplineEditorPlugin;
 	SplineEditorPlugin.class,
 	Particle2DEditorPlugin.class,
 	AssetsEditorPlugin.class,
-	StateMachineEditorPlugin.class
+	StateMachineEditorPlugin.class,
+	TilesEditorPlugin.class
 })
 public interface DefaultEditorPlugin extends DefaultPlugin {
 
