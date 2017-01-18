@@ -1,27 +1,33 @@
 package net.mgsx.game.examples.platformer.tasks;
 
 import net.mgsx.game.examples.platformer.physics.PlayerPhysicSensor;
+import net.mgsx.game.plugins.btree.BTreePlugin.EntityLeafTask;
 import net.mgsx.game.plugins.btree.annotations.TaskAlias;
 
 @TaskAlias("playerSensor")
-public class PlayerSensorTask extends ConditionTask
+public class PlayerSensorTask extends EntityLeafTask
 {
 	@Override
 	public void start() {
 		// ensure entity has player physic sensor
 		// TODO maybe check contact list for init in/out ?
-		if(!PlayerPhysicSensor.components.has(getEntity())){
-			getEntity().add(getEngine().createComponent(PlayerPhysicSensor.class));
-		}
+		getEntity().add(getEngine().createComponent(PlayerPhysicSensor.class));
 	}
 	
 	@Override
-	public boolean match() {
+	public com.badlogic.gdx.ai.btree.Task.Status execute() {
 		PlayerPhysicSensor sensor = PlayerPhysicSensor.components.get(getEntity());
-		if(sensor != null){
-			return sensor.inside;
+		if(sensor != null && sensor.inside){
+			sensor.inside = false;
+			return Status.SUCCEEDED;
 		}
-		return false;
+		return Status.RUNNING;
+	}
+	
+	@Override
+	public void end() {
+		getEntity().remove(PlayerPhysicSensor.class);
+		super.end();
 	}
 	
 
