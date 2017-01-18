@@ -1,0 +1,60 @@
+{
+entities: [
+	{
+		id: 0
+		2d: {}
+		g3d: {
+			modelInstance: tiles/ground-left.g3dj
+			origin: {}
+			blended: false
+			culling: false
+		}
+		box2d: {
+			id: Chain Loop
+			def: {}
+			fixtures: [
+				{
+					def: {
+						shape: {
+							type: Chain
+							loop: true
+							vertex: [
+								{
+									x: 1
+								}
+								{
+									x: 1
+									y: -2
+								}
+								{
+									y: -2
+								}
+								{
+									x: -1
+									y: -1
+								}
+								{
+									x: -0.9213993
+									y: -0.42620942
+								}
+								{
+									x: -0.5327818
+									y: -0.012535559
+								}
+							]
+						}
+						density: 1
+						filter: {}
+					}
+				}
+			]
+		}
+	}
+]
+assets: [
+	{
+		type: com.badlogic.gdx.graphics.g3d.Model
+		name: tiles/ground-left.g3dj
+	}
+]
+}

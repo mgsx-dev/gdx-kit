@@ -1,0 +1,59 @@
+{
+entities: [
+	{
+		id: 0
+		2d: {}
+		g3d: {
+			modelInstance: tiles/platform-var-2.g3dj
+			origin: {}
+			blended: false
+			culling: true
+		}
+		box2d: {
+			id: Rectangle
+			def: {}
+			fixtures: [
+				{
+					def: {
+						shape: {
+							type: Polygon
+							vertex: [
+								{
+									x: 1
+									y: -2
+								}
+								{
+									x: 1
+								}
+								{
+									x: -1
+								}
+								{
+									x: -1
+									y: -2
+								}
+							]
+						}
+						density: 1
+						filter: {}
+					}
+				}
+			]
+		}
+		btree: {
+			library: btree/falling-platform.btree
+		}
+		cake.physics.playerSensor: {}
+	}
+]
+assets: [
+	{
+		type: com.badlogic.gdx.graphics.g3d.Model
+		name: tiles/platform-var-2.g3dj
+	}
+	{
+		type: com.badlogic.gdx.ai.btree.BehaviorTree
+		name: btree/falling-platform.btree
+	}
+]
+}

@@ -1,0 +1,16 @@
+# import behaviorTree:"com.badlogic.gdx.ai.btree.BehaviorTree"
+# import sequence:"com.badlogic.gdx.ai.btree.branch.Sequence"
+# import repeat:"com.badlogic.gdx.ai.btree.decorator.Repeat"
+import physicsDisable:"net.mgsx.game.examples.platformer.tasks.PhysicDisableTask"
+import physicsEnable:"net.mgsx.game.examples.platformer.tasks.PhysicEnableTask"
+import waitAbsolute:"net.mgsx.game.examples.platformer.tasks.WaitAbsolute"
+import depthTo:"net.mgsx.game.plugins.core.tasks.DepthToTask"
+
+repeat
+  sequence
+    depthTo depth:-0.6942697 duration:0.105649434
+    physicsDisable
+    waitAbsolute steps:3 step:2
+    physicsEnable
+    depthTo duration:0.106396966
+    waitAbsolute steps:3

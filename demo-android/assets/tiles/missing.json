@@ -1,0 +1,51 @@
+{
+entities: [
+	{
+		id: 0
+		2d: {}
+		g3d: {
+			modelInstance: tiles/missing.g3dj
+			origin: {}
+			blended: false
+			culling: true
+		}
+		box2d: {
+			id: Rectangle
+			def: {}
+			fixtures: [
+				{
+					def: {
+						shape: {
+							type: Polygon
+							vertex: [
+								{
+									x: -1
+									y: -2
+								}
+								{
+									x: 1
+									y: -2
+								}
+								{
+									x: 1
+								}
+								{
+									x: -1
+								}
+							]
+						}
+						density: 1
+						filter: {}
+					}
+				}
+			]
+		}
+	}
+]
+assets: [
+	{
+		type: com.badlogic.gdx.graphics.g3d.Model
+		name: tiles/missing.g3dj
+	}
+]
+}

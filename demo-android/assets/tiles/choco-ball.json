@@ -1,0 +1,39 @@
+{
+entities: [
+	{
+		id: 0
+		2d: {}
+		g3d: {
+			modelInstance: tiles/choco-ball.g3dj
+			origin: {}
+			blended: false
+			culling: false
+		}
+		box2d: {
+			id: Circle
+			def: {
+				type: DynamicBody
+			}
+			fixtures: [
+				{
+					def: {
+						shape: {
+							type: Circle
+							position: {}
+							radius: 2.828427
+						}
+						density: 0.5082891
+						filter: {}
+					}
+				}
+			]
+		}
+	}
+]
+assets: [
+	{
+		type: com.badlogic.gdx.graphics.g3d.Model
+		name: tiles/choco-ball.g3dj
+	}
+]
+}

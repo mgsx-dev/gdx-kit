@@ -1,0 +1,53 @@
+{
+entities: [
+	{
+		id: 0
+		2d: {}
+		g3d: {
+			modelInstance: tiles/ground-up-half.g3dj
+			origin: {}
+			blended: false
+			culling: false
+		}
+		box2d: {
+			id: Chain Loop
+			def: {}
+			fixtures: [
+				{
+					def: {
+						shape: {
+							type: Chain
+							loop: true
+							vertex: [
+								{
+									x: -1
+									y: -4
+								}
+								{
+									x: -1
+									y: -2
+								}
+								{
+									x: 3
+								}
+								{
+									x: 3
+									y: -4
+								}
+							]
+						}
+						density: 1
+						filter: {}
+					}
+				}
+			]
+		}
+	}
+]
+assets: [
+	{
+		type: com.badlogic.gdx.graphics.g3d.Model
+		name: tiles/ground-up-half.g3dj
+	}
+]
+}

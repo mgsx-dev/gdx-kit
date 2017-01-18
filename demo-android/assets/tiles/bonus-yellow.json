@@ -1,0 +1,65 @@
+{
+entities: [
+	{
+		id: 0
+		2d: {
+			position: {
+				x: 30.223768
+				y: 2.710803
+			}
+			angle: -75.455765
+		}
+	}
+	{
+		id: 1
+		2d: {}
+		g3d: {
+			modelInstance: sugar/bonus-pink.g3dj
+			origin: {}
+			blended: false
+			culling: false
+		}
+		box2d: {
+			id: Rectangle
+			def: {}
+			fixtures: [
+				{
+					def: {
+						shape: {
+							type: Polygon
+							vertex: [
+								{
+									x: 0.34159017
+									y: -0.17355902
+								}
+								{
+									x: 0.34159017
+									y: 0.16617353
+								}
+								{
+									x: -0.33420432
+									y: 0.16617353
+								}
+								{
+									x: -0.33420432
+									y: -0.17355902
+								}
+							]
+						}
+						density: 1
+						isSensor: true
+						filter: {}
+					}
+				}
+			]
+		}
+		example.platformer.bonus: {}
+	}
+]
+assets: [
+	{
+		type: com.badlogic.gdx.graphics.g3d.Model
+		name: sugar/bonus-pink.g3dj
+	}
+]
+}

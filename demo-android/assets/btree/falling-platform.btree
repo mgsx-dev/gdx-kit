@@ -1,0 +1,12 @@
+# import behaviorTree:"com.badlogic.gdx.ai.btree.BehaviorTree"
+# import sequence:"com.badlogic.gdx.ai.btree.branch.Sequence"
+# import wait:"com.badlogic.gdx.ai.btree.leaf.Wait"
+import physicsType:"net.mgsx.game.examples.platformer.tasks.PhysicTypeTask"
+import playerSensor:"net.mgsx.game.examples.platformer.tasks.PlayerSensorTask"
+
+sequence
+  physicsType
+  playerSensor
+  wait seconds:0.37329647
+  physicsType dynamic:true
+  wait seconds:2.0

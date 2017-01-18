@@ -1,0 +1,62 @@
+{
+entities: [
+	{
+		id: 0
+		2d: {
+			depth: -0.6593219
+		}
+		g3d: {
+			modelInstance: tiles/platform-var-1.g3dj
+			origin: {}
+			blended: false
+			culling: false
+		}
+		box2d: {
+			id: Rectangle
+			def: {}
+			fixtures: [
+				{
+					def: {
+						shape: {
+							type: Polygon
+							vertex: [
+								{
+									x: 0.63307005
+									y: -0.47635165
+								}
+								{
+									x: 0.63307005
+									y: -0.025071114
+								}
+								{
+									x: -0.6079982
+									y: -0.025071114
+								}
+								{
+									x: -0.6079982
+									y: -0.47635165
+								}
+							]
+						}
+						density: 1
+						filter: {}
+					}
+				}
+			]
+		}
+		btree: {
+			library: btree/platform-chrono-2.btree
+		}
+	}
+]
+assets: [
+	{
+		type: com.badlogic.gdx.graphics.g3d.Model
+		name: tiles/platform-var-1.g3dj
+	}
+	{
+		type: com.badlogic.gdx.ai.btree.BehaviorTree
+		name: btree/platform-chrono-2.btree
+	}
+]
+}

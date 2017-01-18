@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" renderorder="left-down" width="256" height="256" tilewidth="32" tileheight="32" nextobjectid="2">
+ <properties>
+  <property name="DefaultName" value="tiles/missing"/>
+  <property name="WorldTileHeight" type="float" value="2"/>
+  <property name="WorldTileWidth" type="float" value="2"/>
+ </properties>
+ <tileset firstgid="1" name="cake-tileset-common" tilewidth="32" tileheight="32" tilecount="1024" columns="32">
+  <image source="cake-tileset-common.png" width="1024" height="1024"/>
+  <terraintypes>
+   <terrain name="New Terrain" tile="33"/>
+  </terraintypes>
+  <tile id="0" terrain=",,,0"/>
+  <tile id="1" terrain=",,0,0"/>
+  <tile id="2" terrain=",,0,"/>
+  <tile id="4">
+   <properties>
+    <property name="name" value="tiles/bonus-red"/>
+   </properties>
+  </tile>
+  <tile id="5">
+   <properties>
+    <property name="name" value="cake/chocos-patroller"/>
+   </properties>
+  </tile>
+  <tile id="9">
+   <properties>
+    <property name="name" value="tiles/ground-down-half"/>
+   </properties>
+  </tile>
+  <tile id="10">
+   <properties>
+    <property name="dummy" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="11">
+   <properties>
+    <property name="name" value="tiles/ground-up-half"/>
+   </properties>
+  </tile>
+  <tile id="12">
+   <properties>
+    <property name="dummy" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="32" terrain=",0,,0"/>
+  <tile id="33" terrain="0,0,0,0"/>
+  <tile id="34" terrain="0,,0,"/>
+  <tile id="36">
+   <properties>
+    <property name="name" value="tiles/bonus-yellow"/>
+   </properties>
+  </tile>
+  <tile id="37">
+   <properties>
+    <property name="name" value="cake/manon"/>
+   </properties>
+  </tile>
+  <tile id="38">
+   <properties>
+    <property name="name" value="tiles/ground-left"/>
+   </properties>
+  </tile>
+  <tile id="39">
+   <properties>
+    <property name="name" value="tiles/ground-center"/>
+   </properties>
+  </tile>
+  <tile id="40">
+   <properties>
+    <property name="name" value="tiles/ground-right"/>
+   </properties>
+  </tile>
+  <tile id="41">
+   <properties>
+    <property name="dummy" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="42">
+   <properties>
+    <property name="dummy" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="43">
+   <properties>
+    <property name="dummy" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="44">
+   <properties>
+    <property name="dummy" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="64" terrain=",0,,"/>
+  <tile id="65" terrain="0,0,,"/>
+  <tile id="66" terrain="0,,,"/>
+  <tile id="68">
+   <properties>
+    <property name="name" value="tiles/bonus-green"/>
+   </properties>
+  </tile>
+  <tile id="97" terrain="0,0,0,"/>
+  <tile id="98" terrain="0,0,,0"/>
+  <tile id="100">
+   <properties>
+    <property name="name" value="tiles/bonus-cyan"/>
+   </properties>
+  </tile>
+  <tile id="104">
+   <properties>
+    <property name="name" value="tiles/ground-up"/>
+   </properties>
+  </tile>
+  <tile id="105">
+   <properties>
+    <property name="name" value="tiles/ground-down"/>
+   </properties>
+  </tile>
+  <tile id="129" terrain="0,,0,0"/>
+  <tile id="130" terrain=",0,0,0"/>
+  <tile id="132">
+   <properties>
+    <property name="name" value="tiles/bonus-blue"/>
+   </properties>
+  </tile>
+  <tile id="164">
+   <properties>
+    <property name="name" value="tiles/bonus-purple"/>
+   </properties>
+  </tile>
+  <tile id="192">
+   <properties>
+    <property name="name" value="tiles/platform-chrono-1"/>
+   </properties>
+  </tile>
+  <tile id="193">
+   <properties>
+    <property name="name" value="tiles/platform-chrono-2"/>
+   </properties>
+  </tile>
+  <tile id="194">
+   <properties>
+    <property name="name" value="tiles/platform-chrono-3"/>
+   </properties>
+  </tile>
+  <tile id="224">
+   <properties>
+    <property name="name" value="tiles/platform-chrono-1b"/>
+   </properties>
+  </tile>
+  <tile id="256">
+   <properties>
+    <property name="name" value="tiles/falling-block"/>
+   </properties>
+  </tile>
+  <tile id="257">
+   <properties>
+    <property name="name" value="tiles/disappear-block"/>
+   </properties>
+  </tile>
+ </tileset>
+ <layer name="Tile Layer 1" width="256" height="256">
+  <data encoding="base64" compression="zlib">
+   eJzt3W9umzAcBmBnUvdhf46RpV23e7U7SS8yqdfodpLdZEQtGnUNGLAhS55HskgJoaji/dlgooYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEx1aNp10262PhAAAAAAOGHt/bPDpkcBbEH+4bwNzZHJP5y3NuPXidbNf+r9nDn2faeVYn4fyqiVoTbzn5r2OaTzuh9pKbIP5RxzFPfv73bp18e22/1rQ5luc/+tad8Tv3doTJE7tki5mvEZuFRxxv5Ey3j9kJzcr0ENgHE5fXBu39zuqy/3v8sf/iA1AJ7lXFdP3d9cPyduP/d6X/65dHfhdR//oWkfw/I6MDdba927k30I4SH6+WvTbsPyOpA7lp/a15cg+/Aszn9rbh04Zuvp5fWvkW2X9PXG/LBcX/5bbR3InW+bcg9vHy1btcYEsg+vDeX/qtPGHLdp+/u++cF4+9RyrF/X70M5Y/1/11A9eEqsG9tXajlki+zfLfgsnLop+Y8N1YP30TKlb/xf2pL8L/n7wKmLz+8lz/vkPAs0Z/8l5gLn1gD555ytdX4/RMstdGtA7rWE/HPOHsPbPrnGszdb5D+V8anjAPnnktQ632vmf+p9wSk1QP65JLXO98doOVeJ54PlH9JS5/uXnm371h+V+i5R6e8DGP9Dv9T9gNLtx8gx1P4OUG4NuA/LxyvAW2M1oLaxGnC/ylHA5dq6BvSRfVjHqdUA2Yd1nUoNkH3YRrcGdO//HV7ei58fvunZPmSsT70n+1BX7XmFms3/EgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPg//QUTUVGw
+  </data>
+ </layer>
+ <objectgroup name="Object Layer 1">
+  <object id="1" name="camera" x="3305.33" y="3677.33" width="340" height="256"/>
+ </objectgroup>
+</map>
