@@ -83,7 +83,7 @@ public class G3DRendererSystem extends IteratingSystem
 		super.addedToEngine(engine);
 		engine.addEntityListener(Family.all(G3DModel.class).get(), listener);
 		directionalLights = engine.getEntitiesFor(Family.all(DirectionalLightComponent.class).get());
-		pointLights = engine.getEntitiesFor(Family.all(PointLightComponent.class).get());
+		pointLights = engine.getEntitiesFor(Family.all(PointLightComponent.class).exclude(Hidden.class).get());
 		shadowCasts = engine.getEntitiesFor(Family.all(G3DModel.class, ShadowCasting.class).get());
 	}
 	

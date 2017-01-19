@@ -9,6 +9,8 @@ import net.mgsx.game.plugins.g3d.components.G3DModel;
 import net.mgsx.game.plugins.g3d.components.TextureAnimationComponent;
 import net.mgsx.game.plugins.g3d.systems.G3DAnimationSystem;
 import net.mgsx.game.plugins.g3d.systems.G3DCullingSystem;
+import net.mgsx.game.plugins.g3d.systems.G3DLightCullingSystem;
+import net.mgsx.game.plugins.g3d.systems.G3DLightNoiseSystem;
 import net.mgsx.game.plugins.g3d.systems.G3DRendererSystem;
 import net.mgsx.game.plugins.g3d.systems.G3DTextureAnimationSystem;
 import net.mgsx.game.plugins.g3d.systems.G3DTransformSystem;
@@ -30,5 +32,7 @@ public class G3DPlugin implements Plugin
 		engine.entityEngine.addSystem(new G3DCullingSystem(engine));
 		engine.entityEngine.addSystem(new G3DRendererSystem(engine));
 		engine.entityEngine.addSystem(new G3DTextureAnimationSystem());
+		engine.entityEngine.addSystem(new G3DLightCullingSystem(engine));
+		engine.entityEngine.addSystem(new G3DLightNoiseSystem());
 	}
 }

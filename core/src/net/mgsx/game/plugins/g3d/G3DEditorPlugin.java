@@ -9,6 +9,7 @@ import net.mgsx.game.plugins.g3d.components.G3DModel;
 import net.mgsx.game.plugins.g3d.editors.G3DEditor;
 import net.mgsx.game.plugins.g3d.editors.G3DNodeEditor;
 import net.mgsx.game.plugins.g3d.systems.G3DBoundaryDebugSystem;
+import net.mgsx.game.plugins.g3d.systems.G3DPointLightDebugSystem;
 import net.mgsx.game.plugins.g3d.tools.AddModelTool;
 import net.mgsx.game.plugins.g3d.tools.G3DModelReloader;
 import net.mgsx.game.plugins.g3d.tools.ModelSelector;
@@ -28,5 +29,6 @@ public class G3DEditorPlugin extends EditorPlugin
 		
 		// systems
 		editor.entityEngine.addSystem(new G3DBoundaryDebugSystem(editor));
+		editor.entityEngine.addSystem(new G3DPointLightDebugSystem(editor));
 	}
 }
