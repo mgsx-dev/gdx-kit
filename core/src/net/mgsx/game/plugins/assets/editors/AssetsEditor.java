@@ -1,6 +1,7 @@
 package net.mgsx.game.plugins.assets.editors;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -108,7 +109,7 @@ public class AssetsEditor implements GlobalEditorPlugin
 		table.add(btRefresh).row();
 		//table.add(editor.assets.getDiagnostics()).row();
 		//table.add(String.valueOf(editor.assets.getLoadedAssets())).row();
-		table.add(assetList);
+		table.add(new ScrollPane(assetList));
 		
 		return table;
 	}
