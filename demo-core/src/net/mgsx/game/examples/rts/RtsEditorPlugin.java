@@ -13,9 +13,10 @@ import net.mgsx.game.examples.rts.tools.PlanetSelector;
 import net.mgsx.game.examples.rts.tools.RtsGameTool;
 import net.mgsx.game.examples.rts.tools.SolarCreatorTool;
 import net.mgsx.game.examples.rts.tools.SpawnTool;
+import net.mgsx.game.plugins.DefaultEditorPlugin;
 
 @PluginDef(dependencies=RtsPlugin.class)
-public class RtsEditorPlugin extends EditorPlugin
+public class RtsEditorPlugin extends EditorPlugin implements DefaultEditorPlugin
 {
 
 	@Override

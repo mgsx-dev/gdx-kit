@@ -23,7 +23,11 @@ public class RtsEditorLauncher {
 
 	public static void main (String[] args) 
 	{
-		ClassRegistry.instance = new ReflectionClassRegistry();
+		ClassRegistry.instance = new ReflectionClassRegistry(
+				ReflectionClassRegistry.kitCore,
+				ReflectionClassRegistry.kitCorePlugin,
+				"net.mgsx.game.examples.rts"
+				);
 		
 		DesktopNativeInterface nativeService = new DesktopNativeInterface(); 
 		NativeService.instance = nativeService; 
