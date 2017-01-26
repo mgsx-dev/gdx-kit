@@ -3,6 +3,7 @@ package net.mgsx.game.core.storage;
 import java.io.StringWriter;
 
 import com.badlogic.ashley.core.EntitySystem;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonReader;
@@ -72,12 +73,16 @@ public class EngineStorage {
 				JsonValue systemSettings = i.next();
 				String type = systemSettings.getString("type");
 				EntitySystem system = systemRegistry.get(type);
-				for(Accessor accessor : AccessorScanner.scan(system, true)){
-					if(accessor.getType() != void.class){
-						JsonValue jsonValue = systemSettings.get(accessor.getName());
-						Object value = json.readValue(accessor.getType(), jsonValue);
-						accessor.set(value);
+				if(system != null){
+					for(Accessor accessor : AccessorScanner.scan(system, true)){
+						if(accessor.getType() != void.class){
+							JsonValue jsonValue = systemSettings.get(accessor.getName());
+							Object value = json.readValue(accessor.getType(), jsonValue);
+							accessor.set(value);
+						}
 					}
+				}else{
+					Gdx.app.error("Reflection", "unknown system " + type);
 				}
 			}
 			
