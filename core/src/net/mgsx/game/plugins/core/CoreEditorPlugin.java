@@ -15,6 +15,7 @@ import net.mgsx.game.plugins.core.math.Signal;
 import net.mgsx.game.plugins.core.systems.GridDebugSystem;
 import net.mgsx.game.plugins.core.systems.PolygonRenderSystem;
 import net.mgsx.game.plugins.core.systems.SelectionRenderSystem;
+import net.mgsx.game.plugins.core.tools.ClipPlaneTool;
 import net.mgsx.game.plugins.core.tools.CreateProxyTool;
 import net.mgsx.game.plugins.core.tools.DeleteTool;
 import net.mgsx.game.plugins.core.tools.DuplicateTool;
@@ -56,6 +57,7 @@ public class CoreEditorPlugin extends EditorPlugin
 		editor.addTool(new ResetProxyTool(editor));
 		editor.addTool(new ResetAllProxyTool(editor));
 		editor.addTool(new UnproxyTool(editor));
+		editor.addTool(new ClipPlaneTool(editor));
 		
 		// order is very important !
 		editor.addGlobalTool(new SelectTool(editor));
