@@ -6,9 +6,10 @@ import net.mgsx.game.core.plugins.EditorPlugin;
 import net.mgsx.game.examples.war.components.ZoneComponent;
 import net.mgsx.game.examples.war.editors.PlayerEditor;
 import net.mgsx.game.examples.war.editors.ZoneEditor;
+import net.mgsx.game.plugins.DefaultEditorPlugin;
 
 @PluginDef(dependencies=WarPlugin.class)
-public class WarEditorPlugin extends EditorPlugin
+public class WarEditorPlugin extends EditorPlugin implements DefaultEditorPlugin
 {
 
 	@Override
