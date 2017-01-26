@@ -23,7 +23,10 @@ public class CraftingEditorLauncher {
 
 	public static void main (String[] args) 
 	{
-		ClassRegistry.instance = new ReflectionClassRegistry();
+		ClassRegistry.instance = new ReflectionClassRegistry(
+				ReflectionClassRegistry.kitCore,
+				ReflectionClassRegistry.kitCorePlugin,
+				"net.mgsx.examples.crafting");
 		
 		DesktopNativeInterface nativeService = new DesktopNativeInterface(); 
 		NativeService.instance = nativeService; 
