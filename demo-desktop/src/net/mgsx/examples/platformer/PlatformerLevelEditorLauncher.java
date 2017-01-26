@@ -23,7 +23,12 @@ public class PlatformerLevelEditorLauncher {
 
 	public static void main (String[] args) 
 	{
-		ClassRegistry.instance = new ReflectionClassRegistry();
+		ClassRegistry.instance = new ReflectionClassRegistry(
+				ReflectionClassRegistry.kitCore,
+				ReflectionClassRegistry.kitPlugins,
+				ReflectionClassRegistry.behaviorTree,
+				"net.mgsx.game.examples.platformer"
+				);
 		
 		DesktopNativeInterface nativeService = new DesktopNativeInterface(); 
 		NativeService.instance = nativeService; 
