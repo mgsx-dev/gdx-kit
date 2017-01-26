@@ -2,128 +2,274 @@
 entities: [
 	{
 		id: 0
-		box2d: {
-			id: Rectangle
-			def: {
-				position: {
-					x: 0.031339288
-					y: 0.8210897
-				}
-			}
-			fixtures: [
-				{
-					def: {
-						shape: {
-							type: Polygon
-							vertex: [
-								{
-									x: -3.672965
-									y: -1.4604115
-								}
-								{
-									x: 3.672965
-									y: -1.4604115
-								}
-								{
-									x: 3.672965
-									y: 1.4604115
-								}
-								{
-									x: -3.672965
-									y: 1.4604115
-								}
-							]
-						}
-						density: 1
-						filter: {}
-					}
-				}
-			]
-		}
 	}
 	{
 		id: 1
-		box2d: {
-			id: Rectangle
-			def: {
-				position: {
-					x: 1.5105535
-					y: 0.21937488
-				}
+		p2d: {
+			reference: particles/dirt.p
+		}
+		2d: {
+			position: {
+				x: -25.683294
+				y: -1.7059755
 			}
-			fixtures: [
-				{
-					def: {
-						shape: {
-							type: Polygon
-							vertex: [
-								{
-									x: -1.5042859
-									y: -0.5954465
-								}
-								{
-									x: 1.5042859
-									y: -0.5954465
-								}
-								{
-									x: 1.5042859
-									y: 0.5954465
-								}
-								{
-									x: -1.5042859
-									y: 0.5954465
-								}
-							]
-						}
-						density: 1
-						filter: {}
-					}
-				}
-			]
 		}
 	}
 	{
 		id: 2
-		box2d: {
-			id: Rectangle
-			def: {
-				type: DynamicBody
-				position: {
-					x: 0.45755336
-					y: 3.2906265
+		g3d.light.dir: {
+			light: {
+				color: {
+					r: 0.24391669
+					g: 0.24131039
+					b: 0.74148864
+					a: 1
+				}
+				direction: {
+					y: 2.8753746
+					z: 0.23929028
 				}
 			}
-			fixtures: [
-				{
-					def: {
-						shape: {
-							type: Polygon
-							vertex: [
-								{
-									x: -0.4136785
-									y: -0.3196609
-								}
-								{
-									x: 0.4136785
-									y: -0.3196609
-								}
-								{
-									x: 0.4136785
-									y: 0.3196609
-								}
-								{
-									x: -0.4136785
-									y: 0.3196609
-								}
-							]
-						}
-						density: 1
-						filter: {}
-					}
+			shadow: true
+		}
+	}
+	{
+		id: 3
+		p2d: {
+			reference: particles/fire.p
+		}
+		g3d.light.point: {
+			light: {
+				color: {
+					r: 0.88348407
+					g: 0.88348407
+					b: 0.88348407
+					a: 1
 				}
-			]
+				position: {
+					x: -15
+					y: 4
+				}
+				intensity: 11.430683
+			}
+		}
+		2d: {
+			position: {
+				x: -15
+				y: 4
+			}
+		}
+		g3d.light.noise: {
+			frequency: 8.004686
+			min: 0.7524022
+			max: 1.1752144
+		}
+	}
+	{
+		id: 4
+		2d: {
+			position: {
+				x: 75
+				y: -24
+			}
+		}
+		g3d: {
+			modelInstance: tiles/cavern-bg-var1.g3dj
+			origin: {}
+			blended: false
+			culling: false
+		}
+	}
+	{
+		id: 5
+		2d: {
+			position: {
+				x: -26
+			}
+		}
+		g3d: {
+			modelInstance: tiles/cavern-bg-var3.g3dj
+			origin: {}
+			blended: false
+			culling: false
+		}
+	}
+	{
+		id: 6
+		2d: {
+			position: {
+				x: 91
+				y: -24
+			}
+		}
+		g3d: {
+			modelInstance: tiles/cavern-bg-var2.g3dj
+			origin: {}
+			blended: false
+			culling: false
+		}
+	}
+	{
+		id: 7
+		proxy: {
+			ref: cake/camera.json
+		}
+		2d: {
+			position: {
+				x: -18
+				y: -5
+			}
+		}
+	}
+	{
+		id: 8
+		proxy: {
+			ref: cake/player.json
+		}
+		2d: {
+			position: {
+				x: -7
+				y: 1
+			}
+		}
+	}
+	{
+		id: 9
+		proxy: {
+			ref: tiles/choco-ball.json
+		}
+		2d: {
+			position: {
+				x: 17
+				y: 2
+			}
+		}
+	}
+	{
+		id: 10
+		p2d: {
+			reference: particles/fire.p
+		}
+		g3d.light.point: {
+			light: {
+				color: {
+					r: 0.87222016
+					g: 0.87222016
+					b: 0.87222016
+					a: 1
+				}
+				position: {
+					x: 11
+					y: -1
+				}
+				intensity: 100
+			}
+		}
+		g3d.light.noise: {
+			frequency: 16.127323
+			min: 0.7137306
+		}
+		2d: {
+			position: {
+				x: 11
+				y: -1
+			}
+		}
+	}
+	{
+		id: 11
+		p2d: {
+			reference: particles/fire.p
+		}
+		g3d.light.point: {
+			light: {
+				color: {
+					r: 0.87222016
+					g: 0.87222016
+					b: 0.87222016
+					a: 1
+				}
+				position: {
+					x: 79.33338
+					y: -26
+				}
+				intensity: 100
+			}
+		}
+		g3d.light.noise: {
+			frequency: 16.127323
+			min: 0.7137306
+		}
+		2d: {
+			position: {
+				x: 79.33338
+				y: -26
+			}
+		}
+	}
+	{
+		id: 12
+		2d: {
+			position: {
+				x: 59
+				y: -24
+			}
+		}
+		g3d: {
+			modelInstance: tiles/cavern-bg-var1.g3dj
+			origin: {}
+			blended: false
+			culling: true
+		}
+	}
+	{
+		id: 13
+		2d: {
+			position: {
+				x: 74
+				y: -8
+			}
+		}
+		g3d: {
+			modelInstance: tiles/cavern-bg-var2.g3dj
+			origin: {}
+			blended: false
+			culling: true
 		}
 	}
 ]
-assets: []
+assets: [
+	{
+		type: net.mgsx.game.core.storage.EntityGroup
+		name: cake/camera.json
+	}
+	{
+		type: com.badlogic.gdx.graphics.g3d.Model
+		name: tiles/cavern-bg-var3.g3dj
+	}
+	{
+		type: com.badlogic.gdx.graphics.g3d.Model
+		name: tiles/cavern-bg-var1.g3dj
+	}
+	{
+		type: net.mgsx.game.core.storage.EntityGroup
+		name: tiles/choco-ball.json
+	}
+	{
+		type: com.badlogic.gdx.graphics.g2d.ParticleEffect
+		name: particles/fire.p
+	}
+	{
+		type: com.badlogic.gdx.graphics.g3d.Model
+		name: tiles/cavern-bg-var2.g3dj
+	}
+	{
+		type: net.mgsx.game.core.storage.EntityGroup
+		name: cake/player.json
+	}
+	{
+		type: com.badlogic.gdx.graphics.g2d.ParticleEffect
+		name: particles/dirt.p
+	}
+]
 }
