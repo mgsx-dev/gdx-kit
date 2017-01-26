@@ -7,8 +7,8 @@ import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.FloatFrameBuffer;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -51,8 +51,9 @@ public class RtsRenderSystem extends IteratingSystem
 	@Override
 	public void addedToEngine(Engine engine) {
 		super.addedToEngine(engine);
-		fboFront = new FrameBuffer(Format.RGBA8888, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false);
-		fboBack = new FrameBuffer(Format.RGBA8888, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false);
+		
+		fboFront = new FloatFrameBuffer(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false);
+		fboBack = new FloatFrameBuffer(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false);
 		blurXProgram = new ShaderProgram(
 				Gdx.files.internal("shaders/blur-color-vertex.glsl"),
 				Gdx.files.internal("shaders/blur-color-fragment.glsl"));
@@ -102,8 +103,8 @@ public class RtsRenderSystem extends IteratingSystem
 	@Override
 	protected void processEntity(Entity entity, float deltaTime) 
 	{
-		float s = .13f;
 		BulletComponent bullet = BulletComponent.components.get(entity);
+		float s = .13f * (bullet.size+1);
 		renderer.setColor(bullet.color);
 		renderer.rect(bullet.position.x, bullet.position.y, s, s);
 	}

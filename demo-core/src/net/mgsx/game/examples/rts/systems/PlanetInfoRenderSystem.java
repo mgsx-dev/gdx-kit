@@ -18,7 +18,7 @@ public class PlanetInfoRenderSystem extends IteratingSystem
 	private SpriteBatch batch;
 	private GameScreen game;
 	private BitmapFont font;
-	private float fontScale = .01f;
+	private float fontScale = .1f;
 	public PlanetInfoRenderSystem(GameScreen game) {
 		super(Family.all(PlanetComponent.class, Transform2DComponent.class).get(), GamePipeline.RENDER);
 		batch = new SpriteBatch();

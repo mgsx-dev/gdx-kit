@@ -19,6 +19,10 @@ public class BulletComponent implements Component, Poolable {
 	public float time;
 
 	public Color color = new Color(Color.WHITE);
+
+	public int crew;
+
+	public int size;
 	@Override
 	public void reset() {
 		time = 0;

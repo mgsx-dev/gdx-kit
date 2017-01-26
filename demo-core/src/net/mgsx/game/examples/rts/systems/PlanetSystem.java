@@ -3,6 +3,7 @@ package net.mgsx.game.examples.rts.systems;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
+import com.badlogic.gdx.math.MathUtils;
 
 import net.mgsx.game.core.GamePipeline;
 import net.mgsx.game.core.annotations.EditableSystem;
@@ -24,9 +25,9 @@ public class PlanetSystem extends IteratingSystem
 		
 		float maxResource = planet.size;
 		float populationPerResource = 100;
-		float rate =  ((planet.population+1) / populationPerResource) / maxResource ;
+		float rate =  ((planet.population) / populationPerResource) / maxResource ;
 		planet.maxPopulation = maxResource * populationPerResource;
-		if(rate < .25f){
+		if(rate < .25f && rate > 0){
 			planet.population += deltaTime * 4;
 		}else if(rate > 0.75){
 			planet.health = Math.max(0, planet.health - deltaTime / 10);
@@ -34,8 +35,11 @@ public class PlanetSystem extends IteratingSystem
 		}
 		planet.health = Math.min(1, planet.health + deltaTime / 20f); // 30 secs
 		if(planet.health <= 0.5f)
-			planet.population -= deltaTime ;
-		
+		{
+			float h = planet.health * .5f;
+			planet.population -= deltaTime * MathUtils.lerp(100, 1, h * h) ;
+		}
+		planet.population = Math.max(0, planet.population);
 //		// planet produce resources (up to max resources)
 //		// max resources depends on its size (planet volume relative to unit sphere)
 //		float maxResource = planet.size ;

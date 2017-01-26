@@ -11,9 +11,11 @@ import com.badlogic.gdx.math.Vector2;
 import net.mgsx.game.core.GamePipeline;
 import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.core.annotations.EditableSystem;
+import net.mgsx.game.examples.rts.components.AIComponent;
 import net.mgsx.game.examples.rts.components.BulletComponent;
 import net.mgsx.game.examples.rts.components.PlanetComponent;
 import net.mgsx.game.examples.rts.components.TravalComponent;
+import net.mgsx.game.examples.rts.logic.RtsFactory;
 import net.mgsx.game.plugins.core.components.Transform2DComponent;
 
 @EditableSystem
@@ -64,6 +66,37 @@ public class BulletSystem extends EntitySystem
 				bullet.direction.set(target.position).sub(bullet.position);
 				if(bullet.direction.len2() < 0.25f * dstPlanet.size * dstPlanet.size){
 					dstPlanet.population+=1;
+					
+					// war
+					if(dstPlanet.owner != travel.playerID){
+						// loose
+						if(dstPlanet.population > 1)
+							dstPlanet.population-=bullet.crew;
+						// win
+						else{
+							
+							// remove owning
+							if(dstPlanet.owner >= 0){
+								Entity opponent = RtsFactory.getPlayer(dstPlanet.owner);
+								AIComponent ai = AIComponent.components.get(opponent);
+								if(ai != null){
+									ai.ownedPlanets.removeValue(travel.dstPlanet, true);
+								}
+							}
+							
+							dstPlanet.owner = travel.playerID;
+							dstPlanet.population+=bullet.crew;
+							Entity player = RtsFactory.getPlayer(travel.playerID);
+							AIComponent ai = AIComponent.components.get(player);
+							if(ai != null){
+								ai.ownedPlanets.add(travel.dstPlanet);
+							}
+						}
+					}else{
+						// reinforcement
+						dstPlanet.population+=bullet.crew;
+					}
+					
 					getEngine().removeEntity(entity);
 				}else{
 					// bullet.distance = bullet.direction.len();

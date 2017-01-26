@@ -10,4 +10,5 @@ public class TravalComponent implements Component {
 	public final static ComponentMapper<TravalComponent> components = ComponentMapper.getFor(TravalComponent.class);
 	public Entity srcPlanet;
 	public Entity dstPlanet;
+	public int playerID;
 }

@@ -12,6 +12,10 @@ import net.mgsx.game.core.annotations.Storable;
 @EditableComponent
 public class PlanetComponent implements Component
 {
+	// TODO split in "celestal body" with self rotation which influence other planets rotations
+	// planet and stars are celest body
+	// population have to be refactored to population per race (players / AI / neutral).
+	// resources should be split in other components (having resources or not ... ?)
 	
 	public final static ComponentMapper<PlanetComponent> components = ComponentMapper.getFor(PlanetComponent.class);
 	
@@ -29,5 +33,6 @@ public class PlanetComponent implements Component
 
 	public float maxPopulation;
 	
+	public int owner = -1;
 	
 }
