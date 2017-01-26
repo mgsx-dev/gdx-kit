@@ -47,9 +47,13 @@ public class IntegerWidget implements FieldEditor
 		final Label label = new Label("", skin);
 		final TextButton btPlus = new TextButton("+", skin);
 		final TextButton btMinus = new TextButton("-", skin);
+		final TextButton btDiv = new TextButton("/", skin);
+		final TextButton btMul = new TextButton("*", skin);
+		sub.add(btDiv);
 		sub.add(btMinus);
 		sub.add(label).pad(4);
 		sub.add(btPlus);
+		sub.add(btMul);
 		label.setText(String.valueOf(accessor.get()));
 		
 		btPlus.addListener(new ChangeListener() {
@@ -66,6 +70,26 @@ public class IntegerWidget implements FieldEditor
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
 				long value = -1 + AccessorHelper.asLong(accessor);
+				if(min == null || value >= min){
+					AccessorHelper.fromLong(accessor, value);
+					label.setText(String.valueOf(value));
+				}
+			}
+		});
+		btDiv.addListener(new ChangeListener() {
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				long value = AccessorHelper.asLong(accessor) / 2;
+				if(max == null || value <= max){
+					AccessorHelper.fromLong(accessor, value);
+					label.setText(String.valueOf(value));
+				}
+			}
+		});
+		btMul.addListener(new ChangeListener() {
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				long value = 2 * AccessorHelper.asLong(accessor);
 				if(min == null || value >= min){
 					AccessorHelper.fromLong(accessor, value);
 					label.setText(String.valueOf(value));
