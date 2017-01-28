@@ -1,0 +1,12 @@
+# import behaviorTree:"com.badlogic.gdx.ai.btree.BehaviorTree"
+# import sequence:"com.badlogic.gdx.ai.btree.branch.Sequence"
+# import repeat:"com.badlogic.gdx.ai.btree.decorator.Repeat"
+# import wait:"com.badlogic.gdx.ai.btree.leaf.Wait"
+import enemy:"net.mgsx.game.examples.td.tasks.EmitEnemyTask"
+
+sequence
+  repeat times:4
+    sequence
+      wait seconds:2.0
+      enemy
+  wait seconds:3.0
