@@ -14,9 +14,13 @@ public class GridTool extends Tool
 	
 	@Override
 	public boolean keyDown(int keycode) {
+		GridDebugSystem grid = getEngine().getSystem(GridDebugSystem.class);
 		if(keycode == Input.Keys.G){
-			GridDebugSystem grid = getEngine().getSystem(GridDebugSystem.class);
 			grid.setProcessing(!grid.checkProcessing());
+			return true;
+		}else if(keycode == Input.Keys.S){
+			grid.snap = !grid.snap;
+			return true;
 		}
 		return super.keyDown(keycode);
 	}
