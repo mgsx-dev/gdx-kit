@@ -4,10 +4,13 @@ import net.mgsx.game.core.EditorScreen;
 import net.mgsx.game.core.plugins.EditorPlugin;
 import net.mgsx.game.examples.td.systems.EnemyLogicSystem;
 import net.mgsx.game.examples.td.systems.EnemyRenderer;
+import net.mgsx.game.examples.td.systems.EntryRenderer;
+import net.mgsx.game.examples.td.systems.HomeRenderer;
 import net.mgsx.game.examples.td.systems.MapSystem;
 import net.mgsx.game.examples.td.systems.ShotSystem;
 import net.mgsx.game.examples.td.systems.TileRenderer;
 import net.mgsx.game.examples.td.systems.TowerLogicSystem;
+import net.mgsx.game.examples.td.systems.TowerRangeRenderer;
 import net.mgsx.game.examples.td.systems.TowerRender;
 import net.mgsx.game.examples.td.tools.TileSelector;
 import net.mgsx.game.examples.td.tools.TileTool;
@@ -27,9 +30,13 @@ public class TowerDefenseEditorPlugin extends EditorPlugin implements DefaultEdi
 		editor.entityEngine.addSystem(new TowerLogicSystem());
 		
 		editor.entityEngine.addSystem(new TileRenderer(editor.game));
-		editor.entityEngine.addSystem(new EnemyRenderer(editor.game));
 		editor.entityEngine.addSystem(new TowerRender(editor.game));
+		editor.entityEngine.addSystem(new HomeRenderer(editor.game));
+		editor.entityEngine.addSystem(new EntryRenderer(editor.game));
+		editor.entityEngine.addSystem(new EnemyRenderer(editor.game));
 		editor.entityEngine.addSystem(new ShotSystem(editor.game));
+		
+		editor.entityEngine.addSystem(new TowerRangeRenderer(editor.game));
 		
 	}
 

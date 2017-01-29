@@ -11,6 +11,9 @@ public class Enemy implements Component, Poolable
 	
 	public float life = 10;
 
+	/** distance from home */
+	public float home;
+
 	@Override
 	public void reset() {
 		life = 10;

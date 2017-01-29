@@ -2,18 +2,27 @@ package net.mgsx.game.examples.td.systems;
 
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL20;
 
 import net.mgsx.game.core.GamePipeline;
 import net.mgsx.game.core.GameScreen;
 import net.mgsx.game.examples.td.components.TileComponent;
 import net.mgsx.game.examples.td.components.Tower;
 
-public class TowerRender extends AbstractShapeSystem
+public class TowerRangeRenderer extends AbstractShapeSystem
 {
 
-	public TowerRender(GameScreen game) {
+	public TowerRangeRenderer(GameScreen game) {
 		super(game, Family.all(TileComponent.class, Tower.class).get(), GamePipeline.RENDER);
+	}
+	
+	@Override
+	public void update(float deltaTime) {
+		Gdx.gl.glEnable(GL20.GL_BLEND);
+		super.update(deltaTime);
+		Gdx.gl.glDisable(GL20.GL_BLEND);
 	}
 
 	@Override
@@ -21,14 +30,9 @@ public class TowerRender extends AbstractShapeSystem
 		TileComponent tile = TileComponent.components.get(entity);
 		Tower tower = Tower.components.get(entity);
 		renderer.setColor(Color.BLUE);
-		final float s = .25f;
+		renderer.getColor().a = .2f;
 		renderer.identity();
-		renderer.rect(tile.x - s + .5f, tile.y - s + .5f, 2*s, 2*s);
+		renderer.circle(tile.x + .5f, tile.y + .5f, tower.range, 16);
 
-		// render cannon
-		renderer.setColor(Color.CYAN);
-		renderer.translate(tile.x + .5f, tile.y + .5f, 0);
-		renderer.rotate(0, 0, 1, tower.angle);
-		renderer.rect(0, - s/4,  2*s, s/2);
 	}
 }

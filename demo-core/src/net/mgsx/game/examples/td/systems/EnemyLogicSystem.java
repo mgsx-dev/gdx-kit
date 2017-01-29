@@ -31,13 +31,13 @@ public class EnemyLogicSystem extends IteratingSystem
 			return;
 		}
 		
+		MapSystem map = getEngine().getSystem(MapSystem.class);
 		path.t += deltaTime * path.speed;
 		if(path.t > 1){
 			path.t -= 1;
 			path.sx = path.tx;
 			path.sy = path.ty;
 			
-			MapSystem map = getEngine().getSystem(MapSystem.class);
 			
 			Entity cell = map.getTile(path.sx, path.sy);
 			if(cell == null){
@@ -76,6 +76,12 @@ public class EnemyLogicSystem extends IteratingSystem
 			}
 			
 		}
+		
+		// TODO could not exist anymore ... check for null entity before !
+		TileComponent srcTile = TileComponent.components.get(map.getTile(path.sx, path.sy));
+		TileComponent dstTile = TileComponent.components.get(map.getTile(path.tx, path.ty));
+		
+		enemy.home = MathUtils.lerp(srcTile.home, dstTile.home, path.t);
 		
 		transform.position.set(MathUtils.lerp(path.sx, path.tx, path.t) + .5f, MathUtils.lerp(path.sy, path.ty, path.t) + .5f);
 	}
