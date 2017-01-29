@@ -1,5 +1,6 @@
 package net.mgsx.game.core.plugins;
 
+import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.utils.Array;
 
@@ -17,6 +18,10 @@ abstract public class SelectorPlugin {
 	public SelectorPlugin(EditorScreen editor) {
 		super();
 		this.editor = editor;
+	}
+	
+	protected Engine getEngine(){
+		return editor.entityEngine;
 	}
 
 	/**

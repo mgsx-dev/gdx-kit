@@ -16,7 +16,7 @@ import net.mgsx.game.core.components.Duplicable;
 public class Transform2DComponent implements Component, Duplicable, Poolable
 {
 	
-	public static ComponentMapper<Transform2DComponent> components = ComponentMapper.getFor(Transform2DComponent.class);
+	public static final ComponentMapper<Transform2DComponent> components = ComponentMapper.getFor(Transform2DComponent.class);
 	
 	@Editable public Vector2 position = new Vector2();
 	
