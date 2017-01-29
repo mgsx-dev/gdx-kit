@@ -10,6 +10,7 @@ import com.badlogic.gdx.ai.btree.BehaviorTree;
 import com.badlogic.gdx.ai.btree.Task;
 import com.badlogic.gdx.ai.btree.annotation.TaskAttribute;
 import com.badlogic.gdx.ai.utils.random.ConstantFloatDistribution;
+import com.badlogic.gdx.ai.utils.random.ConstantIntegerDistribution;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
@@ -153,6 +154,12 @@ public class BehaviorTreeWriter {
 					ConstantFloatDistribution distrib = (ConstantFloatDistribution)value;
 					fmtValue = String.valueOf(distrib.getValue());
 					// TODO other ... need to check every types ...
+					
+				}else if(value instanceof ConstantIntegerDistribution){
+					ConstantIntegerDistribution distrib = (ConstantIntegerDistribution)value;
+					fmtValue = String.valueOf(distrib.getValue());
+					// TODO other ... need to check every types ...
+					
 				}else{
 					fmtValue = value.toString();
 				}
