@@ -22,6 +22,7 @@ allprojects {
         ashleyVersion = '1.7.3'
         aiVersion = '1.8.0'
         pdVersion = '0.3.0-SNAPSHOT'
+        junitVersion = '4.12'
     }
 
     repositories {
@@ -47,6 +48,8 @@ project(":core") {
         compile "com.badlogicgames.gdx:gdx-ai:$gdxAiVersion"
         compile "com.badlogicgames.ashley:ashley:$ashleyVersion"
         compile "com.badlogicgames.gdx:gdx-controllers:$gdxVersion"
+        
+        testCompile "junit:junit:$junitVersion"
     }
 }
 
