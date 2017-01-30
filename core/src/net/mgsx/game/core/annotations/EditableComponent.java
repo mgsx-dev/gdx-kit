@@ -29,5 +29,6 @@ public @interface EditableComponent
 	 * In order to customize cloning, component should implements {@link Duplicable} interface. 
 	 * Default is false.
 	 */
+	// TODO cloning is not reserved to editor context, should be defined as Clone annotation with properties (by value, by reference ...)
 	boolean autoClone() default false;
 }
