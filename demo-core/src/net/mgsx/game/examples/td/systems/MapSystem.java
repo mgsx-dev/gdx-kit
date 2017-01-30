@@ -49,6 +49,10 @@ public class MapSystem extends EntitySystem
 				TileComponent tile = TileComponent.components.get(entity);
 				tiles[tile.y * width + tile.x] = entity;
 				invalidate();
+				
+//				Transform2DComponent transform = getEngine().createComponent(Transform2DComponent.class);
+//				transform.position.set(tile.x + .5f, tile.y + .5f);
+//				entity.add(transform);
 			}
 		});
 	}

@@ -17,7 +17,7 @@ import net.mgsx.game.examples.td.components.Life;
 import net.mgsx.game.examples.td.components.Range;
 import net.mgsx.game.examples.td.components.Shot;
 import net.mgsx.game.examples.td.components.TileComponent;
-import net.mgsx.game.examples.td.components.Tower;
+import net.mgsx.game.examples.td.components.Canon;
 import net.mgsx.game.plugins.core.components.Transform2DComponent;
 
 public class TowerLogicSystem extends IteratingSystem
@@ -27,7 +27,7 @@ public class TowerLogicSystem extends IteratingSystem
 	private Array<Entity> candidates = new Array<Entity>();
 	
 	public TowerLogicSystem() {
-		super(Family.all(Tower.class, TileComponent.class).get(), GamePipeline.LOGIC);
+		super(Family.all(Canon.class, TileComponent.class).get(), GamePipeline.LOGIC);
 	}
 	
 	@Override
@@ -38,7 +38,7 @@ public class TowerLogicSystem extends IteratingSystem
 			@Override
 			public void entityRemoved(Entity entity) {
 				for(Entity towerEntity : getEntities()){
-					Tower tower = Tower.components.get(towerEntity);
+					Canon tower = Canon.components.get(towerEntity);
 					if(tower.target == entity){
 						tower.target = null;
 					}
@@ -54,7 +54,7 @@ public class TowerLogicSystem extends IteratingSystem
 	@Override
 	protected void processEntity(Entity entity, float deltaTime) 
 	{
-		Tower tower = Tower.components.get(entity);
+		Canon tower = Canon.components.get(entity);
 		TileComponent tile = TileComponent.components.get(entity);
 		
 		tower.reload -= deltaTime;

@@ -5,6 +5,7 @@ import net.mgsx.game.core.plugins.EditorPlugin;
 import net.mgsx.game.examples.td.systems.EnemyLogicSystem;
 import net.mgsx.game.examples.td.systems.EnemyRenderer;
 import net.mgsx.game.examples.td.systems.EntryRenderer;
+import net.mgsx.game.examples.td.systems.FreezeSystem;
 import net.mgsx.game.examples.td.systems.HomeRenderer;
 import net.mgsx.game.examples.td.systems.LifeRenderer;
 import net.mgsx.game.examples.td.systems.MapRenderer;
@@ -31,8 +32,9 @@ public class TowerDefenseEditorPlugin extends EditorPlugin implements DefaultEdi
 		editor.addTool(new PlatformTool(editor));
 		
 		editor.entityEngine.addSystem(new MapSystem());
-		editor.entityEngine.addSystem(new EnemyLogicSystem());
+		editor.entityEngine.addSystem(new FreezeSystem());
 		editor.entityEngine.addSystem(new TowerLogicSystem());
+		editor.entityEngine.addSystem(new EnemyLogicSystem());
 		
 		editor.entityEngine.addSystem(new TileRenderer(editor.game));
 		editor.entityEngine.addSystem(new MapRenderer(editor.game));
