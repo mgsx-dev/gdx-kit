@@ -11,6 +11,7 @@ import net.mgsx.game.examples.td.components.Enemy;
 import net.mgsx.game.examples.td.components.Home;
 import net.mgsx.game.examples.td.components.Life;
 import net.mgsx.game.examples.td.components.PathFollower;
+import net.mgsx.game.examples.td.components.Road;
 import net.mgsx.game.examples.td.components.TileComponent;
 import net.mgsx.game.plugins.core.components.Transform2DComponent;
 
@@ -59,12 +60,12 @@ public class EnemyLogicSystem extends IteratingSystem
 			}
 			// TODO find next cell
 			adjs.clear();
-			TileComponent currentTile = TileComponent.components.get(cell);
+			Road currentRoad = Road.components.get(cell);
 			for(int [] v : MapSystem.ADJ_MATRIX){
 				Entity adj = map.getTile(path.sx + v[0], path.sy + v[1]);
 				if(adj != null){
-					TileComponent tile = TileComponent.components.get(adj);
-					if(tile.home < currentTile.home){
+					Road road = Road.components.get(adj);
+					if(road != null && road.home < currentRoad.home){
 						adjs.add(adj);
 					}
 				}
@@ -83,10 +84,10 @@ public class EnemyLogicSystem extends IteratingSystem
 		}
 		
 		// TODO could not exist anymore ... check for null entity before !
-		TileComponent srcTile = TileComponent.components.get(map.getTile(path.sx, path.sy));
-		TileComponent dstTile = TileComponent.components.get(map.getTile(path.tx, path.ty));
+		Road srcRoad = Road.components.get(map.getTile(path.sx, path.sy));
+		Road dstRoad = Road.components.get(map.getTile(path.tx, path.ty));
 		
-		enemy.home = MathUtils.lerp(srcTile.home, dstTile.home, path.t);
+		enemy.home = MathUtils.lerp(srcRoad.home, dstRoad.home, path.t);
 		
 		transform.position.set(MathUtils.lerp(path.sx, path.tx, path.t) + .5f, MathUtils.lerp(path.sy, path.ty, path.t) + .5f);
 	}

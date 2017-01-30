@@ -6,13 +6,14 @@ import com.badlogic.gdx.math.Vector2;
 import net.mgsx.game.core.EditorScreen;
 import net.mgsx.game.core.components.Repository;
 import net.mgsx.game.core.tools.ClickTool;
+import net.mgsx.game.examples.td.components.TileComponent;
 import net.mgsx.game.examples.td.systems.MapSystem;
 
-public class TileTool extends ClickTool
+public abstract class TileTool extends ClickTool
 {
 
-	public TileTool(EditorScreen editor) {
-		super("Tile set/unset", editor);
+	public TileTool(String name, EditorScreen editor) {
+		super(name, editor);
 	}
 
 	@Override
@@ -21,10 +22,21 @@ public class TileTool extends ClickTool
 		MapSystem map = getEngine().getSystem(MapSystem.class);
 		int x = (int)position.x;
 		int y = (int)position.y;
-		Entity created = map.switchTile(x, y);
-		if(created != null){
-			created.add(getEngine().createComponent(Repository.class));
+		
+		Entity cell = map.getTile(x, y);
+		if(cell == null){
+			cell = getEngine().createEntity();
+			TileComponent tile = getEngine().createComponent(TileComponent.class);
+			tile.x = x;
+			tile.y = y;
+			cell.add(tile);
+			cell.add(getEngine().createComponent(Repository.class));
+			getEngine().addEntity(cell);
 		}
+		edit(cell);
+		map.invalidate();
 	}
+	
+	abstract protected void edit(Entity entity);
 
 }

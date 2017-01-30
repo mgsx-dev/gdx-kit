@@ -14,8 +14,9 @@ import net.mgsx.game.examples.td.systems.TileRenderer;
 import net.mgsx.game.examples.td.systems.TowerLogicSystem;
 import net.mgsx.game.examples.td.systems.TowerRangeRenderer;
 import net.mgsx.game.examples.td.systems.TowerRender;
+import net.mgsx.game.examples.td.tools.PlatformTool;
+import net.mgsx.game.examples.td.tools.RoadTool;
 import net.mgsx.game.examples.td.tools.TileSelector;
-import net.mgsx.game.examples.td.tools.TileTool;
 import net.mgsx.game.plugins.DefaultEditorPlugin;
 
 public class TowerDefenseEditorPlugin extends EditorPlugin implements DefaultEditorPlugin
@@ -24,8 +25,10 @@ public class TowerDefenseEditorPlugin extends EditorPlugin implements DefaultEdi
 	@Override
 	public void initialize(EditorScreen editor) 
 	{
-		editor.addTool(new TileTool(editor));
 		editor.addSelector(new TileSelector(editor));
+
+		editor.addTool(new RoadTool(editor));
+		editor.addTool(new PlatformTool(editor));
 		
 		editor.entityEngine.addSystem(new MapSystem());
 		editor.entityEngine.addSystem(new EnemyLogicSystem());
