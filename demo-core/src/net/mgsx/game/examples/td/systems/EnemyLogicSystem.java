@@ -7,6 +7,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 
 import net.mgsx.game.core.GamePipeline;
+import net.mgsx.game.examples.td.components.Damage;
 import net.mgsx.game.examples.td.components.Enemy;
 import net.mgsx.game.examples.td.components.Frozen;
 import net.mgsx.game.examples.td.components.Home;
@@ -43,7 +44,7 @@ public class EnemyLogicSystem extends IteratingSystem
 		}
 		
 		MapSystem map = getEngine().getSystem(MapSystem.class);
-		path.t += deltaTime * path.speed * speedFactor;
+		path.t += deltaTime * enemy.speed * speedFactor;
 		if(path.t > 1){
 			path.t -= 1;
 			path.sx = path.tx;
@@ -61,7 +62,10 @@ public class EnemyLogicSystem extends IteratingSystem
 			if(home != null){
 				Life homeLife = Life.components.get(cell);
 				if(homeLife != null){
-					homeLife.current -= 1; // XXX hard coded !
+					Damage damage = Damage.components.get(entity);
+					if(damage != null){
+						homeLife.current -= damage.amount;
+					}
 				}
 				getEngine().removeEntity(entity);
 				return;

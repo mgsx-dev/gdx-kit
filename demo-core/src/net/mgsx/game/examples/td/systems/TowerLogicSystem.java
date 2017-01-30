@@ -12,12 +12,12 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 
 import net.mgsx.game.core.GamePipeline;
+import net.mgsx.game.examples.td.components.Canon;
 import net.mgsx.game.examples.td.components.Enemy;
 import net.mgsx.game.examples.td.components.Life;
 import net.mgsx.game.examples.td.components.Range;
 import net.mgsx.game.examples.td.components.Shot;
 import net.mgsx.game.examples.td.components.TileComponent;
-import net.mgsx.game.examples.td.components.Canon;
 import net.mgsx.game.plugins.core.components.Transform2DComponent;
 
 public class TowerLogicSystem extends IteratingSystem
@@ -146,7 +146,9 @@ public class TowerLogicSystem extends IteratingSystem
 					
 					Life enemyLife = Life.components.get(tower.target);
 					if(enemyLife != null){
-						enemyLife.current -= tower.reloadRequired * tower.damages; // XXX before impact .... // XXX depends on reload ...
+						// XXX before impact .... // XXX depends on reload ...
+						// TODO copy damage component from tower to shot and let shot remove damage when hit target
+						enemyLife.current -= tower.reloadRequired * tower.damages; 
 					}
 					
 					Entity shotEntity = getEngine().createEntity();

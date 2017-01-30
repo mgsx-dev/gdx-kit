@@ -4,6 +4,7 @@ import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.gdx.utils.Pool.Poolable;
 
+// TODO speed should be in another component ? or it is a speed base used in path follower ...
 public class Enemy implements Component, Poolable
 {
 	

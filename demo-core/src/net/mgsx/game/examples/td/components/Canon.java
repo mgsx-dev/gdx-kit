@@ -9,6 +9,7 @@ import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.core.annotations.EditableComponent;
 import net.mgsx.game.core.annotations.Storable;
 
+// TODO split in load, damage components and just keep aiming behavior (rotation look at)
 @Storable("td.canon")
 @EditableComponent(autoClone=true)
 public class Canon implements Component, Poolable

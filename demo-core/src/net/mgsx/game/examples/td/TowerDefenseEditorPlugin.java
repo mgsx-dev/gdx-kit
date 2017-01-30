@@ -17,6 +17,7 @@ import net.mgsx.game.examples.td.systems.TileRenderer;
 import net.mgsx.game.examples.td.systems.TowerLogicSystem;
 import net.mgsx.game.examples.td.systems.TowerRangeRenderer;
 import net.mgsx.game.examples.td.systems.TowerRender;
+import net.mgsx.game.examples.td.systems.WaveSystem;
 import net.mgsx.game.examples.td.tools.PlatformTool;
 import net.mgsx.game.examples.td.tools.RoadTool;
 import net.mgsx.game.examples.td.tools.TileSelector;
@@ -33,6 +34,7 @@ public class TowerDefenseEditorPlugin extends EditorPlugin implements DefaultEdi
 		editor.addTool(new RoadTool(editor));
 		editor.addTool(new PlatformTool(editor));
 		
+		editor.entityEngine.addSystem(new WaveSystem());
 		editor.entityEngine.addSystem(new MapSystem());
 		editor.entityEngine.addSystem(new FreezeSystem());
 		editor.entityEngine.addSystem(new TowerLogicSystem());

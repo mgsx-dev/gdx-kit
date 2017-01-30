@@ -3,10 +3,12 @@
 # import repeat:"com.badlogic.gdx.ai.btree.decorator.Repeat"
 # import wait:"com.badlogic.gdx.ai.btree.leaf.Wait"
 import enemy:"net.mgsx.game.examples.td.tasks.EmitEnemyTask"
+import nextWave:"net.mgsx.game.examples.td.tasks.NextWaveTask"
 
 sequence
   repeat times:4
     sequence
       wait seconds:2.0
-      enemy
+      enemy speed:1.00477
   wait seconds:3.0
+  nextWave

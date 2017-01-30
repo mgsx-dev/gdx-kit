@@ -10,7 +10,6 @@ public class PathFollower implements Component, Poolable
 	public final static ComponentMapper<PathFollower> components = ComponentMapper.getFor(PathFollower.class);
 	
 	public float t;
-	public float speed;
 	
 	public int sx, sy, tx, ty;
 
