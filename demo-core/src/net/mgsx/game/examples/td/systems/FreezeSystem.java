@@ -9,7 +9,7 @@ import com.badlogic.ashley.utils.ImmutableArray;
 import net.mgsx.game.core.GamePipeline;
 import net.mgsx.game.examples.td.components.Enemy;
 import net.mgsx.game.examples.td.components.Freezer;
-import net.mgsx.game.examples.td.components.PathFollower;
+import net.mgsx.game.examples.td.components.Frozen;
 import net.mgsx.game.examples.td.components.Range;
 import net.mgsx.game.plugins.core.components.Transform2DComponent;
 
@@ -25,7 +25,7 @@ public class FreezeSystem extends IteratingSystem
 	public void addedToEngine(Engine engine) 
 	{
 		super.addedToEngine(engine);
-		targets = engine.getEntitiesFor(Family.all(Enemy.class, Transform2DComponent.class, PathFollower.class).get());
+		targets = engine.getEntitiesFor(Family.all(Enemy.class, Transform2DComponent.class).exclude(Frozen.class).get());
 	}
 	
 	@Override
@@ -37,18 +37,18 @@ public class FreezeSystem extends IteratingSystem
 		
 		for(Entity target : targets)
 		{
-			Enemy enemy = Enemy.components.get(target);
-			PathFollower path = PathFollower.components.get(target);
 			if(range != null)
 			{
 				Transform2DComponent targetTransform = Transform2DComponent.components.get(target);
 				if(targetTransform.position.dst2(transform.position) > range.distance * range.distance)
 				{
-					path.speed = enemy.speed;
 					continue;
 				}
 			}
-			path.speed = enemy.speed * freezer.force;
+			Frozen frozen = getEngine().createComponent(Frozen.class);
+			frozen.rate = freezer.force;
+			frozen.timeout = freezer.time;
+			target.add(frozen);
 		}
 	}
 }

@@ -16,4 +16,7 @@ public class Freezer implements Component
 	
 	@Editable
 	public float force = .5f;
+	
+	@Editable
+	public float time = 4;
 }

@@ -8,6 +8,7 @@ import com.badlogic.gdx.utils.Array;
 
 import net.mgsx.game.core.GamePipeline;
 import net.mgsx.game.examples.td.components.Enemy;
+import net.mgsx.game.examples.td.components.Frozen;
 import net.mgsx.game.examples.td.components.Home;
 import net.mgsx.game.examples.td.components.Life;
 import net.mgsx.game.examples.td.components.PathFollower;
@@ -34,8 +35,15 @@ public class EnemyLogicSystem extends IteratingSystem
 			return;
 		}
 		
+		Frozen frozen = Frozen.components.get(entity);
+		float speedFactor = 1;
+		if(frozen != null)
+		{
+			speedFactor *= frozen.rate;
+		}
+		
 		MapSystem map = getEngine().getSystem(MapSystem.class);
-		path.t += deltaTime * path.speed;
+		path.t += deltaTime * path.speed * speedFactor;
 		if(path.t > 1){
 			path.t -= 1;
 			path.sx = path.tx;
