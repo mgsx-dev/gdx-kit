@@ -12,6 +12,7 @@ import net.mgsx.game.examples.td.systems.HomeRenderer;
 import net.mgsx.game.examples.td.systems.LifeRenderer;
 import net.mgsx.game.examples.td.systems.MapRenderer;
 import net.mgsx.game.examples.td.systems.MapSystem;
+import net.mgsx.game.examples.td.systems.ShotRender;
 import net.mgsx.game.examples.td.systems.ShotSystem;
 import net.mgsx.game.examples.td.systems.TileRenderer;
 import net.mgsx.game.examples.td.systems.TowerLogicSystem;
@@ -38,7 +39,8 @@ public class TowerDefenseEditorPlugin extends EditorPlugin implements DefaultEdi
 		editor.entityEngine.addSystem(new MapSystem());
 		editor.entityEngine.addSystem(new FreezeSystem());
 		editor.entityEngine.addSystem(new TowerLogicSystem());
-		
+		editor.entityEngine.addSystem(new ShotSystem());
+
 		editor.entityEngine.addSystem(new FrozenSystem());
 		editor.entityEngine.addSystem(new EnemyLogicSystem());
 		
@@ -48,7 +50,7 @@ public class TowerDefenseEditorPlugin extends EditorPlugin implements DefaultEdi
 		editor.entityEngine.addSystem(new HomeRenderer(editor.game));
 		editor.entityEngine.addSystem(new EntryRenderer(editor.game));
 		editor.entityEngine.addSystem(new EnemyRenderer(editor.game));
-		editor.entityEngine.addSystem(new ShotSystem(editor.game));
+		editor.entityEngine.addSystem(new ShotRender(editor.game));
 		editor.entityEngine.addSystem(new LifeRenderer(editor.game));
 		editor.entityEngine.addSystem(new FrozenRender(editor.game));
 		
