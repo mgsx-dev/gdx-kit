@@ -2,19 +2,18 @@ package net.mgsx.game.examples.td.components;
 
 import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.ComponentMapper;
-import com.badlogic.gdx.utils.Pool.Poolable;
 
+import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.core.annotations.EditableComponent;
 import net.mgsx.game.core.annotations.Storable;
 
-@Storable("td.home")
+@Storable("td.life")
 @EditableComponent(autoClone=true)
-public class Home implements Component, Poolable
+public class Life implements Component
 {
 	
-	public final static ComponentMapper<Home> components = ComponentMapper.getFor(Home.class);
+	public final static ComponentMapper<Life> components = ComponentMapper.getFor(Life.class);
 	
-	@Override
-	public void reset() {
-	}
+	@Editable
+	public float current, max;
 }

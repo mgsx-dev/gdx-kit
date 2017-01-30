@@ -13,6 +13,7 @@ import com.badlogic.gdx.utils.Array;
 
 import net.mgsx.game.core.GamePipeline;
 import net.mgsx.game.examples.td.components.Enemy;
+import net.mgsx.game.examples.td.components.Life;
 import net.mgsx.game.examples.td.components.Shot;
 import net.mgsx.game.examples.td.components.TileComponent;
 import net.mgsx.game.examples.td.components.Tower;
@@ -136,10 +137,11 @@ public class TowerLogicSystem extends IteratingSystem
 					// find best target : closest to home in range
 					
 					Transform2DComponent target = Transform2DComponent.components.get(tower.target);
-					Enemy enemy = Enemy.components.get(tower.target);
 					
-					
-					enemy.life -= tower.reloadRequired * tower.damages; // XXX before impact .... // XXX depends on reload ...
+					Life enemyLife = Life.components.get(tower.target);
+					if(enemyLife != null){
+						enemyLife.current -= tower.reloadRequired * tower.damages; // XXX before impact .... // XXX depends on reload ...
+					}
 					
 					Entity shotEntity = getEngine().createEntity();
 					Shot shot = getEngine().createComponent(Shot.class);

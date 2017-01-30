@@ -9,6 +9,7 @@ import com.badlogic.gdx.utils.Array;
 import net.mgsx.game.core.GamePipeline;
 import net.mgsx.game.examples.td.components.Enemy;
 import net.mgsx.game.examples.td.components.Home;
+import net.mgsx.game.examples.td.components.Life;
 import net.mgsx.game.examples.td.components.PathFollower;
 import net.mgsx.game.examples.td.components.TileComponent;
 import net.mgsx.game.plugins.core.components.Transform2DComponent;
@@ -26,7 +27,8 @@ public class EnemyLogicSystem extends IteratingSystem
 		PathFollower path = PathFollower.components.get(entity);
 		
 		Enemy enemy = Enemy.components.get(entity);
-		if(enemy.life <= 0){
+		Life life = Life.components.get(entity);
+		if(life.current <= 0){
 			getEngine().removeEntity(entity);
 			return;
 		}
@@ -46,9 +48,12 @@ public class EnemyLogicSystem extends IteratingSystem
 				return;
 			}
 			
-			Home home = Home.components.get(entity);
+			Home home = Home.components.get(cell);
 			if(home != null){
-				home.life -= 1;
+				Life homeLife = Life.components.get(cell);
+				if(homeLife != null){
+					homeLife.current -= 1; // XXX hard coded !
+				}
 				getEngine().removeEntity(entity);
 				return;
 			}
