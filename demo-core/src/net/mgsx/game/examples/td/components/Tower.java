@@ -27,9 +27,6 @@ public class Tower implements Component, Poolable
 	public float angleVelocity = 90;
 	public float angle;
 	
-	@Editable
-	public float range = 4;
-	
 	public transient Entity target;
 	
 	@Override

@@ -8,14 +8,14 @@ import com.badlogic.gdx.graphics.GL20;
 
 import net.mgsx.game.core.GamePipeline;
 import net.mgsx.game.core.GameScreen;
+import net.mgsx.game.examples.td.components.Range;
 import net.mgsx.game.examples.td.components.TileComponent;
-import net.mgsx.game.examples.td.components.Tower;
 
 public class TowerRangeRenderer extends AbstractShapeSystem
 {
 
 	public TowerRangeRenderer(GameScreen game) {
-		super(game, Family.all(TileComponent.class, Tower.class).get(), GamePipeline.RENDER);
+		super(game, Family.all(TileComponent.class, Range.class).get(), GamePipeline.RENDER);
 	}
 	
 	@Override
@@ -28,11 +28,11 @@ public class TowerRangeRenderer extends AbstractShapeSystem
 	@Override
 	protected void processEntity(Entity entity, float deltaTime) {
 		TileComponent tile = TileComponent.components.get(entity);
-		Tower tower = Tower.components.get(entity);
+		Range range = Range.components.get(entity);
 		renderer.setColor(Color.BLUE);
 		renderer.getColor().a = .2f;
 		renderer.identity();
-		renderer.circle(tile.x + .5f, tile.y + .5f, tower.range, 16);
+		renderer.circle(tile.x + .5f, tile.y + .5f, range.distance, 16);
 
 	}
 }

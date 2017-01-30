@@ -14,6 +14,7 @@ import com.badlogic.gdx.utils.Array;
 import net.mgsx.game.core.GamePipeline;
 import net.mgsx.game.examples.td.components.Enemy;
 import net.mgsx.game.examples.td.components.Life;
+import net.mgsx.game.examples.td.components.Range;
 import net.mgsx.game.examples.td.components.Shot;
 import net.mgsx.game.examples.td.components.TileComponent;
 import net.mgsx.game.examples.td.components.Tower;
@@ -63,10 +64,11 @@ public class TowerLogicSystem extends IteratingSystem
 		}
 		
 		// check if target (if any) still in range
-		if(tower.target != null)
+		Range range = Range.components.get(entity);
+		if(tower.target != null && range != null)
 		{
 			Transform2DComponent transform = Transform2DComponent.components.get(tower.target);
-			if(transform.position.dst2(tile.x + .5f, tile.y + .5f) > tower.range * tower.range){
+			if(transform.position.dst2(tile.x + .5f, tile.y + .5f) > range.distance * range.distance){
 				tower.target = null;
 			}
 		}
@@ -77,8 +79,12 @@ public class TowerLogicSystem extends IteratingSystem
 				candidates.clear();
 				
 				for(Entity enemyEntity : enemies){
-					Transform2DComponent transform = Transform2DComponent.components.get(enemyEntity);
-					if(transform.position.dst2(tile.x + .5f, tile.y + .5f) <= tower.range * tower.range){
+					if(range != null){
+						Transform2DComponent transform = Transform2DComponent.components.get(enemyEntity);
+						if(transform.position.dst2(tile.x + .5f, tile.y + .5f) <= range.distance * range.distance){
+							candidates.add(enemyEntity);
+						}
+					}else{
 						candidates.add(enemyEntity);
 					}
 				}
