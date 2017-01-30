@@ -16,7 +16,7 @@ public class MapSystem extends EntitySystem
 	public static final int [][] ADJ_MATRIX = {{-1,0}, {0,1}, {1,0}, {0,-1}};
 	
 	private Entity [] tiles;
-	private int width = 32, height = 32;
+	public int width = 32, height = 32;
 	private boolean valid = false;
 	
 	public MapSystem() {
