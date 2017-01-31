@@ -4,7 +4,6 @@ import java.util.Comparator;
 
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
-import com.badlogic.ashley.core.EntityListener;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.ashley.utils.ImmutableArray;
@@ -28,28 +27,13 @@ public class TowerLogicSystem extends IteratingSystem
 	private Array<Entity> candidates = new Array<Entity>();
 	
 	public TowerLogicSystem() {
-		super(Family.all(Canon.class, TileComponent.class).get(), GamePipeline.LOGIC);
+		super(Family.all(Canon.class, SingleTarget.class, TileComponent.class).get(), GamePipeline.LOGIC);
 	}
 	
 	@Override
 	public void addedToEngine(Engine engine) {
 		super.addedToEngine(engine);
 		enemies = engine.getEntitiesFor(Family.all(Transform2DComponent.class, Enemy.class).get());
-		engine.addEntityListener(Family.all(Enemy.class).get(), new EntityListener() {
-			@Override
-			public void entityRemoved(Entity entity) {
-				for(Entity towerEntity : getEntities()){
-					Canon tower = Canon.components.get(towerEntity);
-					if(tower.target == entity){
-						tower.target = null;
-					}
-				}
-			}
-			
-			@Override
-			public void entityAdded(Entity entity) {
-			}
-		});
 	}
 	
 	@Override
@@ -57,6 +41,7 @@ public class TowerLogicSystem extends IteratingSystem
 	{
 		Canon tower = Canon.components.get(entity);
 		TileComponent tile = TileComponent.components.get(entity);
+		SingleTarget targeting = SingleTarget.components.get(entity);
 		
 		tower.reload -= deltaTime;
 		if(tower.reload < 0)
@@ -66,16 +51,16 @@ public class TowerLogicSystem extends IteratingSystem
 		
 		// check if target (if any) still in range
 		Range range = Range.components.get(entity);
-		if(tower.target != null && range != null)
+		if(targeting.target != null && range != null)
 		{
-			Transform2DComponent transform = Transform2DComponent.components.get(tower.target);
+			Transform2DComponent transform = Transform2DComponent.components.get(targeting.target);
 			if(transform.position.dst2(tile.x + .5f, tile.y + .5f) > range.distance * range.distance){
-				tower.target = null;
+				targeting.target = null;
 			}
 		}
 		
 		// find best target if no targets
-		if(tower.target == null){
+		if(targeting.target == null){
 			if(enemies.size() > 0){
 				candidates.clear();
 				
@@ -100,15 +85,15 @@ public class TowerLogicSystem extends IteratingSystem
 				});
 				
 				if(candidates.size > 0){
-					tower.target = candidates.first();
+					targeting.target = candidates.first();
 				}
 			}
 		}
 		
 		// rotate canon to current target if any
-		if(tower.target != null)
+		if(targeting.target != null)
 		{
-			Transform2DComponent targetTransform = Transform2DComponent.components.get(tower.target);
+			Transform2DComponent targetTransform = Transform2DComponent.components.get(targeting.target);
 			float angle = MathUtils.atan2(targetTransform.position.y - tile.y - .5f, targetTransform.position.x - tile.x - .5f) * MathUtils.radiansToDegrees;
 			
 			
@@ -141,7 +126,7 @@ public class TowerLogicSystem extends IteratingSystem
 					tower.reload += tower.reloadRequired;
 					
 					
-					Transform2DComponent target = Transform2DComponent.components.get(tower.target);
+					Transform2DComponent target = Transform2DComponent.components.get(targeting.target);
 					
 					Damage towerDamage = Damage.components.get(entity);
 					
@@ -152,7 +137,7 @@ public class TowerLogicSystem extends IteratingSystem
 					shotEntity.add(shot);
 					
 					SingleTarget singleTarget = getEngine().createComponent(SingleTarget.class);
-					singleTarget.target = tower.target;
+					singleTarget.target = targeting.target;
 					shotEntity.add(singleTarget);
 					
 					if(towerDamage != null){

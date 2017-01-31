@@ -24,7 +24,7 @@ public class ShotSystem extends IteratingSystem
 		if(shot.t > 1){
 			
 			SingleTarget singleTarget = SingleTarget.components.get(entity);
-			if(singleTarget != null)
+			if(singleTarget != null && singleTarget.target != null)
 			{
 				Life targetLife = Life.components.get(singleTarget.target);
 				Damage damage = Damage.components.get(entity);

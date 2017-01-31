@@ -6,9 +6,11 @@ import com.badlogic.gdx.utils.Pool.Poolable;
 
 import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.core.annotations.EditableComponent;
+import net.mgsx.game.core.annotations.Storable;
 
 // TODO speed should be in another component ? or it is a speed base used in path follower ...
-@EditableComponent
+@Storable("td.enemy")
+@EditableComponent(autoClone=true)
 public class Enemy implements Component, Poolable
 {
 	public static enum Type
