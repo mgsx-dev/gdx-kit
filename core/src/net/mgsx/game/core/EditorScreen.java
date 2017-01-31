@@ -242,7 +242,9 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 			@Override
 			public void entityRemoved(Entity entity) {
 				if(selection.contains(entity, true)){
-					selection.removeValue(entity, true);
+					if(entity.isScheduledForRemoval()){
+						selection.removeValue(entity, true);
+					}
 					invalidateSelection();
 				}
 			}
@@ -610,7 +612,7 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 	
 	
 	public Array<Entity> selection = new Array<Entity>();
-	public boolean selectionDirty;
+	private boolean selectionDirty;
 	public boolean displayEnabled = true; // true by default
 
 	public Table toolOutline;
