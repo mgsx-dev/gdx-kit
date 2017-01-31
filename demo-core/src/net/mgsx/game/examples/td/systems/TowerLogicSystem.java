@@ -14,7 +14,9 @@ import net.mgsx.game.core.GamePipeline;
 import net.mgsx.game.examples.td.components.Canon;
 import net.mgsx.game.examples.td.components.Damage;
 import net.mgsx.game.examples.td.components.Enemy;
+import net.mgsx.game.examples.td.components.PathFollower;
 import net.mgsx.game.examples.td.components.Range;
+import net.mgsx.game.examples.td.components.Road;
 import net.mgsx.game.examples.td.components.Shot;
 import net.mgsx.game.examples.td.components.SingleTarget;
 import net.mgsx.game.examples.td.components.TileComponent;
@@ -72,6 +74,31 @@ public class TowerLogicSystem extends IteratingSystem
 						}
 					}else{
 						candidates.add(enemyEntity);
+					}
+				}
+				
+				// TODO since changes to smooth spline, home distance is not so accurate ... in some cases (no spline)
+				// distance is zero when no hints which has sense : unknown is more dangerous than knwon.
+				MapSystem map = getEngine().getSystem(MapSystem.class);
+				for(Entity candidate : candidates)
+				{
+					Enemy enemy = Enemy.components.get(candidate);
+					PathFollower path = PathFollower.components.get(entity);
+					if(path != null){
+						enemy.home = path.t;
+					}else{
+						Transform2DComponent transform = Transform2DComponent.components.get(candidate);
+						Entity entityTile = map.getTile((int)transform.position.x, (int)transform.position.y);
+						if(entityTile != null){
+							Road entityRoad = Road.components.get(entityTile);
+							if(entityRoad != null){
+								enemy.home = entityRoad.home;
+							}else{
+								enemy.home = 0;
+							}
+						}else{
+							enemy.home = 0;
+						}
 					}
 				}
 				
