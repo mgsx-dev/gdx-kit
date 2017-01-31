@@ -16,7 +16,7 @@ public class LifeSystem extends IteratingSystem
 	@Override
 	protected void processEntity(Entity entity, float deltaTime) {
 		Life life = Life.components.get(entity);
-		if(life.current <= 0)
+		if(life.current < 0) // strictly inferior to prevent removing 0 life entity
 		{
 			getEngine().removeEntity(entity);
 		}
