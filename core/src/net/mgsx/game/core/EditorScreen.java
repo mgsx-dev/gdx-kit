@@ -237,14 +237,12 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 			global.addTab(entry.getKey(), entry.getValue().createEditor(this, skin));
 		}
 		
+		// listener for component add/remove
 		EntityListener selectionListener = new EntityListener() {
 			
 			@Override
 			public void entityRemoved(Entity entity) {
 				if(selection.contains(entity, true)){
-					if(entity.isScheduledForRemoval()){
-						selection.removeValue(entity, true);
-					}
 					invalidateSelection();
 				}
 			}
@@ -259,7 +257,21 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 			entityEngine.addEntityListener(Family.one(type).get(), selectionListener);
 		}
 		
-		entityEngine.addEntityListener(selectionListener); // TODO maybe not the same listener
+		// listener for entity add/remove
+		entityEngine.addEntityListener(new EntityListener() {
+			
+			@Override
+			public void entityRemoved(Entity entity) {
+				if(selection.contains(entity, true)){
+					selection.removeValue(entity, true);
+					invalidateSelection();
+				}
+			}
+			
+			@Override
+			public void entityAdded(Entity entity) {
+			}
+		});
 		
 		
 		// build GUI
