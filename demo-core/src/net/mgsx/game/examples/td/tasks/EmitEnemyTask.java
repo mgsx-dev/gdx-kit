@@ -5,6 +5,7 @@ import com.badlogic.gdx.ai.btree.annotation.TaskAttribute;
 
 import net.mgsx.game.examples.td.components.Damage;
 import net.mgsx.game.examples.td.components.Enemy;
+import net.mgsx.game.examples.td.components.Enemy.Type;
 import net.mgsx.game.examples.td.components.Life;
 import net.mgsx.game.examples.td.components.PathFollower;
 import net.mgsx.game.examples.td.components.TileComponent;
@@ -25,6 +26,9 @@ public class EmitEnemyTask extends EntityLeafTask
 	@TaskAttribute
 	public float damage = 1;
 	
+	@TaskAttribute
+	public Enemy.Type type = Type.SQUARE;
+	
 	@Override
 	public com.badlogic.gdx.ai.btree.Task.Status execute() 
 	{
@@ -43,6 +47,7 @@ public class EmitEnemyTask extends EntityLeafTask
 		TileComponent tile = TileComponent.components.get(getEntity());
 		
 		enemy.speed = speed;
+		enemy.type = this.type;
 		
 		path.tx = tile.x;
 		path.ty = tile.y;
