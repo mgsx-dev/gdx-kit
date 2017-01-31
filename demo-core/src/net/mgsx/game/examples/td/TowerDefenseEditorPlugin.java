@@ -13,6 +13,7 @@ import net.mgsx.game.examples.td.systems.LifeRenderer;
 import net.mgsx.game.examples.td.systems.LifeSystem;
 import net.mgsx.game.examples.td.systems.MapRenderer;
 import net.mgsx.game.examples.td.systems.MapSystem;
+import net.mgsx.game.examples.td.systems.PathFollowerSystem;
 import net.mgsx.game.examples.td.systems.PrickleRender;
 import net.mgsx.game.examples.td.systems.PrickleSystem;
 import net.mgsx.game.examples.td.systems.ShotRender;
@@ -51,6 +52,9 @@ public class TowerDefenseEditorPlugin extends EditorPlugin implements DefaultEdi
 		
 		editor.entityEngine.addSystem(new LifeSystem());
 		editor.entityEngine.addSystem(new SingleTargetSystem());
+		
+		editor.entityEngine.addSystem(new PathFollowerSystem());
+
 		
 		// render ground
 		editor.entityEngine.addSystem(new TileRenderer(editor.game));

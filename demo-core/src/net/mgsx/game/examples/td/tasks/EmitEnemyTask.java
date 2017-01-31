@@ -9,6 +9,7 @@ import net.mgsx.game.examples.td.components.Enemy.Type;
 import net.mgsx.game.examples.td.components.Life;
 import net.mgsx.game.examples.td.components.PathFollower;
 import net.mgsx.game.examples.td.components.TileComponent;
+import net.mgsx.game.examples.td.systems.MapSystem;
 import net.mgsx.game.examples.td.systems.WaveSystem;
 import net.mgsx.game.plugins.btree.BTreePlugin.EntityLeafTask;
 import net.mgsx.game.plugins.btree.annotations.TaskAlias;
@@ -33,7 +34,7 @@ public class EmitEnemyTask extends EntityLeafTask
 	public com.badlogic.gdx.ai.btree.Task.Status execute() 
 	{
 		// TODO create entity from template ... ? or create sub tasks for each kind of enemy
-		
+		MapSystem map = getEngine().getSystem(MapSystem.class);
 		WaveSystem wave = getEngine().getSystem(WaveSystem.class);
 		
 		Entity entity = getEngine().createEntity();
@@ -49,11 +50,9 @@ public class EmitEnemyTask extends EntityLeafTask
 		enemy.speed = speed;
 		enemy.type = this.type;
 		
-		path.tx = tile.x;
-		path.ty = tile.y;
-		path.t = 1;
+		map.findPathToHome(path, tile.x, tile.y);
 		
-		transform.position.set(path.tx + .5f, path.ty + .5f);
+		path.path.valueAt(transform.position, 0); // init position
 		
 		damage.amount = this.damage * wave.waveFactor;
 		

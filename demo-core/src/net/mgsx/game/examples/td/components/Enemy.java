@@ -23,6 +23,7 @@ public class Enemy implements Component, Poolable
 	/** distance from home */
 	public float home;
 
+	@Editable
 	public float speed = 1;
 	
 	@Editable
