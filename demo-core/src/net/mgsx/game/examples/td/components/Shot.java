@@ -13,7 +13,8 @@ public class Shot implements Component, Poolable
 	public Vector2 start = new Vector2();
 	public Vector2 end = new Vector2();
 	public float t;
-	public float speed = 5;
+	public float speed = 5; // XXX hard coded
+	
 	@Override
 	public void reset() {
 		t = 0;

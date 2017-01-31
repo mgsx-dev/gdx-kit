@@ -13,10 +13,11 @@ import com.badlogic.gdx.utils.Array;
 
 import net.mgsx.game.core.GamePipeline;
 import net.mgsx.game.examples.td.components.Canon;
+import net.mgsx.game.examples.td.components.Damage;
 import net.mgsx.game.examples.td.components.Enemy;
-import net.mgsx.game.examples.td.components.Life;
 import net.mgsx.game.examples.td.components.Range;
 import net.mgsx.game.examples.td.components.Shot;
+import net.mgsx.game.examples.td.components.SingleTarget;
 import net.mgsx.game.examples.td.components.TileComponent;
 import net.mgsx.game.plugins.core.components.Transform2DComponent;
 
@@ -140,22 +141,26 @@ public class TowerLogicSystem extends IteratingSystem
 					tower.reload += tower.reloadRequired;
 					
 					
-					// find best target : closest to home in range
-					
 					Transform2DComponent target = Transform2DComponent.components.get(tower.target);
 					
-					Life enemyLife = Life.components.get(tower.target);
-					if(enemyLife != null){
-						// XXX before impact .... // XXX depends on reload ...
-						// TODO copy damage component from tower to shot and let shot remove damage when hit target
-						enemyLife.current -= tower.reloadRequired * tower.damages; 
-					}
+					Damage towerDamage = Damage.components.get(entity);
 					
 					Entity shotEntity = getEngine().createEntity();
 					Shot shot = getEngine().createComponent(Shot.class);
 					shot.start.set(.5f, 0).rotate(tower.angle).add(tile.x+.5f, tile.y+.5f);
 					shot.end.set(target.position);
 					shotEntity.add(shot);
+					
+					SingleTarget singleTarget = getEngine().createComponent(SingleTarget.class);
+					singleTarget.target = tower.target;
+					shotEntity.add(singleTarget);
+					
+					if(towerDamage != null){
+						Damage shotDamage = getEngine().createComponent(Damage.class);
+						shotDamage.amount = towerDamage.amount;
+						shotEntity.add(shotDamage);
+					}
+					
 					getEngine().addEntity(shotEntity);
 				}
 			}
