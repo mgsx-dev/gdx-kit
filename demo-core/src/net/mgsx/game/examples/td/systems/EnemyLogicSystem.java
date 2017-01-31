@@ -30,11 +30,6 @@ public class EnemyLogicSystem extends IteratingSystem
 		PathFollower path = PathFollower.components.get(entity);
 		
 		Enemy enemy = Enemy.components.get(entity);
-		Life life = Life.components.get(entity);
-		if(life.current <= 0){
-			getEngine().removeEntity(entity);
-			return;
-		}
 		
 		Frozen frozen = Frozen.components.get(entity);
 		float speedFactor = 1;

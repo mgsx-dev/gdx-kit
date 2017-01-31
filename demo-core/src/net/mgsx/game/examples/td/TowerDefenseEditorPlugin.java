@@ -10,6 +10,7 @@ import net.mgsx.game.examples.td.systems.FrozenRender;
 import net.mgsx.game.examples.td.systems.FrozenSystem;
 import net.mgsx.game.examples.td.systems.HomeRenderer;
 import net.mgsx.game.examples.td.systems.LifeRenderer;
+import net.mgsx.game.examples.td.systems.LifeSystem;
 import net.mgsx.game.examples.td.systems.MapRenderer;
 import net.mgsx.game.examples.td.systems.MapSystem;
 import net.mgsx.game.examples.td.systems.PrickleRender;
@@ -46,6 +47,8 @@ public class TowerDefenseEditorPlugin extends EditorPlugin implements DefaultEdi
 		editor.entityEngine.addSystem(new PrickleSystem());
 		editor.entityEngine.addSystem(new FrozenSystem());
 		editor.entityEngine.addSystem(new EnemyLogicSystem());
+		
+		editor.entityEngine.addSystem(new LifeSystem());
 		
 		// render ground
 		editor.entityEngine.addSystem(new TileRenderer(editor.game));
