@@ -5,12 +5,14 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntityListener;
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.ashley.core.Family;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 
 import net.mgsx.game.core.GamePipeline;
 import net.mgsx.game.examples.td.components.Home;
 import net.mgsx.game.examples.td.components.Road;
 import net.mgsx.game.examples.td.components.TileComponent;
+import net.mgsx.game.plugins.core.components.Transform2DComponent;
 
 public class MapSystem extends EntitySystem
 {
@@ -118,5 +120,19 @@ public class MapSystem extends EntitySystem
 
 	public void invalidate() {
 		valid = false;
+	}
+
+	public Array<Entity> getEntities(Array<Entity> entities, Family family, Rectangle bounds) 
+	{
+		// TODO could be optimized with quadtree
+		for(Entity entity : getEngine().getEntitiesFor(family))
+		{
+			Transform2DComponent transform = Transform2DComponent.components.get(entity);
+			if(bounds.contains(transform.position))
+			{
+				entities.add(entity);
+			}
+		}
+		return entities;
 	}
 }
