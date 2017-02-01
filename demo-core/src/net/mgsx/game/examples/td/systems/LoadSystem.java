@@ -7,6 +7,7 @@ import com.badlogic.ashley.systems.IteratingSystem;
 import net.mgsx.game.core.GamePipeline;
 import net.mgsx.game.examples.td.components.Load;
 
+// TODO maybe load is intimly linked to shooter
 public class LoadSystem extends IteratingSystem
 {
 	public LoadSystem() {

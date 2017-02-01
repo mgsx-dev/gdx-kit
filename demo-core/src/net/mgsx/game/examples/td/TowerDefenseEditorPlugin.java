@@ -11,6 +11,7 @@ import net.mgsx.game.examples.td.systems.FrozenRender;
 import net.mgsx.game.examples.td.systems.FrozenSystem;
 import net.mgsx.game.examples.td.systems.HomeRenderer;
 import net.mgsx.game.examples.td.systems.LazerRender;
+import net.mgsx.game.examples.td.systems.LazerSystem;
 import net.mgsx.game.examples.td.systems.LifeRenderer;
 import net.mgsx.game.examples.td.systems.LifeSystem;
 import net.mgsx.game.examples.td.systems.LoadSystem;
@@ -22,7 +23,7 @@ import net.mgsx.game.examples.td.systems.PrickleSystem;
 import net.mgsx.game.examples.td.systems.ShooterSystem;
 import net.mgsx.game.examples.td.systems.ShotRender;
 import net.mgsx.game.examples.td.systems.ShotSystem;
-import net.mgsx.game.examples.td.systems.SingleTargetSystem;
+import net.mgsx.game.examples.td.systems.TargetSystem;
 import net.mgsx.game.examples.td.systems.TileRenderer;
 import net.mgsx.game.examples.td.systems.TowerDefenseHUD;
 import net.mgsx.game.examples.td.systems.TowerLogicSystem;
@@ -57,6 +58,7 @@ public class TowerDefenseEditorPlugin extends EditorPlugin implements DefaultEdi
 		editor.entityEngine.addSystem(new TowerLogicSystem());
 		editor.entityEngine.addSystem(new LoadSystem());
 		editor.entityEngine.addSystem(new ShooterSystem());
+		editor.entityEngine.addSystem(new LazerSystem());
 		
 		editor.entityEngine.addSystem(new ShotSystem());
 
@@ -65,7 +67,7 @@ public class TowerDefenseEditorPlugin extends EditorPlugin implements DefaultEdi
 		editor.entityEngine.addSystem(new EnemyLogicSystem());
 		
 		editor.entityEngine.addSystem(new LifeSystem());
-		editor.entityEngine.addSystem(new SingleTargetSystem());
+		editor.entityEngine.addSystem(new TargetSystem());
 		
 		editor.entityEngine.addSystem(new PathFollowerSystem());
 
@@ -77,14 +79,14 @@ public class TowerDefenseEditorPlugin extends EditorPlugin implements DefaultEdi
 		editor.entityEngine.addSystem(new MapRenderer(editor.game));
 		
 		// render buildings
-		editor.entityEngine.addSystem(new TowerRender(editor.game));
 		editor.entityEngine.addSystem(new HomeRenderer(editor.game));
 		editor.entityEngine.addSystem(new EntryRenderer(editor.game));
 		
 		// render dynamics
-		editor.entityEngine.addSystem(new EnemyRenderer(editor.game));
 		editor.entityEngine.addSystem(new ShotRender(editor.game));
 		editor.entityEngine.addSystem(new LazerRender(editor.game));
+		editor.entityEngine.addSystem(new TowerRender(editor.game));
+		editor.entityEngine.addSystem(new EnemyRenderer(editor.game));
 		
 		// render status
 		editor.entityEngine.addSystem(new LifeRenderer(editor.game));
