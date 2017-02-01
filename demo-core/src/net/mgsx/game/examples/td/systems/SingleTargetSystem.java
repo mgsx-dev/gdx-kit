@@ -21,7 +21,7 @@ public class SingleTargetSystem extends EntitySystem
 	@Override
 	public void addedToEngine(Engine engine) {
 		super.addedToEngine(engine);
-		// TODO could be optimized by storing link when singleTarget added (Map of entity Array)
+		// OPTIM could be optimized by storing link when singleTarget added (Map of entity Array)
 		targetingEntities = engine.getEntitiesFor(Family.all(SingleTarget.class).get());
 		engine.addEntityListener(new EntityListener() {
 			

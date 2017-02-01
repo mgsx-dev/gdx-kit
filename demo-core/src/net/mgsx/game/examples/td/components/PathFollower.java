@@ -21,6 +21,6 @@ public class PathFollower implements Component, Poolable
 	@Override
 	public void reset() {
 		t = 0;
-		path = null; // TODO give back to pool ?
+		path = null; // OPTIM give back to pool ?
 	}
 }

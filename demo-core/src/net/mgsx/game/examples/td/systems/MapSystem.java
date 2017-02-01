@@ -128,7 +128,7 @@ public class MapSystem extends EntitySystem
 
 	public Array<Entity> getEntities(Array<Entity> entities, Family family, Rectangle bounds) 
 	{
-		// TODO could be optimized with quadtree
+		// OPTIM could be optimized with quadtree
 		for(Entity entity : getEngine().getEntitiesFor(family))
 		{
 			Transform2DComponent transform = Transform2DComponent.components.get(entity);
