@@ -15,7 +15,6 @@ import net.mgsx.game.examples.td.components.Aiming;
 import net.mgsx.game.examples.td.components.Enemy;
 import net.mgsx.game.examples.td.components.Range;
 import net.mgsx.game.examples.td.components.SingleTarget;
-import net.mgsx.game.examples.td.components.TileComponent;
 import net.mgsx.game.plugins.core.components.Transform2DComponent;
 
 public class TowerLogicSystem extends IteratingSystem
@@ -34,7 +33,7 @@ public class TowerLogicSystem extends IteratingSystem
 	private Array<Entity> candidates = new Array<Entity>();
 	
 	public TowerLogicSystem() {
-		super(Family.all(Aiming.class, SingleTarget.class, TileComponent.class).get(), GamePipeline.LOGIC);
+		super(Family.all(Aiming.class, SingleTarget.class, Transform2DComponent.class).get(), GamePipeline.LOGIC);
 	}
 	
 	@Override
@@ -47,15 +46,15 @@ public class TowerLogicSystem extends IteratingSystem
 	protected void processEntity(Entity entity, float deltaTime) 
 	{
 		Aiming tower = Aiming.components.get(entity);
-		TileComponent tile = TileComponent.components.get(entity);
 		SingleTarget targeting = SingleTarget.components.get(entity);
+		Transform2DComponent towerTransform = Transform2DComponent.components.get(entity);
 		
 		// check if target (if any) still in range
 		Range range = Range.components.get(entity);
 		if(targeting.target != null && range != null)
 		{
 			Transform2DComponent transform = Transform2DComponent.components.get(targeting.target);
-			if(transform.position.dst2(tile.x + .5f, tile.y + .5f) > range.distance * range.distance){
+			if(transform.position.dst2(towerTransform.position) > range.distance * range.distance){
 				targeting.target = null;
 			}
 		}
@@ -68,7 +67,7 @@ public class TowerLogicSystem extends IteratingSystem
 				for(Entity enemyEntity : enemies){
 					if(range != null){
 						Transform2DComponent transform = Transform2DComponent.components.get(enemyEntity);
-						if(transform.position.dst2(tile.x + .5f, tile.y + .5f) <= range.distance * range.distance){
+						if(transform.position.dst2(towerTransform.position) <= range.distance * range.distance){
 							candidates.add(enemyEntity);
 						}
 					}else{
@@ -88,7 +87,7 @@ public class TowerLogicSystem extends IteratingSystem
 		if(targeting.target != null)
 		{
 			Transform2DComponent targetTransform = Transform2DComponent.components.get(targeting.target);
-			float angle = MathUtils.atan2(targetTransform.position.y - tile.y - .5f, targetTransform.position.x - tile.x - .5f) * MathUtils.radiansToDegrees;
+			float angle = MathUtils.atan2(targetTransform.position.y - towerTransform.position.y, targetTransform.position.x - towerTransform.position.x) * MathUtils.radiansToDegrees;
 			
 			// rotate to target
 			float deltaAngle = (angle - tower.angle);

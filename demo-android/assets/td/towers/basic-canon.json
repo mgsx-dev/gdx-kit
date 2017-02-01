@@ -1,0 +1,21 @@
+{
+entities: [
+	{
+		id: 0
+		td.damage: {
+			amount: 1.0241088
+		}
+		td.shooter: {}
+		td.aim: {
+			angle: -23.405943
+		}
+		td.target: {}
+		td.load: {}
+		td.range: {
+			distance: 2.0056357
+		}
+		2d: {}
+	}
+]
+assets: []
+}
