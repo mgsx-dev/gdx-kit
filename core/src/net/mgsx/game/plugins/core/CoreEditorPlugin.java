@@ -7,7 +7,6 @@ import net.mgsx.game.core.annotations.PluginDef;
 import net.mgsx.game.core.plugins.EditorPlugin;
 import net.mgsx.game.core.storage.EntityGroupRef;
 import net.mgsx.game.core.storage.LoadConfiguration;
-import net.mgsx.game.core.tools.NoTool;
 import net.mgsx.game.core.ui.EntityEditor;
 import net.mgsx.game.core.ui.widgets.StaticFieldSelector;
 import net.mgsx.game.plugins.camera.CameraEditorPlugin;
@@ -60,7 +59,6 @@ public class CoreEditorPlugin extends EditorPlugin
 		editor.addTool(new ClipPlaneTool(editor));
 		
 		// order is very important !
-		editor.addGlobalTool(new SelectTool(editor));
 		editor.addGlobalTool(new ZoomTool(editor));
 		editor.addGlobalTool(new PanTool(editor));
 		editor.addGlobalTool(new DuplicateTool(editor));
@@ -70,8 +68,7 @@ public class CoreEditorPlugin extends EditorPlugin
 
 		editor.addGlobalTool(new SwitchCameraTool(editor));
 		
-
-		editor.addSuperTool(new NoTool("Select", editor));;
+		editor.addSuperTool(new SelectTool(editor));;
 		
 		editor.addSuperTool(new OpenTool(editor));;
 		editor.addSuperTool(new SaveTool(editor));;

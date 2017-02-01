@@ -691,6 +691,7 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
 				if(btTool.isChecked()) group.setActiveTool(tool);
+				else group.setActiveTool(null);
 			}
 		});
 		group.addButton(btTool);
