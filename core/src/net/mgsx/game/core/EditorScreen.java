@@ -11,6 +11,7 @@ import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.assets.AssetLoaderParameters;
 import com.badlogic.gdx.assets.loaders.TextureLoader.TextureParameter;
 import com.badlogic.gdx.files.FileHandle;
@@ -173,8 +174,6 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 		
 		toolDelegator = new InputMultiplexer();
 		
-		Gdx.input.setInputProcessor(new InputMultiplexer(stage, toolDelegator));
-
 		panel = new Table(skin);
 		
 		
@@ -276,6 +275,15 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 		
 		// build GUI
 		updateSelection();
+		
+		// patch input processor : some systems (HUD) may have set input processor so
+		// we need to just override it, not replace it.
+		InputProcessor previousInputProcessor = Gdx.input.getInputProcessor();
+		if(previousInputProcessor == null){
+			Gdx.input.setInputProcessor(new InputMultiplexer(stage, toolDelegator));
+		}else{
+			Gdx.input.setInputProcessor(new InputMultiplexer(stage, toolDelegator, previousInputProcessor));
+		}
 	}
 
 	public ToolGroup createToolGroup() 
