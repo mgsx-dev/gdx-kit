@@ -7,19 +7,19 @@ import com.badlogic.gdx.graphics.Color;
 import net.mgsx.game.core.GamePipeline;
 import net.mgsx.game.core.GameScreen;
 import net.mgsx.game.examples.td.components.TileComponent;
-import net.mgsx.game.examples.td.components.Canon;
+import net.mgsx.game.examples.td.components.Aiming;
 
 public class TowerRender extends AbstractShapeSystem
 {
 
 	public TowerRender(GameScreen game) {
-		super(game, Family.all(TileComponent.class, Canon.class).get(), GamePipeline.RENDER);
+		super(game, Family.all(TileComponent.class, Aiming.class).get(), GamePipeline.RENDER);
 	}
 
 	@Override
 	protected void processEntity(Entity entity, float deltaTime) {
 		TileComponent tile = TileComponent.components.get(entity);
-		Canon tower = Canon.components.get(entity);
+		Aiming tower = Aiming.components.get(entity);
 		renderer.setColor(Color.BLUE);
 		final float s = .25f;
 		renderer.identity();

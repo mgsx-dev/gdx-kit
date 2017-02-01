@@ -13,11 +13,13 @@ import net.mgsx.game.examples.td.systems.HomeRenderer;
 import net.mgsx.game.examples.td.systems.LazerRender;
 import net.mgsx.game.examples.td.systems.LifeRenderer;
 import net.mgsx.game.examples.td.systems.LifeSystem;
+import net.mgsx.game.examples.td.systems.LoadSystem;
 import net.mgsx.game.examples.td.systems.MapRenderer;
 import net.mgsx.game.examples.td.systems.MapSystem;
 import net.mgsx.game.examples.td.systems.PathFollowerSystem;
 import net.mgsx.game.examples.td.systems.PrickleRender;
 import net.mgsx.game.examples.td.systems.PrickleSystem;
+import net.mgsx.game.examples.td.systems.ShooterSystem;
 import net.mgsx.game.examples.td.systems.ShotRender;
 import net.mgsx.game.examples.td.systems.ShotSystem;
 import net.mgsx.game.examples.td.systems.SingleTargetSystem;
@@ -46,9 +48,15 @@ public class TowerDefenseEditorPlugin extends EditorPlugin implements DefaultEdi
 		editor.entityEngine.addSystem(new MapSystem());
 		editor.entityEngine.addSystem(new FreezeSystem());
 		
+		editor.entityEngine.addSystem(new LoadSystem());
+		
 		// enemy analysis before tower logic
 		editor.entityEngine.addSystem(new EnemyAnalysisSystem());
+		
 		editor.entityEngine.addSystem(new TowerLogicSystem());
+		editor.entityEngine.addSystem(new LoadSystem());
+		editor.entityEngine.addSystem(new ShooterSystem());
+		
 		editor.entityEngine.addSystem(new ShotSystem());
 
 		editor.entityEngine.addSystem(new PrickleSystem());
