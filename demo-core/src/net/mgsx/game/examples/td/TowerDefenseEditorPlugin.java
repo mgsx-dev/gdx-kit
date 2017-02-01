@@ -2,6 +2,7 @@ package net.mgsx.game.examples.td;
 
 import net.mgsx.game.core.EditorScreen;
 import net.mgsx.game.core.plugins.EditorPlugin;
+import net.mgsx.game.examples.td.systems.EnemyAnalysisSystem;
 import net.mgsx.game.examples.td.systems.EnemyLogicSystem;
 import net.mgsx.game.examples.td.systems.EnemyRenderer;
 import net.mgsx.game.examples.td.systems.EntryRenderer;
@@ -9,6 +10,7 @@ import net.mgsx.game.examples.td.systems.FreezeSystem;
 import net.mgsx.game.examples.td.systems.FrozenRender;
 import net.mgsx.game.examples.td.systems.FrozenSystem;
 import net.mgsx.game.examples.td.systems.HomeRenderer;
+import net.mgsx.game.examples.td.systems.LazerRender;
 import net.mgsx.game.examples.td.systems.LifeRenderer;
 import net.mgsx.game.examples.td.systems.LifeSystem;
 import net.mgsx.game.examples.td.systems.MapRenderer;
@@ -43,6 +45,9 @@ public class TowerDefenseEditorPlugin extends EditorPlugin implements DefaultEdi
 		editor.entityEngine.addSystem(new WaveSystem());
 		editor.entityEngine.addSystem(new MapSystem());
 		editor.entityEngine.addSystem(new FreezeSystem());
+		
+		// enemy analysis before tower logic
+		editor.entityEngine.addSystem(new EnemyAnalysisSystem());
 		editor.entityEngine.addSystem(new TowerLogicSystem());
 		editor.entityEngine.addSystem(new ShotSystem());
 
@@ -70,6 +75,7 @@ public class TowerDefenseEditorPlugin extends EditorPlugin implements DefaultEdi
 		// render dynamics
 		editor.entityEngine.addSystem(new EnemyRenderer(editor.game));
 		editor.entityEngine.addSystem(new ShotRender(editor.game));
+		editor.entityEngine.addSystem(new LazerRender(editor.game));
 		
 		// render status
 		editor.entityEngine.addSystem(new LifeRenderer(editor.game));

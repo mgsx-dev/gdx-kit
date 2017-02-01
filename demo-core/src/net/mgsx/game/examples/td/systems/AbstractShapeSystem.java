@@ -11,6 +11,7 @@ public abstract class AbstractShapeSystem extends IteratingSystem
 {
 	protected ShapeRenderer renderer;
 	private GameScreen game;
+	protected ShapeType shapeType = ShapeType.Filled;
 	
 	public AbstractShapeSystem(GameScreen game, Family family, int priority) {
 		super(family, priority);
@@ -21,7 +22,7 @@ public abstract class AbstractShapeSystem extends IteratingSystem
 	@Override
 	public void update(float deltaTime) {
 		renderer.setProjectionMatrix(game.camera.combined);
-		renderer.begin(ShapeType.Filled);
+		renderer.begin(shapeType);
 		super.update(deltaTime);
 		renderer.end();
 	}
