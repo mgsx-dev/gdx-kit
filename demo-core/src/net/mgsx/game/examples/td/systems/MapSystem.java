@@ -12,6 +12,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 
 import net.mgsx.game.core.GamePipeline;
+import net.mgsx.game.core.components.Repository;
 import net.mgsx.game.examples.td.components.Home;
 import net.mgsx.game.examples.td.components.PathFollower;
 import net.mgsx.game.examples.td.components.Road;
@@ -66,6 +67,31 @@ public class MapSystem extends EntitySystem
 	public Entity getTile(int x, int y) {
 		if(x >= 0 && x < width && y >= 0 && y < height){
 			return tiles[y * width + x];
+		}
+		return null;
+	}
+	
+	/**
+	 * retrieve a tile, create it if not exist yet and in map bounds
+	 * @param x
+	 * @param y
+	 * @return the tile or null if not in bounds
+	 */
+	public Entity getOrCreateTile(int x, int y) 
+	{
+		if(x >= 0 && x < width && y >= 0 && y < height){
+			Entity cell = tiles[y * width + x];
+			if(cell == null)
+			{
+				cell = getEngine().createEntity();
+				TileComponent tile = getEngine().createComponent(TileComponent.class);
+				tile.x = x;
+				tile.y = y;
+				cell.add(tile);
+				cell.add(getEngine().createComponent(Repository.class));
+				getEngine().addEntity(cell);
+			}
+			return cell;
 		}
 		return null;
 	}
