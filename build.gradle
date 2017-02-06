@@ -13,15 +13,16 @@ buildscript {
 allprojects {
     apply plugin: "eclipse"
     apply plugin: "idea"
-
-    version = '1.0'
+	
+    version = '0.0.1-SNAPSHOT'
     ext {
+    	groupName = "net.mgsx.gdx"
         appName = "gdx-kit"
         gdxVersion = '1.9.4'
         gdxAiVersion = '1.7.0'
         ashleyVersion = '1.7.3'
         aiVersion = '1.8.0'
-        pdVersion = '0.3.0'
+        pdVersion = '0.4.0-SNAPSHOT'
         junitVersion = '4.12'
     }
 
@@ -49,7 +50,18 @@ project(":core") {
         compile "com.badlogicgames.ashley:ashley:$ashleyVersion"
         compile "com.badlogicgames.gdx:gdx-controllers:$gdxVersion"
         
+        compile "net.mgsx.gdx:gdx-pd:$pdVersion"
+        
         testCompile "junit:junit:$junitVersion"
+    }
+}
+
+project(":desktop") {
+    apply plugin: "java"
+
+    dependencies {
+        compile project(":core")
+        compile group: 'org.reflections', name: 'reflections', version: '0.9.5-RC2'
     }
 }
 
@@ -60,7 +72,6 @@ project(":demo-core") {
     dependencies {
         compile project(":core")
         compile "net.mgsx.gdx:gdx-pd:$pdVersion"
-        compile 'com.illposed.osc:javaosc-core:0.3'
     }
 }
 
@@ -69,15 +80,14 @@ project(":demo-desktop") {
 
     dependencies {
         compile project(":demo-core")
+        compile project(":desktop")
         
         compile "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
         compile "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-desktop"
         
         compile "net.mgsx.gdx:gdx-pd-platform:$pdVersion:desktop"
-        compile "net.mgsx.gdx:gdx-pd-platform:$pdVersion:natives-desktop"
-        
-        compile group: 'org.reflections', name: 'reflections', version: '0.9.5-RC2'
+        compile "net.mgsx.gdx:gdx-pd-platform:$pdVersion:natives-desktop"    
         
         compile "com.badlogicgames.gdx:gdx-controllers-desktop:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-controllers-platform:$gdxVersion:natives-desktop"
