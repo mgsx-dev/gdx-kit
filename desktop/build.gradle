@@ -29,7 +29,7 @@ publishing {
     publications {
         api(MavenPublication) {
             groupId groupName
-            artifactId "appName-desktop"
+            artifactId "$appName-desktop"
             
             from components.java
             

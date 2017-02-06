@@ -1,4 +1,4 @@
-package net.mgsx.box2d.editor.desktop;
+package net.mgsx.kit.files;
 
 import java.io.File;
 

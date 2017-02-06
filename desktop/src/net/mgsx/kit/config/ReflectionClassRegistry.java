@@ -1,4 +1,4 @@
-package net.mgsx.kit;
+package net.mgsx.kit.config;
 
 import java.lang.annotation.Annotation;
 import java.net.URL;

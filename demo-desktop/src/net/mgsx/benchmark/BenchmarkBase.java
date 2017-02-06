@@ -4,8 +4,8 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 
-import net.mgsx.box2d.editor.desktop.DesktopNativeInterface;
 import net.mgsx.game.core.helpers.NativeService;
+import net.mgsx.kit.files.DesktopNativeInterface;
 
 public class BenchmarkBase {
 	public static void main (String[] args) 
