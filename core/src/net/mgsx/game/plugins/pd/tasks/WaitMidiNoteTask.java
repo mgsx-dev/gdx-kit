@@ -1,13 +1,13 @@
 package net.mgsx.game.plugins.pd.tasks;
 
 import com.badlogic.gdx.ai.btree.annotation.TaskAttribute;
-import com.leff.midi.event.MidiEvent;
-import com.leff.midi.event.NoteOn;
-import com.leff.midi.util.MidiEventListener;
 
 import net.mgsx.game.plugins.btree.BTreePlugin.EntityLeafTask;
 import net.mgsx.game.plugins.btree.annotations.TaskAlias;
 import net.mgsx.game.plugins.pd.systems.MidiSequencerSystem;
+import net.mgsx.midi.sequence.event.MidiEvent;
+import net.mgsx.midi.sequence.event.NoteOn;
+import net.mgsx.midi.sequence.util.MidiEventListener;
 
 @TaskAlias("waitMidiNote")
 public class WaitMidiNoteTask extends EntityLeafTask

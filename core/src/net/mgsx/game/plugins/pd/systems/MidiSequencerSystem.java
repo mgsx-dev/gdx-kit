@@ -6,10 +6,6 @@ import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetDescriptor;
-import com.leff.midi.MidiFile;
-import com.leff.midi.MidiTrack;
-import com.leff.midi.event.MidiEvent;
-import com.leff.midi.event.meta.Marker;
 
 import net.mgsx.game.core.GamePipeline;
 import net.mgsx.game.core.GameScreen;
@@ -22,6 +18,10 @@ import net.mgsx.game.plugins.pd.midi.PdMidiSynth;
 import net.mgsx.game.plugins.pd.midi.QTractorSequenceReader;
 import net.mgsx.game.plugins.pd.midi.SequenceDesc;
 import net.mgsx.game.plugins.pd.midi.SequenceMarker;
+import net.mgsx.midi.sequence.MidiSequence;
+import net.mgsx.midi.sequence.MidiTrack;
+import net.mgsx.midi.sequence.event.MidiEvent;
+import net.mgsx.midi.sequence.event.meta.Marker;
 import net.mgsx.pd.Pd;
 import net.mgsx.pd.patch.PatchLoader;
 import net.mgsx.pd.patch.PdPatch;
@@ -82,7 +82,7 @@ public class MidiSequencerSystem extends EntitySystem
 			game.assets.finishLoading();
 			
 			
-			MidiFile midiFile = new MidiFile(Gdx.files.internal("audio/midi/title-export-1.mid").file());
+			MidiSequence midiFile = new MidiSequence(Gdx.files.internal("audio/midi/title-export-1.mid"));
 			int midiRes = midiFile.getResolution();
 			sequenceDesc = new QTractorSequenceReader(midiRes).read(Gdx.files.internal("audio/midi/title.qtr"));
 			sequencer.load(midiFile);

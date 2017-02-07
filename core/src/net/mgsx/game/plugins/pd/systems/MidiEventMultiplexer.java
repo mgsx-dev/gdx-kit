@@ -1,8 +1,9 @@
 package net.mgsx.game.plugins.pd.systems;
 
 import com.badlogic.gdx.utils.SnapshotArray;
-import com.leff.midi.event.MidiEvent;
-import com.leff.midi.util.MidiEventListener;
+
+import net.mgsx.midi.sequence.event.MidiEvent;
+import net.mgsx.midi.sequence.util.MidiEventListener;
 
 public class MidiEventMultiplexer implements MidiEventListener {
 

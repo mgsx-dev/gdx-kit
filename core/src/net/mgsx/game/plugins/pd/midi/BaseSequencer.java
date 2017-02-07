@@ -1,6 +1,6 @@
 package net.mgsx.game.plugins.pd.midi;
 
-import com.leff.midi.util.MidiEventListener;
+import net.mgsx.midi.sequence.util.MidiEventListener;
 
 public abstract class BaseSequencer
 {
