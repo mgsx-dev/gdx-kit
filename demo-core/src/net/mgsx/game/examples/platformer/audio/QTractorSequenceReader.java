@@ -1,4 +1,4 @@
-package net.mgsx.game.plugins.pd.midi;
+package net.mgsx.game.examples.platformer.audio;
 
 import java.io.IOException;
 
@@ -7,6 +7,9 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.XmlReader;
 import com.badlogic.gdx.utils.XmlReader.Element;
+
+import net.mgsx.game.plugins.pd.midi.SequenceDesc;
+import net.mgsx.game.plugins.pd.midi.SequenceMarker;
 
 public class QTractorSequenceReader
 {
