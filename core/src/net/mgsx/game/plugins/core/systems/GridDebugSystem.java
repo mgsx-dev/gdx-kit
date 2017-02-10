@@ -26,6 +26,9 @@ public class GridDebugSystem extends EntitySystem
 	@Editable
 	public float opacity = .3f;
 	
+	@Editable
+	public boolean snap = true;
+	
 	private EditorScreen editor;
 	
 	private BoundingBox box = new BoundingBox();

@@ -2,11 +2,11 @@ package net.mgsx.game.plugins.pd.midi;
 
 import org.puredata.core.PdBase;
 
-import com.leff.midi.event.MidiEvent;
-import com.leff.midi.event.NoteOff;
-import com.leff.midi.event.NoteOn;
-import com.leff.midi.event.ProgramChange;
-import com.leff.midi.util.MidiEventListener;
+import net.mgsx.midi.sequence.event.MidiEvent;
+import net.mgsx.midi.sequence.event.NoteOff;
+import net.mgsx.midi.sequence.event.NoteOn;
+import net.mgsx.midi.sequence.event.ProgramChange;
+import net.mgsx.midi.sequence.util.MidiEventListener;
 
 public class PdMidiSynth implements MidiEventListener 
 {

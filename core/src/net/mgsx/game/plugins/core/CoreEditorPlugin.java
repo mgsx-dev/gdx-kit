@@ -60,7 +60,7 @@ public class CoreEditorPlugin extends EditorPlugin
 		editor.addTool(new ClipPlaneTool(editor));
 		
 		// order is very important !
-		editor.addGlobalTool(new SelectTool(editor));
+		editor.addGlobalTool(new SelectTool(editor));;
 		editor.addGlobalTool(new ZoomTool(editor));
 		editor.addGlobalTool(new PanTool(editor));
 		editor.addGlobalTool(new DuplicateTool(editor));
@@ -70,7 +70,6 @@ public class CoreEditorPlugin extends EditorPlugin
 
 		editor.addGlobalTool(new SwitchCameraTool(editor));
 		
-
 		editor.addSuperTool(new NoTool("Select", editor));;
 		
 		editor.addSuperTool(new OpenTool(editor));;

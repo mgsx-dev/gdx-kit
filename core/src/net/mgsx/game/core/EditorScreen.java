@@ -11,6 +11,7 @@ import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.assets.AssetLoaderParameters;
 import com.badlogic.gdx.assets.loaders.TextureLoader.TextureParameter;
 import com.badlogic.gdx.files.FileHandle;
@@ -173,8 +174,6 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 		
 		toolDelegator = new InputMultiplexer();
 		
-		Gdx.input.setInputProcessor(new InputMultiplexer(stage, toolDelegator));
-
 		panel = new Table(skin);
 		
 		
@@ -237,12 +236,12 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 			global.addTab(entry.getKey(), entry.getValue().createEditor(this, skin));
 		}
 		
+		// listener for component add/remove
 		EntityListener selectionListener = new EntityListener() {
 			
 			@Override
 			public void entityRemoved(Entity entity) {
 				if(selection.contains(entity, true)){
-					selection.removeValue(entity, true);
 					invalidateSelection();
 				}
 			}
@@ -257,11 +256,34 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 			entityEngine.addEntityListener(Family.one(type).get(), selectionListener);
 		}
 		
-		entityEngine.addEntityListener(selectionListener); // TODO maybe not the same listener
+		// listener for entity add/remove
+		entityEngine.addEntityListener(new EntityListener() {
+			
+			@Override
+			public void entityRemoved(Entity entity) {
+				if(selection.contains(entity, true)){
+					selection.removeValue(entity, true);
+					invalidateSelection();
+				}
+			}
+			
+			@Override
+			public void entityAdded(Entity entity) {
+			}
+		});
 		
 		
 		// build GUI
 		updateSelection();
+		
+		// patch input processor : some systems (HUD) may have set input processor so
+		// we need to just override it, not replace it.
+		InputProcessor previousInputProcessor = Gdx.input.getInputProcessor();
+		if(previousInputProcessor == null){
+			Gdx.input.setInputProcessor(new InputMultiplexer(stage, toolDelegator));
+		}else{
+			Gdx.input.setInputProcessor(new InputMultiplexer(stage, toolDelegator, previousInputProcessor));
+		}
 	}
 
 	public ToolGroup createToolGroup() 
@@ -610,7 +632,7 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 	
 	
 	public Array<Entity> selection = new Array<Entity>();
-	public boolean selectionDirty;
+	private boolean selectionDirty;
 	public boolean displayEnabled = true; // true by default
 
 	public Table toolOutline;
@@ -669,6 +691,7 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
 				if(btTool.isChecked()) group.setActiveTool(tool);
+				// else group.setActiveTool(null);
 			}
 		});
 		group.addButton(btTool);

@@ -36,12 +36,12 @@ public class AnnotationBasedTaskCloner implements TaskCloner {
 			if(pool == null) pools.put(type, pool = new Pool<Task>(){
 				@Override
 				protected Task newObject() {
-					return ReflectionHelper.newInstance(type);
+					return (Task)ReflectionHelper.newInstance(type);
 				}
 			});
 			return pool.obtain();
 		}else{
-			return ReflectionHelper.newInstance(type);
+			return (Task<T>)ReflectionHelper.newInstance(type);
 		}
 	}
 	

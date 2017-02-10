@@ -48,6 +48,7 @@ public class FloatDistributionEditor implements FieldEditor
 				}
 			});
 		}
+		// TODO add support for other FloatDistribution sub types
 		return table;
 	}
 

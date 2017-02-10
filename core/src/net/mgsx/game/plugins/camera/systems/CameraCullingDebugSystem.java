@@ -6,6 +6,8 @@ import net.mgsx.game.core.EditorScreen;
 import net.mgsx.game.core.GamePipeline;
 import net.mgsx.game.core.helpers.systems.TransactionSystem;
 
+// FIXME this system causing bugs on camera sync, when not added (or not processing at start), it
+// will prevent camera sync for rendering !
 public class CameraCullingDebugSystem extends TransactionSystem
 {
 	private EditorScreen editor;

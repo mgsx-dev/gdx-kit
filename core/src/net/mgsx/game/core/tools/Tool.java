@@ -76,7 +76,7 @@ abstract public class Tool extends InputAdapter
 	}
 	protected Vector2 snap(Vector2 v) {
 		GridDebugSystem grid = getEngine().getSystem(GridDebugSystem.class);
-		if(grid.checkProcessing()){
+		if(grid.snap){
 			float size = grid.size;
 			v.x = snap(v.x, size);
 			v.y = snap(v.y, size);

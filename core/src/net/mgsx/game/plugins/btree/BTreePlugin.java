@@ -9,6 +9,7 @@ import com.badlogic.gdx.ai.btree.LeafTask;
 import com.badlogic.gdx.ai.btree.Task;
 import com.badlogic.gdx.ai.btree.utils.BehaviorTreeLibraryManager;
 import com.badlogic.gdx.ai.utils.random.FloatDistribution;
+import com.badlogic.gdx.ai.utils.random.IntegerDistribution;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 
@@ -23,6 +24,7 @@ import net.mgsx.game.plugins.btree.storage.EntityBehaviorTreeLoader;
 import net.mgsx.game.plugins.btree.storage.EntityBehaviorTreeXMLLoader;
 import net.mgsx.game.plugins.btree.tools.BTreeTool;
 import net.mgsx.game.plugins.btree.ui.FloatDistributionEditor;
+import net.mgsx.game.plugins.btree.ui.IntegerDistributionEditor;
 
 @PluginDef(components={BTreeModel.class})
 public class BTreePlugin extends EditorPlugin
@@ -82,6 +84,7 @@ public class BTreePlugin extends EditorPlugin
 		Task.TASK_CLONER = new AnnotationBasedTaskCloner();
 		
 		EntityEditor.defaultTypeEditors.put(FloatDistribution.class, new FloatDistributionEditor());
+		EntityEditor.defaultTypeEditors.put(IntegerDistribution.class, new IntegerDistributionEditor());
 		
 		editor.assets.addReloadListener(BehaviorTree.class, new ReloadListener(){
 			@Override
