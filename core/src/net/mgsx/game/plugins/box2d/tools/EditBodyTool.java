@@ -5,6 +5,8 @@ import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.ChainShape;
+import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.utils.Array;
 
@@ -70,6 +72,25 @@ public class EditBodyTool extends ComponentTool
 					getEngine().addEntity(vertexEntity);
 				}
 			}
+			else if(fixture.def.shape instanceof ChainShape)
+			{
+				ChainShape shape =  ((ChainShape)fixture.def.shape);
+				polygon.loop = shape.isLooped();
+				int vcount = shape.getVertexCount() + (polygon.loop ? -1 : 0); // don't copy last vertex (same as first)
+				for(int i=0 ; i<vcount ; i++){
+					Entity vertexEntity = getEngine().createEntity();
+					Transform2DComponent transform = editor.entityEngine.createComponent(Transform2DComponent.class);
+					shape.getVertex(i, transform.position);
+					vertexEntity.add(transform);
+					vertexEntities.add(vertexEntity);
+					
+					transform.position.add(body.body.getPosition());
+					polygon.vertex.add(transform.position);
+					
+					getEngine().addEntity(vertexEntity);
+				}
+			}
+			
 			fixtureEntity.add(polygon);
 			shapeEntities.add(fixtureEntity);
 			
@@ -104,6 +125,40 @@ public class EditBodyTool extends ComponentTool
 				PolygonShape polygonShapeDef = ((PolygonShape)shape.fixture.def.shape);
 				polygonShapeDef.set(vertex);
 			}
+			else if(shape.fixture.fixture.getShape() instanceof ChainShape){
+				
+				// TODO require to recreate shape fully and then fixture. Then
+				// any final reference to fixture or shape will be broken.
+				
+				PolygonComponent polygon = PolygonComponent.components.get(entity);
+				
+				// reset body transform
+				for(Vector2 v : polygon.vertex) v.sub(body.body.getPosition());
+
+				// copy
+				Vector2 [] vertex = new Vector2[polygon.vertex.size];
+				for(int i=0 ; i<vertex.length ; i++){
+					vertex[i] = polygon.vertex.get(i);
+				}
+				
+				ChainShape polygonShape = new ChainShape();
+				if(polygon.loop)
+					polygonShape.createLoop(vertex);
+				else
+					polygonShape.createChain(vertex);
+				
+				// relink all together (listeners ... body / fixture)
+				shape.fixture.def.shape = polygonShape;
+				
+				Fixture oldFixture = shape.fixture.fixture;
+				
+				body.body.destroyFixture(oldFixture);
+				Fixture newFixture = body.body.createFixture(shape.fixture.def);
+				newFixture.setUserData(oldFixture.getUserData());
+				shape.fixture.fixture = newFixture;
+				
+			}
+			// TODO other shapes again
 			
 			editor.entityEngine.removeEntity(entity);
 		}
