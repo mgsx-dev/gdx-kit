@@ -108,6 +108,13 @@ public class LSystem2DRenderer extends IteratingSystem
 							Color.WHITE, Color.GREEN);
 					ctx.p.mulAdd(ctx.d, ctx.scale);
 				}
+			}else if(code == 'O'){
+				
+				float r = ctx.scale * .1f;
+				ctx.p.mulAdd(ctx.d, r);
+				renderer.circle(ctx.p.x, ctx.p.y, r, 12);
+				ctx.p.mulAdd(ctx.d, r);
+				
 			}else if(code == '+'){
 				ctx.d.rotate(lsystem.angle);
 			}else if(code == '*'){
