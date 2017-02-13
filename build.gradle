@@ -61,6 +61,7 @@ project(":desktop") {
 
     dependencies {
         compile project(":core")
+        compile "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
         compile group: 'org.reflections', name: 'reflections', version: '0.9.5-RC2'
     }
 }

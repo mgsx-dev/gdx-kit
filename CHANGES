@@ -1,0 +1,2 @@
+[0.0.2]
+- use DesktopApplication instead of LwjglApplication in loaders.

@@ -1,6 +1,5 @@
 package net.mgsx.examples.platformer;
 
-import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 
 import net.mgsx.game.core.EditorApplication;
@@ -10,6 +9,7 @@ import net.mgsx.game.core.meta.ClassRegistry;
 import net.mgsx.game.examples.platformer.PlatformerEditorPlugin;
 import net.mgsx.kit.config.ReflectionClassRegistry;
 import net.mgsx.kit.files.DesktopNativeInterface;
+import net.mgsx.kit.launcher.DesktopApplication;
 import net.mgsx.pd.Pd;
 import net.mgsx.pd.PdConfiguration;
 import net.mgsx.pd.audio.PdAudioNone;
@@ -45,12 +45,14 @@ public class PlatformerLevelEditorLauncher {
 		editConfig.plugins.add(new PlatformerEditorPlugin());
 		editConfig.path = args.length > 0 ? args[0] : null;
 		
-		new LwjglApplication(new EditorApplication(editConfig){
+		final EditorApplication editor = new EditorApplication(editConfig){
 			@Override
 			public void create() {
 				Pd.audio.create(new PdConfiguration());
 				super.create();
 			}
-		}, config);
+		};
+		
+		new DesktopApplication(editor, config);
 	}
 }
