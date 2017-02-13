@@ -66,12 +66,17 @@ public class AccessorScanner {
 	
 	public static Array<Accessor> scan(Object entity, boolean annotationBasedOnly)
 	{
+		return scan(entity, annotationBasedOnly, true);
+	}
+	public static Array<Accessor> scan(Object entity, boolean annotationBasedOnly, boolean includeTransient)
+	{
 		Array<Accessor> accessors = new Array<Accessor>();
 		
 		// scan fields
 		for(Field field : entity.getClass().getFields())
 		{
-			scanField(accessors, entity, field, annotationBasedOnly);
+			if(includeTransient || !Modifier.isTransient(field.getModifiers()))
+				scanField(accessors, entity, field, annotationBasedOnly);
 		}
 		
 		// scan getter/setter pattern

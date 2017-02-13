@@ -45,7 +45,7 @@ public class EngineStorage {
 			if(store != null){
 				json.writeObjectStart();
 				json.writeValue("type", store.value());
-				for(Accessor accessor : AccessorScanner.scan(system, true)){
+				for(Accessor accessor : AccessorScanner.scan(system, true, false)){
 					if(accessor.getType() != void.class)
 						json.writeValue(accessor.getName(), accessor.get());
 				}
@@ -98,7 +98,9 @@ public class EngineStorage {
 				String type = systemSettings.getString("type");
 				EntitySystem system = systemRegistry.get(type);
 				if(system != null){
-					for(Accessor accessor : AccessorScanner.scan(system, true)){
+					// TODO shouldn't be like that : set only values when defined in json, avoid
+					// setting null values !
+					for(Accessor accessor : AccessorScanner.scan(system, true, false)){
 						if(accessor.getType() != void.class){
 							JsonValue jsonValue = systemSettings.get(accessor.getName());
 							Object value = json.readValue(accessor.getType(), jsonValue);
