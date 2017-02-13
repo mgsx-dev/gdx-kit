@@ -43,11 +43,14 @@ public class ToolGroup extends InputMultiplexer
 		if(activeTool != null){
 			activeTool.group = this;
 			addProcessor(activeTool);
+			
+			// TODO handled by editor 
 			Table table = new Table(editor.skin);
 			Table view = new EntityEditor(activeTool, true, editor.skin);
 			table.setBackground(editor.skin.getDrawable("default-rect"));
 			table.add(activeTool.name).row();
 			table.add(view).row();
+			editor.toolOutline.clear();
 			editor.toolOutline.add(table);
 			activeTool.activate();
 		}else{

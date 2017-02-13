@@ -8,6 +8,7 @@ import net.mgsx.game.core.plugins.EditorPlugin;
 import net.mgsx.game.core.storage.EntityGroupRef;
 import net.mgsx.game.core.storage.LoadConfiguration;
 import net.mgsx.game.core.tools.NoTool;
+import net.mgsx.game.core.tools.Tool;
 import net.mgsx.game.core.ui.EntityEditor;
 import net.mgsx.game.core.ui.widgets.StaticFieldSelector;
 import net.mgsx.game.plugins.camera.CameraEditorPlugin;
@@ -70,7 +71,8 @@ public class CoreEditorPlugin extends EditorPlugin
 
 		editor.addGlobalTool(new SwitchCameraTool(editor));
 		
-		editor.addSuperTool(new NoTool("Select", editor));;
+		Tool noTool = new NoTool("Select", editor); // TODO !!??
+		editor.addSuperTool(noTool); 
 		
 		editor.addSuperTool(new OpenTool(editor));;
 		editor.addSuperTool(new SaveTool(editor));;
@@ -83,6 +85,8 @@ public class CoreEditorPlugin extends EditorPlugin
 
 		editor.addSuperTool(new ExportClassesTool(editor));;
 
+		editor.setTool(noTool);
+		
 		LoadConfiguration config = new LoadConfiguration();
 		config.assets = editor.assets;
 		config.engine = editor.entityEngine;

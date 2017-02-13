@@ -822,4 +822,9 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 		return editorCamera.isActive() ? editorCamera.camera() : game.camera;
 	}
 
+	public void setTool(Tool tool) 
+	{
+		mainToolGroup.setActiveTool(tool);
+	}
+
 }
