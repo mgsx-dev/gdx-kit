@@ -19,6 +19,7 @@ public class DesktopApplication extends LwjglApplication
 	public DesktopApplication(EditorApplication editor, LwjglApplicationConfiguration config) 
 	{
 		super(editor, config);
+		this.editor = editor;
 	}
 	
 	@Override
