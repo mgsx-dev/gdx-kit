@@ -11,7 +11,7 @@ import net.mgsx.game.core.tools.Tool;
 public class SwitchModeTool extends Tool
 {
 	public SwitchModeTool(EditorScreen editor) {
-		super(editor);
+		super("Switches", editor);
 	}
 	
 	@Override

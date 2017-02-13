@@ -9,7 +9,7 @@ public class ToggleHelpTool extends KeyTool
 {
 	public ToggleHelpTool(EditorScreen editor) 
 	{
-		super(editor, Input.Keys.F1);
+		super("Help", editor, Input.Keys.F1);
 	}
 
 	@Override

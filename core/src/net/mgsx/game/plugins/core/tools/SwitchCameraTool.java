@@ -7,7 +7,7 @@ import net.mgsx.game.core.tools.Tool;
 
 public class SwitchCameraTool extends Tool {
 	public SwitchCameraTool(EditorScreen editor) {
-		super(editor);
+		super("Camera switch", editor);
 	}
 
 	@Override

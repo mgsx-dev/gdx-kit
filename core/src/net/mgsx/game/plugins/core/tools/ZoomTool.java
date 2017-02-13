@@ -13,7 +13,7 @@ public class ZoomTool extends Tool
 	private Vector2 prev; //, originScreen; //, originWorld;
 	
 	public ZoomTool(EditorScreen editor) {
-		super("Pan", editor);
+		super("Zoom", editor);
 	}
 	
 	@Override
