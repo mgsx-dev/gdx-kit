@@ -320,6 +320,33 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 		ToolGroup g = createToolGroup();
 		g.setActiveTool(tool);
 	}
+	private Array<Actor> rootBackup;
+	final private Array<EntitySystem> processingDebugSystem = new Array<EntitySystem>();
+	
+	public void switchVisibility(){
+		if(displayEnabled){
+			rootBackup = new Array<Actor>(stage.getRoot().getChildren());
+			stage.getRoot().clearChildren();
+			displayEnabled = false;
+			processingDebugSystem.clear();
+			for(EntitySystem system : entityEngine.getSystems())
+			{
+				if(system.priority == GamePipeline.RENDER_OVER && system.checkProcessing()){
+					processingDebugSystem.add(system);
+					system.setProcessing(false);
+				}
+			}
+		}else{
+			for(Actor actor : rootBackup) stage.addActor(actor);
+			rootBackup = null;
+			displayEnabled = true;
+			
+			for(EntitySystem system : processingDebugSystem)
+			{
+				system.setProcessing(true);
+			}
+		}
+	}
 	
 	@Override
 	public void render(float deltaTime) 
@@ -334,7 +361,9 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 		
 		current.render(deltaTime);
 
-		stage.act();
+		if(displayEnabled){
+			stage.act();
+		}
 		
 		
 		// TODO use systems instead (used by sprite tools ...)
@@ -690,7 +719,7 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 	
 	public Array<Entity> selection = new Array<Entity>();
 	private boolean selectionDirty;
-	public boolean displayEnabled = true; // true by default
+	private boolean displayEnabled = true; // true by default
 
 	public Table toolOutline;
 
