@@ -31,6 +31,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
+import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -234,12 +235,14 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 						family = Family.all(config.all()).one(config.one()).exclude(config.exclude()).get();
 					}
 					String name = config.name().isEmpty() ? type.getSimpleName() : config.name();
-					autoTools.add(new ComponentTool(name, this, family){
+					Tool autoTool = new ComponentTool(name, this, family){
 						@Override
 						protected Component createComponent(Entity entity) {
 							return entityEngine.createComponent(type);
 						}
-					});
+					};
+					registry.setTag(autoTool, registry.getTagByType(type));
+					autoTools.add(autoTool);
 				}
 			}
 		}
@@ -382,6 +385,8 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 	public void dispose () {
 	}
 
+	private String pluginFilter;
+	
 	private void updateSelection() 
 	{
 		final Entity entity = selection.size == 1 ? selection.first() : null;
@@ -401,8 +406,27 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 		}
 		else
 		{
+			// TODO move to Tool bar class update ...
+			
 			// Display all tools
 			buttons.add("Tools").expandX().center().row();
+			
+			// add filter
+			final SelectBox<String> pluginFilterBox = new SelectBox<String>(skin);
+			buttons.add(pluginFilterBox).expandX().center().row();
+			Array<String> allPlugins = new Array<String>();
+			allPlugins.add("");
+			allPlugins.addAll(registry.allTags());
+			allPlugins.sort();
+			pluginFilterBox.setItems(allPlugins);
+			pluginFilterBox.setSelected(pluginFilter == null ? "" : pluginFilter);
+			pluginFilterBox.addListener(new ChangeListener(){
+				@Override
+				public void changed(ChangeEvent event, Actor actor) {
+					pluginFilter = pluginFilterBox.getSelected();
+					updateSelection();
+				}
+			});
 			
 			// TODO maybe not at each time ... ?
 			mainTools.sort(new Comparator<Tool>() {
@@ -415,8 +439,11 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 			
 			for(Tool tool : mainTools)
 			{
-				
-				if(tool.activator == null || (entity != null && tool.activator.matches(entity)))
+				// check if tool is in current plugin filter.
+				boolean accepted = true;
+				accepted &= pluginFilter == null || pluginFilter.isEmpty() || pluginFilter.equals(registry.getTag(tool));
+				accepted &= tool.activator == null || (entity != null && tool.activator.matches(entity));
+				if(accepted)
 				{
 					boolean handled = false;
 					
