@@ -12,6 +12,7 @@ import net.mgsx.game.plugins.g2d.G2DPlugin;
 import net.mgsx.game.plugins.g3d.G3DPlugin;
 import net.mgsx.game.plugins.parallax.ParallaxPlugin;
 import net.mgsx.game.plugins.particle2d.Particle2DPlugin;
+import net.mgsx.game.plugins.pd.PdPlugin;
 import net.mgsx.game.plugins.spline.SplinePlugin;
 import net.mgsx.game.plugins.tiles.TilesPlugin;
 
@@ -36,7 +37,8 @@ import net.mgsx.game.plugins.tiles.TilesPlugin;
 	TilesPlugin.class,
 	CameraPlugin.class,
 	BTreePlugin.class,
-	ControllerPlugin.class
+	ControllerPlugin.class,
+	PdPlugin.class
 })
 public interface DefaultPlugin {
 
