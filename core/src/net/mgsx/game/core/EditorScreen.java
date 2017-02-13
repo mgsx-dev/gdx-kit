@@ -24,6 +24,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Event;
+import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -40,6 +42,7 @@ import com.badlogic.gdx.utils.Json.Serializer;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
+import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.core.annotations.EditableComponent;
 import net.mgsx.game.core.commands.Command;
 import net.mgsx.game.core.commands.CommandHistory;
@@ -61,6 +64,8 @@ import net.mgsx.game.core.tools.ComponentTool;
 import net.mgsx.game.core.tools.Tool;
 import net.mgsx.game.core.tools.ToolGroup;
 import net.mgsx.game.core.ui.EntityEditor;
+import net.mgsx.game.core.ui.accessors.Accessor;
+import net.mgsx.game.core.ui.events.AccessorHelpEvent;
 import net.mgsx.game.core.ui.widgets.TabPane;
 import net.mgsx.game.plugins.core.tools.UndoTool;
 
@@ -139,7 +144,7 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 	{
 		status = new Label(STATUS_HIDDEN_TEXT, skin);
 		LabelStyle style = new LabelStyle(status.getStyle());
-		style.fontColor.set(Color.DARK_GRAY);
+		style.fontColor.set(Color.ORANGE);
 		status.setStyle(style);
 		
 		pinStack = new VerticalGroup();
@@ -198,6 +203,20 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 		Table main = createMainTable();
 		main.setFillParent(true);
 		stage.addActor(main);
+		
+		main.addListener(new EventListener() {
+			@Override
+			public boolean handle(Event event) {
+				if(event instanceof AccessorHelpEvent){
+					Accessor a = ((AccessorHelpEvent) event).getAccessor();
+					Editable c = a.config();
+					showStatus = true; // force show help
+					if(c != null && !c.doc().isEmpty()) setInfo(c.doc());
+					return true;
+				}
+				return false;
+			}
+		});
 		
 		createToolGroup().addProcessor(new UndoTool(this));
 		

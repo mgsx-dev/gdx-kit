@@ -26,6 +26,7 @@ import net.mgsx.game.core.annotations.EditableSystem;
 import net.mgsx.game.core.ui.accessors.Accessor;
 import net.mgsx.game.core.ui.accessors.AccessorScanner;
 import net.mgsx.game.core.ui.accessors.FieldAccessor;
+import net.mgsx.game.core.ui.events.AccessorHelpEvent;
 import net.mgsx.game.core.ui.widgets.BitsWidget;
 import net.mgsx.game.core.ui.widgets.BlendWidget;
 import net.mgsx.game.core.ui.widgets.BooleanWidget;
@@ -109,6 +110,19 @@ public class EntityEditor extends Table
 		{
 			Label accessorLabel = new Label(accessor.getName(), table.getSkin());
 			table.add(accessorLabel).fill().left();
+			
+			if(accessor.config() == null || accessor.config().doc().isEmpty()){
+				table.add().fill();
+			}else{
+				final TextButton btHelp = new TextButton("?", table.getSkin());
+				table.add(btHelp).fill();
+				btHelp.addListener(new ChangeListener() {
+					@Override
+					public void changed(ChangeEvent event, Actor actor) {
+						btHelp.fire(new AccessorHelpEvent(accessor));
+					}
+				});
+			}
 			
 			if(!createControl(table, entity, accessor, stack, config))
 			{
