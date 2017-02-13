@@ -31,6 +31,7 @@ import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.core.annotations.EditableSystem;
 import net.mgsx.game.core.annotations.Storable;
 import net.mgsx.game.core.components.Hidden;
+import net.mgsx.game.core.helpers.FilesShaderProgram;
 import net.mgsx.game.examples.platformer.sensors.WaterZone;
 import net.mgsx.game.plugins.g3d.components.G3DModel;
 import net.mgsx.game.plugins.g3d.systems.G3DRendererSystem;
@@ -43,7 +44,11 @@ public class PlatformerPostProcessing extends EntitySystem
 	private FrameBuffer fbo, fbo2, blurA, blurB;
 	private Sprite screenSprite;
 	private SpriteBatch batch;
-	private ShaderProgram postProcessShader, flatProgram, blurXProgram;
+	
+	@Editable
+	transient public FilesShaderProgram blurProgram;
+	
+	private ShaderProgram postProcessShader, flatProgram;
 	private float time;
 	private int timeLocation;
 	private int worldLocation;
@@ -157,17 +162,17 @@ public class PlatformerPostProcessing extends EntitySystem
 		if(settings.blur )
 		{
 			blurA.begin();
-			batch.setShader(blurXProgram);
+			batch.setShader(blurProgram.shader);
 			batch.begin();
-			blurXProgram.setUniformf("dir", new Vector2(settings.blurSize / (float)Gdx.graphics.getWidth(),0));
+			blurProgram.shader.setUniformf("dir", new Vector2(settings.blurSize / (float)Gdx.graphics.getWidth(),0));
 			batch.draw(fbo.getColorBufferTexture(), 0, 0);
 			batch.end();
 			blurA.end();
 			
 			blurB.begin();
-			batch.setShader(blurXProgram);
+			batch.setShader(blurProgram.shader);
 			batch.begin();
-			blurXProgram.setUniformf("dir", new Vector2(0, settings.blurSize / (float)Gdx.graphics.getHeight()));
+			blurProgram.shader.setUniformf("dir", new Vector2(0, settings.blurSize / (float)Gdx.graphics.getHeight()));
 			batch.draw(blurA.getColorBufferTexture(), 0, 0);
 			batch.end();
 			blurB.end();
@@ -295,14 +300,10 @@ public class PlatformerPostProcessing extends EntitySystem
 		flatProgram.end();
 		
 		
-		blurXProgram = loadShader(
+		blurProgram = new FilesShaderProgram(
 				Gdx.files.internal("shaders/blurx-vertex.glsl"),
 				Gdx.files.internal("shaders/blurx-fragment.glsl"));
-		blurXProgram.begin();
-		if(!blurXProgram.isCompiled()){
-			System.err.println(blurXProgram.getLog());
-		}
-		blurXProgram.end();
+		
 
 		flatShader = new BaseShader() {
 			@Override
