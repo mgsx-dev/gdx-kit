@@ -9,9 +9,11 @@ import com.badlogic.gdx.utils.Pool;
 
 import net.mgsx.game.core.EditorScreen;
 import net.mgsx.game.core.GamePipeline;
+import net.mgsx.game.core.annotations.EditableSystem;
 import net.mgsx.game.plugins.box2d.helper.RayCast;
 import net.mgsx.game.plugins.box2d.helper.WorldProvider;
 
+@EditableSystem(isDebug=true)
 public class Box2DRayCastDebugSystem  extends EntitySystem 
 {
 	private final EditorScreen editor;

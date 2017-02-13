@@ -45,6 +45,7 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.core.annotations.EditableComponent;
+import net.mgsx.game.core.annotations.EditableSystem;
 import net.mgsx.game.core.commands.Command;
 import net.mgsx.game.core.commands.CommandHistory;
 import net.mgsx.game.core.components.Movable;
@@ -331,7 +332,8 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 			processingDebugSystem.clear();
 			for(EntitySystem system : entityEngine.getSystems())
 			{
-				if(system.priority == GamePipeline.RENDER_OVER && system.checkProcessing()){
+				EditableSystem config = system.getClass().getAnnotation(EditableSystem.class);
+				if(config != null && config.isDebug() && system.checkProcessing()){
 					processingDebugSystem.add(system);
 					system.setProcessing(false);
 				}

@@ -7,8 +7,10 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 
 import net.mgsx.game.core.EditorScreen;
 import net.mgsx.game.core.GamePipeline;
+import net.mgsx.game.core.annotations.EditableSystem;
 import net.mgsx.game.plugins.core.components.PolygonComponent;
 
+@EditableSystem(isDebug=true)
 public class PolygonRenderSystem extends IteratingSystem
 {
 	private EditorScreen editor;

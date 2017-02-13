@@ -11,7 +11,7 @@ import net.mgsx.game.core.annotations.EditableSystem;
 import net.mgsx.game.core.helpers.RenderDebugHelper;
 import net.mgsx.game.plugins.camera.components.CameraComponent;
 
-@EditableSystem
+@EditableSystem(isDebug=true)
 public class CameraDebugSystem extends IteratingSystem
 {
 	private EditorScreen editor;

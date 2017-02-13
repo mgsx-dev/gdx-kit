@@ -19,4 +19,7 @@ public @interface EditableSystem
 
 	/** name in the editor */
 	String value() default "";
+	
+	/** tag current system as debug only. This system won't process when editor is hidden. */
+	boolean isDebug() default false;
 }

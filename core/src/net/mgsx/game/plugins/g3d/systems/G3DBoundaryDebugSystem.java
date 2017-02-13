@@ -14,7 +14,7 @@ import net.mgsx.game.core.helpers.RenderDebugHelper;
 import net.mgsx.game.plugins.g3d.components.G3DModel;
 import net.mgsx.game.plugins.g3d.components.NodeBoundary;
 
-@EditableSystem
+@EditableSystem(isDebug=true)
 public class G3DBoundaryDebugSystem extends IteratingSystem 
 {
 	private final EditorScreen editor;

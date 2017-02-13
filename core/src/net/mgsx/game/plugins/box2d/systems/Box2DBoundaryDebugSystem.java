@@ -14,7 +14,7 @@ import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.core.annotations.EditableSystem;
 import net.mgsx.game.plugins.box2d.components.Box2DBodyModel;
 
-@EditableSystem
+@EditableSystem(isDebug=true)
 public class Box2DBoundaryDebugSystem extends IteratingSystem 
 {
 	private final EditorScreen editor;

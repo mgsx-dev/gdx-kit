@@ -8,10 +8,11 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 
 import net.mgsx.game.core.EditorScreen;
 import net.mgsx.game.core.GamePipeline;
+import net.mgsx.game.core.annotations.EditableSystem;
 import net.mgsx.game.core.helpers.RenderDebugHelper;
 import net.mgsx.game.plugins.boundary.components.BoundaryComponent;
 
-
+@EditableSystem(isDebug=true)
 public class BoundaryDebugSystem extends IteratingSystem
 {
 	private EditorScreen editor;

@@ -8,9 +8,11 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 
 import net.mgsx.game.core.EditorScreen;
 import net.mgsx.game.core.GamePipeline;
+import net.mgsx.game.core.annotations.EditableSystem;
 import net.mgsx.game.core.components.Hidden;
 import net.mgsx.game.plugins.g3d.components.PointLightComponent;
 
+@EditableSystem(isDebug=true)
 public class G3DPointLightDebugSystem extends IteratingSystem
 {
 	private EditorScreen editor;
