@@ -72,6 +72,8 @@ project(":demo-core") {
     dependencies {
         compile project(":core")
         compile "net.mgsx.gdx:gdx-pd:$pdVersion"
+        
+        testCompile "junit:junit:$junitVersion"
     }
 }
 

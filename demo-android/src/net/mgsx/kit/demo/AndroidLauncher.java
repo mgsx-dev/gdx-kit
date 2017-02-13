@@ -24,6 +24,7 @@ public class AndroidLauncher extends AndroidApplication {
 		
 		ClassRegistry.instance = new StaticClassRegistry(KitClass.class);
 		
+		// TODO refactor has default none service, just log some warning ?
 		NativeService.instance = new NativeServiceInterface() {
 			
 			@Override
