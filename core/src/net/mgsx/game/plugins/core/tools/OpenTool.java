@@ -55,6 +55,9 @@ public class OpenTool extends Tool
 				EngineStorage.load(file, config);
 				end();
 				// TODO ? rebuild();
+				
+				// TODO if option load views is checked !
+				editor.pinEditors(config.visibleSystems);
 			}
 			@Override
 			public boolean match(FileHandle file) {

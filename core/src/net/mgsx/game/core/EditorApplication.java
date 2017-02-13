@@ -22,6 +22,7 @@ public class EditorApplication extends Game
 	
 	protected EditorAssetManager assetManager;
 	private Engine engine;
+	private EditorScreen editorScreen;
 	
 	public EditorApplication(EditorConfiguration config) {
 		super();
@@ -48,7 +49,7 @@ public class EditorApplication extends Game
 		
 		config.registry.init(screen);
 		
-		EditorScreen editorScreen = new EditorScreen(config, screen, assetManager, engine);
+		editorScreen = new EditorScreen(config, screen, assetManager, engine);
 		
 		if(config.path != null) {
 			editorScreen.loadForEditing(Gdx.files.absolute(config.path));
@@ -65,6 +66,7 @@ public class EditorApplication extends Game
 				cfg.engine = engine;
 				cfg.failSafe = true; 
 				EngineStorage.load(settingsRecovery, cfg);
+				editorScreen.pinEditors(cfg.visibleSystems);
 			}
 		}
 		
@@ -84,6 +86,8 @@ public class EditorApplication extends Game
 		config.stripPaths = true;
 		
 		EntityGroupStorage.save(Gdx.files.absolute("/tmp/entities.json"), config); // TODO linux only
+		
+		config.visibleSystems = editorScreen.pinnedSystems;
 		
 		EngineStorage.save(Gdx.files.absolute("/tmp/settings.json"), config); // TODO linux only
 		

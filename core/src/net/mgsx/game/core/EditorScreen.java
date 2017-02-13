@@ -386,6 +386,8 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 	}
 
 	private String pluginFilter;
+
+	public final Array<EntitySystem> pinnedSystems = new Array<EntitySystem>();
 	
 	private void updateSelection() 
 	{
@@ -560,8 +562,16 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 	}
 	public void pinEditor(EntitySystem system) 
 	{
-		pinStack.addActor(createPinEditor(system));
-		
+		if(!pinnedSystems.contains(system, true)){
+			pinnedSystems.add(system);
+			pinStack.addActor(createPinEditor(system));
+		}
+	}
+	public void pinEditors(Array<EntitySystem> systems) {
+		for(EntitySystem system : systems)
+		{
+			pinEditor(system);
+		}
 	}
 	
 	public void unpinEditor(Actor editor){
@@ -645,6 +655,7 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 		btRemove.addListener(new ChangeListener(){
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
+				pinnedSystems.removeValue(system, true);
 				unpinEditor(group);
 			}
 		});

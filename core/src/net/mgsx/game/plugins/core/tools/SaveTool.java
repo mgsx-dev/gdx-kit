@@ -90,6 +90,7 @@ public class SaveTool extends Tool
 				
 				config.pretty = pretty;
 				config.stripPaths = stripPaths;
+				config.visibleSystems = editor.pinnedSystems;
 				
 				EngineStorage.save(file, config);
 				

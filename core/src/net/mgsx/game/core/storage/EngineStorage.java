@@ -12,6 +12,7 @@ import com.badlogic.gdx.utils.JsonValue.JsonIterator;
 import com.badlogic.gdx.utils.ObjectMap;
 
 import net.mgsx.game.core.annotations.Storable;
+import net.mgsx.game.core.helpers.ReflectionHelper;
 import net.mgsx.game.core.ui.accessors.Accessor;
 import net.mgsx.game.core.ui.accessors.AccessorScanner;
 
@@ -27,8 +28,16 @@ public class EngineStorage {
 		
 		json.writeObjectStart();
 		
-		// TODO maybe some other configuration ? plugins ?
+		if(config.saveSystems) saveSystems(json, config);
+		if(config.saveViews) saveViews(json, config);
 		
+		json.writeObjectEnd();
+		
+		file.writeString(json.prettyPrint(writer.toString()), false);
+	}
+	
+	private static void saveSystems(Json json, SaveConfiguration config)
+	{
 		json.writeArrayStart("systems");
 		
 		for(EntitySystem system : config.engine.getSystems()){
@@ -45,11 +54,26 @@ public class EngineStorage {
 		}
 		
 		json.writeArrayEnd();
+	}
+	
+	private static void saveViews(Json json, SaveConfiguration config)
+	{
+		json.writeArrayStart("views");
 		
-		json.writeObjectEnd();
+		for(EntitySystem system : config.visibleSystems){
+			String name;
+			Storable store = system.getClass().getAnnotation(Storable.class);
+			if(store != null){
+				name = store.value();
+			}
+			else
+			{
+				name = system.getClass().getName();
+			}
+			json.writeValue(name);
+		}
 		
-		file.writeString(json.prettyPrint(writer.toString()), false);
-		
+		json.writeArrayEnd();
 	}
 
 	public static void load(FileHandle file, LoadConfiguration config){
@@ -81,6 +105,23 @@ public class EngineStorage {
 							accessor.set(value);
 						}
 					}
+				}else{
+					Gdx.app.error("Reflection", "unknown system " + type);
+				}
+			}
+			
+		}
+		
+		if(root.has("views")){
+			for(JsonIterator i = root.get("views").iterator() ; i.hasNext() ; ){
+				JsonValue systemSettings = i.next();
+				String type = systemSettings.asString();
+				EntitySystem system = systemRegistry.get(type);
+				if(system == null){
+					system = config.engine.getSystem(ReflectionHelper.forName(type));
+				}
+				if(system != null){
+					config.visibleSystems.add(system);
 				}else{
 					Gdx.app.error("Reflection", "unknown system " + type);
 				}
