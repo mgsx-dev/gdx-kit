@@ -18,18 +18,27 @@ import net.mgsx.game.core.GamePipeline;
 import net.mgsx.game.core.annotations.EditableSystem;
 import net.mgsx.game.core.helpers.ReflectionHelper;
 import net.mgsx.game.core.plugins.GlobalEditorPlugin;
+import net.mgsx.game.core.storage.LoadConfiguration;
 import net.mgsx.game.core.ui.EntityEditor;
 import net.mgsx.game.core.ui.accessors.MethodAccessor;
+import net.mgsx.game.core.ui.events.EditorListener;
 
 public class AshleySystemsEditor implements GlobalEditorPlugin
 {
 	@Override
 	public Actor createEditor(final EditorScreen editor, final Skin skin) 
 	{
-		Table table = new Table(skin);
+		final Table table = new Table(skin);
 		table.setBackground(skin.getDrawable("default-window-body-right"));
 		
 		rebuildUI(editor, table, skin);
+		
+		editor.addListener(new EditorListener(){
+			@Override
+			public void onLoad(LoadConfiguration cfg) {
+				rebuildUI(editor, table, skin);
+			}
+		});
 		
 		return new ScrollPane(table, skin, "light");
 	}

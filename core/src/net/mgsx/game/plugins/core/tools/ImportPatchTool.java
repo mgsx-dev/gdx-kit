@@ -57,7 +57,7 @@ public class ImportPatchTool extends ClickTool {
 				btree.remove = true;
 			}
 		}
-		// TODO update things in GUI ?
+		editor.fireLoadEvent(config);
 		
 	}
 }

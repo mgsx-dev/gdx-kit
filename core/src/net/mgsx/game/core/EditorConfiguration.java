@@ -17,4 +17,9 @@ public class EditorConfiguration
 	 * Plugin to boot up.
 	 */
 	final public Array<Plugin> plugins = new Array<Plugin>();
+
+	/**
+	 * relative path to boot settings file (a null mean no boot file).
+	 */
+	public String settingsPath = null;
 }

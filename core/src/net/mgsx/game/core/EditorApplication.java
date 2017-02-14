@@ -53,7 +53,7 @@ public class EditorApplication extends Game
 		editorScreen = new EditorScreen(config, screen, assetManager, engine);
 		
 		if(config.path != null) {
-			editorScreen.loadForEditing(Gdx.files.absolute(config.path));
+			loadWork(Gdx.files.absolute(config.path), Gdx.files.absolute(config.settingsPath));
 		}else{
 			restoreWork();
 		}
@@ -87,22 +87,24 @@ public class EditorApplication extends Game
 		
 		EngineStorage.save(Gdx.files.absolute("/tmp/settings.json"), config); // TODO linux only
 	}
-	
-	private void restoreWork(){
-		FileHandle recovery = Gdx.files.absolute("/tmp/entities.json"); // TODO linux only
-		if(recovery.exists()){
-			editorScreen.loadForEditing(recovery);
+	private void restoreWork()
+	{
+		loadWork(Gdx.files.absolute("/tmp/entities.json"), Gdx.files.absolute("/tmp/settings.json"));
+	}
+	private void loadWork(FileHandle entitiesFile, FileHandle settingsFile)
+	{
+		LoadConfiguration cfg = new LoadConfiguration();
+		cfg.assets = assetManager;
+		cfg.registry = config.registry;
+		cfg.engine = engine;
+		cfg.failSafe = true; 
+		if(entitiesFile != null && entitiesFile.exists()){
+			EntityGroupStorage.loadForEditing(entitiesFile.path(), cfg);
 		}
-		FileHandle settingsRecovery = Gdx.files.absolute("/tmp/settings.json"); // TODO linux only
-		if(settingsRecovery.exists()){
-			LoadConfiguration cfg = new LoadConfiguration();
-			cfg.assets = assetManager;
-			cfg.registry = config.registry;
-			cfg.engine = engine;
-			cfg.failSafe = true; 
-			EngineStorage.load(settingsRecovery, cfg);
-			editorScreen.pinEditors(cfg.visibleSystems);
+		if(settingsFile != null && settingsFile.exists()){
+			EngineStorage.load(settingsFile, cfg);
 		}
+		editorScreen.fireLoadEvent(cfg);
 	}
 
 	@Override

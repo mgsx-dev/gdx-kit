@@ -45,6 +45,7 @@ public class EngineStorage {
 			if(store != null){
 				json.writeObjectStart();
 				json.writeValue("type", store.value());
+				json.writeValue("enabled", system.checkProcessing()); // TODO status won't be saved for non storable systems
 				for(Accessor accessor : AccessorScanner.scan(system, true, false)){
 					if(accessor.getType() != void.class)
 						json.writeValue(accessor.getName(), accessor.get());
@@ -98,6 +99,9 @@ public class EngineStorage {
 				String type = systemSettings.getString("type");
 				EntitySystem system = systemRegistry.get(type);
 				if(system != null){
+					if(systemSettings.has("enabled")){
+						system.setProcessing(systemSettings.getBoolean("enabled"));
+					}
 					// TODO shouldn't be like that : set only values when defined in json, avoid
 					// setting null values !
 					for(Accessor accessor : AccessorScanner.scan(system, true, false)){

@@ -41,6 +41,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json.Serializer;
 import com.badlogic.gdx.utils.ObjectMap;
+import com.badlogic.gdx.utils.ObjectSet;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 import net.mgsx.game.core.annotations.Editable;
@@ -60,7 +61,6 @@ import net.mgsx.game.core.helpers.ScreenDelegate;
 import net.mgsx.game.core.plugins.EntityEditorPlugin;
 import net.mgsx.game.core.plugins.GlobalEditorPlugin;
 import net.mgsx.game.core.plugins.SelectorPlugin;
-import net.mgsx.game.core.storage.EntityGroupStorage;
 import net.mgsx.game.core.storage.LoadConfiguration;
 import net.mgsx.game.core.tools.ComponentTool;
 import net.mgsx.game.core.tools.Tool;
@@ -68,6 +68,7 @@ import net.mgsx.game.core.tools.ToolGroup;
 import net.mgsx.game.core.ui.EntityEditor;
 import net.mgsx.game.core.ui.accessors.Accessor;
 import net.mgsx.game.core.ui.events.AccessorHelpEvent;
+import net.mgsx.game.core.ui.events.EditorListener;
 import net.mgsx.game.core.ui.widgets.TabPane;
 import net.mgsx.game.plugins.core.tools.UndoTool;
 
@@ -129,6 +130,8 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 
 	private Array<Button> contextualButtons = new Array<Button>();
 
+	private ObjectSet<EditorListener> listeners = new ObjectSet<EditorListener>();
+	
 	public EditorScreen(EditorConfiguration config, GameScreen screen, EditorAssetManager assets, Engine engine) {
 		super();
 		this.game = screen;
@@ -140,6 +143,18 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 		this.current = this.game;
 		editorCamera = new EditorCamera();
 		init();
+	}
+	
+	public void addListener(EditorListener listener)
+	{
+		listeners.add(listener);
+	}
+	
+	public void fireLoadEvent(LoadConfiguration cfg)
+	{
+		pinEditors(cfg.visibleSystems);
+		
+		for(EditorListener listener : listeners) listener.onLoad(cfg);
 	}
 	
 	private Table createMainTable()
@@ -875,16 +890,6 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 			status.setText(currentText);
 			showStatus = true;
 		}
-	}
-
-	public void loadForEditing(FileHandle file) 
-	{
-		LoadConfiguration config = new LoadConfiguration();
-		config.assets = assets;
-		config.registry = registry;
-		config.engine = entityEngine;
-		config.failSafe = true; // TODO fail safe when load for editing to avoid crash always app
-		EntityGroupStorage.loadForEditing(file.path(), config);
 	}
 
 	public Camera getGameCamera() { // TODO rename getCamera

@@ -30,7 +30,7 @@ public class OpenTool extends Tool
 				
 				EntityGroupStorage.loadForEditing(file.path(), config);
 				end();
-				// TODO ? rebuild();
+				editor.fireLoadEvent(config);
 			}
 			@Override
 			public boolean match(FileHandle file) {
@@ -54,10 +54,8 @@ public class OpenTool extends Tool
 				
 				EngineStorage.load(file, config);
 				end();
-				// TODO ? rebuild();
 				
-				// TODO if option load views is checked !
-				editor.pinEditors(config.visibleSystems);
+				editor.fireLoadEvent(config);
 			}
 			@Override
 			public boolean match(FileHandle file) {
