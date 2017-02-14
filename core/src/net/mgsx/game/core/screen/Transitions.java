@@ -2,6 +2,7 @@ package net.mgsx.game.core.screen;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
@@ -65,6 +66,24 @@ public class Transitions
 		desc.transition = fadeTransition();
 		desc.listener = listener;
 		return desc;
+	}
+	
+	/**
+	 * Build up a loader upon a screen. Created screen behave same as underlying screen
+	 * exept that it is complete when both underlying screen is complete and asset manager
+	 * is finish loading.
+	 * @param assets asset manager to check.
+	 * @param screen underlying screen
+	 * @return the loader screen.
+	 */
+	public static ScreenClip loader(final AssetManager assets, final Screen screen)
+	{
+		return new ScreenClipDelegate(screen){
+			@Override
+			public boolean isComplete() {
+				return super.isComplete() && assets.update();
+			}
+		};
 	}
 	
 	

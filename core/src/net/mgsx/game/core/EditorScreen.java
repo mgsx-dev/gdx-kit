@@ -133,14 +133,13 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 	private ObjectSet<EditorListener> listeners = new ObjectSet<EditorListener>();
 	
 	public EditorScreen(EditorConfiguration config, GameScreen screen, EditorAssetManager assets, Engine engine) {
-		super();
+		super(screen);
 		this.game = screen;
 		this.game.registry = config.registry;
 		this.entityEngine = engine;
 		this.assets = assets;
 		this.serializers = config.registry.serializers;
 		this.registry = config.registry;
-		this.current = this.game;
 		editorCamera = new EditorCamera();
 		init();
 	}
