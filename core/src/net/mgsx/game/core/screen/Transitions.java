@@ -86,6 +86,29 @@ public class Transitions
 		};
 	}
 	
+	/**
+	 * Wrap a screen with timeout behavior : screen is complete when timeout is reached,
+	 * whenether underlying screen is complete or not.
+	 * @param screen
+	 * @param duration
+	 * @return
+	 */
+	public static ScreenClip timeout(final Screen screen, final float duration)
+	{
+		return new ScreenClipDelegate(screen){
+			private float time = 0;
+			@Override
+			public void render(float delta) {
+				super.render(delta);
+				time += delta;
+			}
+			@Override
+			public boolean isComplete() {
+				return time >= duration;
+			}
+		};
+	}
+	
 	
 	public static ScreenClip empty(final Color color){
 		return new ColorScreen(color);
