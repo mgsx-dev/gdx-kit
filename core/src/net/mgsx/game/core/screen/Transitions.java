@@ -39,8 +39,8 @@ public class Transitions
 	private static class FadeTransition extends ShaderTransition{
 		public FadeTransition() {
 			super(new ShaderProgram(
-					Gdx.files.classpath("net/mgsx/game/core/screen/shaders/gdx-default.vert"),
-					Gdx.files.classpath("net/mgsx/game/core/screen/shaders/transition-fade.frag")
+					Gdx.files.classpath("shaders/gdx-default.vert"),
+					Gdx.files.classpath("shaders/transition-fade.frag")
 					));
 		}
 	}
