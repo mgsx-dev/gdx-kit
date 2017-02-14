@@ -47,11 +47,6 @@ public class ReflectionClassRegistry extends ClassRegistry
 								break;
 							}
 						}
-						if(match){
-							System.out.println("true  " + input);
-						}else{
-							System.out.println("false " + input);
-						}
 						return match;
 					}
 				})
