@@ -1,4 +1,4 @@
-package net.mgsx.game.core.helpers;
+package net.mgsx.game.core.screen;
 
 import com.badlogic.gdx.Screen;
 
