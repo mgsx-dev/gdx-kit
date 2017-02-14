@@ -1,8 +1,6 @@
 package net.mgsx.game.core;
 
-import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.Engine;
-import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.assets.AssetManager;
@@ -47,13 +45,6 @@ public class GameScreen extends ScreenAdapter
 		gameCamera.update(true);
 		
 		camera = gameCamera;
-	}
-	
-	
-	protected <T extends Component> T addComponent(Entity entity, Class<T> type){
-		T component = entityEngine.createComponent(type);
-		entity.add(component);
-		return component;
 	}
 	
 	@Override
