@@ -5,7 +5,11 @@ import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import net.mgsx.game.core.GameScreen;
 import net.mgsx.game.core.annotations.PluginDef;
 import net.mgsx.game.core.plugins.Plugin;
+import net.mgsx.game.plugins.g3d.components.DirectionalLightComponent;
 import net.mgsx.game.plugins.g3d.components.G3DModel;
+import net.mgsx.game.plugins.g3d.components.LightNoiseComponent;
+import net.mgsx.game.plugins.g3d.components.PointLightComponent;
+import net.mgsx.game.plugins.g3d.components.ShadowCasting;
 import net.mgsx.game.plugins.g3d.components.TextureAnimationComponent;
 import net.mgsx.game.plugins.g3d.systems.G3DAnimationSystem;
 import net.mgsx.game.plugins.g3d.systems.G3DCullingSystem;
@@ -15,7 +19,13 @@ import net.mgsx.game.plugins.g3d.systems.G3DRendererSystem;
 import net.mgsx.game.plugins.g3d.systems.G3DTextureAnimationSystem;
 import net.mgsx.game.plugins.g3d.systems.G3DTransformSystem;
 
-@PluginDef(components={G3DModel.class, TextureAnimationComponent.class})
+@PluginDef(components={
+		G3DModel.class, 
+		TextureAnimationComponent.class,
+		DirectionalLightComponent.class,
+		LightNoiseComponent.class,
+		PointLightComponent.class,
+		ShadowCasting.class})
 
 public class G3DPlugin implements Plugin
 {
