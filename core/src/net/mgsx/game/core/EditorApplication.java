@@ -49,7 +49,7 @@ public class EditorApplication extends Game
 		editorScreen = new EditorScreen(config, screen, assetManager, engine);
 		
 		if(config.path != null) {
-			loadWork(Gdx.files.absolute(config.path), Gdx.files.absolute(config.settingsPath));
+			loadWork(Gdx.files.internal(config.path), config.settingsPath == null ? null : Gdx.files.internal(config.settingsPath));
 		}else{
 			restoreWork();
 		}
