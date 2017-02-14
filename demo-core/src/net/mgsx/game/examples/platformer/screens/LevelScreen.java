@@ -1,10 +1,10 @@
 package net.mgsx.game.examples.platformer.screens;
 
-import com.badlogic.ashley.core.Engine;
 import com.badlogic.gdx.ai.fsm.DefaultStateMachine;
 import com.badlogic.gdx.ai.fsm.State;
 import com.badlogic.gdx.ai.fsm.StateMachine;
 
+import net.mgsx.game.core.GameRegistry;
 import net.mgsx.game.core.GameScreen;
 import net.mgsx.game.examples.platformer.game.PlatformerGame;
 
@@ -14,9 +14,9 @@ public class LevelScreen extends GameScreen
 	
 	public final PlatformerGame game;
 	
-	public LevelScreen(PlatformerGame game, Engine engine) 
+	public LevelScreen(PlatformerGame game, GameRegistry registry) 
 	{
-		super(game.getAssets(), engine);
+		super(game.getAssets(), registry);
 		this.game = game;
 	}
 	

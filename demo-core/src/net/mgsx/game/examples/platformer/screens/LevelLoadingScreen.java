@@ -1,10 +1,10 @@
 package net.mgsx.game.examples.platformer.screens;
 
-import com.badlogic.ashley.core.Engine;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 
+import net.mgsx.game.core.GameRegistry;
 import net.mgsx.game.core.GameScreen;
 import net.mgsx.game.core.helpers.ActionsHelper;
 import net.mgsx.game.core.screen.ScreenClip;
@@ -12,8 +12,8 @@ import net.mgsx.game.core.screen.ScreenClip;
 public class LevelLoadingScreen extends GameScreen implements ScreenClip
 {
 	private Actor mainActor;
-	public LevelLoadingScreen(AssetManager assets, Engine engine) {
-		super(assets, engine);
+	public LevelLoadingScreen(AssetManager assets, GameRegistry registry) {
+		super(assets, registry);
 	}
 	
 	@Override

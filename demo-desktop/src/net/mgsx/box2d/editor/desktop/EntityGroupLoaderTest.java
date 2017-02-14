@@ -10,7 +10,6 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.badlogic.gdx.files.FileHandle;
 
 import net.mgsx.game.core.GameRegistry;
-import net.mgsx.game.core.GameScreen;
 import net.mgsx.game.core.storage.EntityGroup;
 import net.mgsx.game.core.storage.EntityGroupLoader;
 import net.mgsx.game.core.storage.EntityGroupLoaderParameters;
@@ -43,10 +42,6 @@ public class EntityGroupLoaderTest {
 				assets.setLoader(EntityGroup.class, new EntityGroupLoader(assets.getFileHandleResolver(), registry));
 				
 				engine = new Engine();
-				GameScreen screen = new GameScreen(assets, engine);
-				screen.registry = registry;
-				
-				registry.init(screen);
 				
 				FileHandle file = Gdx.files.classpath("egl-test1.json");
 				EntityGroupLoaderParameters params = new EntityGroupLoaderParameters();

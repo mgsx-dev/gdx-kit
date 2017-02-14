@@ -44,12 +44,8 @@ public class EditorApplication extends Game
 			config.registry.registerPlugin(plugin);
 		}
 		
-		GameScreen screen = new GameScreen(assetManager, engine);
+		GameScreen screen = new GameScreen(assetManager, config.registry, engine);
 
-		screen.registry = config.registry;
-		
-		config.registry.init(screen);
-		
 		editorScreen = new EditorScreen(config, screen, assetManager, engine);
 		
 		if(config.path != null) {

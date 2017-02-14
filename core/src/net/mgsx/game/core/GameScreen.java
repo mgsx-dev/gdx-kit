@@ -1,6 +1,7 @@
 package net.mgsx.game.core;
 
 import com.badlogic.ashley.core.Engine;
+import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.assets.AssetManager;
@@ -32,10 +33,22 @@ public class GameScreen extends ScreenAdapter
 	
 	public Camera camera;
 	
-	public GameScreen(AssetManager assets, Engine engine) {
+	/**
+	 * create game screen with default engine.
+	 * @param assets
+	 * @param registry
+	 */
+	public GameScreen(AssetManager assets, GameRegistry registry) {
+		this(assets, registry, new PooledEngine());
+	}
+	
+	public GameScreen(AssetManager assets, GameRegistry registry, Engine engine) {
 		super();
 		this.assets = assets;
+		this.registry = registry;
 		this.entityEngine = engine;
+		
+		// TODO default camera with magic numbers ... how to configure ?
 		Camera gameCamera = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		gameCamera.position.set(0, 0, 10);
 		gameCamera.up.set(0,1,0);
@@ -45,6 +58,8 @@ public class GameScreen extends ScreenAdapter
 		gameCamera.update(true);
 		
 		camera = gameCamera;
+		
+		registry.init(this);
 	}
 	
 	@Override
