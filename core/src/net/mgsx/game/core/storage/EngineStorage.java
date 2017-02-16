@@ -1,12 +1,8 @@
 package net.mgsx.game.core.storage;
 
-import java.io.StringWriter;
-
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Json;
-import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.JsonValue.JsonIterator;
 import com.badlogic.gdx.utils.ObjectMap;
@@ -18,25 +14,7 @@ import net.mgsx.game.core.ui.accessors.AccessorScanner;
 
 public class EngineStorage {
 
-	public static void save(FileHandle file, SaveConfiguration config) 
-	{
-		Json json = new Json();
-
-		StringWriter writer = new StringWriter();
-		
-		json.setWriter(writer);
-		
-		json.writeObjectStart();
-		
-		if(config.saveSystems) saveSystems(json, config);
-		if(config.saveViews) saveViews(json, config);
-		
-		json.writeObjectEnd();
-		
-		file.writeString(json.prettyPrint(writer.toString()), false);
-	}
-	
-	private static void saveSystems(Json json, SaveConfiguration config)
+	static void saveSystems(Json json, SaveConfiguration config)
 	{
 		json.writeArrayStart("systems");
 		
@@ -57,7 +35,7 @@ public class EngineStorage {
 		json.writeArrayEnd();
 	}
 	
-	private static void saveViews(Json json, SaveConfiguration config)
+	static void saveViews(Json json, SaveConfiguration config)
 	{
 		json.writeArrayStart("views");
 		
@@ -77,11 +55,8 @@ public class EngineStorage {
 		json.writeArrayEnd();
 	}
 
-	public static void load(FileHandle file, LoadConfiguration config){
-		JsonReader reader = new JsonReader();
-		JsonValue root = reader.parse(file);
+	static void load(Json json, JsonValue root, LoadConfiguration config){
 		
-		Json json = new Json();
 		
 		// type mapping
 		ObjectMap<String, EntitySystem> systemRegistry = new ObjectMap<String, EntitySystem>();

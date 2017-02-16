@@ -10,7 +10,6 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.utils.Array;
 
-import net.mgsx.game.core.storage.EngineStorage;
 import net.mgsx.game.core.storage.EntityGroup;
 import net.mgsx.game.core.storage.EntityGroupLoader;
 import net.mgsx.game.core.storage.EntityGroupStorage;
@@ -85,22 +84,10 @@ public class GameScreen extends ScreenAdapter
 		camera.update(true);
 	}
 
-	public void loadSettings(FileHandle file) 
-	{
-		LoadConfiguration config = new LoadConfiguration();
-		config.assets = assets;
-		config.engine = entityEngine;
-		config.failSafe = false;
-		config.registry = registry;
-		
-		// TODO load in background
-		EngineStorage.load(file, config);
-	}
-	
 	public void load(FileHandle file) 
 	{
 		if(file != null){
-			assets.setLoader(EntityGroup.class, new EntityGroupLoader(assets.getFileHandleResolver(), registry));
+			assets.setLoader(EntityGroup.class, new EntityGroupLoader(assets.getFileHandleResolver()));
 			
 			String name = file.path();
 			pendingGroups.add(name);
@@ -110,7 +97,9 @@ public class GameScreen extends ScreenAdapter
 			config.registry = registry;
 			config.engine = entityEngine;
 			
-			// TODO load settings as well !
+			// load settings as well
+			config.loadSettings = true;
+			config.loadViews = true;
 			
 			EntityGroupStorage.load(name, config);
 		}

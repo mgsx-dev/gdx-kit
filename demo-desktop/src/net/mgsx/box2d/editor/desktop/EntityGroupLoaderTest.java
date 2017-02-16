@@ -13,7 +13,9 @@ import net.mgsx.game.core.GameRegistry;
 import net.mgsx.game.core.storage.EntityGroup;
 import net.mgsx.game.core.storage.EntityGroupLoader;
 import net.mgsx.game.core.storage.EntityGroupLoaderParameters;
+import net.mgsx.game.core.storage.LoadConfiguration;
 
+// TODO may not be longer necessary, junit tests works ...
 public class EntityGroupLoaderTest {
 
 	
@@ -39,12 +41,14 @@ public class EntityGroupLoaderTest {
 				
 				// load this file
 				assets = new AssetManager();
-				assets.setLoader(EntityGroup.class, new EntityGroupLoader(assets.getFileHandleResolver(), registry));
+				assets.setLoader(EntityGroup.class, new EntityGroupLoader(assets.getFileHandleResolver()));
 				
 				engine = new Engine();
 				
 				FileHandle file = Gdx.files.classpath("egl-test1.json");
 				EntityGroupLoaderParameters params = new EntityGroupLoaderParameters();
+				params.config = new LoadConfiguration();
+				params.config.registry = registry;
 				
 				asset = new AssetDescriptor<EntityGroup>(file, EntityGroup.class, params);
 				assets.load(asset);

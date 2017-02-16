@@ -8,6 +8,7 @@ import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.gdx.assets.AssetDescriptor;
+import com.badlogic.gdx.assets.AssetLoaderParameters.LoadedCallback;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.Vector2;
@@ -18,6 +19,7 @@ import com.badlogic.gdx.utils.Json.Serializer;
 import com.badlogic.gdx.utils.ObjectMap.Entries;
 import com.badlogic.gdx.utils.ObjectMap.Entry;
 
+import net.mgsx.game.core.EditorScreen;
 import net.mgsx.game.core.GameRegistry;
 import net.mgsx.game.core.GameScreen;
 import net.mgsx.game.core.components.Initializable;
@@ -65,6 +67,8 @@ import net.mgsx.game.plugins.spline.blender.BlenderCurve;
  * </pre>
  * @author mgsx
  *
+ * TODO maybe rename KitStorage as entry point for all storage layer.
+ *
  */
 public class EntityGroupStorage 
 {
@@ -77,8 +81,19 @@ public class EntityGroupStorage
 	 * @param fileName
 	 * @return
 	 */
-	public static Array<Entity> loadForEditing(String fileName, LoadConfiguration config)
+	public static Array<Entity> loadForEditing(final EditorScreen editor, final String fileName, final LoadConfiguration config)
 	{
+		// register callback in order to update editor views
+		if(config.loadViews)
+		{
+			config.loadedCallback = new LoadedCallback() {
+				@Override
+				public void finishedLoading(AssetManager assetManager, String assetFileName, Class type) {
+					if(assetFileName.equals(fileName)) editor.fireLoadEvent(config);
+				}
+			};
+		}
+		
 		// first clone entity group and add repository flag.
 		// then create transients (referenced from proxies.
 		EntityGroup group = loadNow(fileName, config);
@@ -190,6 +205,8 @@ public class EntityGroupStorage
 	{
 		if(!config.assets.isLoaded(fileName)){
 			EntityGroupLoaderParameters parameters = new EntityGroupLoaderParameters();
+			parameters.config = config;
+			parameters.loadedCallback = config.loadedCallback;
 			AssetDescriptor<EntityGroup> descriptor = new AssetDescriptor<EntityGroup>(fileName, EntityGroup.class, parameters);
 			config.assets.load(descriptor);
 		}

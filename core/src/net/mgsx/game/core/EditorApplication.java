@@ -10,7 +10,6 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 
 import net.mgsx.game.core.helpers.EditorAssetManager;
 import net.mgsx.game.core.plugins.Plugin;
-import net.mgsx.game.core.storage.EngineStorage;
 import net.mgsx.game.core.storage.EntityGroup;
 import net.mgsx.game.core.storage.EntityGroupLoader;
 import net.mgsx.game.core.storage.EntityGroupStorage;
@@ -34,11 +33,11 @@ public class EditorApplication extends Game
 	public void create() 
 	{
 		assetManager = new EditorAssetManager();
-		assetManager.setLoader(EntityGroup.class, new EntityGroupLoader(assetManager.getFileHandleResolver(), config.registry));
+		assetManager.setLoader(EntityGroup.class, new EntityGroupLoader(assetManager.getFileHandleResolver()));
 		
 		Texture.setAssetManager(assetManager);
 		
-		engine = new PooledEngine(); // TODO maybe not : pol can mess with some editor workflow (history undo)
+		engine = new PooledEngine();
 		
 		for(Plugin plugin : config.plugins){
 			config.registry.registerPlugin(plugin);
@@ -49,7 +48,7 @@ public class EditorApplication extends Game
 		editorScreen = new EditorScreen(config, screen, assetManager, engine);
 		
 		if(config.path != null) {
-			loadWork(Gdx.files.internal(config.path), config.settingsPath == null ? null : Gdx.files.internal(config.settingsPath));
+			loadWork(Gdx.files.internal(config.path));
 		}else{
 			restoreWork();
 		}
@@ -67,40 +66,48 @@ public class EditorApplication extends Game
 		}
 	}
 	
-	public void backupWork() {
-		// save all to temp dir
-		SaveConfiguration config = new SaveConfiguration();
-		config.assets = assetManager;
-		config.engine = engine;
-		config.registry = this.config.registry;
-		
-		config.pretty = true;
-		config.stripPaths = true;
-		
-		EntityGroupStorage.save(Gdx.files.absolute("/tmp/entities.json"), config); // TODO linux only
-		
-		config.visibleSystems = editorScreen.pinnedSystems;
-		
-		EngineStorage.save(Gdx.files.absolute("/tmp/settings.json"), config); // TODO linux only
+	public void backupWork() 
+	{
+		if(this.config.autoSavePath != null)
+		{
+			// save all to temp dir
+			SaveConfiguration config = new SaveConfiguration();
+			config.assets = assetManager;
+			config.engine = engine;
+			config.registry = this.config.registry;
+			
+			config.pretty = true;
+			config.stripPaths = true;
+			
+			config.saveSystems = true;
+			config.saveViews = true;
+			
+			config.visibleSystems = editorScreen.pinnedSystems;
+			
+			EntityGroupStorage.save(Gdx.files.local(this.config.autoSavePath), config);
+		}
 	}
 	private void restoreWork()
 	{
-		loadWork(Gdx.files.absolute("/tmp/entities.json"), Gdx.files.absolute("/tmp/settings.json"));
+		if(config.autoSavePath != null)
+		{
+			loadWork(Gdx.files.internal(config.autoSavePath));
+		}
 	}
-	private void loadWork(FileHandle entitiesFile, FileHandle settingsFile)
+	private void loadWork(FileHandle file)
 	{
-		LoadConfiguration cfg = new LoadConfiguration();
+		final LoadConfiguration cfg = new LoadConfiguration();
 		cfg.assets = assetManager;
 		cfg.registry = config.registry;
 		cfg.engine = engine;
 		cfg.failSafe = true; 
-		if(entitiesFile != null && entitiesFile.exists()){
-			EntityGroupStorage.loadForEditing(entitiesFile.path(), cfg);
+		
+		cfg.loadSettings = true;
+		cfg.loadViews = true;
+		
+		if(file != null && file.exists()){
+			EntityGroupStorage.loadForEditing(editorScreen, file.path(), cfg);
 		}
-		if(settingsFile != null && settingsFile.exists()){
-			EngineStorage.load(settingsFile, cfg);
-		}
-		editorScreen.fireLoadEvent(cfg);
 	}
 
 	@Override
