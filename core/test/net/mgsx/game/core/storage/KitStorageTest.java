@@ -208,6 +208,9 @@ public class KitStorageTest {
 		
 		loadConfig.registry.scanPackages();
 		
+		loadConfig.loadSettings = true;
+		loadConfig.loadViews = true;
+		
 		// test load
 		final String filename = "test.json";
 		resolver.register(filename, json);
@@ -238,6 +241,9 @@ public class KitStorageTest {
 		
 		egl.loadAsync(assets, filename, resolver.resolve(filename), parameter);
 		EntityGroup eg = egl.loadSync(assets, filename, resolver.resolve(filename), parameter);
+		
+		// XXX manual loading
+		EngineStorage.load(eg.json, eg.jsonData, loadConfig);
 		
 		assertEquals(1, eg.entities.size);
 		Entity e = eg.entities.first();

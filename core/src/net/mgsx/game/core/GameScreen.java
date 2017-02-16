@@ -4,12 +4,14 @@ import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
+import com.badlogic.gdx.assets.AssetLoaderParameters.LoadedCallback;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.utils.Array;
 
+import net.mgsx.game.core.storage.EngineStorage;
 import net.mgsx.game.core.storage.EntityGroup;
 import net.mgsx.game.core.storage.EntityGroupLoader;
 import net.mgsx.game.core.storage.EntityGroupStorage;
@@ -87,12 +89,13 @@ public class GameScreen extends ScreenAdapter
 	public void load(FileHandle file) 
 	{
 		if(file != null){
+			// TODO could messup with multiple screen loading ... maybe they have to share same registry ?
 			assets.setLoader(EntityGroup.class, new EntityGroupLoader(assets.getFileHandleResolver()));
 			
 			String name = file.path();
 			pendingGroups.add(name);
 			
-			LoadConfiguration config = new LoadConfiguration();
+			final LoadConfiguration config = new LoadConfiguration();
 			config.assets = assets;
 			config.registry = registry;
 			config.engine = entityEngine;
@@ -100,6 +103,14 @@ public class GameScreen extends ScreenAdapter
 			// load settings as well
 			config.loadSettings = true;
 			config.loadViews = true;
+			
+			config.loadedCallback = new LoadedCallback() {
+				@Override
+				public void finishedLoading(AssetManager assetManager, String fileName, Class type) {
+					EntityGroup egs = assetManager.get(fileName, type);
+					EngineStorage.load(egs, config);
+				}
+			};
 			
 			EntityGroupStorage.load(name, config);
 		}

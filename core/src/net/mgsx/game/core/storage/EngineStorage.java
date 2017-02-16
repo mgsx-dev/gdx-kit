@@ -68,7 +68,7 @@ public class EngineStorage {
 		}
 		
 		
-		if(root.has("systems")){
+		if(config.loadSettings && root.has("systems")){
 			for(JsonIterator i = root.get("systems").iterator() ; i.hasNext() ; ){
 				JsonValue systemSettings = i.next();
 				String type = systemSettings.getString("type");
@@ -93,7 +93,7 @@ public class EngineStorage {
 			
 		}
 		
-		if(root.has("views")){
+		if(config.loadViews && root.has("views")){
 			for(JsonIterator i = root.get("views").iterator() ; i.hasNext() ; ){
 				JsonValue systemSettings = i.next();
 				String type = systemSettings.asString();
@@ -110,5 +110,10 @@ public class EngineStorage {
 			
 		}
 		
+	}
+
+	public static void load(EntityGroup egs, LoadConfiguration config) 
+	{
+		load(egs.json, egs.jsonData, config);
 	}
 }

@@ -22,5 +22,5 @@ public class LoadConfiguration {
 	public boolean failSafe;
 	public Array<EntitySystem> visibleSystems = new Array<EntitySystem>();
 	
-	LoadedCallback loadedCallback;
+	public LoadedCallback loadedCallback;
 }

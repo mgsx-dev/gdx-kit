@@ -21,6 +21,7 @@ public class SaveConfiguration {
 	public Array<Message> messages = new Array<Message>();
 	public boolean saveSystems = true;
 	public boolean saveViews = true;
+	public boolean filterRepository = true;
 	public Array<EntitySystem> visibleSystems = new Array<EntitySystem>();
 	
 	public static class Message{

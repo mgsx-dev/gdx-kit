@@ -4,10 +4,15 @@ import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Json;
+import com.badlogic.gdx.utils.JsonValue;
 
 public class EntityGroup {
 
 	final Array<Entity> entities = new Array<Entity>();
+	
+	Json json;
+	JsonValue jsonData;
 	
 	/**
 	 * Create instances and add them to the engine

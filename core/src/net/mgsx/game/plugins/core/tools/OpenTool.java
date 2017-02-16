@@ -10,13 +10,23 @@ import net.mgsx.game.core.storage.EntityGroupStorage;
 import net.mgsx.game.core.storage.LoadConfiguration;
 import net.mgsx.game.core.tools.Tool;
 
+// TODO just one load action + config like SaveTool
 @Editable
 public class OpenTool extends Tool
 {
+	@Editable
+	public boolean systems = true;
+
+	@Editable
+	public boolean views = true;
+
+	@Editable
+	public boolean entities = true;
+	
 	public OpenTool(EditorScreen editor) {
 		super("Open", editor);
 	}
-	@Editable("Load All")
+	@Editable("Browse...")
 	public void loadAll(){
 		NativeService.instance.openSaveDialog(new DefaultCallback() {
 			@Override
@@ -26,9 +36,9 @@ public class OpenTool extends Tool
 				config.engine = editor.entityEngine;
 				config.registry = editor.registry;
 				
-				config.loadEntities = true;
-				config.loadSettings = true;
-				config.loadViews = true;
+				config.loadEntities = entities;
+				config.loadSettings = systems;
+				config.loadViews = views;
 				
 				EntityGroupStorage.loadForEditing(editor, file.path(), config);
 				end();
@@ -43,57 +53,5 @@ public class OpenTool extends Tool
 			}
 		});
 	}
-	@Editable("Load Entities")
-	public void loadEntities(){
-		NativeService.instance.openSaveDialog(new DefaultCallback() {
-			@Override
-			public void selected(FileHandle file) {
-				LoadConfiguration config = new LoadConfiguration();
-				config.assets = editor.assets;
-				config.engine = editor.entityEngine;
-				config.registry = editor.registry;
-				
-				EntityGroupStorage.loadForEditing(editor, file.path(), config);
-				end();
-			}
-			@Override
-			public boolean match(FileHandle file) {
-				return file.extension().equals("json");
-			}
-			@Override
-			public String description() {
-				return "Patch files (json)";
-			}
-		});
-	}
-	@Editable("Load Settings")
-	public void loadSettings(){
-		NativeService.instance.openSaveDialog(new DefaultCallback() {
-			@Override
-			public void selected(FileHandle file) {
-				LoadConfiguration config = new LoadConfiguration();
-				config.assets = editor.assets;
-				config.engine = editor.entityEngine;
-				config.registry = editor.registry;
-				
-				config.loadEntities = false;
-				config.loadSettings = true;
-				config.loadViews = true;
-				
-				EntityGroupStorage.loadForEditing(editor, file.path(), config);
-				end();
-				
-			}
-			@Override
-			public boolean match(FileHandle file) {
-				return file.extension().equals("json");
-			}
-			@Override
-			public String description() {
-				return "Settings files (json)";
-			}
-		});
-	}
-	
 
 }

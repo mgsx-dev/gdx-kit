@@ -21,8 +21,6 @@ import net.mgsx.game.core.helpers.ReflectionHelper;
 public class EntityGroupLoader extends AsynchronousAssetLoader<EntityGroup, EntityGroupLoaderParameters>
 {
 	EntityGroup entityGroup;
-	JsonValue jsonData;
-	Json json;
 
 	public EntityGroupLoader(FileHandleResolver resolver) {
 		super(resolver);
@@ -35,7 +33,7 @@ public class EntityGroupLoader extends AsynchronousAssetLoader<EntityGroup, Enti
 		Json json = EntityGroupStorage.setup();
 		
 		// load json file and return asset part
-		jsonData = new JsonReader().parse(file);
+		JsonValue jsonData = new JsonReader().parse(file);
 		if(jsonData.has("assets")){
 			for(JsonIterator i = jsonData.get("assets").iterator() ; i.hasNext() ; ){
 				JsonValue asset = i.next();
@@ -43,9 +41,18 @@ public class EntityGroupLoader extends AsynchronousAssetLoader<EntityGroup, Enti
 				Class assetType = json.getClass(typeName);
 				if(assetType == null) assetType = ReflectionHelper.forName(typeName);
 				String name = asset.get("name").asString();
-				// TODO do the same for other types (Textures ...)
 				
-				assets.add(new AssetDescriptor(name, assetType));
+				if(assetType == EntityGroup.class){
+					LoadConfiguration cfg = new LoadConfiguration();
+					cfg.assets = parameter.config.assets;
+					cfg.engine = parameter.config.engine;
+					cfg.registry = parameter.config.registry;
+					EntityGroupLoaderParameters params = new EntityGroupLoaderParameters();
+					params.config = cfg;
+					assets.add(new AssetDescriptor(name, assetType, params)); 
+				}else{
+					assets.add(new AssetDescriptor(name, assetType)); 
+				}
 			}
 		}
 		
@@ -56,8 +63,12 @@ public class EntityGroupLoader extends AsynchronousAssetLoader<EntityGroup, Enti
 	public void loadAsync(AssetManager manager, String fileName, FileHandle file, EntityGroupLoaderParameters parameter) {
 		
 		entityGroup = new EntityGroup();
-		json = EntityGroupStorage.setup(manager, parameter.config.registry, entityGroup);
-		jsonData = new JsonReader().parse(file);
+		Json json = EntityGroupStorage.setup(manager, parameter.config.registry, entityGroup);
+		JsonValue jsonData = new JsonReader().parse(file);
+		
+		entityGroup.json = json;
+		entityGroup.jsonData = jsonData;
+		
 		if(jsonData.has("entities")){
 			for(JsonIterator entityIteractor = jsonData.get("entities").iterator() ; entityIteractor.hasNext() ; ){
 				JsonValue value = entityIteractor.next();
@@ -90,12 +101,12 @@ public class EntityGroupLoader extends AsynchronousAssetLoader<EntityGroup, Enti
 	@Override
 	public EntityGroup loadSync(AssetManager manager, String fileName, FileHandle file, EntityGroupLoaderParameters parameter) {
 		
-		// load settings (system) in GL context required for shader loading and any other assets
-		EngineStorage.load(json, jsonData, parameter.config);
+		// clean all references
+		EntityGroup result = entityGroup;
 		
-		// TODO maybe initialize ??
-		// TODO clean all references
-		return entityGroup;
+		entityGroup = null;
+		
+		return result;
 	}
 
 }

@@ -54,7 +54,7 @@ public class SaveTool extends Tool
 		}
 		
 	}
-	@Editable("Save...")
+	@Editable("Browse...")
 	public void saveEntities(){
 		NativeService.instance.openSaveDialog(new DefaultCallback() {
 			@Override
@@ -75,12 +75,12 @@ public class SaveTool extends Tool
 				if(entities){
 					if(selection){
 						config.entities = new Array<Entity>(editor.selection);
+						config.filterRepository = false;
 					}else{
-						// TODO get entities with repository
-						
+						config.filterRepository = true;
 					}
 				}else{
-					config.entities = new Array<Entity>(); // XXX to avoid get all repository ...
+					config.filterRepository = false;
 				}
 				
 				EntityGroupStorage.save(file, config);
