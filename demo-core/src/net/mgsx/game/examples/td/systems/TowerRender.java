@@ -49,10 +49,13 @@ public class TowerRender extends AbstractShapeSystem
 		
 		// render base
 		renderer.identity();
-		renderer.rect(transform.position.x - s, transform.position.y - s, 2*s, 2*s);
+		renderer.translate(transform.position.x, transform.position.y, 0);
+		renderer.rotate(0, 0, 1, transform.angle);
+		renderer.rect(- s,  - s, 2*s, 2*s);
 
 		// render cannon
 		renderer.setColor(canonColor);
+		renderer.identity();
 		renderer.translate(transform.position.x, transform.position.y, 0);
 		renderer.rotate(0, 0, 1, tower.angle);
 		renderer.rect(0, - s/4,  2*s, s/2);

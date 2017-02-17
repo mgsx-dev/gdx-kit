@@ -28,6 +28,9 @@ public class EmitEnemyTask extends EntityLeafTask
 	public float damage = 1;
 	
 	@TaskAttribute
+	public boolean direct = false;
+	
+	@TaskAttribute
 	public Enemy.Type type = Type.SQUARE;
 	
 	@Override
@@ -50,8 +53,11 @@ public class EmitEnemyTask extends EntityLeafTask
 		enemy.speed = speed;
 		enemy.type = this.type;
 		
-		map.findPathToHome(path, tile.x, tile.y);
-		
+		if(direct){
+			map.findDirectPathToHome(path, tile.x, tile.y);
+		}else{
+			map.findPathToHome(path, tile.x, tile.y);
+		}
 		path.path.valueAt(transform.position, 0); // init position
 		
 		damage.amount = this.damage * wave.waveFactor;

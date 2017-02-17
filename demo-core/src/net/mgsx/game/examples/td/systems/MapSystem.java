@@ -5,6 +5,7 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntityListener;
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.ashley.core.Family;
+import com.badlogic.gdx.math.Bezier;
 import com.badlogic.gdx.math.CatmullRomSpline;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
@@ -169,6 +170,22 @@ public class MapSystem extends EntitySystem
 	private Array<Entity> path = new Array<Entity>();
 	private Array<Entity> candidates = new Array<Entity>();
 	
+	public void findDirectPathToHome(PathFollower pathFollower, int x, int y) 
+	{
+		// TODO might be no tile but transform
+		Entity homeEntity = getEngine().getEntitiesFor(Family.all(Home.class, TileComponent.class).get()).first();
+		TileComponent homeTile = TileComponent.components.get(homeEntity);
+		Vector2 target = new Vector2(homeTile.x + .5f, homeTile.y + .5f);
+		
+		Vector2 source = new Vector2(x + .5f, y + .5f);
+		
+		Bezier<Vector2> curve = new Bezier<Vector2>(source, target);
+		
+		// create spline
+		pathFollower.path = curve;
+		pathFollower.length = source.dst(target);
+
+	}
 	public void findPathToHome(PathFollower pathFollower, int x, int y) 
 	{
 		// find logical path and construct some random points for a catmullrom spline

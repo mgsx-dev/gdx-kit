@@ -35,8 +35,9 @@ public class EnemyLogicSystem extends IteratingSystem
 		
 		// update path speed
 		path.speed = enemy.speed * speedFactor;
-		if(path.t > 1){
+		if(path.t >= 1){
 			
+			// TODO targeting is for shot not for home ....
 			SingleTarget targetting = SingleTarget.components.get(entity);
 			if(targetting == null){
 				// XXX case of just removed home, shouldn't happens since path is recompute when graph has changed.

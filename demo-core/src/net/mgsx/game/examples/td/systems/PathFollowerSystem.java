@@ -25,6 +25,37 @@ public class PathFollowerSystem extends IteratingSystem
 		
 		// move on path at constant speed.
 		pathFollower.t += pathFollower.speed * deltaTime / pathFollower.length;
+		if(pathFollower.loop)
+		{
+			if(pathFollower.wrap){
+				if(pathFollower.t > 1){
+					pathFollower.t -= 1;
+				}else if(pathFollower.t < 0){
+					pathFollower.t += 1;
+				}
+			}
+			else{
+				if(pathFollower.speed > 0)
+				{
+					if(pathFollower.t > 1){
+						pathFollower.speed = -pathFollower.speed;
+					}
+				}
+				else
+				{
+					if(pathFollower.t < 0){
+						pathFollower.speed = -pathFollower.speed;
+					}
+				}
+				
+			}
+			
+		}
+		else
+		{
+			if(pathFollower.t > 1) pathFollower.t = 1;
+			else if(pathFollower.t < 0) pathFollower.t = 0;
+		}
 		
 		pathFollower.path.valueAt(transform.position, pathFollower.t);
 		

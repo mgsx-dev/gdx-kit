@@ -13,6 +13,7 @@ import com.badlogic.gdx.utils.Array;
 import net.mgsx.game.core.GamePipeline;
 import net.mgsx.game.examples.td.components.Aiming;
 import net.mgsx.game.examples.td.components.Enemy;
+import net.mgsx.game.examples.td.components.Life;
 import net.mgsx.game.examples.td.components.Range;
 import net.mgsx.game.examples.td.components.SingleTarget;
 import net.mgsx.game.plugins.core.components.Transform2DComponent;
@@ -29,6 +30,7 @@ public class TowerLogicSystem extends IteratingSystem
 	};
 	
 	private ImmutableArray<Entity> enemies;
+	private ImmutableArray<Entity> allies;
 	
 	private Array<Entity> candidates = new Array<Entity>();
 	
@@ -39,6 +41,7 @@ public class TowerLogicSystem extends IteratingSystem
 	@Override
 	public void addedToEngine(Engine engine) {
 		super.addedToEngine(engine);
+		allies = engine.getEntitiesFor(Family.all(Transform2DComponent.class, Life.class).exclude(Enemy.class).get());
 		enemies = engine.getEntitiesFor(Family.all(Transform2DComponent.class, Enemy.class).get());
 	}
 	
@@ -47,8 +50,9 @@ public class TowerLogicSystem extends IteratingSystem
 	{
 		Aiming tower = Aiming.components.get(entity);
 		SingleTarget targeting = SingleTarget.components.get(entity);
-		Transform2DComponent towerTransform = Transform2DComponent.components.get(entity);
+		final Transform2DComponent towerTransform = Transform2DComponent.components.get(entity);
 		
+		// TODO should be in range logic system
 		// check if target (if any) still in range
 		Range range = Range.components.get(entity);
 		if(targeting.target != null && range != null)
@@ -59,30 +63,67 @@ public class TowerLogicSystem extends IteratingSystem
 			}
 		}
 		
+		// TODO should be in target logic system
 		// find best target if no targets
-		if(targeting.target == null){
-			if(enemies.size() > 0){
-				candidates.clear();
-				
-				for(Entity enemyEntity : enemies){
-					if(range != null){
-						Transform2DComponent transform = Transform2DComponent.components.get(enemyEntity);
-						if(transform.position.dst2(towerTransform.position) <= range.distance * range.distance){
+		if(targeting.target == null)
+		{
+			// case of enemy : target allies
+			if(Enemy.components.has(entity)){
+				if(allies.size() > 0){
+					candidates.clear();
+					
+					for(Entity enemyEntity : allies){
+						if(range != null){
+							Transform2DComponent transform = Transform2DComponent.components.get(enemyEntity);
+							if(transform.position.dst2(towerTransform.position) <= range.distance * range.distance){
+								candidates.add(enemyEntity);
+							}
+						}else{
 							candidates.add(enemyEntity);
 						}
-					}else{
-						candidates.add(enemyEntity);
+					}
+					
+					candidates.sort(new Comparator<Entity>() {
+						@Override
+						public int compare(Entity o1, Entity o2) {
+							Transform2DComponent e1 = Transform2DComponent.components.get(o1);
+							Transform2DComponent e2 = Transform2DComponent.components.get(o2);
+							return Float.compare(e1.position.dst2(towerTransform.position), e2.position.dst2(towerTransform.position));
+						}
+					});
+					
+					if(candidates.size > 0){
+						targeting.target = candidates.first();
 					}
 				}
-				
-				candidates.sort(enemyHomeNearest);
-				
-				if(candidates.size > 0){
-					targeting.target = candidates.first();
+			}
+			// case of ally : target enemies
+			else
+			{
+				if(enemies.size() > 0){
+					candidates.clear();
+					
+					for(Entity enemyEntity : enemies){
+						if(range != null){
+							Transform2DComponent transform = Transform2DComponent.components.get(enemyEntity);
+							if(transform.position.dst2(towerTransform.position) <= range.distance * range.distance){
+								candidates.add(enemyEntity);
+							}
+						}else{
+							candidates.add(enemyEntity);
+						}
+					}
+					
+					candidates.sort(enemyHomeNearest);
+					
+					if(candidates.size > 0){
+						targeting.target = candidates.first();
+					}
 				}
 			}
 		}
 		
+		// TODO aiming system ?
 		// rotate canon to current target if any
 		if(targeting.target != null)
 		{
