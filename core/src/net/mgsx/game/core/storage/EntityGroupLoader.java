@@ -8,6 +8,7 @@ import com.badlogic.gdx.assets.loaders.AsynchronousAssetLoader;
 import com.badlogic.gdx.assets.loaders.FileHandleResolver;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
@@ -90,7 +91,13 @@ public class EntityGroupLoader extends AsynchronousAssetLoader<EntityGroup, Enti
 					}
 					else
 					{
-						throw new Error("type name not registered : " + String.valueOf(typeName));
+						String error = "type name not registered : " + String.valueOf(typeName);
+						if(parameter.config.failSafe){
+							parameter.config.diagnostic.add(error);
+						}else{
+							throw new GdxRuntimeException(error);
+						}
+						
 					}
 					
 				}
