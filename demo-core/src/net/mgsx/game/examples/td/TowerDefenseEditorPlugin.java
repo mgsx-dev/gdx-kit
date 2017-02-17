@@ -20,6 +20,8 @@ import net.mgsx.game.examples.td.systems.MapSystem;
 import net.mgsx.game.examples.td.systems.PathFollowerSystem;
 import net.mgsx.game.examples.td.systems.PrickleRender;
 import net.mgsx.game.examples.td.systems.PrickleSystem;
+import net.mgsx.game.examples.td.systems.PrioritySystem;
+import net.mgsx.game.examples.td.systems.RangeSystem;
 import net.mgsx.game.examples.td.systems.ShooterSystem;
 import net.mgsx.game.examples.td.systems.ShotRender;
 import net.mgsx.game.examples.td.systems.ShotSystem;
@@ -57,6 +59,15 @@ public class TowerDefenseEditorPlugin extends EditorPlugin implements DefaultEdi
 		// enemy analysis before tower logic
 		editor.entityEngine.addSystem(new EnemyAnalysisSystem());
 		
+		// first range system to invalidate some targets
+		editor.entityEngine.addSystem(new RangeSystem());
+		
+		// priority logic may change here and invalidate target. (TODO create target check GamePipeline entry ??)
+		editor.entityEngine.addSystem(new PrioritySystem());
+		
+		// then targetting system to select target
+		editor.entityEngine.addSystem(new TargetSystem());
+		
 		editor.entityEngine.addSystem(new TowerLogicSystem());
 		editor.entityEngine.addSystem(new LoadSystem());
 		editor.entityEngine.addSystem(new ShooterSystem());
@@ -69,7 +80,6 @@ public class TowerDefenseEditorPlugin extends EditorPlugin implements DefaultEdi
 		editor.entityEngine.addSystem(new EnemyLogicSystem());
 		
 		editor.entityEngine.addSystem(new LifeSystem());
-		editor.entityEngine.addSystem(new TargetSystem());
 		
 		editor.entityEngine.addSystem(new PathFollowerSystem());
 

@@ -35,7 +35,7 @@ public class EnemyLogicSystem extends IteratingSystem
 		
 		// update path speed
 		path.speed = enemy.speed * speedFactor;
-		if(path.t >= 1){
+		if(path.t >= 1){ // TODO not true ! in case of free enemy following a path it will destroy it !!
 			
 			// TODO targeting is for shot not for home ....
 			SingleTarget targetting = SingleTarget.components.get(entity);
