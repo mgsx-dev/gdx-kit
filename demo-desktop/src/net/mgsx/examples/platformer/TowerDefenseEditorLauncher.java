@@ -3,13 +3,13 @@ package net.mgsx.examples.platformer;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 
-import net.mgsx.box2d.editor.desktop.DesktopNativeInterface;
 import net.mgsx.game.core.EditorApplication;
 import net.mgsx.game.core.EditorConfiguration;
 import net.mgsx.game.core.helpers.NativeService;
 import net.mgsx.game.core.meta.ClassRegistry;
 import net.mgsx.game.examples.td.TowerDefenseEditorPlugin;
-import net.mgsx.kit.ReflectionClassRegistry;
+import net.mgsx.kit.config.ReflectionClassRegistry;
+import net.mgsx.kit.files.DesktopNativeInterface;
 import net.mgsx.pd.Pd;
 import net.mgsx.pd.PdConfiguration;
 import net.mgsx.pd.audio.PdAudioNone;

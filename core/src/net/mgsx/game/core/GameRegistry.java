@@ -115,7 +115,7 @@ public class GameRegistry {
 		}
 	}
 	
-	public void init(GameScreen screen) 
+	void init(GameScreen screen) 
 	{
 		// bootstrap here ...
 		scanPackages();

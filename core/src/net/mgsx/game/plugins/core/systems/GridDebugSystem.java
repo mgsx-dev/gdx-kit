@@ -14,7 +14,7 @@ import net.mgsx.game.core.GamePipeline;
 import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.core.annotations.EditableSystem;
 
-@EditableSystem
+@EditableSystem(isDebug=true)
 public class GridDebugSystem extends EntitySystem
 {
 	@Editable

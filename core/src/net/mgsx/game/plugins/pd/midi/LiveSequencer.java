@@ -2,11 +2,11 @@ package net.mgsx.game.plugins.pd.midi;
 
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
-import com.leff.midi.MidiFile;
-import com.leff.midi.MidiTrack;
-import com.leff.midi.util.MidiEventListener;
 
 import net.mgsx.game.plugins.pd.systems.MidiEventMultiplexer;
+import net.mgsx.midi.sequence.MidiSequence;
+import net.mgsx.midi.sequence.MidiTrack;
+import net.mgsx.midi.sequence.util.MidiEventListener;
 
 public class LiveSequencer extends BaseSequencer
 {
@@ -26,7 +26,7 @@ public class LiveSequencer extends BaseSequencer
 		super(listener);
 	}
 	
-	public void load(MidiFile file)
+	public void load(MidiSequence file)
 	{
 		resolution = file.getResolution(); // TODO resolution may change between files but not in tracks !
 		

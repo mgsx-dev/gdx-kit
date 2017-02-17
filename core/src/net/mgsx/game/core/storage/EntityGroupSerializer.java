@@ -30,44 +30,52 @@ public class EntityGroupSerializer implements Json.Serializer<EntityGroup>
 		
 		json.writeObjectStart();
 		
-		json.writeArrayStart("entities");
-		for(int i=0 ; i<object.entities.size ; i++)
+		if(config.entities != null && config.entities.size > 0)
 		{
-			Entity entity = object.entities.get(i);
 			
-			json.writeObjectStart();
-			json.writeValue("id", i);
-
-			// default serialization
-			for(Component component : entity.getComponents())
+			json.writeArrayStart("entities");
+			for(int i=0 ; i<object.entities.size ; i++)
 			{
-				String typeName = config.registry.nameMap.get(component.getClass());
-				if(typeName != null){
-					json.writeValue(typeName, component);
+				Entity entity = object.entities.get(i);
+				
+				json.writeObjectStart();
+				json.writeValue("id", i);
+	
+				// default serialization
+				for(Component component : entity.getComponents())
+				{
+					String typeName = config.registry.nameMap.get(component.getClass());
+					if(typeName != null){
+						json.writeValue(typeName, component);
+					}
 				}
+				json.writeObjectEnd();
 			}
-			json.writeObjectEnd();
+			json.writeArrayEnd();
 		}
-		json.writeArrayEnd();
+		if(config.saveSystems) EngineStorage.saveSystems(json, config);
+		if(config.saveViews) EngineStorage.saveViews(json, config);
 		
-		json.writeArrayStart("assets");
-		
-		for(Entry<String, String> reference : references)
+		if(references.size > 0)
 		{
-			String name = reference.key;
-			Class type = config.assets.getAssetType(name);
+			json.writeArrayStart("assets");
 			
-			String typeName = json.getTag(type);
-			if(typeName == null) typeName = type.getName();
-			
-			json.writeObjectStart();
-			json.writeValue("type", typeName);
-			json.writeValue("name", reference.value);
-			// TODO save some parameters (texture wrap/mipmap ?)
-			json.writeObjectEnd();
+			for(Entry<String, String> reference : references)
+			{
+				String name = reference.key;
+				Class type = config.assets.getAssetType(name);
+				
+				String typeName = json.getTag(type);
+				if(typeName == null) typeName = type.getName();
+				
+				json.writeObjectStart();
+				json.writeValue("type", typeName);
+				json.writeValue("name", reference.value);
+				// TODO save some parameters (texture wrap/mipmap ?)
+				json.writeObjectEnd();
+			}
+			json.writeArrayEnd();
 		}
-		json.writeArrayEnd();
-		
 		
 		json.writeObjectEnd();
 		

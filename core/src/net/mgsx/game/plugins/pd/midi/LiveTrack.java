@@ -1,16 +1,16 @@
 package net.mgsx.game.plugins.pd.midi;
 
 import com.badlogic.gdx.utils.Array;
-import com.leff.midi.MidiFile;
-import com.leff.midi.MidiTrack;
-import com.leff.midi.event.MidiEvent;
-import com.leff.midi.event.NoteOn;
-import com.leff.midi.event.ProgramChange;
-import com.leff.midi.event.meta.Tempo;
-import com.leff.midi.event.meta.TrackName;
-import com.leff.midi.util.MidiEventListener;
 
 import net.mgsx.game.plugins.pd.systems.MidiEventMultiplexer;
+import net.mgsx.midi.sequence.MidiSequence;
+import net.mgsx.midi.sequence.MidiTrack;
+import net.mgsx.midi.sequence.event.MidiEvent;
+import net.mgsx.midi.sequence.event.NoteOn;
+import net.mgsx.midi.sequence.event.ProgramChange;
+import net.mgsx.midi.sequence.event.meta.Tempo;
+import net.mgsx.midi.sequence.event.meta.TrackName;
+import net.mgsx.midi.sequence.util.MidiEventListener;
 
 public class LiveTrack extends MidiLooper
 {
@@ -32,7 +32,7 @@ public class LiveTrack extends MidiLooper
 	private ResetNote off = new ResetNote();
 	private final LiveSequencer master;
 	
-	public LiveTrack(LiveSequencer master, MidiFile file, MidiTrack track, MidiEventMultiplexer listener) {
+	public LiveTrack(LiveSequencer master, MidiSequence file, MidiTrack track, MidiEventMultiplexer listener) {
 		super(listener);
 		this.master = master;
 		events = new Array<MidiEvent>();
@@ -121,7 +121,7 @@ public class LiveTrack extends MidiLooper
 	}
 
 	public void sendNotesOff() {
-		
+		// TODO implents with controller 123
 		for(int i=0 ; i<notesOnCount ; i++){
 			int index = notesOnIndices[i];
 			int note = index & 0x7F;

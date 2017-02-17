@@ -13,18 +13,17 @@ import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.JsonValue.JsonIterator;
 
-import net.mgsx.game.core.GameRegistry;
 import net.mgsx.game.core.helpers.ReflectionHelper;
+
+// TODO move code to storage (reader) and call it from here!
+// usefull for tests bypassing asset manager
 
 public class EntityGroupLoader extends AsynchronousAssetLoader<EntityGroup, EntityGroupLoaderParameters>
 {
-	final GameRegistry registry;
 	EntityGroup entityGroup;
-	JsonValue jsonData;
 
-	public EntityGroupLoader(FileHandleResolver resolver, GameRegistry registry) {
+	public EntityGroupLoader(FileHandleResolver resolver) {
 		super(resolver);
-		this.registry = registry;
 	}
 
 	@Override
@@ -34,7 +33,7 @@ public class EntityGroupLoader extends AsynchronousAssetLoader<EntityGroup, Enti
 		Json json = EntityGroupStorage.setup();
 		
 		// load json file and return asset part
-		jsonData = new JsonReader().parse(file);
+		JsonValue jsonData = new JsonReader().parse(file);
 		if(jsonData.has("assets")){
 			for(JsonIterator i = jsonData.get("assets").iterator() ; i.hasNext() ; ){
 				JsonValue asset = i.next();
@@ -42,9 +41,18 @@ public class EntityGroupLoader extends AsynchronousAssetLoader<EntityGroup, Enti
 				Class assetType = json.getClass(typeName);
 				if(assetType == null) assetType = ReflectionHelper.forName(typeName);
 				String name = asset.get("name").asString();
-				// TODO do the same for other types (Textures ...)
 				
-				assets.add(new AssetDescriptor(name, assetType));
+				if(assetType == EntityGroup.class){
+					LoadConfiguration cfg = new LoadConfiguration();
+					cfg.assets = parameter.config.assets;
+					cfg.engine = parameter.config.engine;
+					cfg.registry = parameter.config.registry;
+					EntityGroupLoaderParameters params = new EntityGroupLoaderParameters();
+					params.config = cfg;
+					assets.add(new AssetDescriptor(name, assetType, params)); 
+				}else{
+					assets.add(new AssetDescriptor(name, assetType)); 
+				}
 			}
 		}
 		
@@ -55,8 +63,12 @@ public class EntityGroupLoader extends AsynchronousAssetLoader<EntityGroup, Enti
 	public void loadAsync(AssetManager manager, String fileName, FileHandle file, EntityGroupLoaderParameters parameter) {
 		
 		entityGroup = new EntityGroup();
-		Json json = EntityGroupStorage.setup(manager, registry, entityGroup);
-		jsonData = new JsonReader().parse(file);
+		Json json = EntityGroupStorage.setup(manager, parameter.config.registry, entityGroup);
+		JsonValue jsonData = new JsonReader().parse(file);
+		
+		entityGroup.json = json;
+		entityGroup.jsonData = jsonData;
+		
 		if(jsonData.has("entities")){
 			for(JsonIterator entityIteractor = jsonData.get("entities").iterator() ; entityIteractor.hasNext() ; ){
 				JsonValue value = entityIteractor.next();
@@ -66,7 +78,7 @@ public class EntityGroupLoader extends AsynchronousAssetLoader<EntityGroup, Enti
 					JsonValue cvalue = i.next();
 					String typeName = cvalue.name;
 					if("id".equals(typeName)) continue; // skip id tag
-					Class<? extends Component> componentType = registry.typeMap.get(typeName);
+					Class<? extends Component> componentType = parameter.config.registry.typeMap.get(typeName);
 					if(componentType != null)
 					{
 						Component component = json.readValue(componentType, cvalue);
@@ -88,9 +100,13 @@ public class EntityGroupLoader extends AsynchronousAssetLoader<EntityGroup, Enti
 
 	@Override
 	public EntityGroup loadSync(AssetManager manager, String fileName, FileHandle file, EntityGroupLoaderParameters parameter) {
-		// TODO maybe initialize ??
-		// TODO clean all references
-		return entityGroup;
+		
+		// clean all references
+		EntityGroup result = entityGroup;
+		
+		entityGroup = null;
+		
+		return result;
 	}
 
 }

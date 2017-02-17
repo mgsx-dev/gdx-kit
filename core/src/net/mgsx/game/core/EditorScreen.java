@@ -24,11 +24,14 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Event;
+import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
+import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -38,9 +41,12 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json.Serializer;
 import com.badlogic.gdx.utils.ObjectMap;
+import com.badlogic.gdx.utils.ObjectSet;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
+import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.core.annotations.EditableComponent;
+import net.mgsx.game.core.annotations.EditableSystem;
 import net.mgsx.game.core.commands.Command;
 import net.mgsx.game.core.commands.CommandHistory;
 import net.mgsx.game.core.components.Movable;
@@ -51,16 +57,18 @@ import net.mgsx.game.core.helpers.AssetLookupCallback;
 import net.mgsx.game.core.helpers.EditorAssetManager;
 import net.mgsx.game.core.helpers.NativeService;
 import net.mgsx.game.core.helpers.NativeService.DefaultCallback;
-import net.mgsx.game.core.helpers.ScreenDelegate;
 import net.mgsx.game.core.plugins.EntityEditorPlugin;
 import net.mgsx.game.core.plugins.GlobalEditorPlugin;
 import net.mgsx.game.core.plugins.SelectorPlugin;
-import net.mgsx.game.core.storage.EntityGroupStorage;
+import net.mgsx.game.core.screen.ScreenDelegate;
 import net.mgsx.game.core.storage.LoadConfiguration;
 import net.mgsx.game.core.tools.ComponentTool;
 import net.mgsx.game.core.tools.Tool;
 import net.mgsx.game.core.tools.ToolGroup;
 import net.mgsx.game.core.ui.EntityEditor;
+import net.mgsx.game.core.ui.accessors.Accessor;
+import net.mgsx.game.core.ui.events.AccessorHelpEvent;
+import net.mgsx.game.core.ui.events.EditorListener;
 import net.mgsx.game.core.ui.widgets.TabPane;
 import net.mgsx.game.plugins.core.tools.UndoTool;
 
@@ -122,24 +130,37 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 
 	private Array<Button> contextualButtons = new Array<Button>();
 
+	private ObjectSet<EditorListener> listeners = new ObjectSet<EditorListener>();
+	
 	public EditorScreen(EditorConfiguration config, GameScreen screen, EditorAssetManager assets, Engine engine) {
-		super();
+		super(screen);
 		this.game = screen;
 		this.game.registry = config.registry;
 		this.entityEngine = engine;
 		this.assets = assets;
 		this.serializers = config.registry.serializers;
 		this.registry = config.registry;
-		this.current = this.game;
 		editorCamera = new EditorCamera();
 		init();
+	}
+	
+	public void addListener(EditorListener listener)
+	{
+		listeners.add(listener);
+	}
+	
+	public void fireLoadEvent(LoadConfiguration cfg)
+	{
+		pinEditors(cfg.visibleSystems);
+		
+		for(EditorListener listener : listeners) listener.onLoad(cfg);
 	}
 	
 	private Table createMainTable()
 	{
 		status = new Label(STATUS_HIDDEN_TEXT, skin);
 		LabelStyle style = new LabelStyle(status.getStyle());
-		style.fontColor.set(Color.DARK_GRAY);
+		style.fontColor.set(Color.ORANGE);
 		status.setStyle(style);
 		
 		pinStack = new VerticalGroup();
@@ -199,6 +220,20 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 		main.setFillParent(true);
 		stage.addActor(main);
 		
+		main.addListener(new EventListener() {
+			@Override
+			public boolean handle(Event event) {
+				if(event instanceof AccessorHelpEvent){
+					Accessor a = ((AccessorHelpEvent) event).getAccessor();
+					Editable c = a.config();
+					showStatus = true; // force show help
+					if(c != null && !c.doc().isEmpty()) setInfo(c.doc());
+					return true;
+				}
+				return false;
+			}
+		});
+		
 		createToolGroup().addProcessor(new UndoTool(this));
 		
 		mainToolGroup = createToolGroup();
@@ -215,12 +250,14 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 						family = Family.all(config.all()).one(config.one()).exclude(config.exclude()).get();
 					}
 					String name = config.name().isEmpty() ? type.getSimpleName() : config.name();
-					autoTools.add(new ComponentTool(name, this, family){
+					Tool autoTool = new ComponentTool(name, this, family){
 						@Override
 						protected Component createComponent(Entity entity) {
 							return entityEngine.createComponent(type);
 						}
-					});
+					};
+					registry.setTag(autoTool, registry.getTagByType(type));
+					autoTools.add(autoTool);
 				}
 			}
 		}
@@ -298,6 +335,34 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 		ToolGroup g = createToolGroup();
 		g.setActiveTool(tool);
 	}
+	private Array<Actor> rootBackup;
+	final private Array<EntitySystem> processingDebugSystem = new Array<EntitySystem>();
+	
+	public void switchVisibility(){
+		if(displayEnabled){
+			rootBackup = new Array<Actor>(stage.getRoot().getChildren());
+			stage.getRoot().clearChildren();
+			displayEnabled = false;
+			processingDebugSystem.clear();
+			for(EntitySystem system : entityEngine.getSystems())
+			{
+				EditableSystem config = system.getClass().getAnnotation(EditableSystem.class);
+				if(config != null && config.isDebug() && system.checkProcessing()){
+					processingDebugSystem.add(system);
+					system.setProcessing(false);
+				}
+			}
+		}else{
+			for(Actor actor : rootBackup) stage.addActor(actor);
+			rootBackup = null;
+			displayEnabled = true;
+			
+			for(EntitySystem system : processingDebugSystem)
+			{
+				system.setProcessing(true);
+			}
+		}
+	}
 	
 	@Override
 	public void render(float deltaTime) 
@@ -312,7 +377,9 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 		
 		current.render(deltaTime);
 
-		stage.act();
+		if(displayEnabled){
+			stage.act();
+		}
 		
 		
 		// TODO use systems instead (used by sprite tools ...)
@@ -363,6 +430,10 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 	public void dispose () {
 	}
 
+	private String pluginFilter;
+
+	public final Array<EntitySystem> pinnedSystems = new Array<EntitySystem>();
+	
 	private void updateSelection() 
 	{
 		final Entity entity = selection.size == 1 ? selection.first() : null;
@@ -382,8 +453,27 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 		}
 		else
 		{
+			// TODO move to Tool bar class update ...
+			
 			// Display all tools
 			buttons.add("Tools").expandX().center().row();
+			
+			// add filter
+			final SelectBox<String> pluginFilterBox = new SelectBox<String>(skin);
+			buttons.add(pluginFilterBox).expandX().center().row();
+			Array<String> allPlugins = new Array<String>();
+			allPlugins.add("");
+			allPlugins.addAll(registry.allTags());
+			allPlugins.sort();
+			pluginFilterBox.setItems(allPlugins);
+			pluginFilterBox.setSelected(pluginFilter == null ? "" : pluginFilter);
+			pluginFilterBox.addListener(new ChangeListener(){
+				@Override
+				public void changed(ChangeEvent event, Actor actor) {
+					pluginFilter = pluginFilterBox.getSelected();
+					updateSelection();
+				}
+			});
 			
 			// TODO maybe not at each time ... ?
 			mainTools.sort(new Comparator<Tool>() {
@@ -396,8 +486,11 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 			
 			for(Tool tool : mainTools)
 			{
-				
-				if(tool.activator == null || (entity != null && tool.activator.matches(entity)))
+				// check if tool is in current plugin filter.
+				boolean accepted = true;
+				accepted &= pluginFilter == null || pluginFilter.isEmpty() || pluginFilter.equals(registry.getTag(tool));
+				accepted &= tool.activator == null || (entity != null && tool.activator.matches(entity));
+				if(accepted)
 				{
 					boolean handled = false;
 					
@@ -514,8 +607,16 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 	}
 	public void pinEditor(EntitySystem system) 
 	{
-		pinStack.addActor(createPinEditor(system));
-		
+		if(!pinnedSystems.contains(system, true)){
+			pinnedSystems.add(system);
+			pinStack.addActor(createPinEditor(system));
+		}
+	}
+	public void pinEditors(Array<EntitySystem> systems) {
+		for(EntitySystem system : systems)
+		{
+			pinEditor(system);
+		}
 	}
 	
 	public void unpinEditor(Actor editor){
@@ -599,6 +700,7 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 		btRemove.addListener(new ChangeListener(){
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
+				pinnedSystems.removeValue(system, true);
 				unpinEditor(group);
 			}
 		});
@@ -633,7 +735,7 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 	
 	public Array<Entity> selection = new Array<Entity>();
 	private boolean selectionDirty;
-	public boolean displayEnabled = true; // true by default
+	private boolean displayEnabled = true; // true by default
 
 	public Table toolOutline;
 
@@ -691,7 +793,7 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
 				if(btTool.isChecked()) group.setActiveTool(tool);
-				else group.setActiveTool(null);
+				// else group.setActiveTool(null);
 			}
 		});
 		group.addButton(btTool);
@@ -789,18 +891,13 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 		}
 	}
 
-	public void loadForEditing(FileHandle file) 
-	{
-		LoadConfiguration config = new LoadConfiguration();
-		config.assets = assets;
-		config.registry = registry;
-		config.engine = entityEngine;
-		config.failSafe = true; // TODO fail safe when load for editing to avoid crash always app
-		EntityGroupStorage.loadForEditing(file.path(), config);
-	}
-
 	public Camera getGameCamera() { // TODO rename getCamera
 		return editorCamera.isActive() ? editorCamera.camera() : game.camera;
+	}
+
+	public void setTool(Tool tool) 
+	{
+		mainToolGroup.setActiveTool(tool);
 	}
 
 }

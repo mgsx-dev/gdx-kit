@@ -12,6 +12,10 @@ abstract public class KeyTool extends Tool
 {
 	private int key;
 
+	public KeyTool(String name, EditorScreen editor, int key) {
+		super(name, editor);
+		this.key = key;
+	}
 	public KeyTool(EditorScreen editor, int key) {
 		super(editor);
 		this.key = key;

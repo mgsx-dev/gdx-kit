@@ -11,6 +11,7 @@ import net.mgsx.game.plugins.fsm.StateMachineEditorPlugin;
 import net.mgsx.game.plugins.g2d.G2DEditorPlugin;
 import net.mgsx.game.plugins.g3d.G3DEditorPlugin;
 import net.mgsx.game.plugins.particle2d.Particle2DEditorPlugin;
+import net.mgsx.game.plugins.pd.PdEditorPlugin;
 import net.mgsx.game.plugins.profiling.ProfilerPlugin;
 import net.mgsx.game.plugins.spline.SplineEditorPlugin;
 import net.mgsx.game.plugins.tiles.TilesEditorPlugin;
@@ -34,7 +35,8 @@ import net.mgsx.game.plugins.tiles.TilesEditorPlugin;
 	Particle2DEditorPlugin.class,
 	AssetsEditorPlugin.class,
 	StateMachineEditorPlugin.class,
-	TilesEditorPlugin.class
+	TilesEditorPlugin.class,
+	PdEditorPlugin.class
 })
 public interface DefaultEditorPlugin extends DefaultPlugin {
 

@@ -46,7 +46,7 @@ public class ImportPatchTool extends ClickTool {
 		config.assets = editor.assets;
 		config.registry = editor.registry;
 		config.engine = editor.entityEngine;
-		for(Entity entity : EntityGroupStorage.loadForEditing(file.path(), config)){
+		for(Entity entity : EntityGroupStorage.loadForEditing(editor, file.path(), config)){
 			Movable movable = entity.getComponent(Movable.class);
 			if(movable != null){
 				movable.moveTo(entity, new Vector3(position.x, position.y, 0)); // sprite plan
@@ -57,7 +57,5 @@ public class ImportPatchTool extends ClickTool {
 				btree.remove = true;
 			}
 		}
-		// TODO update things in GUI ?
-		
 	}
 }

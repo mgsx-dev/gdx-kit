@@ -1,9 +1,14 @@
 package net.mgsx.game.examples.platformer;
 
+import java.io.IOException;
+
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetDescriptor;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 
 import net.mgsx.game.core.GamePipeline;
 import net.mgsx.game.core.GameScreen;
@@ -24,6 +29,7 @@ import net.mgsx.game.examples.platformer.animations.WalkingAnimationSystem;
 import net.mgsx.game.examples.platformer.animations.WalkingComponent;
 import net.mgsx.game.examples.platformer.audio.CristalSoundSystem;
 import net.mgsx.game.examples.platformer.audio.PlatformerMusicSystem;
+import net.mgsx.game.examples.platformer.audio.QTractorSequenceReader;
 import net.mgsx.game.examples.platformer.audio.WaterSoundSystem;
 import net.mgsx.game.examples.platformer.inputs.JoystickControllerSystem;
 import net.mgsx.game.examples.platformer.inputs.KeyboardControllerSystem;
@@ -66,7 +72,16 @@ import net.mgsx.game.plugins.DefaultPlugin;
 import net.mgsx.game.plugins.boundary.systems.AbstractBoundaryLogicSystem;
 import net.mgsx.game.plugins.box2d.components.Box2DBodyModel;
 import net.mgsx.game.plugins.g3d.components.G3DModel;
+import net.mgsx.game.plugins.pd.midi.SequenceDesc;
+import net.mgsx.game.plugins.pd.midi.SequenceMarker;
+import net.mgsx.game.plugins.pd.systems.MidiSequencerSystem;
 import net.mgsx.game.plugins.spline.components.PathComponent;
+import net.mgsx.midi.sequence.MidiSequence;
+import net.mgsx.midi.sequence.MidiTrack;
+import net.mgsx.midi.sequence.event.MidiEvent;
+import net.mgsx.midi.sequence.event.meta.Marker;
+import net.mgsx.pd.patch.PatchLoader;
+import net.mgsx.pd.patch.PdPatch;
 
 /**
  * 
@@ -105,6 +120,40 @@ public class PlatformerPlugin implements Plugin, DefaultPlugin
 	public void initialize(GameScreen engine) 
 	{
 		this.engine = engine;
+		
+		// init audio/midi engine
+		
+		engine.assets.setLoader(PdPatch.class, "pd", new PatchLoader(engine.assets.getFileHandleResolver()));
+		
+		AssetDescriptor<PdPatch> patchAsset = new AssetDescriptor<PdPatch>("audio/music/midiplayer.pd", PdPatch.class);
+		
+		engine.assets.load(patchAsset);
+		engine.assets.finishLoading();
+		
+		
+		MidiSequence midiFile = new MidiSequence(Gdx.files.internal("audio/midi/title-export-1.mid"));
+		int midiRes = midiFile.getResolution();
+		SequenceDesc sequenceDesc;
+		try {
+			sequenceDesc = new QTractorSequenceReader(midiRes).read(Gdx.files.internal("audio/midi/title.qtr"));
+		} catch (IOException e) {
+			throw new GdxRuntimeException(e);
+		}
+		
+		for(MidiTrack track : midiFile.getTracks()){
+			for(MidiEvent e : track.getEvents()){
+				if(e instanceof Marker){
+					SequenceMarker marker = new SequenceMarker();
+					marker.name = ((Marker) e).getMarkerName();
+					marker.tick = e.getTick();
+					sequenceDesc.markers.put(marker.name, marker);
+				}
+			}
+		}
+		
+		engine.entityEngine.getSystem(MidiSequencerSystem.class).loadSequence(midiFile);
+		
+		// end
 		
 		PlatformerPostProcessing effects = new PlatformerPostProcessing(engine);
 		

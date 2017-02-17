@@ -9,7 +9,6 @@ import net.mgsx.game.core.EditorScreen;
 import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.core.helpers.NativeService;
 import net.mgsx.game.core.helpers.NativeService.DefaultCallback;
-import net.mgsx.game.core.storage.EngineStorage;
 import net.mgsx.game.core.storage.EntityGroupStorage;
 import net.mgsx.game.core.storage.SaveConfiguration;
 import net.mgsx.game.core.storage.SaveConfiguration.Message;
@@ -25,9 +24,18 @@ public class SaveTool extends Tool
 	@Editable(doc="JSON pretty format")
 	public boolean pretty = true;
 	
-	@Editable()
+	@Editable
 	public boolean selection = false;
-	
+
+	@Editable
+	public boolean systems = true;
+
+	@Editable
+	public boolean views = true;
+
+	@Editable
+	public boolean entities = true;
+
 	private SaveConfiguration config;
 	
 	public SaveTool(EditorScreen editor) {
@@ -46,7 +54,7 @@ public class SaveTool extends Tool
 		}
 		
 	}
-	@Editable("Save Entities...")
+	@Editable("Browse...")
 	public void saveEntities(){
 		NativeService.instance.openSaveDialog(new DefaultCallback() {
 			@Override
@@ -59,9 +67,22 @@ public class SaveTool extends Tool
 				config.pretty = pretty;
 				config.stripPaths = stripPaths;
 				
-				if(selection){
-					config.entities = new Array<Entity>(editor.selection);
+				config.saveSystems = systems;
+				config.saveViews = views;
+				
+				config.visibleSystems.addAll(editor.pinnedSystems);
+
+				if(entities){
+					if(selection){
+						config.entities = new Array<Entity>(editor.selection);
+						config.filterRepository = false;
+					}else{
+						config.filterRepository = true;
+					}
+				}else{
+					config.filterRepository = false;
 				}
+				
 				EntityGroupStorage.save(file, config);
 				
 				printDiagnostic();
@@ -78,34 +99,6 @@ public class SaveTool extends Tool
 		
 	}
 	
-	@Editable("Save Settings...")
-	public void saveSettings(){
-		NativeService.instance.openSaveDialog(new DefaultCallback() {
-			@Override
-			public void selected(FileHandle file) {
-				config = new SaveConfiguration();
-				config.assets = editor.assets;
-				config.engine = editor.entityEngine;
-				config.registry = editor.registry;
-				
-				config.pretty = pretty;
-				config.stripPaths = stripPaths;
-				
-				EngineStorage.save(file, config);
-				
-				printDiagnostic();
-			}
-			@Override
-			public boolean match(FileHandle file) {
-				return file.extension().equals("json");
-			}
-			@Override
-			public String description() {
-				return "Patch files (json)";
-			}
-		});
-		
-	}
 
 
 }

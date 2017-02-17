@@ -2,6 +2,7 @@ package net.mgsx.game.core.screen;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
@@ -38,8 +39,8 @@ public class Transitions
 	private static class FadeTransition extends ShaderTransition{
 		public FadeTransition() {
 			super(new ShaderProgram(
-					Gdx.files.classpath("net/mgsx/game/core/screen/shaders/gdx-default.vert"),
-					Gdx.files.classpath("net/mgsx/game/core/screen/shaders/transition-fade.frag")
+					Gdx.files.classpath("shaders/gdx-default.vert"),
+					Gdx.files.classpath("shaders/transition-fade.frag")
 					));
 		}
 	}
@@ -65,6 +66,47 @@ public class Transitions
 		desc.transition = fadeTransition();
 		desc.listener = listener;
 		return desc;
+	}
+	
+	/**
+	 * Build up a loader upon a screen. Created screen behave same as underlying screen
+	 * exept that it is complete when both underlying screen is complete and asset manager
+	 * is finish loading.
+	 * @param assets asset manager to check.
+	 * @param screen underlying screen
+	 * @return the loader screen.
+	 */
+	public static ScreenClip loader(final AssetManager assets, final Screen screen)
+	{
+		return new ScreenClipDelegate(screen){
+			@Override
+			public boolean isComplete() {
+				return super.isComplete() && assets.update();
+			}
+		};
+	}
+	
+	/**
+	 * Wrap a screen with timeout behavior : screen is complete when timeout is reached,
+	 * whenether underlying screen is complete or not.
+	 * @param screen
+	 * @param duration
+	 * @return
+	 */
+	public static ScreenClip timeout(final Screen screen, final float duration)
+	{
+		return new ScreenClipDelegate(screen){
+			private float time = 0;
+			@Override
+			public void render(float delta) {
+				super.render(delta);
+				time += delta;
+			}
+			@Override
+			public boolean isComplete() {
+				return time >= duration;
+			}
+		};
 	}
 	
 	

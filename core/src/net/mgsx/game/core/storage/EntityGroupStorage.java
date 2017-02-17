@@ -18,6 +18,7 @@ import com.badlogic.gdx.utils.Json.Serializer;
 import com.badlogic.gdx.utils.ObjectMap.Entries;
 import com.badlogic.gdx.utils.ObjectMap.Entry;
 
+import net.mgsx.game.core.EditorScreen;
 import net.mgsx.game.core.GameRegistry;
 import net.mgsx.game.core.GameScreen;
 import net.mgsx.game.core.components.Initializable;
@@ -65,6 +66,8 @@ import net.mgsx.game.plugins.spline.blender.BlenderCurve;
  * </pre>
  * @author mgsx
  *
+ * TODO maybe rename KitStorage as entry point for all storage layer.
+ *
  */
 public class EntityGroupStorage 
 {
@@ -77,30 +80,40 @@ public class EntityGroupStorage
 	 * @param fileName
 	 * @return
 	 */
-	public static Array<Entity> loadForEditing(String fileName, LoadConfiguration config)
+	public static Array<Entity> loadForEditing(final EditorScreen editor, final String fileName, final LoadConfiguration config)
 	{
 		// first clone entity group and add repository flag.
 		// then create transients (referenced from proxies.
 		EntityGroup group = loadNow(fileName, config);
 		Array<Entity> entities = new Array<Entity>();
 		EntityGroup clones = new EntityGroup();
-		for(Entity template : group.entities)
-		{
-			// clone template and add repository flag
-			Entity entity = EntityHelper.clone(config.engine, template, group, clones, true);
-			Repository repository = new Repository(); // no pool here (not required ?)
-			entity.add(repository);
-			
-			// in case of proxy, create referenced entities recursively as transient (non repository)
-			ProxyComponent proxy = ProxyComponent.components.get(entity);
-			if(proxy != null){
-				EntityGroup proxyGroup = config.assets.get(proxy.ref, EntityGroup.class);
-				proxy.template = proxyGroup;
-				create(entities, config.assets, config.engine, proxyGroup, entity);
+		if(config.loadEntities){
+			for(Entity template : group.entities)
+			{
+				// clone template and add repository flag
+				Entity entity = EntityHelper.clone(config.engine, template, group, clones, true);
+				Repository repository = new Repository(); // no pool here (not required ?)
+				entity.add(repository);
+				
+				// in case of proxy, create referenced entities recursively as transient (non repository)
+				ProxyComponent proxy = ProxyComponent.components.get(entity);
+				if(proxy != null){
+					EntityGroup proxyGroup = config.assets.get(proxy.ref, EntityGroup.class);
+					proxy.template = proxyGroup;
+					create(entities, config.assets, config.engine, proxyGroup, entity);
+				}
+				
+				entities.add(entity);
 			}
-			
-			entities.add(entity);
 		}
+		
+		// load settings (system) in GL context required for shader loading and any other assets
+		EngineStorage.load(group.json, group.jsonData, config);
+
+		if(config.loadViews){
+			editor.fireLoadEvent(config);
+		}
+	
 		return entities;
 	}
 
@@ -190,6 +203,8 @@ public class EntityGroupStorage
 	{
 		if(!config.assets.isLoaded(fileName)){
 			EntityGroupLoaderParameters parameters = new EntityGroupLoaderParameters();
+			parameters.config = config;
+			parameters.loadedCallback = config.loadedCallback;
 			AssetDescriptor<EntityGroup> descriptor = new AssetDescriptor<EntityGroup>(fileName, EntityGroup.class, parameters);
 			config.assets.load(descriptor);
 		}
@@ -272,7 +287,7 @@ public class EntityGroupStorage
 	public static void save(Writer writer, SaveConfiguration config) 
 	{
 		EntityGroup group = new EntityGroup();
-		if(config.entities == null){
+		if(config.filterRepository){
 			config.entities = ArrayHelper.array(config.engine.getEntitiesFor(Family.all(Repository.class).get()));
 		}
 		for(Entity entity : config.entities){

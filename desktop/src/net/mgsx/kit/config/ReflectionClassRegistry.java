@@ -1,4 +1,4 @@
-package net.mgsx.kit;
+package net.mgsx.kit.config;
 
 import java.lang.annotation.Annotation;
 import java.net.URL;
@@ -46,11 +46,6 @@ public class ReflectionClassRegistry extends ClassRegistry
 								match = true;
 								break;
 							}
-						}
-						if(match){
-							System.out.println("true  " + input);
-						}else{
-							System.out.println("false " + input);
 						}
 						return match;
 					}

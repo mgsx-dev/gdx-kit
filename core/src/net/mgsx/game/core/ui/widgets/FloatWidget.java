@@ -27,6 +27,7 @@ public class FloatWidget extends Label
 	
 	public FloatWidget(Accessor accessor, boolean dynamic, Skin skin) {
 		super("", skin);
+		// XXX this.dynamic = dynamic;
 		this.accessor = accessor;
 		setAlignment(Align.center);
 		setColor(Color.ORANGE);

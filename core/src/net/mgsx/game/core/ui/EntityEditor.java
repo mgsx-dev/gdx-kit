@@ -25,7 +25,8 @@ import net.mgsx.game.core.annotations.EditableComponent;
 import net.mgsx.game.core.annotations.EditableSystem;
 import net.mgsx.game.core.ui.accessors.Accessor;
 import net.mgsx.game.core.ui.accessors.AccessorScanner;
-import net.mgsx.game.core.ui.accessors.FieldAccessor;
+import net.mgsx.game.core.ui.accessors.FieldAccessorWrapper;
+import net.mgsx.game.core.ui.events.AccessorHelpEvent;
 import net.mgsx.game.core.ui.widgets.BitsWidget;
 import net.mgsx.game.core.ui.widgets.BlendWidget;
 import net.mgsx.game.core.ui.widgets.BooleanWidget;
@@ -109,6 +110,19 @@ public class EntityEditor extends Table
 		{
 			Label accessorLabel = new Label(accessor.getName(), table.getSkin());
 			table.add(accessorLabel).fill().left();
+			
+			if(accessor.config() == null || accessor.config().doc().isEmpty()){
+				table.add().fill();
+			}else{
+				final TextButton btHelp = new TextButton("?", table.getSkin());
+				table.add(btHelp).fill();
+				btHelp.addListener(new ChangeListener() {
+					@Override
+					public void changed(ChangeEvent event, Actor actor) {
+						btHelp.fire(new AccessorHelpEvent(accessor));
+					}
+				});
+			}
 			
 			if(!createControl(table, entity, accessor, stack, config))
 			{
@@ -246,9 +260,9 @@ public class EntityEditor extends Table
 			Vector2 v = (Vector2)accessor.get();
 			Table sub = new Table(table.getSkin());
 			sub.add("(");
-			createSlider(sub, entity, accessor, v, new FieldAccessor(v, "x"));
+			createSlider(sub, entity, accessor, v, new FieldAccessorWrapper(accessor, "x"));
 			sub.add(",");
-			createSlider(sub, entity, accessor, v, new FieldAccessor(v, "y"));
+			createSlider(sub, entity, accessor, v, new FieldAccessorWrapper(accessor, "y"));
 			sub.add(")");
 			table.add(sub);
 		}else if(accessor.getType() == Quaternion.class){
@@ -259,13 +273,13 @@ public class EntityEditor extends Table
 			
 			Table sub = new Table(table.getSkin());
 			sub.add("(");
-			createSlider(sub, entity, accessor, c, new FieldAccessor(c, "r"));
+			createSlider(sub, entity, accessor, c, new FieldAccessorWrapper(accessor, "r"));
 			sub.add(",");
-			createSlider(sub, entity, accessor, c, new FieldAccessor(c, "g"));
+			createSlider(sub, entity, accessor, c, new FieldAccessorWrapper(accessor, "g"));
 			sub.add(",");
-			createSlider(sub, entity, accessor, c, new FieldAccessor(c, "b"));
+			createSlider(sub, entity, accessor, c, new FieldAccessorWrapper(accessor, "b"));
 			sub.add(",");
-			createSlider(sub, entity, accessor, c, new FieldAccessor(c, "a"));
+			createSlider(sub, entity, accessor, c, new FieldAccessorWrapper(accessor, "a"));
 			sub.add(")");
 			table.add(sub);
 		}else if(accessor.getType().isEnum()){

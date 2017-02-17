@@ -1,6 +1,5 @@
 package net.mgsx.game.examples.platformer.game;
 
-import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ai.fsm.DefaultStateMachine;
 import com.badlogic.gdx.ai.fsm.StateMachine;
@@ -61,23 +60,19 @@ public class PlatformerGame extends GameApplication
 		// then fadein level screen
 		// finally set input processor
 		
+		GameRegistry registry = new GameRegistry();
+		registry.registerPlugin(new PlatformerPlugin());
+		
 		// load level loading screen
 		if(levelLoadingScreen == null)
 		{
-			levelLoadingScreen = new LevelLoadingScreen(assets, new PooledEngine());
-			levelLoadingScreen.registry = new GameRegistry();
-			levelLoadingScreen.registry.registerPlugin(new PlatformerPlugin());
-			levelLoadingScreen.registry.init(levelLoadingScreen);
+			levelLoadingScreen = new LevelLoadingScreen(assets, registry);
 		}
 		levelLoadingScreen.load(Gdx.files.internal("levels/level-load.json"));
 		assets.finishLoading(); // force finish loading assets for level loading screeen.
 		
 		// create the game screen (not cached)
-		levelScreen = new LevelScreen(this, new PooledEngine());
-		
-		levelScreen.registry = new GameRegistry();
-		levelScreen.registry.registerPlugin(new PlatformerPlugin());
-		levelScreen.registry.init(levelScreen);
+		levelScreen = new LevelScreen(this, registry);
 		levelScreen.load(Gdx.files.internal("levels/level1.json"));
 	}
 	

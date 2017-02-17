@@ -1,16 +1,17 @@
 package net.mgsx.game.core;
 
-import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.Engine;
-import com.badlogic.ashley.core.Entity;
+import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
+import com.badlogic.gdx.assets.AssetLoaderParameters.LoadedCallback;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.utils.Array;
 
+import net.mgsx.game.core.storage.EngineStorage;
 import net.mgsx.game.core.storage.EntityGroup;
 import net.mgsx.game.core.storage.EntityGroupLoader;
 import net.mgsx.game.core.storage.EntityGroupStorage;
@@ -34,10 +35,22 @@ public class GameScreen extends ScreenAdapter
 	
 	public Camera camera;
 	
-	public GameScreen(AssetManager assets, Engine engine) {
+	/**
+	 * create game screen with default engine.
+	 * @param assets
+	 * @param registry
+	 */
+	public GameScreen(AssetManager assets, GameRegistry registry) {
+		this(assets, registry, new PooledEngine());
+	}
+	
+	public GameScreen(AssetManager assets, GameRegistry registry, Engine engine) {
 		super();
 		this.assets = assets;
+		this.registry = registry;
 		this.entityEngine = engine;
+		
+		// TODO default camera with magic numbers ... how to configure ?
 		Camera gameCamera = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		gameCamera.position.set(0, 0, 10);
 		gameCamera.up.set(0,1,0);
@@ -47,13 +60,8 @@ public class GameScreen extends ScreenAdapter
 		gameCamera.update(true);
 		
 		camera = gameCamera;
-	}
-	
-	
-	protected <T extends Component> T addComponent(Entity entity, Class<T> type){
-		T component = entityEngine.createComponent(type);
-		entity.add(component);
-		return component;
+		
+		registry.init(this);
 	}
 	
 	@Override
@@ -81,17 +89,28 @@ public class GameScreen extends ScreenAdapter
 	public void load(FileHandle file) 
 	{
 		if(file != null){
-			assets.setLoader(EntityGroup.class, new EntityGroupLoader(assets.getFileHandleResolver(), registry));
+			// TODO could messup with multiple screen loading ... maybe they have to share same registry ?
+			assets.setLoader(EntityGroup.class, new EntityGroupLoader(assets.getFileHandleResolver()));
 			
 			String name = file.path();
 			pendingGroups.add(name);
 			
-			LoadConfiguration config = new LoadConfiguration();
+			final LoadConfiguration config = new LoadConfiguration();
 			config.assets = assets;
 			config.registry = registry;
 			config.engine = entityEngine;
 			
-			// TODO load settings as well !
+			// load settings as well
+			config.loadSettings = true;
+			config.loadViews = true;
+			
+			config.loadedCallback = new LoadedCallback() {
+				@Override
+				public void finishedLoading(AssetManager assetManager, String fileName, Class type) {
+					EntityGroup egs = assetManager.get(fileName, type);
+					EngineStorage.load(egs, config);
+				}
+			};
 			
 			EntityGroupStorage.load(name, config);
 		}

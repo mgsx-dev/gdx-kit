@@ -5,6 +5,7 @@ import java.io.StringWriter;
 
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
+import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.utils.Array;
 
@@ -18,6 +19,10 @@ public class SaveConfiguration {
 	public boolean stripPaths;
 	public Array<Entity> entities;
 	public Array<Message> messages = new Array<Message>();
+	public boolean saveSystems = true;
+	public boolean saveViews = true;
+	public boolean filterRepository = true;
+	public Array<EntitySystem> visibleSystems = new Array<EntitySystem>();
 	
 	public static class Message{
 		public String tag = "";

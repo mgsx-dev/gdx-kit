@@ -1,7 +1,8 @@
 package net.mgsx.game.plugins.pd.midi;
 
 import com.badlogic.gdx.utils.Array;
-import com.leff.midi.util.MidiEventListener;
+
+import net.mgsx.midi.sequence.util.MidiEventListener;
 
 public abstract class MidiLooper extends BaseSequencer
 {

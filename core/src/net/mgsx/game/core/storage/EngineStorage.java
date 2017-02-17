@@ -1,34 +1,21 @@
 package net.mgsx.game.core.storage;
 
-import java.io.StringWriter;
-
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Json;
-import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.JsonValue.JsonIterator;
 import com.badlogic.gdx.utils.ObjectMap;
 
 import net.mgsx.game.core.annotations.Storable;
+import net.mgsx.game.core.helpers.ReflectionHelper;
 import net.mgsx.game.core.ui.accessors.Accessor;
 import net.mgsx.game.core.ui.accessors.AccessorScanner;
 
 public class EngineStorage {
 
-	public static void save(FileHandle file, SaveConfiguration config) 
+	static void saveSystems(Json json, SaveConfiguration config)
 	{
-		Json json = new Json();
-
-		StringWriter writer = new StringWriter();
-		
-		json.setWriter(writer);
-		
-		json.writeObjectStart();
-		
-		// TODO maybe some other configuration ? plugins ?
-		
 		json.writeArrayStart("systems");
 		
 		for(EntitySystem system : config.engine.getSystems()){
@@ -36,7 +23,8 @@ public class EngineStorage {
 			if(store != null){
 				json.writeObjectStart();
 				json.writeValue("type", store.value());
-				for(Accessor accessor : AccessorScanner.scan(system, true)){
+				json.writeValue("enabled", system.checkProcessing()); // TODO status won't be saved for non storable systems
+				for(Accessor accessor : AccessorScanner.scan(system, true, false)){
 					if(accessor.getType() != void.class)
 						json.writeValue(accessor.getName(), accessor.get());
 				}
@@ -45,18 +33,30 @@ public class EngineStorage {
 		}
 		
 		json.writeArrayEnd();
+	}
+	
+	static void saveViews(Json json, SaveConfiguration config)
+	{
+		json.writeArrayStart("views");
 		
-		json.writeObjectEnd();
+		for(EntitySystem system : config.visibleSystems){
+			String name;
+			Storable store = system.getClass().getAnnotation(Storable.class);
+			if(store != null){
+				name = store.value();
+			}
+			else
+			{
+				name = system.getClass().getName();
+			}
+			json.writeValue(name);
+		}
 		
-		file.writeString(json.prettyPrint(writer.toString()), false);
-		
+		json.writeArrayEnd();
 	}
 
-	public static void load(FileHandle file, LoadConfiguration config){
-		JsonReader reader = new JsonReader();
-		JsonValue root = reader.parse(file);
+	static void load(Json json, JsonValue root, LoadConfiguration config){
 		
-		Json json = new Json();
 		
 		// type mapping
 		ObjectMap<String, EntitySystem> systemRegistry = new ObjectMap<String, EntitySystem>();
@@ -68,13 +68,18 @@ public class EngineStorage {
 		}
 		
 		
-		if(root.has("systems")){
+		if(config.loadSettings && root.has("systems")){
 			for(JsonIterator i = root.get("systems").iterator() ; i.hasNext() ; ){
 				JsonValue systemSettings = i.next();
 				String type = systemSettings.getString("type");
 				EntitySystem system = systemRegistry.get(type);
 				if(system != null){
-					for(Accessor accessor : AccessorScanner.scan(system, true)){
+					if(systemSettings.has("enabled")){
+						system.setProcessing(systemSettings.getBoolean("enabled"));
+					}
+					// TODO shouldn't be like that : set only values when defined in json, avoid
+					// setting null values !
+					for(Accessor accessor : AccessorScanner.scan(system, true, false)){
 						if(accessor.getType() != void.class){
 							JsonValue jsonValue = systemSettings.get(accessor.getName());
 							Object value = json.readValue(accessor.getType(), jsonValue);
@@ -88,5 +93,27 @@ public class EngineStorage {
 			
 		}
 		
+		if(config.loadViews && root.has("views")){
+			for(JsonIterator i = root.get("views").iterator() ; i.hasNext() ; ){
+				JsonValue systemSettings = i.next();
+				String type = systemSettings.asString();
+				EntitySystem system = systemRegistry.get(type);
+				if(system == null){
+					system = config.engine.getSystem(ReflectionHelper.forName(type));
+				}
+				if(system != null){
+					config.visibleSystems.add(system);
+				}else{
+					Gdx.app.error("Reflection", "unknown system " + type);
+				}
+			}
+			
+		}
+		
+	}
+
+	public static void load(EntityGroup egs, LoadConfiguration config) 
+	{
+		load(egs.json, egs.jsonData, config);
 	}
 }

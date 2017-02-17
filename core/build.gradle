@@ -9,15 +9,15 @@ buildscript {
 }
 
 apply plugin: "java"
+apply plugin: 'maven-publish'
 
 def generatedResources = "$projectDir/res"
 
 sourceCompatibility = 1.6
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 
-sourceSets.main.java.srcDirs = [ "src/" ]
+sourceSets.main.java.srcDirs = [ "src/", "res/" ]
 sourceSets.test.java.srcDirs = [ "test/" ]
-sourceSets.main.resources.srcDirs = [ "res/" ]
 
 sourceSets {
   main {
@@ -43,4 +43,23 @@ task unpack(){
 
 eclipse.project {
     name = appName + "-core"
+}
+
+task sourceJar(type: Jar) {
+    from sourceSets.main.allJava
+}
+
+publishing {
+    publications {
+        api(MavenPublication) {
+            groupId groupName
+            artifactId appName
+            
+            from components.java
+            
+            artifact sourceJar {
+                classifier "sources"
+            }
+        }
+    }
 }

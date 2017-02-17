@@ -45,7 +45,6 @@ abstract public class MultiClickTool extends Tool
 			if(maxPoints >= 0 && dots.size >= maxPoints){
 				running = false;
 				complete();
-				end();
 				dots.clear();
 			}
 			return true;
@@ -54,7 +53,6 @@ abstract public class MultiClickTool extends Tool
 		else if(maxPoints < 0 && button == Input.Buttons.RIGHT){
 			running = false;
 			complete();
-			end();
 			dots.clear();
 			return true;
 		}

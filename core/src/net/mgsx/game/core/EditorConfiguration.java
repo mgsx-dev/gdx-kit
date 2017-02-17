@@ -17,4 +17,10 @@ public class EditorConfiguration
 	 * Plugin to boot up.
 	 */
 	final public Array<Plugin> plugins = new Array<Plugin>();
+
+	/**
+	 * auto save path : set null to disable auto save.
+	 * Auto save is done on application exit (with or without exception)
+	 */
+	public String autoSavePath = "kit-autosave.json";
 }

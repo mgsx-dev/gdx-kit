@@ -1,0 +1,41 @@
+buildscript {
+	repositories {
+        mavenLocal()
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.badlogicgames.gdx:gdx-tools:1.9.4'
+    }
+}
+
+apply plugin: "java"
+apply plugin: 'maven-publish'
+
+sourceCompatibility = 1.6
+[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+
+sourceSets.main.java.srcDirs = [ "src/" ]
+sourceSets.test.java.srcDirs = [ "test/" ]
+
+eclipse.project {
+    name = appName + "-desktop"
+}
+
+task sourceJar(type: Jar) {
+    from sourceSets.main.allJava
+}
+
+publishing {
+    publications {
+        api(MavenPublication) {
+            groupId groupName
+            artifactId "$appName-desktop"
+            
+            from components.java
+            
+            artifact sourceJar {
+                classifier "sources"
+            }
+        }
+    }
+}

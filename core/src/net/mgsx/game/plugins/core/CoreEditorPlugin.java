@@ -4,12 +4,16 @@ import com.badlogic.gdx.math.Interpolation;
 
 import net.mgsx.game.core.EditorScreen;
 import net.mgsx.game.core.annotations.PluginDef;
+import net.mgsx.game.core.helpers.FilesShaderProgram;
 import net.mgsx.game.core.plugins.EditorPlugin;
 import net.mgsx.game.core.storage.EntityGroupRef;
 import net.mgsx.game.core.storage.LoadConfiguration;
+import net.mgsx.game.core.tools.NoTool;
+import net.mgsx.game.core.tools.Tool;
 import net.mgsx.game.core.ui.EntityEditor;
 import net.mgsx.game.core.ui.widgets.StaticFieldSelector;
 import net.mgsx.game.plugins.camera.CameraEditorPlugin;
+import net.mgsx.game.plugins.core.editors.ShaderProgramEditor;
 import net.mgsx.game.plugins.core.math.Signal;
 import net.mgsx.game.plugins.core.systems.GridDebugSystem;
 import net.mgsx.game.plugins.core.systems.PolygonRenderSystem;
@@ -46,6 +50,8 @@ public class CoreEditorPlugin extends EditorPlugin
 	{
 		
 		EntityEditor.defaultTypeEditors.put(Interpolation.class, new StaticFieldSelector<Interpolation>(Signal.class, Interpolation.class));
+		EntityEditor.defaultTypeEditors.put(FilesShaderProgram.class, new ShaderProgramEditor());
+		
 		
 		// systems
 		editor.entityEngine.addSystem(new SelectionRenderSystem(editor));
@@ -59,6 +65,7 @@ public class CoreEditorPlugin extends EditorPlugin
 		editor.addTool(new ClipPlaneTool(editor));
 		
 		// order is very important !
+		editor.addGlobalTool(new SelectTool(editor));;
 		editor.addGlobalTool(new ZoomTool(editor));
 		editor.addGlobalTool(new PanTool(editor));
 		editor.addGlobalTool(new DuplicateTool(editor));
@@ -68,7 +75,8 @@ public class CoreEditorPlugin extends EditorPlugin
 
 		editor.addGlobalTool(new SwitchCameraTool(editor));
 		
-		editor.addSuperTool(new SelectTool(editor));;
+		Tool noTool = new NoTool("Select", editor); // TODO !!??
+		editor.addSuperTool(noTool); 
 		
 		editor.addSuperTool(new OpenTool(editor));;
 		editor.addSuperTool(new SaveTool(editor));;
@@ -81,6 +89,8 @@ public class CoreEditorPlugin extends EditorPlugin
 
 		editor.addSuperTool(new ExportClassesTool(editor));;
 
+		editor.setTool(noTool);
+		
 		LoadConfiguration config = new LoadConfiguration();
 		config.assets = editor.assets;
 		config.engine = editor.entityEngine;
