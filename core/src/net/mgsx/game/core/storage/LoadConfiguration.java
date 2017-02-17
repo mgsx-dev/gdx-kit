@@ -23,4 +23,5 @@ public class LoadConfiguration {
 	public Array<EntitySystem> visibleSystems = new Array<EntitySystem>();
 	
 	public LoadedCallback loadedCallback;
+	public Array<String> diagnostic = new Array<String>();
 }

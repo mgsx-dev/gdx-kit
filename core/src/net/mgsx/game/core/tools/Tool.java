@@ -102,14 +102,21 @@ abstract public class Tool extends InputAdapter
 				Gdx.input.isKeyPressed(Input.Keys.SHIFT_RIGHT);
 
 	}
-
+	@Deprecated
 	protected Vector2 unproject(float screenX, float screenY) {
 		return unproject(editor.getGameCamera(), screenX, screenY);
 	}
+	protected Vector2 unproject(Vector2 result, float screenX, float screenY) {
+		return unproject(result, editor.getGameCamera(), screenX, screenY);
+	}
+	@Deprecated
 	public static Vector2 unproject(Camera camera, float screenX, float screenY) {
+		return unproject(new Vector2(), camera, screenX, screenY);
+	}
+	public static Vector2 unproject(Vector2 result, Camera camera, float screenX, float screenY) {
 		Vector3 base = camera.project(new Vector3());
 		Vector3 v = camera.unproject(new Vector3(screenX, screenY, base.z));
-		return new Vector2(v.x, v.y);
+		return result.set(v.x, v.y);
 	}
 	protected Vector2 unproject(Vector2 screenPosition) {
 		return unproject(screenPosition.x, screenPosition.y);
