@@ -138,6 +138,12 @@ public class GameRegistry {
 				}
 			}
 		}
+		
+		
+	}
+	
+	void collect(GameScreen screen)
+	{
 		// scan all systems in order to inject assets
 		for(EntitySystem system : screen.entityEngine.getSystems())
 		{
@@ -148,7 +154,6 @@ public class GameRegistry {
 				}
 			}
 		}
-		
 	}
 
 	void inject(GameScreen screen) 

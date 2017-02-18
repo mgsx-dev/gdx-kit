@@ -82,10 +82,16 @@ public class EditorRegistry extends GameRegistry
 		plugins.add(plugin);
 	}
 	
+	@Override
+	void collect(GameScreen screen) {
+		// XXX prevent normal collect, wait editor systems.
+	}
+	
 	public void init(EditorScreen editor) 
 	{
 		for(EditorPlugin plugin : editorPlugins.values()){
 			plugin.initialize(editor);
 		}
+		super.collect(editor.game);
 	}
 }
