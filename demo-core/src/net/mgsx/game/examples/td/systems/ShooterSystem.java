@@ -64,6 +64,7 @@ public class ShooterSystem extends IteratingSystem
 
 	private void createShot(Entity shootingEntity, Entity targetEntity) 
 	{
+		Shooter shooter = Shooter.components.get(shootingEntity);
 		Transform2DComponent source = Transform2DComponent.components.get(shootingEntity);
 		Transform2DComponent target = Transform2DComponent.components.get(targetEntity);
 		
@@ -78,6 +79,8 @@ public class ShooterSystem extends IteratingSystem
 			.add(source.position); // position
 		shot.end.set(target.position);
 		shotEntity.add(shot);
+		
+		shot.speed = shooter.speed;
 		
 		SingleTarget singleTarget = getEngine().createComponent(SingleTarget.class);
 		singleTarget.target = targetEntity;

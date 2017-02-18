@@ -15,4 +15,7 @@ public class Shooter implements Component
 	
 	@Editable
 	public int maxShots = 1;
+	
+	@Editable
+	public float speed = 5;
 }

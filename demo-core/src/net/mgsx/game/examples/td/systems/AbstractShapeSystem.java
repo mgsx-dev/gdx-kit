@@ -10,7 +10,7 @@ import net.mgsx.game.core.GameScreen;
 public abstract class AbstractShapeSystem extends IteratingSystem
 {
 	protected ShapeRenderer renderer;
-	private GameScreen game;
+	protected GameScreen game;
 	protected ShapeType shapeType = ShapeType.Filled;
 	
 	public AbstractShapeSystem(GameScreen game, Family family, int priority) {
