@@ -1,12 +1,16 @@
 package net.mgsx.game.core;
 
+import java.lang.reflect.Field;
+
 import com.badlogic.ashley.core.Component;
+import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.Json.Serializer;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.ObjectMap.Entry;
 
+import net.mgsx.game.core.annotations.Asset;
 import net.mgsx.game.core.annotations.PluginDef;
 import net.mgsx.game.core.annotations.Storable;
 import net.mgsx.game.core.helpers.ReflectionHelper;
@@ -131,6 +135,30 @@ public class GameRegistry {
 				Storable storable = entry.value.getAnnotation(Storable.class);
 				if(storable != null && storable.auto()){
 					serializers.put(entry.value, new AnnotationBasedSerializer(entry.value));
+				}
+			}
+		}
+		// scan all systems in order to inject assets
+		for(EntitySystem system : screen.entityEngine.getSystems())
+		{
+			for(Field field : system.getClass().getFields()){
+				Asset asset = field.getAnnotation(Asset.class);
+				if(asset != null && !asset.value().isEmpty()){
+					screen.assets.load(asset.value(), field.getType());
+				}
+			}
+		}
+		
+	}
+
+	void inject(GameScreen screen) 
+	{
+		for(EntitySystem system : screen.entityEngine.getSystems())
+		{
+			for(Field field : system.getClass().getFields()){
+				Asset asset = field.getAnnotation(Asset.class);
+				if(asset != null && !asset.value().isEmpty()){
+					ReflectionHelper.set(system, field, screen.assets.get(asset.value(), field.getType()));
 				}
 			}
 		}

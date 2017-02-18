@@ -65,6 +65,12 @@ public class GameScreen extends ScreenAdapter
 	}
 	
 	@Override
+	public void show() {
+		super.show();
+		registry.inject(this);
+	}
+	
+	@Override
 	public void render(float delta) 
 	{
 		// load pending entity groups in engine.

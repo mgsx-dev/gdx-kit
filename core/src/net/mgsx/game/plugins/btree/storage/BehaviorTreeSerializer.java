@@ -8,7 +8,7 @@ import com.badlogic.gdx.ai.btree.utils.BehaviorTreeLibraryManager;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
 
-import net.mgsx.game.core.annotations.Asset;
+import net.mgsx.game.core.annotations.TaskAsset;
 import net.mgsx.game.core.helpers.ReflectionHelper;
 import net.mgsx.game.core.storage.AssetAwareSerializer;
 import net.mgsx.game.plugins.btree.BTreeModel;
@@ -37,7 +37,7 @@ public class BehaviorTreeSerializer extends AssetAwareSerializer<BTreeModel>
 	
 	private void findReferences(Task task){
 		for(Field field : task.getClass().getFields()){
-			Asset asset = field.getAnnotation(Asset.class);
+			TaskAsset asset = field.getAnnotation(TaskAsset.class);
 			if(asset != null && field.getType() == String.class){
 				parent.reference(ReflectionHelper.get(task, field, String.class));
 			}

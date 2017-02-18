@@ -5,7 +5,7 @@ import com.badlogic.gdx.ai.btree.annotation.TaskAttribute;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 
-import net.mgsx.game.core.annotations.Asset;
+import net.mgsx.game.core.annotations.TaskAsset;
 import net.mgsx.game.core.components.Movable;
 import net.mgsx.game.core.storage.EntityGroup;
 import net.mgsx.game.plugins.box2d.components.Box2DBodyModel;
@@ -17,7 +17,7 @@ import net.mgsx.game.plugins.core.components.Transform2DComponent;
 @TaskAlias("emitAtDistance")
 public class EmitAtDistanceTask extends EntityLeafTask
 {
-	@Asset(EntityGroup.class)
+	@TaskAsset(EntityGroup.class)
 	@TaskAttribute
 	public String particle;
 	

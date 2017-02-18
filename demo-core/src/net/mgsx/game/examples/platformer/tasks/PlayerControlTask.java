@@ -8,7 +8,7 @@ import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.Manifold;
 
-import net.mgsx.game.core.annotations.Asset;
+import net.mgsx.game.core.annotations.TaskAsset;
 import net.mgsx.game.examples.platformer.inputs.PlayerController;
 import net.mgsx.game.examples.platformer.logic.BonusComponent;
 import net.mgsx.game.examples.platformer.logic.Enemy;
@@ -23,7 +23,7 @@ import net.mgsx.game.plugins.particle2d.components.Particle2DComponent;
 @TaskAlias("control")
 public class PlayerControlTask extends ComponentTask
 {
-	@Asset(ParticleEffect.class)
+	@TaskAsset(ParticleEffect.class)
 	@TaskAttribute
 	public String bonusParticle;
 	
