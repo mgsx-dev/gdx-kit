@@ -2,6 +2,9 @@ package net.mgsx.game.examples.td;
 
 import net.mgsx.game.core.EditorScreen;
 import net.mgsx.game.core.plugins.EditorPlugin;
+import net.mgsx.game.examples.td.components.Attachement;
+import net.mgsx.game.examples.td.storage.AttachementSerializer;
+import net.mgsx.game.examples.td.systems.AttachementSystem;
 import net.mgsx.game.examples.td.systems.EnemyAnalysisSystem;
 import net.mgsx.game.examples.td.systems.EnemyLogicSystem;
 import net.mgsx.game.examples.td.systems.EnemyRenderer;
@@ -36,6 +39,7 @@ import net.mgsx.game.examples.td.systems.TowerLogicSystem;
 import net.mgsx.game.examples.td.systems.TowerRangeRenderer;
 import net.mgsx.game.examples.td.systems.TowerRender;
 import net.mgsx.game.examples.td.systems.WaveSystem;
+import net.mgsx.game.examples.td.tools.AttachTool;
 import net.mgsx.game.examples.td.tools.FollowPathTool;
 import net.mgsx.game.examples.td.tools.PlatformTool;
 import net.mgsx.game.examples.td.tools.RoadTool;
@@ -48,11 +52,14 @@ public class TowerDefenseEditorPlugin extends EditorPlugin implements DefaultEdi
 	@Override
 	public void initialize(EditorScreen editor) 
 	{
+		editor.registry.addSerializer(Attachement.class, new AttachementSerializer());
+		
 		editor.addSelector(new TileSelector(editor));
 
 		editor.addTool(new RoadTool(editor));
 		editor.addTool(new PlatformTool(editor));
 		editor.addTool(new FollowPathTool(editor));
+		editor.addTool(new AttachTool(editor));
 		
 		editor.entityEngine.addSystem(new WaveSystem());
 		editor.entityEngine.addSystem(new MapSystem());
@@ -71,6 +78,8 @@ public class TowerDefenseEditorPlugin extends EditorPlugin implements DefaultEdi
 		
 		// then targetting system to select target
 		editor.entityEngine.addSystem(new TargetSystem());
+		
+		editor.entityEngine.addSystem(new AttachementSystem());
 		
 		editor.entityEngine.addSystem(new TowerLogicSystem());
 		editor.entityEngine.addSystem(new LoadSystem());
