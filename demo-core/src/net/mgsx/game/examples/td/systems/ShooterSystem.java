@@ -3,6 +3,7 @@ package net.mgsx.game.examples.td.systems;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
 import net.mgsx.game.core.GamePipeline;
@@ -12,6 +13,7 @@ import net.mgsx.game.examples.td.components.Load;
 import net.mgsx.game.examples.td.components.Shooter;
 import net.mgsx.game.examples.td.components.Shot;
 import net.mgsx.game.examples.td.components.SingleTarget;
+import net.mgsx.game.examples.td.components.Stunning;
 import net.mgsx.game.plugins.core.components.Transform2DComponent;
 
 public class ShooterSystem extends IteratingSystem
@@ -86,6 +88,17 @@ public class ShooterSystem extends IteratingSystem
 			Damage shotDamage = getEngine().createComponent(Damage.class);
 			shotDamage.amount = towerDamage.amount;
 			shotEntity.add(shotDamage);
+		}
+		
+		Stunning towerStunning = Stunning.components.get(shootingEntity);
+		if(towerStunning != null)
+		{
+			if(MathUtils.random() < towerStunning.chance){
+				Stunning shotStunning = getEngine().createComponent(Stunning.class);
+				shotStunning.chance = 1; // XXX no more chance calculations, already done by shooter ...
+				shotStunning.duration = towerStunning.duration;
+				shotEntity.add(shotStunning);
+			}
 		}
 		
 		getEngine().addEntity(shotEntity);

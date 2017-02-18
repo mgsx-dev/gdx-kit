@@ -9,6 +9,8 @@ import net.mgsx.game.examples.td.components.Damage;
 import net.mgsx.game.examples.td.components.Life;
 import net.mgsx.game.examples.td.components.Shot;
 import net.mgsx.game.examples.td.components.SingleTarget;
+import net.mgsx.game.examples.td.components.Stunned;
+import net.mgsx.game.examples.td.components.Stunning;
 
 public class ShotSystem extends IteratingSystem
 {
@@ -26,11 +28,26 @@ public class ShotSystem extends IteratingSystem
 			SingleTarget singleTarget = SingleTarget.components.get(entity);
 			if(singleTarget != null && singleTarget.target != null)
 			{
+				// remove life
 				Life targetLife = Life.components.get(singleTarget.target);
 				Damage damage = Damage.components.get(entity);
 				if(targetLife != null && damage != null){
 					targetLife.current -= damage.amount; 
 				}
+				
+				// stun
+				Stunning stunning = Stunning.components.get(entity);
+				if(stunning != null)
+				{
+					Stunned stunned = getEngine().createComponent(Stunned.class);
+					stunned.duration = stunning.duration;
+					singleTarget.target.add(stunned);
+				}
+				
+				// TODO freeze
+				// TODO poison
+				// TODO others ... ?
+				
 			}
 			
 			getEngine().removeEntity(entity);

@@ -7,6 +7,7 @@ import com.badlogic.gdx.math.Vector2;
 
 import net.mgsx.game.core.GamePipeline;
 import net.mgsx.game.examples.td.components.PathFollower;
+import net.mgsx.game.examples.td.components.Speed;
 import net.mgsx.game.plugins.core.components.Transform2DComponent;
 
 public class PathFollowerSystem extends IteratingSystem
@@ -14,7 +15,7 @@ public class PathFollowerSystem extends IteratingSystem
 	private Vector2 derivative = new Vector2();
 	
 	public PathFollowerSystem() {
-		super(Family.all(Transform2DComponent.class, PathFollower.class).get(), GamePipeline.LOGIC);
+		super(Family.all(Transform2DComponent.class, Speed.class, PathFollower.class).get(), GamePipeline.LOGIC);
 	}
 	
 	@Override
@@ -22,9 +23,10 @@ public class PathFollowerSystem extends IteratingSystem
 	{
 		Transform2DComponent transform = Transform2DComponent.components.get(entity);
 		PathFollower pathFollower = PathFollower.components.get(entity);
+		Speed speed = Speed.components.get(entity);
 		
 		// move on path at constant speed.
-		pathFollower.t += pathFollower.speed * deltaTime / pathFollower.length;
+		pathFollower.t += pathFollower.speed * speed.current * deltaTime / pathFollower.length;
 		if(pathFollower.loop)
 		{
 			if(pathFollower.wrap){

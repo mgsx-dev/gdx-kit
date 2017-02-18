@@ -25,8 +25,7 @@ public class PathFollower implements Component, Poolable
 	public transient float length;
 	public transient Path<Vector2> path;
 
-	@Editable
-	public float speed;
+	public float speed = 1;
 	
 	@Override
 	public void reset() {
@@ -34,5 +33,6 @@ public class PathFollower implements Component, Poolable
 		path = null; // OPTIM give back to pool ?
 		loop = false;
 		wrap = false;
+		speed = 1;
 	}
 }

@@ -170,7 +170,7 @@ public class MapSystem extends EntitySystem
 	private Array<Entity> path = new Array<Entity>();
 	private Array<Entity> candidates = new Array<Entity>();
 	
-	public void findDirectPathToHome(PathFollower pathFollower, int x, int y) 
+	public Entity findDirectPathToHome(PathFollower pathFollower, int x, int y) 
 	{
 		// TODO might be no tile but transform
 		Entity homeEntity = getEngine().getEntitiesFor(Family.all(Home.class, TileComponent.class).get()).first();
@@ -184,10 +184,14 @@ public class MapSystem extends EntitySystem
 		// create spline
 		pathFollower.path = curve;
 		pathFollower.length = source.dst(target);
+		
+		return homeEntity;
 
 	}
-	public void findPathToHome(PathFollower pathFollower, int x, int y) 
+	public Entity findPathToHome(PathFollower pathFollower, int x, int y) 
 	{
+		Entity homeEntity = null;
+		
 		// find logical path and construct some random points for a catmullrom spline
 		path.clear();
 		Entity head = getTile(x, y);
@@ -232,5 +236,10 @@ public class MapSystem extends EntitySystem
 		// create spline
 		pathFollower.path = new CatmullRomSpline<Vector2>(points, false);
 		pathFollower.length = pathFollower.path.approxLength(path.size * 10); // 10 sub segment per segment TODO maybe use a fixed sample count for stability ?
+	
+		homeEntity = path.peek();
+		if(!Home.components.has(homeEntity)) homeEntity = null; // XXX not sure ...
+		
+		return homeEntity;
 	}
 }

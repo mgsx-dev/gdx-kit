@@ -8,6 +8,7 @@ import net.mgsx.game.examples.td.components.Enemy;
 import net.mgsx.game.examples.td.components.Enemy.Type;
 import net.mgsx.game.examples.td.components.Life;
 import net.mgsx.game.examples.td.components.PathFollower;
+import net.mgsx.game.examples.td.components.Speed;
 import net.mgsx.game.examples.td.components.TileComponent;
 import net.mgsx.game.examples.td.systems.MapSystem;
 import net.mgsx.game.examples.td.systems.WaveSystem;
@@ -50,13 +51,15 @@ public class EmitEnemyTask extends EntityLeafTask
 		
 		TileComponent tile = TileComponent.components.get(getEntity());
 		
-		enemy.speed = speed;
+		Speed speed = getEngine().createComponent(Speed.class);
+		speed.base = this.speed;
+
 		enemy.type = this.type;
 		
 		if(direct){
-			map.findDirectPathToHome(path, tile.x, tile.y);
+			enemy.homeTarget = map.findDirectPathToHome(path, tile.x, tile.y);
 		}else{
-			map.findPathToHome(path, tile.x, tile.y);
+			enemy.homeTarget = map.findPathToHome(path, tile.x, tile.y);
 		}
 		path.path.valueAt(transform.position, 0); // init position
 		
@@ -69,6 +72,7 @@ public class EmitEnemyTask extends EntityLeafTask
 		entity.add(enemy);
 		entity.add(life);
 		entity.add(damage);
+		entity.add(speed);
 		
 		getEngine().addEntity(entity);
 		

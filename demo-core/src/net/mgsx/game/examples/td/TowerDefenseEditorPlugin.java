@@ -25,6 +25,8 @@ import net.mgsx.game.examples.td.systems.RangeSystem;
 import net.mgsx.game.examples.td.systems.ShooterSystem;
 import net.mgsx.game.examples.td.systems.ShotRender;
 import net.mgsx.game.examples.td.systems.ShotSystem;
+import net.mgsx.game.examples.td.systems.SpeedSystem;
+import net.mgsx.game.examples.td.systems.StunningSystem;
 import net.mgsx.game.examples.td.systems.TargetSystem;
 import net.mgsx.game.examples.td.systems.TileRenderer;
 import net.mgsx.game.examples.td.systems.TowerDefenseHUD;
@@ -77,6 +79,10 @@ public class TowerDefenseEditorPlugin extends EditorPlugin implements DefaultEdi
 
 		editor.entityEngine.addSystem(new PrickleSystem());
 		editor.entityEngine.addSystem(new FrozenSystem());
+		editor.entityEngine.addSystem(new StunningSystem());
+		
+		editor.entityEngine.addSystem(new SpeedSystem());
+		
 		editor.entityEngine.addSystem(new EnemyLogicSystem());
 		
 		editor.entityEngine.addSystem(new LifeSystem());

@@ -44,7 +44,6 @@ public class FollowPathTool extends PathTool
 		
 		// add path following
 		PathFollower follow = getEngine().createComponent(PathFollower.class);
-		follow.speed = 0.5f; // XXX derived from move speed (logic)
 		follow.path = new CatmullRomSpline<Vector2>(controlPoints2D(points), false);
 		follow.t = 0;
 		follow.length = follow.path.approxLength(100); // XXX
