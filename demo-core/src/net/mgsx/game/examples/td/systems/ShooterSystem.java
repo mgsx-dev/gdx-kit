@@ -10,6 +10,7 @@ import net.mgsx.game.core.GamePipeline;
 import net.mgsx.game.examples.td.components.Aiming;
 import net.mgsx.game.examples.td.components.Damage;
 import net.mgsx.game.examples.td.components.Load;
+import net.mgsx.game.examples.td.components.Poisoning;
 import net.mgsx.game.examples.td.components.Shooter;
 import net.mgsx.game.examples.td.components.Shot;
 import net.mgsx.game.examples.td.components.SingleTarget;
@@ -99,6 +100,15 @@ public class ShooterSystem extends IteratingSystem
 				shotStunning.duration = towerStunning.duration;
 				shotEntity.add(shotStunning);
 			}
+		}
+		
+		Poisoning poisoning = Poisoning.components.get(shootingEntity);
+		if(poisoning != null)
+		{
+			Poisoning shotPoisoning = getEngine().createComponent(Poisoning.class);
+			shotPoisoning.damageDuration = poisoning.damageDuration;
+			shotPoisoning.damageSpeed = poisoning.damageSpeed;
+			shotEntity.add(shotPoisoning);
 		}
 		
 		getEngine().addEntity(shotEntity);

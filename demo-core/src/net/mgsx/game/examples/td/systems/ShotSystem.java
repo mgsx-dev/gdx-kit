@@ -7,6 +7,8 @@ import com.badlogic.ashley.systems.IteratingSystem;
 import net.mgsx.game.core.GamePipeline;
 import net.mgsx.game.examples.td.components.Damage;
 import net.mgsx.game.examples.td.components.Life;
+import net.mgsx.game.examples.td.components.Poisoned;
+import net.mgsx.game.examples.td.components.Poisoning;
 import net.mgsx.game.examples.td.components.Shot;
 import net.mgsx.game.examples.td.components.SingleTarget;
 import net.mgsx.game.examples.td.components.Stunned;
@@ -43,9 +45,16 @@ public class ShotSystem extends IteratingSystem
 					stunned.duration = stunning.duration;
 					singleTarget.target.add(stunned);
 				}
+				Poisoning poisoning = Poisoning.components.get(entity);
+				if(poisoning != null)
+				{
+					Poisoned poisoned = getEngine().createComponent(Poisoned.class);
+					poisoned.duration = poisoning.damageDuration;
+					poisoned.damageSpeed = poisoning.damageSpeed;
+					singleTarget.target.add(poisoned);
+				}
 				
 				// TODO freeze
-				// TODO poison
 				// TODO others ... ?
 				
 			}
