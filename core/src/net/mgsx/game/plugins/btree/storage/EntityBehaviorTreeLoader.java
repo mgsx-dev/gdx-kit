@@ -12,7 +12,7 @@ import com.badlogic.gdx.assets.loaders.FileHandleResolver;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Array;
 
-import net.mgsx.game.core.annotations.Asset;
+import net.mgsx.game.core.annotations.TaskAsset;
 import net.mgsx.game.core.helpers.ReflectionHelper;
 
 public class EntityBehaviorTreeLoader extends BehaviorTreeLoader {
@@ -44,7 +44,7 @@ public class EntityBehaviorTreeLoader extends BehaviorTreeLoader {
 	
 	private void findReferences(Array<AssetDescriptor> deps, Task task){
 		for(Field field : task.getClass().getFields()){
-			Asset asset = field.getAnnotation(Asset.class);
+			TaskAsset asset = field.getAnnotation(TaskAsset.class);
 			if(asset != null && field.getType() == String.class){
 				String fileName = ReflectionHelper.get(task, field, String.class);
 				if(fileName != null)

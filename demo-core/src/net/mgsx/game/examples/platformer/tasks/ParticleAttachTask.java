@@ -4,7 +4,7 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.ai.btree.annotation.TaskAttribute;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 
-import net.mgsx.game.core.annotations.Asset;
+import net.mgsx.game.core.annotations.TaskAsset;
 import net.mgsx.game.plugins.btree.BTreePlugin.EntityLeafTask;
 import net.mgsx.game.plugins.btree.annotations.TaskAlias;
 import net.mgsx.game.plugins.core.components.Transform2DComponent;
@@ -14,7 +14,7 @@ import net.mgsx.game.plugins.particle2d.components.Particle2DComponent;
 public class ParticleAttachTask extends EntityLeafTask
 {
 	@TaskAttribute
-	@Asset(ParticleEffect.class)
+	@TaskAsset(ParticleEffect.class)
 	public String particle;
 	
 	private Entity particleEntity;
