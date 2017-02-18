@@ -127,6 +127,8 @@ abstract public class Tool extends InputAdapter
 	}
 	
 	final public String name;
+	
+	public boolean allowMultiple = false;
 
 	public void update(float deltaTime){
 		

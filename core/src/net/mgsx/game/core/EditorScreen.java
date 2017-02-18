@@ -436,7 +436,7 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 	
 	private void updateSelection() 
 	{
-		final Entity entity = selection.size == 1 ? selection.first() : null;
+		final Entity entity = selection.size > 0 ? selection.peek() : null;
 		
 		for(Button button : contextualButtons ){
 			mainToolGroup.removeButton(button);
@@ -447,90 +447,87 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 		outline.clear();
 		outline.setBackground((Drawable)null);
 		
-		if(selection.size > 1)
-		{
-			buttons.add(String.valueOf(selection.size) + " entities").expandX().fill().row();
-		}
-		else
-		{
-			// TODO move to Tool bar class update ...
+		buttons.add(String.valueOf(selection.size) + " entities").expandX().fill().row();
 			
-			// Display all tools
-			buttons.add("Tools").expandX().center().row();
+		
+		// TODO move to Tool bar class update ...
 			
-			// add filter
-			final SelectBox<String> pluginFilterBox = new SelectBox<String>(skin);
-			buttons.add(pluginFilterBox).expandX().center().row();
-			Array<String> allPlugins = new Array<String>();
-			allPlugins.add("");
-			allPlugins.addAll(registry.allTags());
-			allPlugins.sort();
-			pluginFilterBox.setItems(allPlugins);
-			pluginFilterBox.setSelected(pluginFilter == null ? "" : pluginFilter);
-			pluginFilterBox.addListener(new ChangeListener(){
-				@Override
-				public void changed(ChangeEvent event, Actor actor) {
-					pluginFilter = pluginFilterBox.getSelected();
-					updateSelection();
-				}
-			});
-			
-			// TODO maybe not at each time ... ?
-			mainTools.sort(new Comparator<Tool>() {
+		// Display all tools
+		buttons.add("Tools").expandX().center().row();
+		
+		// add filter
+		final SelectBox<String> pluginFilterBox = new SelectBox<String>(skin);
+		buttons.add(pluginFilterBox).expandX().center().row();
+		Array<String> allPlugins = new Array<String>();
+		allPlugins.add("");
+		allPlugins.addAll(registry.allTags());
+		allPlugins.sort();
+		pluginFilterBox.setItems(allPlugins);
+		pluginFilterBox.setSelected(pluginFilter == null ? "" : pluginFilter);
+		pluginFilterBox.addListener(new ChangeListener(){
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				pluginFilter = pluginFilterBox.getSelected();
+				updateSelection();
+			}
+		});
+		
+		// TODO maybe not at each time ... ?
+		mainTools.sort(new Comparator<Tool>() {
 
-				@Override
-				public int compare(Tool o1, Tool o2) {
-					return o1.name.compareTo(o2.name);
-				}
-			});
-			
-			for(Tool tool : mainTools)
+			@Override
+			public int compare(Tool o1, Tool o2) {
+				return o1.name.compareTo(o2.name);
+			}
+		});
+		
+		for(Tool tool : mainTools)
+		{
+			// check if tool is in current plugin filter.
+			boolean accepted = true;
+			accepted &= selection.size <= 1 || tool.allowMultiple;
+			accepted &= pluginFilter == null || pluginFilter.isEmpty() || pluginFilter.equals(registry.getTag(tool));
+			accepted &= tool.activator == null || (entity != null && tool.activator.matches(entity));
+			if(accepted)
 			{
-				// check if tool is in current plugin filter.
-				boolean accepted = true;
-				accepted &= pluginFilter == null || pluginFilter.isEmpty() || pluginFilter.equals(registry.getTag(tool));
-				accepted &= tool.activator == null || (entity != null && tool.activator.matches(entity));
-				if(accepted)
-				{
-					boolean handled = false;
-					
-					if(tool instanceof ComponentTool && entity != null){
-						ComponentTool componentTool = ((ComponentTool) tool);
-						Class<? extends Component> componentType = componentTool.getAssignableFor();
-						if(componentType != null){
-							Component component = entity.getComponent(componentType);
-							if(component == null){
-								buttons.add(createOutline(entity, component)).expandX().fill().row();
-								handled = true;
-							}
+				boolean handled = false;
+				
+				if(tool instanceof ComponentTool && entity != null){
+					ComponentTool componentTool = ((ComponentTool) tool);
+					Class<? extends Component> componentType = componentTool.getAssignableFor();
+					if(componentType != null){
+						Component component = entity.getComponent(componentType);
+						if(component == null){
+							buttons.add(createOutline(entity, component)).expandX().fill().row();
+							handled = true;
 						}
 					}
-					if(!handled){
-						Button button = createToolButton(tool.name, mainToolGroup, tool);
-						contextualButtons.add(button);
-						buttons.add(button).fill().row();
-					}
+				}
+				if(!handled){
+					Button button = createToolButton(tool.name, mainToolGroup, tool);
+					contextualButtons.add(button);
+					buttons.add(button).fill().row();
 				}
 			}
-			
-			// Display all entity components
-			if(entity != null)
-			{
-				Button btRemove = new Button(skin.getDrawable("tree-minus"));
-				btRemove.addListener(new ChangeListener(){
-					@Override
-					public void changed(ChangeEvent event, Actor actor) {
-						entityEngine.removeEntity(entity);
-					}
-				});
-				
-				outline.setBackground(skin.getDrawable("default-rect"));
-				String title = "Entity # " + String.valueOf(entityEngine.getEntities().indexOf(entity, true));
-				outline.add(title).expandX().center();
-				outline.add(btRemove).row();
-				for(Component aspect : entity.getComponents()){
-					outline.add(createOutline(entity, aspect)).expandX().fill().row();
+		}
+		
+		// Display all entity components (unique entity only)
+		if(selection.size == 1)
+		{
+			Button btRemove = new Button(skin.getDrawable("tree-minus"));
+			btRemove.addListener(new ChangeListener(){
+				@Override
+				public void changed(ChangeEvent event, Actor actor) {
+					entityEngine.removeEntity(entity);
 				}
+			});
+			
+			outline.setBackground(skin.getDrawable("default-rect"));
+			String title = "Entity # " + String.valueOf(entityEngine.getEntities().indexOf(entity, true));
+			outline.add(title).expandX().center();
+			outline.add(btRemove).row();
+			for(Component aspect : entity.getComponents()){
+				outline.add(createOutline(entity, aspect)).expandX().fill().row();
 			}
 		}
 		
