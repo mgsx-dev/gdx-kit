@@ -7,6 +7,7 @@ import com.badlogic.gdx.ai.btree.Task;
 import com.badlogic.gdx.ai.btree.utils.BehaviorTreeLibraryManager;
 import com.badlogic.gdx.ai.btree.utils.BehaviorTreeLoader;
 import com.badlogic.gdx.assets.AssetDescriptor;
+import com.badlogic.gdx.assets.AssetLoaderParameters;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.FileHandleResolver;
 import com.badlogic.gdx.files.FileHandle;
@@ -14,13 +15,18 @@ import com.badlogic.gdx.utils.Array;
 
 import net.mgsx.game.core.annotations.TaskAsset;
 import net.mgsx.game.core.helpers.ReflectionHelper;
+import net.mgsx.game.core.storage.EntityGroup;
+import net.mgsx.game.core.storage.EntityGroupLoaderParameters;
+import net.mgsx.game.core.storage.LoadConfiguration;
 
 public class EntityBehaviorTreeLoader extends BehaviorTreeLoader {
 
 	private BehaviorTree tree;
+	private LoadConfiguration config;
 	
-	public EntityBehaviorTreeLoader(FileHandleResolver resolver) {
+	public EntityBehaviorTreeLoader(FileHandleResolver resolver, LoadConfiguration config) {
 		super(resolver);
+		this.config = config;
 	}
 	
 	@Override
@@ -47,8 +53,16 @@ public class EntityBehaviorTreeLoader extends BehaviorTreeLoader {
 			TaskAsset asset = field.getAnnotation(TaskAsset.class);
 			if(asset != null && field.getType() == String.class){
 				String fileName = ReflectionHelper.get(task, field, String.class);
-				if(fileName != null)
-					deps.add(new AssetDescriptor(fileName, asset.value())); // TODO else warning ?
+				if(fileName != null){
+					AssetLoaderParameters parameters = null;
+					if(asset.value() == EntityGroup.class){
+						EntityGroupLoaderParameters egsp = new EntityGroupLoaderParameters();
+						egsp.config = config;
+						parameters = egsp;
+					}
+					deps.add(new AssetDescriptor(fileName, asset.value(), parameters)); 
+				}
+				// TODO else warning ?
 			}
 		}
 		
