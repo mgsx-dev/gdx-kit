@@ -3,9 +3,15 @@ package net.mgsx.game.plugins.box2d.systems;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 
+import net.mgsx.game.core.annotations.Editable;
+
+@Editable
 public class Box2DEditorSettings 
 {
+	@Editable
 	public BodyDef bodyDef = new BodyDef();
+	
+	@Editable
 	public FixtureDef fixtureDef = new FixtureDef();
 	
 	public Box2DEditorSettings() {

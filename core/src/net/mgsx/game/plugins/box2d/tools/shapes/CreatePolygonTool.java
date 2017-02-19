@@ -5,18 +5,16 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 
 import net.mgsx.game.core.EditorScreen;
-import net.mgsx.game.core.tools.MultiClickTool;
+import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.plugins.box2d.components.Box2DBodyModel;
 import net.mgsx.game.plugins.box2d.systems.Box2DWorldContext;
 import net.mgsx.game.plugins.box2d.tools.Box2DCommands;
 
-public class CreatePolygonTool extends MultiClickTool
+@Editable
+public class CreatePolygonTool extends AbstractDotShapeTool
 {
-	private Box2DWorldContext worldItem;
-	
 	public CreatePolygonTool(EditorScreen editor, Box2DWorldContext worldItem) {
-		super("Polygon", editor);
-		this.worldItem = worldItem;
+		super("Polygon", editor, worldItem);
 	}
 
 

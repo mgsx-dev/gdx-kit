@@ -7,19 +7,16 @@ import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 
 import net.mgsx.game.core.EditorScreen;
-import net.mgsx.game.core.tools.RectangleTool;
+import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.plugins.box2d.components.Box2DBodyModel;
 import net.mgsx.game.plugins.box2d.systems.Box2DWorldContext;
 import net.mgsx.game.plugins.box2d.tools.Box2DCommands;
 
-public class CreateCircleTool extends RectangleTool {
+@Editable
+public class CreateCircleTool extends AbstractBoundShapeTool {
 
-	private Box2DWorldContext worldItem;
-	
-	
 	public CreateCircleTool(EditorScreen editor, Box2DWorldContext worldItem) {
-		super("Circle", editor);
-		this.worldItem = worldItem;
+		super("Circle", editor, worldItem);
 	}
 
 	@Override

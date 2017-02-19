@@ -14,12 +14,6 @@ import net.mgsx.game.core.ui.EntityEditor;
 import net.mgsx.game.core.ui.widgets.TabPane;
 import net.mgsx.game.plugins.box2d.systems.Box2DWorldContext;
 import net.mgsx.game.plugins.box2d.tools.EditBodyTool;
-import net.mgsx.game.plugins.box2d.tools.shapes.CreateChainTool;
-import net.mgsx.game.plugins.box2d.tools.shapes.CreateCircleTool;
-import net.mgsx.game.plugins.box2d.tools.shapes.CreateEdgeTool;
-import net.mgsx.game.plugins.box2d.tools.shapes.CreateLoopTool;
-import net.mgsx.game.plugins.box2d.tools.shapes.CreatePolygonTool;
-import net.mgsx.game.plugins.box2d.tools.shapes.CreateRectangleTool;
 
 public class Box2DWorldEditorPlugin implements GlobalEditorPlugin {
 
@@ -42,12 +36,7 @@ public class Box2DWorldEditorPlugin implements GlobalEditorPlugin {
 		
 		shapeTools.add(noTool);
 		shapeTools.add(new EditBodyTool(editor));
-		shapeTools.add(new CreateRectangleTool(editor, worldItem));
-		shapeTools.add(new CreatePolygonTool(editor, worldItem));
-		shapeTools.add(new CreateCircleTool(editor, worldItem));
-		shapeTools.add(new CreateChainTool(editor, worldItem));
-		shapeTools.add(new CreateLoopTool(editor, worldItem));
-		shapeTools.add(new CreateEdgeTool(editor, worldItem));
+		
 		
 		allTools.addAll(shapeTools);
 		

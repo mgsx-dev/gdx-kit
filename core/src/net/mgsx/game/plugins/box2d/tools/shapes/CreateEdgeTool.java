@@ -5,18 +5,17 @@ import com.badlogic.gdx.physics.box2d.EdgeShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 
 import net.mgsx.game.core.EditorScreen;
-import net.mgsx.game.core.tools.MultiClickTool;
+import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.plugins.box2d.components.Box2DBodyModel;
 import net.mgsx.game.plugins.box2d.systems.Box2DWorldContext;
 import net.mgsx.game.plugins.box2d.tools.Box2DCommands;
 
-public class CreateEdgeTool extends MultiClickTool
+@Editable
+public class CreateEdgeTool extends AbstractDotShapeTool
 {
-	private Box2DWorldContext worldItem;
 	
 	public CreateEdgeTool(EditorScreen editor, Box2DWorldContext worldItem) {
-		super("Edge", editor, 4);
-		this.worldItem = worldItem;
+		super("Edge", editor, worldItem, 4);
 	}
 
 

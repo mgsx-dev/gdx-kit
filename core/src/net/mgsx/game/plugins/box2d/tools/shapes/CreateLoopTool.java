@@ -5,24 +5,24 @@ import com.badlogic.gdx.physics.box2d.ChainShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 
 import net.mgsx.game.core.EditorScreen;
-import net.mgsx.game.core.tools.MultiClickTool;
+import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.plugins.box2d.components.Box2DBodyModel;
 import net.mgsx.game.plugins.box2d.systems.Box2DWorldContext;
 import net.mgsx.game.plugins.box2d.tools.Box2DCommands;
 
-public class CreateLoopTool extends MultiClickTool
+@Editable
+public class CreateLoopTool extends AbstractDotShapeTool
 {
-	private Box2DWorldContext worldItem;
-	
 	public CreateLoopTool(EditorScreen editor, Box2DWorldContext worldItem) {
-		super("Loop", editor);
-		this.worldItem = worldItem;
+		super("Loop", editor, worldItem);
 	}
 
 
 	@Override
 	protected void complete() 
 	{
+		if(dots.size < 3) return;
+		
 		final Box2DBodyModel bodyItem = worldItem.currentBody("Chain Loop", dots.get(0).x, dots.get(0).y);
 		
 		ChainShape shape = new ChainShape();

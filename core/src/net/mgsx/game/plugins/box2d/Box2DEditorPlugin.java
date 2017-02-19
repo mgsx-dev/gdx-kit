@@ -26,6 +26,12 @@ import net.mgsx.game.plugins.box2d.tools.joints.JointRevoluteTool;
 import net.mgsx.game.plugins.box2d.tools.joints.JointRopeTool;
 import net.mgsx.game.plugins.box2d.tools.joints.JointWeldTool;
 import net.mgsx.game.plugins.box2d.tools.joints.JointWheelTool;
+import net.mgsx.game.plugins.box2d.tools.shapes.CreateChainTool;
+import net.mgsx.game.plugins.box2d.tools.shapes.CreateCircleTool;
+import net.mgsx.game.plugins.box2d.tools.shapes.CreateEdgeTool;
+import net.mgsx.game.plugins.box2d.tools.shapes.CreateLoopTool;
+import net.mgsx.game.plugins.box2d.tools.shapes.CreatePolygonTool;
+import net.mgsx.game.plugins.box2d.tools.shapes.CreateRectangleTool;
 
 @PluginDef(dependencies={Box2DPlugin.class})
 public class Box2DEditorPlugin extends EditorPlugin 
@@ -65,5 +71,12 @@ public class Box2DEditorPlugin extends EditorPlugin
 		editor.addTool(new JointWeldTool(editor, context));
 		editor.addTool(new JointWheelTool(editor, context));
 
+		// shape tools
+		editor.addTool(new CreateRectangleTool(editor, context));
+		editor.addTool(new CreatePolygonTool(editor, context));
+		editor.addTool(new CreateCircleTool(editor, context));
+		editor.addTool(new CreateChainTool(editor, context));
+		editor.addTool(new CreateLoopTool(editor, context));
+		editor.addTool(new CreateEdgeTool(editor, context));
 	}
 }
