@@ -52,6 +52,7 @@ public class EditorApplication extends Game
 		}else{
 			restoreWork();
 		}
+		assetManager.finishLoading(); // required when no restoration
 		
 		setScreen(editorScreen);
 	}
