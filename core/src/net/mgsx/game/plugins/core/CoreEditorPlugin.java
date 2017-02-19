@@ -19,14 +19,13 @@ import net.mgsx.game.plugins.core.systems.GridDebugSystem;
 import net.mgsx.game.plugins.core.systems.PolygonRenderSystem;
 import net.mgsx.game.plugins.core.systems.SelectionRenderSystem;
 import net.mgsx.game.plugins.core.tools.ClipPlaneTool;
-import net.mgsx.game.plugins.core.tools.CreateProxyTool;
+import net.mgsx.game.plugins.core.tools.ImportEntitiesTool;
 import net.mgsx.game.plugins.core.tools.DeleteTool;
 import net.mgsx.game.plugins.core.tools.DuplicateTool;
 import net.mgsx.game.plugins.core.tools.EntityEmitterTool;
 import net.mgsx.game.plugins.core.tools.EntityGroupEditor;
 import net.mgsx.game.plugins.core.tools.ExportClassesTool;
 import net.mgsx.game.plugins.core.tools.GridTool;
-import net.mgsx.game.plugins.core.tools.ImportPatchTool;
 import net.mgsx.game.plugins.core.tools.MultiCloneTool;
 import net.mgsx.game.plugins.core.tools.OpenTool;
 import net.mgsx.game.plugins.core.tools.PanTool;
@@ -85,9 +84,7 @@ public class CoreEditorPlugin extends EditorPlugin
 		editor.addSuperTool(new ResetTool(editor));;
 		editor.addSuperTool(new DeleteTool(editor));;
 
-		editor.addSuperTool(new ImportPatchTool(editor));;
-
-		editor.addSuperTool(new CreateProxyTool(editor));
+		editor.addSuperTool(new ImportEntitiesTool(editor));
 
 		editor.addSuperTool(new ExportClassesTool(editor));;
 
