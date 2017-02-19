@@ -7,7 +7,6 @@ import net.mgsx.game.plugins.box2d.components.Box2DBodyModel;
 import net.mgsx.game.plugins.box2d.components.Box2DJointModel;
 import net.mgsx.game.plugins.box2d.editors.Box2DBodyEditorPlugin;
 import net.mgsx.game.plugins.box2d.editors.Box2DJointEditorPlugin;
-import net.mgsx.game.plugins.box2d.editors.Box2DWorldEditorPlugin;
 import net.mgsx.game.plugins.box2d.systems.Box2DBoundaryDebugSystem;
 import net.mgsx.game.plugins.box2d.systems.Box2DRayCastDebugSystem;
 import net.mgsx.game.plugins.box2d.systems.Box2DRenderDebugSystem;
@@ -15,6 +14,7 @@ import net.mgsx.game.plugins.box2d.systems.Box2DWorldContext;
 import net.mgsx.game.plugins.box2d.systems.Box2DWorldSystem;
 import net.mgsx.game.plugins.box2d.tools.Box2DBodySelector;
 import net.mgsx.game.plugins.box2d.tools.Box2DParticleTool;
+import net.mgsx.game.plugins.box2d.tools.EditBodyTool;
 import net.mgsx.game.plugins.box2d.tools.joints.JointDistanceTool;
 import net.mgsx.game.plugins.box2d.tools.joints.JointFrictionTool;
 import net.mgsx.game.plugins.box2d.tools.joints.JointGearTool;
@@ -42,8 +42,6 @@ public class Box2DEditorPlugin extends EditorPlugin
 		Box2DWorldContext context = editor.entityEngine.getSystem(Box2DWorldSystem.class).getWorldContext();
 		context.editor = editor;
 		// TODO change raycast here to get the debug data
-		
-		editor.registry.addGlobalEditor("Box2D", new Box2DWorldEditorPlugin(context));
 		
 		editor.addTool(new Box2DParticleTool(editor));
 		
@@ -78,5 +76,7 @@ public class Box2DEditorPlugin extends EditorPlugin
 		editor.addTool(new CreateChainTool(editor, context));
 		editor.addTool(new CreateLoopTool(editor, context));
 		editor.addTool(new CreateEdgeTool(editor, context));
+		
+		editor.addTool(new EditBodyTool(editor));
 	}
 }
