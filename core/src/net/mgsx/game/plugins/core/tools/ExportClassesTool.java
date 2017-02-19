@@ -15,7 +15,7 @@ public class ExportClassesTool extends Tool
 	public String path = "../src";
 	
 	public ExportClassesTool(EditorScreen editor) {
-		super("Meta", editor);
+		super("Export Classes", editor);
 	}
 	
 	@Editable
