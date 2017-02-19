@@ -2,6 +2,7 @@ package net.mgsx.game.core.storage;
 
 import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.Entity;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetDescriptor;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.AsynchronousAssetLoader;
@@ -35,7 +36,16 @@ public class EntityGroupLoader extends AsynchronousAssetLoader<EntityGroup, Enti
 		
 		// load json file and return asset part
 		JsonValue jsonData = new JsonReader().parse(file);
-		if(jsonData.has("assets")){
+		if(jsonData == null)
+		{
+			String message = "file " + fileName + " is empty or is not a json file.";
+			if(parameter.config.failSafe){
+				Gdx.app.error("Storage", message);
+			}else{
+				throw new GdxRuntimeException(message);
+			}
+		}
+		if(jsonData != null && jsonData.has("assets")){
 			for(JsonIterator i = jsonData.get("assets").iterator() ; i.hasNext() ; ){
 				JsonValue asset = i.next();
 				String typeName = asset.get("type").asString();
@@ -70,7 +80,7 @@ public class EntityGroupLoader extends AsynchronousAssetLoader<EntityGroup, Enti
 		entityGroup.json = json;
 		entityGroup.jsonData = jsonData;
 		
-		if(jsonData.has("entities")){
+		if(jsonData != null && jsonData.has("entities")){
 			for(JsonIterator entityIteractor = jsonData.get("entities").iterator() ; entityIteractor.hasNext() ; ){
 				JsonValue value = entityIteractor.next();
 				Entity entity = new Entity(); // we don't need pool since it is a duplicable template.

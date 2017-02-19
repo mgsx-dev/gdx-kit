@@ -6,6 +6,7 @@ import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.ObjectMap;
@@ -64,6 +65,8 @@ public class EntityGroupSerializer implements Json.Serializer<EntityGroup>
 			{
 				String name = reference.key;
 				Class type = config.assets.getAssetType(name);
+				
+				if(type == null) throw new GdxRuntimeException("asset manager missing " + name);
 				
 				String typeName = json.getTag(type);
 				if(typeName == null) typeName = type.getName();
