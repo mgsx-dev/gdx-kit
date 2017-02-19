@@ -18,7 +18,7 @@ public class G2DTransformSystem extends IteratingSystem {
 		SpriteModel sprite = SpriteModel.components.get(entity);
 		Transform2DComponent transform = Transform2DComponent.components.get(entity);
 		// TODO enabled
-		sprite.sprite.setPosition(transform.position.x, transform.position.y);
+		sprite.sprite.setPosition(transform.position.x - transform.origin.x, transform.position.y - transform.origin.y);
 		sprite.sprite.setRotation(transform.angle);
 		sprite.sprite.setOrigin(transform.origin.x, transform.origin.y);
 	}
