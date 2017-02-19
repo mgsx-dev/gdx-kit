@@ -1,6 +1,7 @@
 package net.mgsx.game.examples.td.tools;
 
 import com.badlogic.ashley.core.Entity;
+import com.badlogic.gdx.utils.Array;
 
 import net.mgsx.game.core.EditorScreen;
 import net.mgsx.game.core.tools.Tool;
@@ -11,7 +12,13 @@ public class AttachTool extends Tool
 {
 	public AttachTool(EditorScreen editor) {
 		super("Attach", editor);
-		allowMultiple = true;
+	}
+	
+	@Override
+	public boolean allowed(Array<Entity> selection) 
+	{
+		return selection.size > 1;
+		// TODO more check : circular dependencies ... etc
 	}
 	
 	@Override
