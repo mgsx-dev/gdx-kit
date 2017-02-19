@@ -27,39 +27,44 @@ public class FloatWidget extends Label
 	
 	public FloatWidget(Accessor accessor, boolean dynamic, Skin skin) {
 		super("", skin);
-		// XXX this.dynamic = dynamic;
+		this.dynamic = accessor.config() != null && accessor.config().realtime();
 		this.accessor = accessor;
 		setAlignment(Align.center);
-		setColor(Color.ORANGE);
+		
+		if(accessor.config() != null && accessor.config().readonly()){
+			setColor(Color.CYAN);
+		}else{
+			setColor(Color.ORANGE);
+			addListener(new DragListener(){
+				@Override
+				public void drag(InputEvent event, float x, float y, int pointer) {
+					onDrag(getDeltaX(), getDeltaY());
+					// prevent other widget (like ScrollPane) to act during dragging value
+					if(getStage() != null) getStage().cancelTouchFocusExcept(this, FloatWidget.this);
+				}
+				@Override
+				public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+					if(button == Input.Buttons.RIGHT){
+						setValue(-getValue());
+						fireChange();
+						return true;
+					}else if(button == Input.Buttons.MIDDLE){
+						setValue(0);
+						fireChange();
+						return true;
+					}
+					return super.touchDown(event, x, y, pointer, button);
+				}
+				@Override
+				public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+					if(button == Input.Buttons.LEFT){
+						fireChange();
+					}
+					super.touchUp(event, x, y, pointer, button);
+				}
+			});
+		}
 		updateValue();
-		addListener(new DragListener(){
-			@Override
-			public void drag(InputEvent event, float x, float y, int pointer) {
-				onDrag(getDeltaX(), getDeltaY());
-				// prevent other widget (like ScrollPane) to act during dragging value
-				if(getStage() != null) getStage().cancelTouchFocusExcept(this, FloatWidget.this);
-			}
-			@Override
-			public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-				if(button == Input.Buttons.RIGHT){
-					setValue(-getValue());
-					fireChange();
-					return true;
-				}else if(button == Input.Buttons.MIDDLE){
-					setValue(0);
-					fireChange();
-					return true;
-				}
-				return super.touchDown(event, x, y, pointer, button);
-			}
-			@Override
-			public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-				if(button == Input.Buttons.LEFT){
-					fireChange();
-				}
-				super.touchUp(event, x, y, pointer, button);
-			}
-		});
 	}
 	
 	@Override
