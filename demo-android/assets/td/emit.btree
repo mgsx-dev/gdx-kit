@@ -1,0 +1,8 @@
+# import behaviorTree:"com.badlogic.gdx.ai.btree.BehaviorTree"
+# import sequence:"com.badlogic.gdx.ai.btree.branch.Sequence"
+# import wait:"com.badlogic.gdx.ai.btree.leaf.Wait"
+import emit:"net.mgsx.game.plugins.btree.tasks.EntityGroupEmitter"
+
+sequence
+  emit fileName:"td/towers/basic-canon.json"
+  wait seconds:2.0

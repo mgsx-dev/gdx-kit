@@ -1,0 +1,21 @@
+{
+entities: [
+	{
+		id: 0
+		2d: {}
+		td.enemy: {
+			type: HEXAGON
+		}
+		td.speed: {}
+		btree: {
+			library: td/emit.btree
+		}
+	}
+]
+assets: [
+	{
+		type: com.badlogic.gdx.ai.btree.BehaviorTree
+		name: td/emit.btree
+	}
+]
+}

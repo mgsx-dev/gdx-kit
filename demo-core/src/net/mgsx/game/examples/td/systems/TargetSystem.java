@@ -59,6 +59,27 @@ public class TargetSystem extends IteratingSystem
 		super(Family.all(Transform2DComponent.class).one(SingleTarget.class, MultiTarget.class).get(), GamePipeline.LOGIC);
 	}
 	
+	public Entity findClosestOpponent(Entity entity) {
+		final Transform2DComponent transform = Transform2DComponent.components.get(entity);
+		if(transform == null) return null;
+		boolean isEnemy = Enemy.components.has(entity);
+		ImmutableArray<Entity> targets = isEnemy ? allies : enemies;
+		candidates.clear();
+		for(Entity enemyEntity : targets) candidates.add(enemyEntity);
+		candidates.sort(new Comparator<Entity>() {
+						@Override
+						public int compare(Entity o1, Entity o2) {
+							Transform2DComponent e1 = Transform2DComponent.components.get(o1);
+							Transform2DComponent e2 = Transform2DComponent.components.get(o2);
+							return Float.compare(e1.position.dst2(transform.position), e2.position.dst2(transform.position));
+						}
+					});
+		
+		if(candidates.size > 0) return candidates.first();
+		
+		return null;
+	}
+	
 	@Override
 	protected void processEntity(Entity entity, float deltaTime) 
 	{
@@ -211,4 +232,6 @@ public class TargetSystem extends IteratingSystem
 			}
 		});
 	}
+
+	
 }

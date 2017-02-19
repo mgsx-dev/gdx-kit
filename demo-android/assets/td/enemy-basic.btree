@@ -1,0 +1,10 @@
+# import behaviorTree:"com.badlogic.gdx.ai.btree.BehaviorTree"
+# import selector:"com.badlogic.gdx.ai.btree.branch.Selector"
+import target?:"net.mgsx.game.examples.td.tasks.HasTargetCondition"
+import moveToHome:"net.mgsx.game.examples.td.tasks.MoveToHomeTask"
+import moveToEnemy:"net.mgsx.game.examples.td.tasks.MoveToOpponentTask"
+
+selector
+  target?
+  moveToEnemy
+  moveToHome
