@@ -27,6 +27,7 @@ import net.mgsx.game.plugins.core.tools.EntityGroupEditor;
 import net.mgsx.game.plugins.core.tools.ExportClassesTool;
 import net.mgsx.game.plugins.core.tools.GridTool;
 import net.mgsx.game.plugins.core.tools.ImportPatchTool;
+import net.mgsx.game.plugins.core.tools.MultiCloneTool;
 import net.mgsx.game.plugins.core.tools.OpenTool;
 import net.mgsx.game.plugins.core.tools.PanTool;
 import net.mgsx.game.plugins.core.tools.ResetAllProxyTool;
@@ -63,6 +64,7 @@ public class CoreEditorPlugin extends EditorPlugin
 		editor.addTool(new ResetAllProxyTool(editor));
 		editor.addTool(new UnproxyTool(editor));
 		editor.addTool(new ClipPlaneTool(editor));
+		editor.addTool(new MultiCloneTool(editor));
 		
 		// order is very important !
 		editor.addGlobalTool(new SelectTool(editor));;
