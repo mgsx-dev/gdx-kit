@@ -113,7 +113,7 @@ public class GameScreen extends ScreenAdapter
 			config.loadedCallback = new LoadedCallback() {
 				@Override
 				public void finishedLoading(AssetManager assetManager, String fileName, Class type) {
-					EntityGroup egs = assetManager.get(fileName, type);
+					EntityGroup egs = (EntityGroup)assetManager.get(fileName, type);
 					EngineStorage.load(egs, config);
 				}
 			};
