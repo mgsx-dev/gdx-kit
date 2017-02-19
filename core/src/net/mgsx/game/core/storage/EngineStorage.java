@@ -58,6 +58,10 @@ public class EngineStorage {
 	static void load(Json json, JsonValue root, LoadConfiguration config){
 		
 		
+		if(root == null){
+			return; // TODO trace ? exception ?
+		}
+		
 		// type mapping
 		ObjectMap<String, EntitySystem> systemRegistry = new ObjectMap<String, EntitySystem>();
 		for(EntitySystem system : config.engine.getSystems()){
