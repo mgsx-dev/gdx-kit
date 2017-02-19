@@ -1,6 +1,8 @@
 package net.mgsx.game.plugins.box2d.tools.joints;
 
+import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.physics.box2d.JointDef;
+import com.badlogic.gdx.utils.Array;
 
 import net.mgsx.game.core.EditorScreen;
 import net.mgsx.game.core.tools.MultiClickTool;
@@ -16,6 +18,15 @@ abstract public class JointTool<T extends JointDef> extends MultiClickTool
 	{
 		super("Create " + name, editor, maxPoints);
 		this.worldItem = worldItem;
+	}
+	
+	@Override
+	public boolean allowed(Array<Entity> selection) 
+	{
+		// allow only 2 bodies (maybe gears will override this rule : only 2 joints ?)
+		if(selection.size != 2) return false;
+		return Box2DBodyModel.components.has(selection.first()) &&
+				Box2DBodyModel.components.has(selection.peek());
 	}
 	
 	protected abstract T createJoint(Box2DBodyModel bodyA, Box2DBodyModel bodyB);

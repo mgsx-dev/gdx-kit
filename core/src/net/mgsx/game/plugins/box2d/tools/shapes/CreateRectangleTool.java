@@ -5,20 +5,18 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 
 import net.mgsx.game.core.EditorScreen;
-import net.mgsx.game.core.tools.RectangleTool;
+import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.plugins.box2d.components.Box2DBodyModel;
 import net.mgsx.game.plugins.box2d.systems.Box2DWorldContext;
 import net.mgsx.game.plugins.box2d.tools.Box2DCommands;
 
 // TODO java: /var/lib/jenkins/workspace/libgdx/extensions/gdx-box2d/gdx-box2d/jni/Box2D/Collision/Shapes/b2PolygonShape.cpp:430: virtual void b2PolygonShape::ComputeMass(b2MassData*, float32) const: Assertion `area > 1.19209289550781250000e-7F' failed.
 
-public class CreateRectangleTool extends RectangleTool {
+@Editable
+public class CreateRectangleTool extends AbstractBoundShapeTool {
 
-	private Box2DWorldContext worldItem;
-	
 	public CreateRectangleTool(EditorScreen editor, Box2DWorldContext worldItem) {
-		super("Rectangle", editor);
-		this.worldItem = worldItem;
+		super("Rectangle", editor, worldItem);
 	}
 
 	@Override

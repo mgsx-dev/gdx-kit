@@ -1,11 +1,13 @@
 package net.mgsx.game.core.ui.widgets;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.utils.Align;
 
 import net.mgsx.game.core.ui.FieldEditor;
 import net.mgsx.game.core.ui.accessors.Accessor;
@@ -43,6 +45,37 @@ public class IntegerWidget implements FieldEditor
 	@Override
 	public Actor create(final Accessor accessor, Skin skin) 
 	{
+		if(accessor.config() != null && accessor.config().readonly()){
+			Label label = createReadOnly(accessor, skin);
+			label.setAlignment(Align.center);
+			label.setColor(Color.CYAN);
+			return label;
+		}else{
+			return createEditable(accessor, skin);
+		}
+	}
+	
+	private Label createReadOnly(final Accessor accessor, Skin skin){
+		String initText = String.valueOf(AccessorHelper.asLong(accessor));
+		if(accessor.config() != null && accessor.config().realtime()){
+			return new Label(initText, skin){
+				private long oldValue = AccessorHelper.asLong(accessor);
+				@Override
+				public void act(float delta) {
+					long newValue = AccessorHelper.asLong(accessor);
+					if(newValue != oldValue){
+						setText(String.valueOf(newValue));
+						oldValue = newValue;
+					}
+					super.act(delta);
+				}
+			};
+		}else{
+			return new Label(initText, skin);
+		}
+	}
+	
+	private Actor createEditable(final Accessor accessor, Skin skin){
 		Table sub = new Table(skin);
 		final Label label = new Label("", skin);
 		final TextButton btPlus = new TextButton("+", skin);
@@ -55,6 +88,7 @@ public class IntegerWidget implements FieldEditor
 		sub.add(btPlus);
 		sub.add(btMul);
 		label.setText(String.valueOf(accessor.get()));
+		label.setAlignment(Align.center);
 		
 		btPlus.addListener(new ChangeListener() {
 			@Override

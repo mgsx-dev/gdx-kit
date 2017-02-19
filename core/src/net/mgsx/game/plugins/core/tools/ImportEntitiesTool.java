@@ -6,6 +6,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 
 import net.mgsx.game.core.EditorScreen;
+import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.core.components.Movable;
 import net.mgsx.game.core.helpers.NativeService;
 import net.mgsx.game.core.helpers.NativeService.DefaultCallback;
@@ -14,11 +15,16 @@ import net.mgsx.game.core.storage.LoadConfiguration;
 import net.mgsx.game.core.tools.ClickTool;
 import net.mgsx.game.plugins.btree.BTreeModel;
 
-public class ImportPatchTool extends ClickTool {
+@Editable
+public class ImportEntitiesTool extends ClickTool 
+{
+	@Editable
+	public boolean proxy = false;
+	
 	private FileHandle file;
 
-	public ImportPatchTool(EditorScreen editor) {
-		super("Import", editor);
+	public ImportEntitiesTool(EditorScreen editor) {
+		super("Import", editor); // TODO maybe rename Import Entities when merged in all tools ?
 	}
 
 	@Override
@@ -36,6 +42,10 @@ public class ImportPatchTool extends ClickTool {
 			public String description() {
 				return "Patch files (json)";
 			}
+			@Override
+			public void cancel() {
+				end();
+			}
 		});
 	}
 
@@ -46,15 +56,23 @@ public class ImportPatchTool extends ClickTool {
 		config.assets = editor.assets;
 		config.registry = editor.registry;
 		config.engine = editor.entityEngine;
-		for(Entity entity : EntityGroupStorage.loadForEditing(editor, file.path(), config)){
-			Movable movable = entity.getComponent(Movable.class);
-			if(movable != null){
-				movable.moveTo(entity, new Vector3(position.x, position.y, 0)); // sprite plan
-			}
-			BTreeModel btree = BTreeModel.components.get(entity);
-			if(btree != null){
-				btree.enabled = true;
-				btree.remove = true;
+		
+		if(proxy)
+		{
+			EntityGroupStorage.loadAsProxy(file.path(), position, config);
+		}
+		else
+		{
+			for(Entity entity : EntityGroupStorage.loadForEditing(editor, file.path(), config)){
+				Movable movable = entity.getComponent(Movable.class);
+				if(movable != null){
+					movable.moveTo(entity, new Vector3(position.x, position.y, 0)); // sprite plan
+				}
+				BTreeModel btree = BTreeModel.components.get(entity);
+				if(btree != null){
+					btree.enabled = true;
+					btree.remove = true;
+				}
 			}
 		}
 	}

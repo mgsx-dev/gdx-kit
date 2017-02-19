@@ -29,6 +29,11 @@ public class EditBodyTool extends ComponentTool
 		super("Edit body", editor, Family.all(Box2DBodyModel.class).get());
 	}
 	
+	@Override
+	public boolean allowed(Array<Entity> selection) {
+		return selection.size == 1 && Box2DBodyModel.components.has(selection.first());
+	}
+	
 	public static class ShapeComponent implements Component{
 		
 		public static ComponentMapper<EditBodyTool.ShapeComponent> components = ComponentMapper

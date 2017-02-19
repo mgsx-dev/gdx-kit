@@ -19,7 +19,7 @@ import net.mgsx.game.plugins.core.components.Transform2DComponent;
 // TODO it is more an EditorContext (ctx) ...
 public class Box2DWorldContext 
 {
-	public Box2DEditorSettings settings = new Box2DEditorSettings();
+	final public Box2DEditorSettings settings = new Box2DEditorSettings();
 	public World world;
 	public EditorScreen editor;
 	public WorldProvider provider;
