@@ -43,6 +43,34 @@ public class IntegerWidget implements FieldEditor
 	@Override
 	public Actor create(final Accessor accessor, Skin skin) 
 	{
+		if(accessor.config() != null && accessor.config().readonly()){
+			return createReadOnly(accessor, skin);
+		}else{
+			return createEditable(accessor, skin);
+		}
+	}
+	
+	private Actor createReadOnly(final Accessor accessor, Skin skin){
+		String initText = String.valueOf(AccessorHelper.asLong(accessor));
+		if(accessor.config() != null && accessor.config().realtime()){
+			return new Label(initText, skin){
+				private long oldValue = AccessorHelper.asLong(accessor);
+				@Override
+				public void act(float delta) {
+					long newValue = AccessorHelper.asLong(accessor);
+					if(newValue != oldValue){
+						setText(String.valueOf(newValue));
+						oldValue = newValue;
+					}
+					super.act(delta);
+				}
+			};
+		}else{
+			return new Label(initText, skin);
+		}
+	}
+	
+	private Actor createEditable(final Accessor accessor, Skin skin){
 		Table sub = new Table(skin);
 		final Label label = new Label("", skin);
 		final TextButton btPlus = new TextButton("+", skin);

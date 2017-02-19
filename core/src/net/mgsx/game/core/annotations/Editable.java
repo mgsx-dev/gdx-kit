@@ -32,4 +32,10 @@ public @interface Editable
 	Class<? extends FieldEditor> editor() default DefaultFieldEditor.class;
 
 	String doc() default "";
+	
+	/** field should be updated at each frames */
+	boolean realtime() default false;
+	
+	/** only display value : user can't edit value manually */
+	boolean readonly() default false;
 }
