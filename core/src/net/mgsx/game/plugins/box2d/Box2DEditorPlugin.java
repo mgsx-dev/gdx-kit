@@ -15,6 +15,17 @@ import net.mgsx.game.plugins.box2d.systems.Box2DWorldContext;
 import net.mgsx.game.plugins.box2d.systems.Box2DWorldSystem;
 import net.mgsx.game.plugins.box2d.tools.Box2DBodySelector;
 import net.mgsx.game.plugins.box2d.tools.Box2DParticleTool;
+import net.mgsx.game.plugins.box2d.tools.joints.JointDistanceTool;
+import net.mgsx.game.plugins.box2d.tools.joints.JointFrictionTool;
+import net.mgsx.game.plugins.box2d.tools.joints.JointGearTool;
+import net.mgsx.game.plugins.box2d.tools.joints.JointMotorTool;
+import net.mgsx.game.plugins.box2d.tools.joints.JointMouseTool;
+import net.mgsx.game.plugins.box2d.tools.joints.JointPrismaticTool;
+import net.mgsx.game.plugins.box2d.tools.joints.JointPulleyTool;
+import net.mgsx.game.plugins.box2d.tools.joints.JointRevoluteTool;
+import net.mgsx.game.plugins.box2d.tools.joints.JointRopeTool;
+import net.mgsx.game.plugins.box2d.tools.joints.JointWeldTool;
+import net.mgsx.game.plugins.box2d.tools.joints.JointWheelTool;
 
 @PluginDef(dependencies={Box2DPlugin.class})
 public class Box2DEditorPlugin extends EditorPlugin 
@@ -39,5 +50,20 @@ public class Box2DEditorPlugin extends EditorPlugin
 		editor.registry.registerPlugin(Box2DBodyModel.class, new Box2DBodyEditorPlugin());
 		editor.registry.registerPlugin(Box2DJointModel.class, new Box2DJointEditorPlugin());
 		
+		
+		
+		// joint tools : 
+		editor.addTool(new JointDistanceTool(editor, context));
+		editor.addTool(new JointFrictionTool(editor, context));
+		editor.addTool(new JointGearTool(editor, context));
+		editor.addTool(new JointMotorTool(editor, context));
+		editor.addTool(new JointMouseTool(editor, context));
+		editor.addTool(new JointPrismaticTool(editor, context));
+		editor.addTool(new JointPulleyTool(editor, context));
+		editor.addTool(new JointRevoluteTool(editor, context));
+		editor.addTool(new JointRopeTool(editor, context));
+		editor.addTool(new JointWeldTool(editor, context));
+		editor.addTool(new JointWheelTool(editor, context));
+
 	}
 }

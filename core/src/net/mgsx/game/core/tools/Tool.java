@@ -1,6 +1,7 @@
 package net.mgsx.game.core.tools;
 
 import com.badlogic.ashley.core.Engine;
+import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -11,6 +12,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.Array;
 
 import net.mgsx.game.core.EditorScreen;
 import net.mgsx.game.plugins.core.systems.GridDebugSystem;
@@ -128,8 +130,6 @@ abstract public class Tool extends InputAdapter
 	
 	final public String name;
 	
-	public boolean allowMultiple = false;
-
 	public void update(float deltaTime){
 		
 	}
@@ -167,6 +167,18 @@ abstract public class Tool extends InputAdapter
 		
 		
 		return pixelSpace.set(worldSpace2.x, worldSpace2.y);
+	}
+	
+	/**
+	 * Decide if this tool can be activated for a selection.
+	 * Default is true for a maximum of 1 item in selection.
+	 * Subclass may override this method to allow selection with more than one item and/or
+	 * add additional checks on selection.
+	 * @param selection selection to analyse (not null but may be empty).
+	 * @return true id allowed, in other case, tool won't be activated.
+	 */
+	public boolean allowed(Array<Entity> selection) {
+		return selection.size <= 1;
 	}
 	
 	

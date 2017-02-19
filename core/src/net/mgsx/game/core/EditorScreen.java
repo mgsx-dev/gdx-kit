@@ -485,7 +485,7 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 		{
 			// check if tool is in current plugin filter.
 			boolean accepted = true;
-			accepted &= selection.size <= 1 || tool.allowMultiple;
+			accepted &= tool.allowed(selection);
 			accepted &= pluginFilter == null || pluginFilter.isEmpty() || pluginFilter.equals(registry.getTag(tool));
 			accepted &= tool.activator == null || (entity != null && tool.activator.matches(entity));
 			if(accepted)
