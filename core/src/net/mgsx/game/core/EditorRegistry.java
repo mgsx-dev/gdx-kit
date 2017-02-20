@@ -7,7 +7,9 @@ import java.util.Map;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.ObjectMap.Entry;
+import com.badlogic.gdx.utils.ObjectSet;
 
+import net.mgsx.game.core.annotations.PluginDef;
 import net.mgsx.game.core.helpers.TypeMap;
 import net.mgsx.game.core.plugins.EditorPlugin;
 import net.mgsx.game.core.plugins.EntityEditorPlugin;
@@ -32,12 +34,19 @@ public class EditorRegistry extends GameRegistry
 			EditorPlugin editorPlugin = (EditorPlugin)plugin;
 			editorPlugins.put(editorPlugin.getClass(), editorPlugin);
 			
-			// add package prefix if not overridden by caller.
-			String packageName = editorPlugin.getClass().getPackage().getName();
-			if(!packagePrefixToTag.containsKey(packageName)){
-				String [] folders = packageName.split("\\.");
-				packagePrefixToTag.put(packageName, folders[folders.length-1]);
+		}
+		// add package prefix if not overridden by caller.
+		String packageName = plugin.getClass().getPackage().getName();
+		if(!packagePrefixToTag.containsKey(packageName)){
+			String [] folders = packageName.split("\\.");
+			String name;
+			PluginDef def = plugin.getClass().getAnnotation(PluginDef.class);
+			if(def != null && !def.category().isEmpty()){
+				name = def.category();
+			}else{
+				name = folders[folders.length-1];
 			}
+			packagePrefixToTag.put(packageName, name);
 		}
 	}
 	
@@ -66,8 +75,14 @@ public class EditorRegistry extends GameRegistry
 		return tag;
 	}
 	
-	public Array<String> allTags() {
-		return packagePrefixToTag.values().toArray();
+	public Array<String> allTags() 
+	{
+		// TODO optimize by caching on configuration phase end.
+		ObjectSet<String> set = new ObjectSet<String>();
+		set.addAll(packagePrefixToTag.values().toArray());
+		Array<String> r = new Array<String>();
+		for(String s : set) r.add(s);
+		return r;
 	}
 	
 	public void addGlobalEditor(String name, GlobalEditorPlugin plugin) 

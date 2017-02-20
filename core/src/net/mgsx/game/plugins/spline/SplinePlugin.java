@@ -23,7 +23,7 @@ import net.mgsx.game.plugins.spline.blender.BlenderNURBSCurve;
 import net.mgsx.game.plugins.spline.blender.CubicBezierCurve;
 import net.mgsx.game.plugins.spline.components.PathComponent;
 
-@PluginDef(components={PathComponent.class})
+@PluginDef(category="splines", components={PathComponent.class})
 public class SplinePlugin implements Plugin
 {
 

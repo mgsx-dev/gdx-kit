@@ -6,7 +6,7 @@ import net.mgsx.game.core.plugins.Plugin;
 import net.mgsx.game.plugins.boundary.components.BoundaryComponent;
 import net.mgsx.game.plugins.boundary.systems.BoundarySystem;
 
-@PluginDef(components={BoundaryComponent.class})
+@PluginDef(category="graphics", components={BoundaryComponent.class})
 public class BoundaryPlugin implements Plugin
 {
 

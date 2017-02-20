@@ -9,12 +9,20 @@ public class FilesShaderProgram implements Disposable
 {
 	public FileHandle vertexShader;
 	public FileHandle fragmentShader;
-	public ShaderProgram shader;
+	private ShaderProgram shader;
 	
 	public FilesShaderProgram(FileHandle vertexShader, FileHandle fragmentShader) {
 		this.vertexShader = vertexShader;
 		this.fragmentShader = fragmentShader;
-		load();
+	}
+	
+	public ShaderProgram program()
+	{
+		if(shader == null)
+		{
+			load();
+		}
+		return shader;
 	}
 	
 	private void load()

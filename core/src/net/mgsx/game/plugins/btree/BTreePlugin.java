@@ -27,7 +27,7 @@ import net.mgsx.game.plugins.btree.tools.BTreeTool;
 import net.mgsx.game.plugins.btree.ui.FloatDistributionEditor;
 import net.mgsx.game.plugins.btree.ui.IntegerDistributionEditor;
 
-@PluginDef(components={BTreeModel.class})
+@PluginDef(category="behavior tree", components={BTreeModel.class})
 public class BTreePlugin extends EditorPlugin
 {
 	public final static BehaviorTreeRepository library = new BehaviorTreeRepository();

@@ -1,6 +1,8 @@
 package net.mgsx.game.plugins.core;
 
+import com.badlogic.gdx.assets.loaders.ShaderProgramLoader;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 
 import net.mgsx.game.core.GameScreen;
 import net.mgsx.game.core.annotations.PluginDef;
@@ -35,6 +37,8 @@ public class CorePlugin implements Plugin
 	@Override
 	public void initialize(GameScreen engine) 
 	{
+		engine.assets.setLoader(ShaderProgram.class, new ShaderProgramLoader(engine.assets.getFileHandleResolver(), "-vertex.glsl", "-fragment.glsl"));
+		
 		// basic type serializers
 		engine.registry.addSerializer(Texture.class, new AssetSerializer<Texture>(Texture.class));
 		

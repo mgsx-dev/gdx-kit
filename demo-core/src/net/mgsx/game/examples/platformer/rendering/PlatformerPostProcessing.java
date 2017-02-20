@@ -27,6 +27,7 @@ import com.badlogic.gdx.math.Vector3;
 
 import net.mgsx.game.core.GamePipeline;
 import net.mgsx.game.core.GameScreen;
+import net.mgsx.game.core.annotations.Asset;
 import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.core.annotations.EditableSystem;
 import net.mgsx.game.core.annotations.Storable;
@@ -48,7 +49,10 @@ public class PlatformerPostProcessing extends EntitySystem
 	@Editable
 	transient public FilesShaderProgram blurProgram;
 	
-	private ShaderProgram postProcessShader, flatProgram;
+	@Asset("shaders/flat-vertex.glsl") // -vertex.glsl -fragment.glsl
+	public ShaderProgram flatProgram;
+	
+	private ShaderProgram postProcessShader;
 	private float time;
 	private int timeLocation;
 	private int worldLocation;
@@ -62,9 +66,10 @@ public class PlatformerPostProcessing extends EntitySystem
 	private GameScreen engine;
 	private G3DRendererSystem renderSystem;
 	
+	private boolean shadersLoaded = false;
+	
 	public PlatformerPostProcessing(GameScreen engine) {
 		super(GamePipeline.AFTER_RENDER);
-		loadShaders();
 		this.engine = engine;
 	}
 	
@@ -76,6 +81,7 @@ public class PlatformerPostProcessing extends EntitySystem
 	public void addedToEngine(Engine engine) {
 		super.addedToEngine(engine);
 		renderSystem = engine.getSystem(G3DRendererSystem.class);
+	//	loadShaders();
 	}
 	
 	
@@ -111,6 +117,11 @@ public class PlatformerPostProcessing extends EntitySystem
 	@Override
 	public void update(float deltaTime) 
 	{
+		if(!shadersLoaded){
+			loadShaders();
+			shadersLoaded = true;
+		}
+		
 		if(!settings.enabled) return;
 		
 		fbo.end();
@@ -162,17 +173,17 @@ public class PlatformerPostProcessing extends EntitySystem
 		if(settings.blur )
 		{
 			blurA.begin();
-			batch.setShader(blurProgram.shader);
+			batch.setShader(blurProgram.program());
 			batch.begin();
-			blurProgram.shader.setUniformf("dir", new Vector2(settings.blurSize / (float)Gdx.graphics.getWidth(),0));
+			blurProgram.program().setUniformf("dir", new Vector2(settings.blurSize / (float)Gdx.graphics.getWidth(),0));
 			batch.draw(fbo.getColorBufferTexture(), 0, 0);
 			batch.end();
 			blurA.end();
 			
 			blurB.begin();
-			batch.setShader(blurProgram.shader);
+			batch.setShader(blurProgram.program());
 			batch.begin();
-			blurProgram.shader.setUniformf("dir", new Vector2(0, settings.blurSize / (float)Gdx.graphics.getHeight()));
+			blurProgram.program().setUniformf("dir", new Vector2(0, settings.blurSize / (float)Gdx.graphics.getHeight()));
 			batch.draw(blurA.getColorBufferTexture(), 0, 0);
 			batch.end();
 			blurB.end();
@@ -289,16 +300,6 @@ public class PlatformerPostProcessing extends EntitySystem
 		rateLocation = postProcessShader.getUniformLocation("u_rate");
 		texture1Location = postProcessShader.getUniformLocation("u_texture1");
 		texture2Location = postProcessShader.getUniformLocation("u_texture2");
-		
-		flatProgram = loadShader(
-				Gdx.files.internal("shaders/flat-vertex.glsl"),
-				Gdx.files.internal("shaders/flat-fragment.glsl"));
-		flatProgram.begin();
-		if(!flatProgram.isCompiled()){
-			System.err.println(flatProgram.getLog());
-		}
-		flatProgram.end();
-		
 		
 		blurProgram = new FilesShaderProgram(
 				Gdx.files.internal("shaders/blurx-vertex.glsl"),

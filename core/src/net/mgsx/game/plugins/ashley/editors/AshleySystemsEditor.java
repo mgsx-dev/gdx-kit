@@ -7,10 +7,12 @@ import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
+import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 
 import net.mgsx.game.core.EditorScreen;
@@ -25,6 +27,8 @@ import net.mgsx.game.core.ui.events.EditorListener;
 
 public class AshleySystemsEditor implements GlobalEditorPlugin
 {
+	private String pluginFilter;
+	
 	@Override
 	public Actor createEditor(final EditorScreen editor, final Skin skin) 
 	{
@@ -43,13 +47,30 @@ public class AshleySystemsEditor implements GlobalEditorPlugin
 		return new ScrollPane(table, skin, "light");
 	}
 	
+	private Actor createFilterBox(final EditorScreen editor, final Table table, final Skin skin)
+	{
+		final SelectBox<String> pluginFilterBox = new SelectBox<String>(skin);
+		Array<String> allPlugins = new Array<String>();
+		allPlugins.add("");
+		allPlugins.addAll(editor.registry.allTags());
+		allPlugins.sort();
+		pluginFilterBox.setItems(allPlugins);
+		pluginFilterBox.setSelected(pluginFilter == null ? "" : pluginFilter);
+		pluginFilterBox.addListener(new ChangeListener(){
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				pluginFilter = pluginFilterBox.getSelected();
+				rebuildUI(editor, table, skin);
+			}
+		});
+		return pluginFilterBox;
+	}
+	
 	private void rebuildUI(final EditorScreen editor, final Table table, final Skin skin) 
 	{
 		table.clearChildren();
 		
 		TextButton btRefresh = new TextButton("refresh", skin);
-		
-		table.add(btRefresh).colspan(5).row();
 		
 		btRefresh.addListener(new ChangeListener() {
 			
@@ -68,6 +89,16 @@ public class AshleySystemsEditor implements GlobalEditorPlugin
 		table.add().height(10);
 		table.row();
 		
+		
+		// table with 5 columns
+		table.add(createFilterBox(editor, table, skin)).fill();
+		table.add(); // TODO priority filter ? sorter ?
+		table.add(btRefresh);
+		table.add(); // TODO process all ? filter processing / not processing ?
+		table.add(); // TODO edit all ? undock all ?
+		table.row();
+
+		
 		ObjectMap<Integer, String> pipelineLegend = new ObjectMap<Integer, String>();
 		for(Field field : GamePipeline.class.getFields()){
 			Integer priority = (Integer)ReflectionHelper.get(null, field);
@@ -75,6 +106,15 @@ public class AshleySystemsEditor implements GlobalEditorPlugin
 		}
 		for(final EntitySystem system : editor.entityEngine.getSystems())
 		{
+			// filter systems
+			if(pluginFilter != null && !pluginFilter.isEmpty())
+			{
+				if(!pluginFilter.equals(editor.registry.getTag(system))){
+					continue;
+				}
+			}
+			
+			
 			String priorityName = pipelineLegend.get(system.priority);
 			if(priorityName == null) priorityName = "undefined (" + String.valueOf(system.priority) + ")";
 			

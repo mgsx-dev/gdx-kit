@@ -18,7 +18,7 @@ allprojects {
     ext {
     	groupName = "net.mgsx.gdx"
         appName = "gdx-kit"
-        gdxVersion = '1.9.4'
+        gdxVersion = '1.9.5'
         gdxAiVersion = '1.7.0'
         ashleyVersion = '1.7.3'
         aiVersion = '1.8.0'

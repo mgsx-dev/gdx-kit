@@ -12,7 +12,7 @@ import net.mgsx.game.plugins.camera.storage.CameraSerializer;
 import net.mgsx.game.plugins.camera.systems.CameraSystem;
 import net.mgsx.game.plugins.camera.systems.CameraTransformSystem;
 
-@PluginDef(components={
+@PluginDef(category="graphics", components={
 		CameraComponent.class})
 public class CameraPlugin implements Plugin
 {
