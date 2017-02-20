@@ -173,17 +173,17 @@ public class PlatformerPostProcessing extends EntitySystem
 		if(settings.blur )
 		{
 			blurA.begin();
-			batch.setShader(blurProgram.shader);
+			batch.setShader(blurProgram.program());
 			batch.begin();
-			blurProgram.shader.setUniformf("dir", new Vector2(settings.blurSize / (float)Gdx.graphics.getWidth(),0));
+			blurProgram.program().setUniformf("dir", new Vector2(settings.blurSize / (float)Gdx.graphics.getWidth(),0));
 			batch.draw(fbo.getColorBufferTexture(), 0, 0);
 			batch.end();
 			blurA.end();
 			
 			blurB.begin();
-			batch.setShader(blurProgram.shader);
+			batch.setShader(blurProgram.program());
 			batch.begin();
-			blurProgram.shader.setUniformf("dir", new Vector2(0, settings.blurSize / (float)Gdx.graphics.getHeight()));
+			blurProgram.program().setUniformf("dir", new Vector2(0, settings.blurSize / (float)Gdx.graphics.getHeight()));
 			batch.draw(blurA.getColorBufferTexture(), 0, 0);
 			batch.end();
 			blurB.end();
