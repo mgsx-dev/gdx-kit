@@ -21,7 +21,7 @@ import net.mgsx.game.plugins.particle2d.systems.P2DRenderSystem;
 import net.mgsx.game.plugins.particle2d.systems.P2DTransformSystem;
 import net.mgsx.game.plugins.particle2d.systems.P2DUpdateSystem;
 
-@PluginDef(components={Particle2DComponent.class})
+@PluginDef(category="g2d", components={Particle2DComponent.class})
 public class Particle2DPlugin implements Plugin
 {
 	// shared model accross systems

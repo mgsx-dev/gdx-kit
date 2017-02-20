@@ -19,7 +19,10 @@ import net.mgsx.game.core.plugins.Plugin;
 @Target(TYPE)
 public @interface PluginDef 
 {
-	String value() default "";
+	/** 
+	 * Used by editor to group types (tools and systems) in categories.
+	 */
+	String category() default "";
 	Class<? extends Plugin>[] dependencies() default {};
 	Class<? extends Component>[] components() default {};
 }

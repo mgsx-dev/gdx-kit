@@ -16,7 +16,7 @@ import net.mgsx.game.plugins.parallax.tools.ParallaxTool;
 /**
  * TODO change parallax to sprite group / layers ...
  */
-@PluginDef(components={ParallaxModel.class})
+@PluginDef(category="g2d", components={ParallaxModel.class})
 public class ParallaxPlugin extends EditorPlugin {
 
 	private Vector3 camPos = new Vector3();
