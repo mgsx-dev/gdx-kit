@@ -69,7 +69,7 @@ import net.mgsx.game.plugins.editor.systems.SelectionSystem;
  * @author mgsx
  *
  */
-public class EditorScreen extends ScreenDelegate implements EditorContext
+public class EditorScreen extends ScreenDelegate implements EditorContext // TODO should be a HUD system (system with stage)
 {
 	// TODO handle selection in separated class
 	
@@ -732,11 +732,6 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 		mainToolGroup.tools.add(tool);
 		superGlobal.add(createToolButton(tool, true));
 	}
-	
-	public void addSubTool(Tool tool) {
-		mainToolGroup.tools.add(tool);
-	}
-	
 	
 	public Button createToolButton(final Tool tool, boolean enabled) 
 	{
