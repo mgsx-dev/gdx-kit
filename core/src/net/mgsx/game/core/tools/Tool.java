@@ -14,7 +14,9 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 
 import net.mgsx.game.core.EditorScreen;
+import net.mgsx.game.core.annotations.Inject;
 import net.mgsx.game.plugins.core.systems.GridDebugSystem;
+import net.mgsx.game.plugins.editor.systems.HistorySystem;
 import net.mgsx.game.plugins.editor.systems.SelectionSystem;
 
 /**
@@ -40,6 +42,9 @@ abstract public class Tool extends AbstractInputSystem
 	public Family activator; // TODO remove in favor to allowed method
 	
 	private SelectionSystem selectionSystem;
+	
+	@Inject
+	protected HistorySystem historySystem;
 	
 	public Tool(EditorScreen editor) {
 		this("no name", editor);

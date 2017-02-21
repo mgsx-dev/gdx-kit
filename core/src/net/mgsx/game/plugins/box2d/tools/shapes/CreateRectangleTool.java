@@ -35,7 +35,7 @@ public class CreateRectangleTool extends AbstractBoundShapeTool {
 		FixtureDef fix = worldItem.settings.fixture();
 		fix.shape = pshape;
 		
-		editor.performCommand(Box2DCommands.addShape(worldItem, bodyItem, fix));
+		historySystem.performCommand(Box2DCommands.addShape(worldItem, bodyItem, fix));
 	}
 	
 	

@@ -34,7 +34,7 @@ public class CreateChainTool extends AbstractDotShapeTool
 		FixtureDef def = worldItem.settings.fixture();
 		def.shape = shape;
 		
-		editor.performCommand(Box2DCommands.addShape(worldItem, bodyItem, def));
+		historySystem.performCommand(Box2DCommands.addShape(worldItem, bodyItem, def));
 	}
 
 }

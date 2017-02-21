@@ -49,8 +49,6 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.core.annotations.EditableComponent;
 import net.mgsx.game.core.annotations.EditableSystem;
-import net.mgsx.game.core.commands.Command;
-import net.mgsx.game.core.commands.CommandHistory;
 import net.mgsx.game.core.components.Movable;
 import net.mgsx.game.core.components.Repository;
 import net.mgsx.game.core.editors.AnnotationBasedComponentEditor;
@@ -90,8 +88,6 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 	
 	private static final String STATUS_HIDDEN_TEXT = "Press F1 to toggle help";
 
-	public CommandHistory history;
-	
 	private boolean showStatus;
 	private String currentText;
 	
@@ -194,7 +190,6 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 		skin = new Skin(Gdx.files.classpath("uiskin.json"));
 		
 		stage = new Stage(new ScreenViewport());
-		history = new CommandHistory();
 		
 		toolDelegator = new InputMultiplexer();
 		
@@ -236,8 +231,8 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 				return false;
 			}
 		});
-		
-		createToolGroup().addProcessor(new UndoTool(this));
+		UndoTool undoTool = new UndoTool(this);
+		createToolGroup().addProcessor(undoTool);
 		
 		mainToolGroup = createToolGroup();
 
@@ -271,6 +266,12 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 		for(Tool tool : autoTools){
 			addTool(tool);
 		}
+		
+		// TODO do it else where
+		for(Tool tool : mainToolGroup.tools){
+			registry.inject(entityEngine, tool);
+		}
+		registry.inject(entityEngine, undoTool); // XXX special undoTool don't know why ?
 		
 		
 		global.addTab("Tools", new ScrollPane(buttons, skin));
@@ -858,7 +859,7 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 	 */
 	@Deprecated
 	public void addSelector(SelectorPlugin selector) {
-		selection.selectors.add(selector);
+		entityEngine.getSystem(SelectionSystem.class).selectors.add(selector);
 	}
 	
 	public void assetLookup(Class<Texture> type, final AssetLookupCallback<Texture> callback) 
@@ -886,11 +887,6 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 				return "Pixel files (png, jpg, bmp)";
 			}
 		});
-	}
-
-	public void performCommand(Command command) 
-	{
-		history.add(command);
 	}
 
 	public void reset() 

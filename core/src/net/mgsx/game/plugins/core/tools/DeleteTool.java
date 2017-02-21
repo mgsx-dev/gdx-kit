@@ -20,7 +20,7 @@ public class DeleteTool extends Tool {
 	protected void activate() 
 	{
 		
-		editor.history.add(new Command(){
+		historySystem.performCommand(new Command(){
 			
 			// copy current selection
 			final Array<Entity> entities = new Array<Entity>(selection().selection);

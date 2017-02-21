@@ -12,6 +12,7 @@ import net.mgsx.game.core.ui.events.EditorListener;
 public class EditorSystem extends EntitySystem
 {
 	// TODO visibility package
+	// XXX use list and annotations or any OREDERED !!!
 	final public ObjectMap<String, EngineEditor> globalEditors = new ObjectMap<String, EngineEditor>();
 	
 	final public EditorRegistry registry;
