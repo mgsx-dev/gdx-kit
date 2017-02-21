@@ -87,7 +87,9 @@ public class EngineStorage {
 						if(accessor.getType() != void.class){
 							JsonValue jsonValue = systemSettings.get(accessor.getName());
 							Object value = json.readValue(accessor.getType(), jsonValue);
-							accessor.set(value);
+							if(value != null){
+								accessor.set(value);
+							}
 						}
 					}
 				}else{
