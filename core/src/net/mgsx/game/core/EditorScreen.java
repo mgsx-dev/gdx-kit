@@ -745,7 +745,7 @@ public class EditorScreen extends ScreenDelegate implements EditorContext // TOD
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
 				if(btTool.isChecked()) group.setActiveTool(tool);
-				// else group.setActiveTool(null);
+				else group.setActiveTool(null);
 			}
 		});
 
