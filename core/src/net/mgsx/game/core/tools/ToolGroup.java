@@ -5,24 +5,25 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.ButtonGroup;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Array;
-
-import net.mgsx.game.core.EditorScreen;
-import net.mgsx.game.core.ui.EntityEditor;
 
 public class ToolGroup extends InputMultiplexer
 {
+	public static interface ToolGroupHandler
+	{
+		public void onToolChanged(Tool tool);
+	}
+	
 	final public Array<Tool> tools = new Array<Tool>();
 
 	private Tool activeTool, defaultTool;
 	
 	private ButtonGroup<Button> group;
 
-	protected EditorScreen editor;
+	protected ToolGroupHandler handler;
 	
-	public ToolGroup(EditorScreen editor) {
-		this.editor = editor;
+	public ToolGroup(ToolGroupHandler handler) {
+		this.handler = handler;
 		group = new ButtonGroup<Button>();
 		group.setMinCheckCount(0);
 	}
@@ -34,23 +35,15 @@ public class ToolGroup extends InputMultiplexer
 	public void setActiveTool(Tool tool){
 		if(activeTool != null){
 			activeTool.desactivate();
-			activeTool.group = null;
 			removeProcessor(activeTool);
-			editor.toolOutline.clear();
+			handler.onToolChanged(null);
+			activeTool.group = null;
 		}
 		activeTool = tool;
 		if(activeTool != null){
 			activeTool.group = this;
+			handler.onToolChanged(activeTool);
 			addProcessor(activeTool);
-			
-			// TODO handled by editor 
-			Table table = new Table(editor.skin);
-			Table view = new EntityEditor(activeTool, true, editor.skin);
-			table.setBackground(editor.skin.getDrawable("default-rect"));
-			table.add(activeTool.name).row();
-			table.add(view).row();
-			editor.toolOutline.clear();
-			editor.toolOutline.add(table);
 			activeTool.activate();
 		}else{
 			group.uncheckAll();

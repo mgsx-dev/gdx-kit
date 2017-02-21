@@ -67,6 +67,7 @@ import net.mgsx.game.core.storage.LoadConfiguration;
 import net.mgsx.game.core.tools.ComponentTool;
 import net.mgsx.game.core.tools.Tool;
 import net.mgsx.game.core.tools.ToolGroup;
+import net.mgsx.game.core.tools.ToolGroup.ToolGroupHandler;
 import net.mgsx.game.core.ui.EntityEditor;
 import net.mgsx.game.core.ui.accessors.Accessor;
 import net.mgsx.game.core.ui.events.AccessorHelpEvent;
@@ -94,7 +95,7 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 	private boolean showStatus;
 	private String currentText;
 	
-	public Skin skin;
+	private Skin skin;
 	protected Stage stage;
 	protected Table panel;
 	protected Table buttons;
@@ -326,10 +327,25 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 			Gdx.input.setInputProcessor(new InputMultiplexer(stage, toolDelegator, previousInputProcessor));
 		}
 	}
+	
+	private ToolGroupHandler toolGroupHandler = new ToolGroupHandler() {
+		@Override
+		public void onToolChanged(Tool tool) {
+			toolOutline.clear();
+			if(tool != null){
+				Table table = new Table(skin);
+				Table view = new EntityEditor(tool, true, skin);
+				table.setBackground(skin.getDrawable("default-rect"));
+				table.add(tool.name).row();
+				table.add(view).row();
+				toolOutline.add(table);
+			}
+		}
+	};
 
 	public ToolGroup createToolGroup() 
 	{
-		ToolGroup g = new ToolGroup(this);
+		ToolGroup g = new ToolGroup(toolGroupHandler);
 		toolDelegator.addProcessor(g);
 		tools.add(g);
 		return g;
