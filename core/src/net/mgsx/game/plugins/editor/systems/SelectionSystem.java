@@ -4,6 +4,7 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.gdx.utils.Array;
 
+import net.mgsx.game.core.components.Repository;
 import net.mgsx.game.core.plugins.SelectorPlugin;
 
 public class SelectionSystem extends EntitySystem
@@ -71,6 +72,51 @@ public class SelectionSystem extends EntitySystem
 	public void addAll(Array<Entity> entities) 
 	{
 		selection.addAll(entities);
+		invalidate();
+	}
+	
+	/**
+	 * return last selected entity or null if selection is empty.
+	 * @return
+	 */
+	public Entity selected() 
+	{
+		return selection.size > 0 ? last() : null;
+	}
+	
+	/**
+	 * get current entity which can be the selected entity (last in selection)
+	 * or a fresh new one.
+	 * Note that entity will have repository component which mark it as persistable.
+	 * use {@link #transcientEntity()} to create a non persistable entity.
+	 * @return
+	 */
+	public Entity currentEntity() 
+	{
+		if(isEmpty()){
+			Entity entity = getEngine().createEntity();
+			entity.add(getEngine().createComponent(Repository.class));
+			getEngine().addEntity(entity);
+			return entity;
+		}
+		return last();
+	}
+	
+	public Entity transcientEntity(){
+		if(isEmpty()){
+			return getEngine().createEntity();
+		}
+		Entity entity = last();
+		if(Repository.components.has(entity)){
+			return getEngine().createEntity();
+		}
+		return entity;
+	}
+
+	public void set(Entity entity) 
+	{
+		selection.clear();
+		selection.add(entity);
 		invalidate();
 	}
 	

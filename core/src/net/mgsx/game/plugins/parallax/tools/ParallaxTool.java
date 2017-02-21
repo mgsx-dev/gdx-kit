@@ -20,7 +20,7 @@ public class ParallaxTool extends Tool {
 
 	@Override
 	protected void activate() {
-		Entity entity = editor.currentEntity();
+		Entity entity = currentEntity();
 		Transform2DComponent transform = Transform2DComponent.components.get(entity);
 		ParallaxModel model = new ParallaxModel();
 		model.cameraOrigin.set(editor.getGameCamera().position);

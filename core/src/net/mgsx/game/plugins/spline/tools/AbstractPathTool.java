@@ -38,7 +38,7 @@ public abstract class AbstractPathTool extends MultiClickTool
 		if(dots.size < minDots) return;
 		if(entity == null){
 			PathComponent path = getEngine().createComponent(PathComponent.class);
-			entity = editor.currentEntity().add(path).add(getEngine().createComponent(SplineDebugComponent.class));
+			entity = currentEntity().add(path).add(getEngine().createComponent(SplineDebugComponent.class));
 		}
 		
 		computePath();

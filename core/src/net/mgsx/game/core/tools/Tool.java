@@ -71,6 +71,21 @@ abstract public class Tool extends AbstractInputSystem
 		return editor.entityEngine; // XXX override for now, to be removed latter
 	}
 	
+	/**
+	 * get current entity which can be the selected entity (last in selection)
+	 * or a fresh new one.
+	 * Note that entity will have repository component which mark it as persistable.
+	 * use {@link #transcientEntity()} to create a non persistable entity.
+	 * @return
+	 */
+	protected Entity currentEntity() 
+	{
+		return selectionSystem.currentEntity();
+	}
+	
+	protected Entity transcientEntity(){
+		return selectionSystem.transcientEntity();
+	}
 	
 
 	protected void activate(){

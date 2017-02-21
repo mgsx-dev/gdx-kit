@@ -44,7 +44,7 @@ public class P2DImportTool extends ClickTool {
 		Particle2DComponent model = new Particle2DComponent();
 		model.reference = fileName;
 		model.position.set(position);
-		Entity entity = editor.currentEntity();
+		Entity entity = currentEntity();
 		Transform2DComponent transform = getEngine().createComponent(Transform2DComponent.class);
 		transform.position.set(position);
 		entity.add(model).add(transform);

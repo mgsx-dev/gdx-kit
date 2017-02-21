@@ -30,7 +30,7 @@ public class TileMapTool extends Tool
 				
 				// TODO load subsequent entity groups ?
 				
-				editor.currentEntity().add(tmc);
+				currentEntity().add(tmc);
 				end();
 			}
 			@Override

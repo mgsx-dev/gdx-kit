@@ -19,7 +19,7 @@ abstract public class ComponentTool extends Tool
 	@Override
 	protected void activate() 
 	{
-		Entity entity = editor.currentEntity();
+		Entity entity = currentEntity();
 		Component component = createComponent(entity);
 		if(component != null)
 		{

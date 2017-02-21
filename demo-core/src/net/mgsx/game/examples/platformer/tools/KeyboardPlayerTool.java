@@ -16,7 +16,7 @@ public class KeyboardPlayerTool extends Tool {
 	@Override
 	protected void activate() 
 	{
-		Entity entity = editor.currentEntity();
+		Entity entity = currentEntity();
 		
 		entity.add(editor.entityEngine.createComponent(PlayerController.class));
 		KeyboardController keys = editor.entityEngine.createComponent(KeyboardController.class);

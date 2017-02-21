@@ -14,6 +14,7 @@ import net.mgsx.game.plugins.box2d.components.Box2DBodyModel;
 import net.mgsx.game.plugins.box2d.components.Box2DFixtureModel;
 import net.mgsx.game.plugins.box2d.components.Box2DJointModel;
 import net.mgsx.game.plugins.box2d.systems.Box2DWorldContext;
+import net.mgsx.game.plugins.editor.systems.SelectionSystem;
 
 public class Box2DCommands {
 
@@ -57,7 +58,7 @@ public class Box2DCommands {
 		return new Command(){
 			@Override
 			public void commit() {
-				Entity entity = editor.currentEntity();
+				Entity entity = editor.entityEngine.getSystem(SelectionSystem.class).currentEntity();
 				
 				// prevent add component joint on entity with body component. 
 				// XXX it works so why not : bodyB carry joint which is logic : B depends A

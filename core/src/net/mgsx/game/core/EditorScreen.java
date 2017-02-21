@@ -12,13 +12,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.assets.AssetLoaderParameters;
-import com.badlogic.gdx.assets.loaders.TextureLoader.TextureParameter;
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.Texture.TextureFilter;
-import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Event;
@@ -38,8 +33,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.Json.Serializer;
-import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.ObjectMap.Entry;
 import com.badlogic.gdx.utils.ObjectSet;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
@@ -49,13 +42,9 @@ import net.mgsx.game.core.annotations.EditableComponent;
 import net.mgsx.game.core.annotations.EditableSystem;
 import net.mgsx.game.core.annotations.Inject;
 import net.mgsx.game.core.components.Movable;
-import net.mgsx.game.core.components.Repository;
 import net.mgsx.game.core.editors.AnnotationBasedComponentEditor;
 import net.mgsx.game.core.helpers.AssetHelper;
-import net.mgsx.game.core.helpers.AssetLookupCallback;
 import net.mgsx.game.core.helpers.EditorAssetManager;
-import net.mgsx.game.core.helpers.NativeService;
-import net.mgsx.game.core.helpers.NativeService.DefaultCallback;
 import net.mgsx.game.core.plugins.EngineEditor;
 import net.mgsx.game.core.plugins.EntityEditorPlugin;
 import net.mgsx.game.core.plugins.SelectorPlugin;
@@ -126,7 +115,6 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 	final public EditorAssetManager assets;
 	final public Engine entityEngine;
 	
-	public final ObjectMap<Class, Serializer> serializers;
 
 	private Label status;
 
@@ -140,7 +128,6 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 		this.game.registry = config.registry;
 		this.entityEngine = engine;
 		this.assets = assets;
-		this.serializers = config.registry.serializers;
 		this.registry = config.registry;
 		editorCamera = new EditorCamera();
 		init();
@@ -298,7 +285,7 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 			
 			@Override
 			public void entityAdded(Entity entity) {
-				if(entity == getSelected()) selection.invalidate();
+				if(entity == selection.selected()) selection.invalidate();
 			}
 		};
 		
@@ -438,6 +425,8 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 
 	private String pluginFilter;
 	public boolean showAllTools = false;
+	
+	// TODO will be part of system save !
 	public final Array<EntitySystem> pinnedSystems = new Array<EntitySystem>();
 	
 	private void updateSelection() 
@@ -598,14 +587,10 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 		return group;
 	}
 	
-	public void pinEditor(Entity entity, Component component) 
+	private void pinEditor(Entity entity, Component component) 
 	{
 		pinStack.addActor(createPinEditor(entity, component));
 		
-	}
-	public void pinEditor(Actor editor) 
-	{
-		pinStack.addActor(editor);
 	}
 	public void pinEditor(EntitySystem system) 
 	{
@@ -614,14 +599,14 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 			pinStack.addActor(createPinEditor(system));
 		}
 	}
-	public void pinEditors(Array<EntitySystem> systems) {
+	private void pinEditors(Array<EntitySystem> systems) {
 		for(EntitySystem system : systems)
 		{
 			pinEditor(system);
 		}
 	}
 	
-	public void unpinEditor(Actor editor){
+	private void unpinEditor(Actor editor){
 		pinStack.removeActor(editor);
 	}
 
@@ -739,34 +724,6 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 
 	public Table toolOutline;
 
-	/**
-	 * get current entity which can be the selected entity (last in selection)
-	 * or a fresh new one.
-	 * Note that entity will have repository component which mark it as persistable.
-	 * use {@link #transcientEntity()} to create a non persistable entity.
-	 * @return
-	 */
-	public Entity currentEntity() 
-	{
-		if(selection.isEmpty()){
-			Entity entity = entityEngine.createEntity();
-			entity.add(entityEngine.createComponent(Repository.class));
-			entityEngine.addEntity(entity);
-			return entity;
-		}
-		return selection.last();
-	}
-	
-	public Entity transcientEntity(){
-		if(selection.isEmpty()){
-			return entityEngine.createEntity();
-		}
-		Entity entity = selection.last();
-		if(Repository.components.has(entity)){
-			return entityEngine.createEntity();
-		}
-		return entity;
-	}
 
 	public void addTool(Tool tool) {
 		mainToolGroup.tools.add(tool);
@@ -821,12 +778,6 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 		return btTool;
 	}
 
-	public Entity getSelected() 
-	{
-		// returns the last selected.
-		return selection.size() > 0 ? selection.last() : null;
-	}
-
 	public <T> T loadAssetNow(String fileName, Class<T> type) {
 		return AssetHelper.loadAssetNow(assets, fileName, type);
 	}
@@ -846,33 +797,6 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 		entityEngine.getSystem(SelectionSystem.class).selectors.add(selector);
 	}
 	
-	public void assetLookup(Class<Texture> type, final AssetLookupCallback<Texture> callback) 
-	{
-		// TODO open texture region selector if any registered
-		// else auto open import window
-		NativeService.instance.openLoadDialog(new DefaultCallback() {
-			@Override
-			public void selected(FileHandle file) 
-			{
-				TextureParameter parameters = new TextureParameter();
-				parameters.genMipMaps = true;
-				Texture tex = loadAssetNow(file.path(), Texture.class, parameters);
-				tex.setFilter(TextureFilter.MipMapLinearLinear, TextureFilter.MipMapLinearLinear);
-				tex.setWrap(TextureWrap.ClampToEdge, TextureWrap.ClampToEdge); // XXX maybe not !
-				callback.selected(tex);
-			}
-			@Override
-			public boolean match(FileHandle file) {
-				// TODO others ?
-				return file.extension().equals("png") || file.extension().equals("jpg") || file.extension().equals("bmp");
-			}
-			@Override
-			public String description() {
-				return "Pixel files (png, jpg, bmp)";
-			}
-		});
-	}
-
 	public void reset() 
 	{
 		entityEngine.removeAllEntities();
@@ -883,12 +807,6 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 		editorCamera.reset();
 		
 		selection.clear();
-	}
-
-	// TODO externalize selection : selection().set/clear/add...etc invalidating is done in it
-	public void setSelection(Entity entity) {
-		selection.clear();
-		selection.add(entity);
 	}
 
 	public void setInfo(String message) {

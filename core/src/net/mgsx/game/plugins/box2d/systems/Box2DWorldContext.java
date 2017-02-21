@@ -15,6 +15,7 @@ import net.mgsx.game.plugins.box2d.components.Box2DBodyModel;
 import net.mgsx.game.plugins.box2d.components.Box2DJointModel;
 import net.mgsx.game.plugins.box2d.helper.WorldProvider;
 import net.mgsx.game.plugins.core.components.Transform2DComponent;
+import net.mgsx.game.plugins.editor.systems.SelectionSystem;
 
 // TODO it is more an EditorContext (ctx) ...
 public class Box2DWorldContext 
@@ -42,7 +43,7 @@ public class Box2DWorldContext
 	
 	public Box2DBodyModel currentBody(String defaultName, float x, float y) 
 	{
-		Entity entity = editor.currentEntity();
+		Entity entity = editor.entityEngine.getSystem(SelectionSystem.class).currentEntity(); // XXX wire it up
 		Box2DBodyModel item = entity == null ? null : entity.getComponent(Box2DBodyModel.class);
 		if(item == null){
 			

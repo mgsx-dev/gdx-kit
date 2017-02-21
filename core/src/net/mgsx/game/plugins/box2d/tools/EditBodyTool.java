@@ -45,7 +45,7 @@ public class EditBodyTool extends Tool
 	{
 		shapeEntities = new Array<Entity>();
 		vertexEntities = new Array<Entity>();
-		current = editor.currentEntity();
+		current = currentEntity();
 		
 		// create entities for each shapes !
 		Box2DBodyModel body = Box2DBodyModel.components.get(current);

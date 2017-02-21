@@ -49,7 +49,5 @@ public class EditorSystem extends EntitySystem
 		this.tools.addAll(tools);
 	}
 	
-	
-	
 
 }

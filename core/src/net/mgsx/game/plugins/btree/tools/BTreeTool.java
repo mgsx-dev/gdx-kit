@@ -15,6 +15,7 @@ import net.mgsx.game.core.helpers.NativeService.DefaultCallback;
 import net.mgsx.game.core.tools.Tool;
 import net.mgsx.game.plugins.btree.BTreeModel;
 import net.mgsx.game.plugins.btree.EntityBlackboard;
+import net.mgsx.game.plugins.editor.systems.SelectionSystem;
 
 @Editable
 public class BTreeTool extends Tool
@@ -60,7 +61,7 @@ public class BTreeTool extends Tool
 	}
 	
 	public static void load(EditorScreen editor, FileHandle file){
-		Entity entity = editor.currentEntity();
+		Entity entity = editor.entityEngine.getSystem(SelectionSystem.class).currentEntity();
 		
 		if(!editor.assets.isLoaded(file.path())){
 			if(file.extension().equals("btree")){
