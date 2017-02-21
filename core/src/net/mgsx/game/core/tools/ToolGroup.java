@@ -6,7 +6,6 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.ButtonGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.utils.Array;
 
 import net.mgsx.game.core.EditorScreen;
@@ -66,7 +65,7 @@ public class ToolGroup extends InputMultiplexer
 		setActiveTool(defaultTool);
 	}
 
-	public void addButton(TextButton btTool) {
+	public void addButton(Button btTool) {
 		group.add(btTool);
 	}
 	

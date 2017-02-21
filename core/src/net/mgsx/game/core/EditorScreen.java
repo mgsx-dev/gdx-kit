@@ -28,6 +28,8 @@ import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
@@ -431,7 +433,7 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 	}
 
 	private String pluginFilter;
-
+	public boolean showAllTools = false;
 	public final Array<EntitySystem> pinnedSystems = new Array<EntitySystem>();
 	
 	private void updateSelection() 
@@ -457,7 +459,7 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 		
 		// add filter
 		final SelectBox<String> pluginFilterBox = new SelectBox<String>(skin);
-		buttons.add(pluginFilterBox).expandX().center().row();
+		
 		Array<String> allPlugins = new Array<String>();
 		allPlugins.add("");
 		allPlugins.addAll(registry.allTags());
@@ -471,6 +473,20 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 				updateSelection();
 			}
 		});
+		
+		
+		buttons.add(pluginFilterBox).expandX().center();
+		
+		final Button btShow = EntityEditor.createBoolean(skin, showAllTools);
+		btShow.addListener(new ChangeListener() {
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				showAllTools = btShow.isChecked();
+				invalidateSelection();
+			}
+		});
+		buttons.add("Unavailable");
+		buttons.add(btShow).row();
 		
 		// TODO maybe not at each time ... ?
 		mainTools.sort(new Comparator<Tool>() {
@@ -488,9 +504,9 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 			accepted &= tool.allowed(selection);
 			accepted &= pluginFilter == null || pluginFilter.isEmpty() || pluginFilter.equals(registry.getTag(tool));
 			accepted &= tool.activator == null || (entity != null && tool.activator.matches(entity));
-			if(accepted)
+			if(accepted || showAllTools)
 			{
-				Button button = createToolButton(tool.name, mainToolGroup, tool);
+				Button button = createToolButton(tool.name, mainToolGroup, tool, accepted);
 				contextualButtons.add(button);
 				buttons.add(button).fill().row();
 			}
@@ -756,7 +772,7 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 	}
 	public void addSuperTool(Tool tool) {
 		mainToolGroup.tools.add(tool);
-		superGlobal.add(createToolButton(tool));
+		superGlobal.add(createToolButton(tool, true));
 	}
 	
 	public void addSubTool(Tool tool) {
@@ -764,13 +780,14 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 	}
 	
 	
-	public TextButton createToolButton(final Tool tool) 
+	public Button createToolButton(final Tool tool, boolean enabled) 
 	{
-		return createToolButton(tool.name, mainToolGroup, tool); // all groups
+		return createToolButton(tool.name, mainToolGroup, tool, enabled); // all groups
 	}
-	protected TextButton createToolButton(String name, final ToolGroup group, final Tool tool) 
+	private Button createToolButton(String name, final ToolGroup group, final Tool tool, boolean enabled) 
 	{
-		final TextButton btTool = new TextButton(name, skin, "toggle");
+		final Button btTool = new ImageButton(skin, "toggle");
+				// new TextButton("", skin, "toggle");
 		btTool.addListener(new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
@@ -778,6 +795,26 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 				// else group.setActiveTool(null);
 			}
 		});
+
+		Image img = new Image(skin, "kit_tool");
+		
+		Color color;
+		if(!enabled)
+		{
+			btTool.setDisabled(true);
+			color = Color.GRAY;
+		}
+		else
+		{
+			color = tool instanceof ComponentTool ? Color.GREEN : Color.ORANGE;
+		}
+		
+		Label nameLabel = new Label(name, skin);
+		nameLabel.setColor(btTool.isDisabled() ? Color.LIGHT_GRAY : Color.WHITE);
+		
+		img.setColor(color);
+		btTool.add(img).padRight(6);
+		btTool.add(nameLabel).expand().fill();
 		group.addButton(btTool);
 		return btTool;
 	}
