@@ -4,10 +4,15 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.gdx.utils.Array;
 
+import net.mgsx.game.core.plugins.SelectorPlugin;
+
 public class SelectionSystem extends EntitySystem
 {
 	final public Array<Entity> selection = new Array<Entity>();
 	public boolean isDirty = true;
+	
+	public Array<SelectorPlugin> selectors = new Array<SelectorPlugin>();
+
 	
 	public boolean contains(Entity entity) {
 		return selection.contains(entity, true);

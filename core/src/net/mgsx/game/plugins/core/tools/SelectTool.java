@@ -36,7 +36,7 @@ public class SelectTool extends Tool
 	{
 		if(button == Input.Buttons.LEFT){
 			currentSelection.clear();
-			for(SelectorPlugin selector : editor.selectors){
+			for(SelectorPlugin selector : selection().selectors){
 				selector.getSelection(currentSelection, screenX, screenY);
 			}
 			// TODO select by knot only if not in selection ?

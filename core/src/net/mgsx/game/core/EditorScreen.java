@@ -107,8 +107,6 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 	
 	public EditorRegistry registry;
 	
-	public Array<SelectorPlugin> selectors = new Array<SelectorPlugin>();
-	
 	final private Array<ToolGroup> tools = new Array<ToolGroup>();
 	
 	private InputMultiplexer toolDelegator;
@@ -839,9 +837,14 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 		return Tool.unproject(getGameCamera(), screenX, screenY);
 	}
 
+	/**
+	 * @deprecated inject {@link SelectionSystem} instead
+	 */
+	@Deprecated
 	public void addSelector(SelectorPlugin selector) {
-		selectors.add(selector);
+		selection.selectors.add(selector);
 	}
+	
 	public void assetLookup(Class<Texture> type, final AssetLookupCallback<Texture> callback) 
 	{
 		// TODO open texture region selector if any registered
