@@ -490,24 +490,9 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 			accepted &= tool.activator == null || (entity != null && tool.activator.matches(entity));
 			if(accepted)
 			{
-				boolean handled = false;
-				
-				if(tool instanceof ComponentTool && entity != null){
-					ComponentTool componentTool = ((ComponentTool) tool);
-					Class<? extends Component> componentType = componentTool.getAssignableFor();
-					if(componentType != null){
-						Component component = entity.getComponent(componentType);
-						if(component == null){
-							buttons.add(createOutline(entity, component)).expandX().fill().row();
-							handled = true;
-						}
-					}
-				}
-				if(!handled){
-					Button button = createToolButton(tool.name, mainToolGroup, tool);
-					contextualButtons.add(button);
-					buttons.add(button).fill().row();
-				}
+				Button button = createToolButton(tool.name, mainToolGroup, tool);
+				contextualButtons.add(button);
+				buttons.add(button).fill().row();
 			}
 		}
 		

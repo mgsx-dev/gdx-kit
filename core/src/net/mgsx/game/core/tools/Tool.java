@@ -37,7 +37,7 @@ abstract public class Tool extends InputAdapter
 	final protected EditorScreen editor;
 	ToolGroup group;
 	
-	public Family activator;
+	public Family activator; // TODO remove in favor to allowed method
 	
 	public Tool(EditorScreen editor) {
 		this("no name", editor);
@@ -177,8 +177,15 @@ abstract public class Tool extends InputAdapter
 	 * @param selection selection to analyse (not null but may be empty).
 	 * @return true id allowed, in other case, tool won't be activated.
 	 */
-	public boolean allowed(Array<Entity> selection) {
-		return selection.size <= 1;
+	public boolean allowed(Array<Entity> selection) 
+	{
+		if(selection.size > 1) return false;
+		if(activator != null)
+		{
+			if(selection.size > 0) return activator.matches(selection.first());
+			return false;
+		}
+		return true;
 	}
 	
 	
