@@ -18,9 +18,9 @@ import com.badlogic.gdx.utils.ObjectMap;
 
 import net.mgsx.game.core.EditorScreen;
 import net.mgsx.game.core.annotations.EditableComponent;
-import net.mgsx.game.core.plugins.GlobalEditorPlugin;
+import net.mgsx.game.core.plugins.EngineEditor;
 
-public class AshleyEntitiesEditor implements GlobalEditorPlugin
+public class AshleyEntitiesEditor implements EngineEditor
 {
 	private static class EntityItem{
 		Entity entity;

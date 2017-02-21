@@ -19,13 +19,13 @@ import net.mgsx.game.core.EditorScreen;
 import net.mgsx.game.core.GamePipeline;
 import net.mgsx.game.core.annotations.EditableSystem;
 import net.mgsx.game.core.helpers.ReflectionHelper;
-import net.mgsx.game.core.plugins.GlobalEditorPlugin;
+import net.mgsx.game.core.plugins.EngineEditor;
 import net.mgsx.game.core.storage.LoadConfiguration;
 import net.mgsx.game.core.ui.EntityEditor;
 import net.mgsx.game.core.ui.accessors.MethodAccessor;
 import net.mgsx.game.core.ui.events.EditorListener;
 
-public class AshleySystemsEditor implements GlobalEditorPlugin
+public class AshleySystemsEditor implements EngineEditor
 {
 	private String pluginFilter;
 	

@@ -8,7 +8,7 @@ import net.mgsx.game.core.EditorScreen;
 /**
  * Base for a global (all entities) editor view
  */
-public interface GlobalEditorPlugin {
+public interface EngineEditor {
 
 	/**
 	 * return a new editor. Note that this methd is called once, editor is reused during

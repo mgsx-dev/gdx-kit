@@ -11,10 +11,10 @@ import com.badlogic.gdx.utils.Array;
 import net.mgsx.game.core.EditorScreen;
 import net.mgsx.game.core.helpers.EditorAssetManager;
 import net.mgsx.game.core.helpers.EditorAssetManager.AssetManagerListener;
-import net.mgsx.game.core.plugins.GlobalEditorPlugin;
+import net.mgsx.game.core.plugins.EngineEditor;
 import net.mgsx.game.core.ui.ListView;
 
-public class AssetsEditor implements GlobalEditorPlugin
+public class AssetsEditor implements EngineEditor
 {
 	/**
 	 * model for displayed asset in gui

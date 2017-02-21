@@ -60,7 +60,7 @@ import net.mgsx.game.core.helpers.EditorAssetManager;
 import net.mgsx.game.core.helpers.NativeService;
 import net.mgsx.game.core.helpers.NativeService.DefaultCallback;
 import net.mgsx.game.core.plugins.EntityEditorPlugin;
-import net.mgsx.game.core.plugins.GlobalEditorPlugin;
+import net.mgsx.game.core.plugins.EngineEditor;
 import net.mgsx.game.core.plugins.SelectorPlugin;
 import net.mgsx.game.core.screen.ScreenDelegate;
 import net.mgsx.game.core.storage.LoadConfiguration;
@@ -272,7 +272,7 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 		
 		global.addTab("Tools", new ScrollPane(buttons, skin));
 		global.addTab("Components", new ScrollPane(outline, skin, "light"));
-		for(Entry<String, GlobalEditorPlugin> entry : entityEngine.getSystem(EditorSystem.class).globalEditors.entries()){
+		for(Entry<String, EngineEditor> entry : entityEngine.getSystem(EditorSystem.class).globalEditors.entries()){
 			global.addTab(entry.key, entry.value.createEditor(this, skin));
 		}
 		
