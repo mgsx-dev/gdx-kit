@@ -33,7 +33,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.ObjectMap.Entry;
 import com.badlogic.gdx.utils.ObjectSet;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
@@ -269,8 +268,8 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 		
 		global.addTab("Tools", new ScrollPane(buttons, skin));
 		global.addTab("Components", new ScrollPane(outline, skin, "light"));
-		for(Entry<String, EngineEditor> entry : entityEngine.getSystem(EditorSystem.class).globalEditors.entries()){
-			global.addTab(entry.key, entry.value.createEditor(this.entityEngine, assets, skin));
+		for(java.util.Map.Entry<String, EngineEditor> entry : entityEngine.getSystem(EditorSystem.class).globalEditors.entrySet()){
+			global.addTab(entry.getKey(), entry.getValue().createEditor(this.entityEngine, assets, skin));
 		}
 		
 		// listener for component add/remove
@@ -494,12 +493,12 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 		{
 			// check if tool is in current plugin filter.
 			boolean accepted = true;
-			accepted &= tool.allowed(selection.selection);
+			boolean allowed = tool.allowed(selection.selection);
 			accepted &= pluginFilter == null || pluginFilter.isEmpty() || pluginFilter.equals(registry.getTag(tool));
 			accepted &= tool.activator == null || (entity != null && tool.activator.matches(entity));
-			if(accepted || showAllTools)
+			if(accepted && (allowed || showAllTools))
 			{
-				Button button = createToolButton(tool.name, mainToolGroup, tool, accepted);
+				Button button = createToolButton(tool.name, mainToolGroup, tool, allowed);
 				contextualButtons.add(button);
 				buttons.add(button).fill().row();
 			}

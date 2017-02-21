@@ -1,8 +1,10 @@
 package net.mgsx.game.plugins.editor.systems;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.ObjectMap;
 
 import net.mgsx.game.core.EditorRegistry;
 import net.mgsx.game.core.EditorScreen;
@@ -16,8 +18,8 @@ public class EditorSystem extends EntitySystem
 	Array<ToolGroup> tools = new Array<ToolGroup>();
 
 	// TODO visibility package
-	// XXX use list and annotations or any OREDERED !!!
-	final public ObjectMap<String, EngineEditor> globalEditors = new ObjectMap<String, EngineEditor>();
+	// Use java map in order to have ordered items.
+	final public Map<String, EngineEditor> globalEditors = new LinkedHashMap<String, EngineEditor>();
 	
 	final public EditorRegistry registry;
 	
