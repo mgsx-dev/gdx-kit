@@ -59,8 +59,8 @@ import net.mgsx.game.core.helpers.AssetLookupCallback;
 import net.mgsx.game.core.helpers.EditorAssetManager;
 import net.mgsx.game.core.helpers.NativeService;
 import net.mgsx.game.core.helpers.NativeService.DefaultCallback;
-import net.mgsx.game.core.plugins.EntityEditorPlugin;
 import net.mgsx.game.core.plugins.EngineEditor;
+import net.mgsx.game.core.plugins.EntityEditorPlugin;
 import net.mgsx.game.core.plugins.SelectorPlugin;
 import net.mgsx.game.core.screen.ScreenDelegate;
 import net.mgsx.game.core.storage.LoadConfiguration;
@@ -74,6 +74,7 @@ import net.mgsx.game.core.ui.events.EditorListener;
 import net.mgsx.game.core.ui.widgets.TabPane;
 import net.mgsx.game.plugins.core.tools.UndoTool;
 import net.mgsx.game.plugins.editor.systems.EditorSystem;
+import net.mgsx.game.plugins.editor.systems.SelectionSystem;
 
 /**
  * Base screen for game editor.
@@ -242,6 +243,9 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 		mainToolGroup = createToolGroup();
 
 		registry.init(this);
+		
+		selection = entityEngine.getSystem(SelectionSystem.class);
+		editor = entityEngine.getSystem(EditorSystem.class);
 
 		for(final Class<? extends Component> type : registry.components){
 			EditableComponent config = type.getAnnotation(EditableComponent.class);
@@ -273,7 +277,7 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 		global.addTab("Tools", new ScrollPane(buttons, skin));
 		global.addTab("Components", new ScrollPane(outline, skin, "light"));
 		for(Entry<String, EngineEditor> entry : entityEngine.getSystem(EditorSystem.class).globalEditors.entries()){
-			global.addTab(entry.key, entry.value.createEditor(this, skin));
+			global.addTab(entry.key, entry.value.createEditor(this.entityEngine, assets, skin));
 		}
 		
 		// listener for component add/remove
@@ -281,14 +285,14 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 			
 			@Override
 			public void entityRemoved(Entity entity) {
-				if(selection.contains(entity, true)){
-					invalidateSelection();
+				if(selection.contains(entity)){
+					selection.invalidate();
 				}
 			}
 			
 			@Override
 			public void entityAdded(Entity entity) {
-				if(entity == getSelected()) invalidateSelection();
+				if(entity == getSelected()) selection.invalidate();
 			}
 		};
 		
@@ -301,9 +305,8 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 			
 			@Override
 			public void entityRemoved(Entity entity) {
-				if(selection.contains(entity, true)){
-					selection.removeValue(entity, true);
-					invalidateSelection();
+				if(selection.contains(entity)){
+					selection.remove(entity);
 				}
 			}
 			
@@ -370,9 +373,8 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 	@Override
 	public void render(float deltaTime) 
 	{
-		if(selectionDirty)
+		if(selection.validate())
 		{
-			selectionDirty = false;
 			updateSelection();
 		}
 		
@@ -439,7 +441,7 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 	
 	private void updateSelection() 
 	{
-		final Entity entity = selection.size > 0 ? selection.peek() : null;
+		final Entity entity = selection.size() > 0 ? selection.last() : null;
 		
 		for(Button button : contextualButtons ){
 			mainToolGroup.removeButton(button);
@@ -450,7 +452,7 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 		outline.clear();
 		outline.setBackground((Drawable)null);
 		
-		buttons.add(String.valueOf(selection.size) + " entities").expandX().fill().row();
+		buttons.add(String.valueOf(selection.size()) + " entities").expandX().fill().row();
 			
 		
 		// TODO move to Tool bar class update ...
@@ -483,7 +485,7 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
 				showAllTools = btShow.isChecked();
-				invalidateSelection();
+				selection.invalidate();
 			}
 		});
 		buttons.add("Unavailable");
@@ -502,7 +504,7 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 		{
 			// check if tool is in current plugin filter.
 			boolean accepted = true;
-			accepted &= tool.allowed(selection);
+			accepted &= tool.allowed(selection.selection);
 			accepted &= pluginFilter == null || pluginFilter.isEmpty() || pluginFilter.equals(registry.getTag(tool));
 			accepted &= tool.activator == null || (entity != null && tool.activator.matches(entity));
 			if(accepted || showAllTools)
@@ -514,7 +516,7 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 		}
 		
 		// Display all entity components (unique entity only)
-		if(selection.size == 1)
+		if(selection.size() == 1)
 		{
 			Button btRemove = new Button(skin.getDrawable("tree-minus"));
 			btRemove.addListener(new ChangeListener(){
@@ -731,9 +733,9 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 		}
 	}
 	
+	private SelectionSystem selection;
+	private EditorSystem editor;
 	
-	public Array<Entity> selection = new Array<Entity>();
-	private boolean selectionDirty;
 	private boolean displayEnabled = true; // true by default
 
 	public Table toolOutline;
@@ -747,20 +749,20 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 	 */
 	public Entity currentEntity() 
 	{
-		if(selection.size <= 0){
+		if(selection.isEmpty()){
 			Entity entity = entityEngine.createEntity();
 			entity.add(entityEngine.createComponent(Repository.class));
 			entityEngine.addEntity(entity);
 			return entity;
 		}
-		return selection.get(selection.size-1);
+		return selection.last();
 	}
 	
 	public Entity transcientEntity(){
-		if(selection.size <= 0){
+		if(selection.isEmpty()){
 			return entityEngine.createEntity();
 		}
-		Entity entity = selection.get(selection.size-1);
+		Entity entity = selection.last();
 		if(Repository.components.has(entity)){
 			return entityEngine.createEntity();
 		}
@@ -820,14 +822,10 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 		return btTool;
 	}
 
-	public void invalidateSelection() {
-		selectionDirty = true;
-	}
-
 	public Entity getSelected() 
 	{
 		// returns the last selected.
-		return selection.size > 0 ? selection.get(selection.size-1) : null;
+		return selection.size() > 0 ? selection.last() : null;
 	}
 
 	public <T> T loadAssetNow(String fileName, Class<T> type) {
@@ -886,14 +884,12 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 		editorCamera.reset();
 		
 		selection.clear();
-		invalidateSelection();
 	}
 
-	// TODO externalize selection : editor.selection.set/clear/add...etc invalidating is done in it
+	// TODO externalize selection : selection().set/clear/add...etc invalidating is done in it
 	public void setSelection(Entity entity) {
 		selection.clear();
 		selection.add(entity);
-		invalidateSelection();
 	}
 
 	public void setInfo(String message) {

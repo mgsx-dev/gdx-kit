@@ -5,7 +5,6 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -16,6 +15,7 @@ import com.badlogic.gdx.utils.Array;
 
 import net.mgsx.game.core.EditorScreen;
 import net.mgsx.game.plugins.core.systems.GridDebugSystem;
+import net.mgsx.game.plugins.editor.systems.SelectionSystem;
 
 /**
  * A tool may be active in an editor.
@@ -32,12 +32,14 @@ import net.mgsx.game.plugins.core.systems.GridDebugSystem;
  * 
  * See ToolGroup : exclusive tool (eg select + draw)
  */
-abstract public class Tool extends InputAdapter
+abstract public class Tool extends AbstractInputSystem
 {
 	final protected EditorScreen editor;
 	ToolGroup group;
 	
 	public Family activator; // TODO remove in favor to allowed method
+	
+	private SelectionSystem selectionSystem;
 	
 	public Tool(EditorScreen editor) {
 		this("no name", editor);
@@ -46,6 +48,7 @@ abstract public class Tool extends InputAdapter
 		super();
 		this.editor = editor;
 		this.name = name;
+		selectionSystem = editor.entityEngine.getSystem(SelectionSystem.class);
 	}
 
 	final protected void end(){
@@ -54,10 +57,16 @@ abstract public class Tool extends InputAdapter
 		}
 	}
 	
+	protected SelectionSystem selection(){
+		return selectionSystem;
+	}
+	
 	public Engine getEngine()
 	{
-		return editor.entityEngine;
+		return editor.entityEngine; // XXX override for now, to be removed latter
 	}
+	
+	
 
 	protected void activate(){
 		editor.setInfo("This tool doesn't provide help. Call editor.setInfo in activate method.");

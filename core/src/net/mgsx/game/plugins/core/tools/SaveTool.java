@@ -74,7 +74,7 @@ public class SaveTool extends Tool
 
 				if(entities){
 					if(selection){
-						config.entities = new Array<Entity>(editor.selection);
+						config.entities = new Array<Entity>(selection().selection);
 						config.filterRepository = false;
 					}else{
 						config.filterRepository = true;

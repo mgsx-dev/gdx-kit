@@ -1,9 +1,11 @@
 package net.mgsx.game.plugins.ashley.editors;
 
 import com.badlogic.ashley.core.Component;
+import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntityListener;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
@@ -16,9 +18,10 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 
-import net.mgsx.game.core.EditorScreen;
 import net.mgsx.game.core.annotations.EditableComponent;
 import net.mgsx.game.core.plugins.EngineEditor;
+import net.mgsx.game.plugins.editor.systems.EditorSystem;
+import net.mgsx.game.plugins.editor.systems.SelectionSystem;
 
 public class AshleyEntitiesEditor implements EngineEditor
 {
@@ -58,8 +61,12 @@ public class AshleyEntitiesEditor implements EngineEditor
 	}
 	
 	@Override
-	public Actor createEditor(final EditorScreen editor, Skin skin) 
+	public Actor createEditor(final Engine engine, AssetManager assets, Skin skin) 
 	{
+		final EditorSystem editorSystem = engine.getSystem(EditorSystem.class);
+		
+		final SelectionSystem selectionSystem = engine.getSystem(SelectionSystem.class);
+		
 		final ObjectMap<Entity, EntityItem> map = new ObjectMap<Entity, AshleyEntitiesEditor.EntityItem>();
 		
 		final Array<EntityItem> items = new Array<EntityItem>();
@@ -68,8 +75,8 @@ public class AshleyEntitiesEditor implements EngineEditor
 		
 		
 		
-		for(int i=0 ; i<editor.entityEngine.getEntities().size() ; i++){
-			Entity entity = editor.entityEngine.getEntities().get(i);
+		for(int i=0 ; i<engine.getEntities().size() ; i++){
+			Entity entity = engine.getEntities().get(i);
 			EntityItem item = new EntityItem(entity, i);
 			map.put(entity, item);
 			items.add(item);
@@ -81,11 +88,11 @@ public class AshleyEntitiesEditor implements EngineEditor
 			
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
-				editor.selection.clear();
+				selectionSystem.selection.clear();
 				if(selector.getSelected() != null){
-					editor.selection.add(selector.getSelected().entity);
+					selectionSystem.selection.add(selector.getSelected().entity);
 				}
-				editor.invalidateSelection();
+				selectionSystem.invalidate();
 			}
 		});
 		
@@ -111,7 +118,7 @@ public class AshleyEntitiesEditor implements EngineEditor
 		});
 		
 		Array<ComponentFilter> filters = new Array<ComponentFilter>();
-		for(Class<? extends Component> type : editor.registry.components){
+		for(Class<? extends Component> type : editorSystem.registry.components){
 			EditableComponent meta = type.getAnnotation(EditableComponent.class);
 			String name = meta == null || meta.name().isEmpty() ? type.getSimpleName() : meta.name();
 			filters.add(new ComponentFilter(name, type));
@@ -128,8 +135,8 @@ public class AshleyEntitiesEditor implements EngineEditor
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
 				items.clear();
-				for(int i=0 ; i<editor.entityEngine.getEntities().size() ; i++){
-					Entity entity = editor.entityEngine.getEntities().get(i);
+				for(int i=0 ; i<engine.getEntities().size() ; i++){
+					Entity entity = engine.getEntities().get(i);
 					
 					if(filter.getSelected().type == null || entity.getComponent(filter.getSelected().type)!=null){
 						EntityItem item = new EntityItem(entity, i);
@@ -141,7 +148,7 @@ public class AshleyEntitiesEditor implements EngineEditor
 				selector.setItems(items);
 			}
 		});
-		editor.entityEngine.addEntityListener(new EntityListener() {
+		engine.addEntityListener(new EntityListener() {
 			
 			@Override
 			public void entityRemoved(Entity entity) {
@@ -154,7 +161,7 @@ public class AshleyEntitiesEditor implements EngineEditor
 			public void entityAdded(Entity entity) {
 				if(filter.getSelected().type == null || entity.getComponent(filter.getSelected().type)!=null){
 					
-					EntityItem item = new EntityItem(entity, editor.entityEngine.getEntities().indexOf(entity, true));
+					EntityItem item = new EntityItem(entity, engine.getEntities().indexOf(entity, true));
 					map.put(entity, item);
 					items.add(item);
 					selector.setItems(items);

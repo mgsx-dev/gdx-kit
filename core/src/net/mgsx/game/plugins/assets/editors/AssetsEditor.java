@@ -1,5 +1,7 @@
 package net.mgsx.game.plugins.assets.editors;
 
+import com.badlogic.ashley.core.Engine;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -8,7 +10,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Array;
 
-import net.mgsx.game.core.EditorScreen;
 import net.mgsx.game.core.helpers.EditorAssetManager;
 import net.mgsx.game.core.helpers.EditorAssetManager.AssetManagerListener;
 import net.mgsx.game.core.plugins.EngineEditor;
@@ -38,9 +39,14 @@ public class AssetsEditor implements EngineEditor
 	}
 	
 	@Override
-	public Actor createEditor(final EditorScreen editor, final Skin skin)
+	public Actor createEditor(final Engine engine, final AssetManager assets, final Skin skin)
 	{
-		final ListView<AssetItem> assetList = new ListView<AssetItem>(createItems(editor.assets), skin) {
+		return createEditor(engine, (EditorAssetManager)assets, skin);
+	}
+	
+	public Actor createEditor(final Engine engine, final EditorAssetManager assets, final Skin skin)
+	{
+		final ListView<AssetItem> assetList = new ListView<AssetItem>(createItems(assets), skin) {
 			
 			@Override
 			protected void createItem(Table parent, final AssetItem item) {
@@ -53,7 +59,7 @@ public class AssetsEditor implements EngineEditor
 				btReload.addListener(new ChangeListener(){
 					@Override
 					public void changed(ChangeEvent event, Actor actor) {
-						editor.assets.reload(item.name);
+						assets.reload(item.name);
 						
 					}
 				});
@@ -74,26 +80,26 @@ public class AssetsEditor implements EngineEditor
 			
 			@Override
 			public void added(String fileName, Class type) {
-				assetList.addItem(createItem(editor.assets, fileName));
+				assetList.addItem(createItem(assets, fileName));
 			}
 
 			@Override
 			public void removed(String fileName) {
-				assetList.setItems(createItems(editor.assets));
+				assetList.setItems(createItems(assets));
 			}
 
 			@Override
 			public void changed(String fileName) {
-				assetList.setItems(createItems(editor.assets));
+				assetList.setItems(createItems(assets));
 			}
 		};
-		editor.assets.addListener(listener);
+		assets.addListener(listener);
 		
 		Table table = new Table(skin){
 			@Override
 			public void clearListeners() {
 				super.clearListeners();
-				editor.assets.removeListener(listener);
+				assets.removeListener(listener);
 			}
 		};
 		
@@ -102,7 +108,7 @@ public class AssetsEditor implements EngineEditor
 		btRefresh.addListener(new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
-				assetList.setItems(createItems(editor.assets));
+				assetList.setItems(createItems(assets));
 			}
 		});
 		

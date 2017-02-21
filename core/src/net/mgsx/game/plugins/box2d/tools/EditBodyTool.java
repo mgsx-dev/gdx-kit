@@ -171,9 +171,8 @@ public class EditBodyTool extends Tool
 			editor.entityEngine.removeEntity(entity);
 		}
 		
-		editor.selection.clear();
-		editor.selection.add(current);
-		editor.invalidateSelection();
+		selection().clear();
+		selection().add(current);
 		
 		shapeEntities.clear();
 		vertexEntities.clear();

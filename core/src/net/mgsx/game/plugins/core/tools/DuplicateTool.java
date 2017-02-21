@@ -33,18 +33,17 @@ public class DuplicateTool extends SelectTool
 		{
 			Array<Entity> duplicates = new Array<Entity>();
 			EntityGroup group = new EntityGroup();
-			group.entities().addAll(editor.selection);
+			group.entities().addAll(selection().selection);
 			EntityGroupStorage.create(duplicates, editor.assets, getEngine(), group, null);
 			
-//			for(Entity entity : editor.selection)
+//			for(Entity entity : selection())
 //			{
 //				
 //				Entity newEntity = EntityHelper.clone(editor.entityEngine, entity);
 //				duplicates.add(newEntity);
 //			}
-			editor.selection.clear();
-			editor.selection.addAll(duplicates);
-			editor.invalidateSelection();
+			selection().clear();
+			selection().addAll(duplicates);
 			moving = true;
 			prev = new Vector2(Gdx.input.getX(), Gdx.input.getY());
 			return true;
