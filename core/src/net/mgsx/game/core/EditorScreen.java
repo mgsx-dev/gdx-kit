@@ -1,7 +1,6 @@
 package net.mgsx.game.core;
 
 import java.util.Comparator;
-import java.util.Map.Entry;
 
 import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.Engine;
@@ -43,6 +42,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json.Serializer;
 import com.badlogic.gdx.utils.ObjectMap;
+import com.badlogic.gdx.utils.ObjectMap.Entry;
 import com.badlogic.gdx.utils.ObjectSet;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
@@ -73,6 +73,7 @@ import net.mgsx.game.core.ui.events.AccessorHelpEvent;
 import net.mgsx.game.core.ui.events.EditorListener;
 import net.mgsx.game.core.ui.widgets.TabPane;
 import net.mgsx.game.plugins.core.tools.UndoTool;
+import net.mgsx.game.plugins.editor.systems.EditorSystem;
 
 /**
  * Base screen for game editor.
@@ -271,8 +272,8 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 		
 		global.addTab("Tools", new ScrollPane(buttons, skin));
 		global.addTab("Components", new ScrollPane(outline, skin, "light"));
-		for(Entry<String, GlobalEditorPlugin> entry : registry.globalEditors.entrySet()){
-			global.addTab(entry.getKey(), entry.getValue().createEditor(this, skin));
+		for(Entry<String, GlobalEditorPlugin> entry : entityEngine.getSystem(EditorSystem.class).globalEditors.entries()){
+			global.addTab(entry.key, entry.value.createEditor(this, skin));
 		}
 		
 		// listener for component add/remove

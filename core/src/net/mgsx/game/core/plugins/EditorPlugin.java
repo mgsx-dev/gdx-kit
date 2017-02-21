@@ -6,7 +6,7 @@ import net.mgsx.game.core.GameScreen;
 /**
  * Base plugin for editor.
  */
-public abstract class EditorPlugin implements Plugin
+public abstract class EditorPlugin implements Plugin // TODO change name as Plugin or KitPlugin
 {
 	/**
 	 * Initialize plugin from an editor.

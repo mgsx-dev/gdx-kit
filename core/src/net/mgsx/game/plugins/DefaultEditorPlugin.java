@@ -7,6 +7,7 @@ import net.mgsx.game.plugins.boundary.BoundaryEditorPlugin;
 import net.mgsx.game.plugins.box2d.Box2DEditorPlugin;
 import net.mgsx.game.plugins.camera.CameraEditorPlugin;
 import net.mgsx.game.plugins.core.CoreEditorPlugin;
+import net.mgsx.game.plugins.editor.KitEditorPlugin;
 import net.mgsx.game.plugins.fsm.StateMachineEditorPlugin;
 import net.mgsx.game.plugins.g2d.G2DEditorPlugin;
 import net.mgsx.game.plugins.g3d.G3DEditorPlugin;
@@ -23,6 +24,7 @@ import net.mgsx.game.plugins.tiles.TilesEditorPlugin;
  *
  */
 @PluginDef(dependencies={
+	KitEditorPlugin.class,
 	AshleyEditorPlugin.class,
 	BoundaryEditorPlugin.class,
 	Box2DEditorPlugin.class,
