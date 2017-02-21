@@ -6,18 +6,19 @@ import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.collision.BoundingBox;
 
-import net.mgsx.game.core.EditorScreen;
 import net.mgsx.game.core.GamePipeline;
 import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.core.annotations.EditableSystem;
+import net.mgsx.game.core.annotations.Inject;
 import net.mgsx.game.core.helpers.RenderDebugHelper;
+import net.mgsx.game.plugins.editor.systems.DebugRenderSystem;
 import net.mgsx.game.plugins.g3d.components.G3DModel;
 import net.mgsx.game.plugins.g3d.components.NodeBoundary;
 
 @EditableSystem(isDebug=true)
 public class G3DBoundaryDebugSystem extends IteratingSystem 
 {
-	private final EditorScreen editor;
+	@Inject protected DebugRenderSystem editor;
 	
 	@Editable
 	public boolean boudaryBox = false;
@@ -25,17 +26,15 @@ public class G3DBoundaryDebugSystem extends IteratingSystem
 	@Editable
 	public boolean nodeBoudaryBox = false;
 	
-	public G3DBoundaryDebugSystem(EditorScreen editor) 
+	public G3DBoundaryDebugSystem() 
 	{
 		super(Family.all(G3DModel.class).get(), GamePipeline.RENDER_OVER);
-		this.editor = editor;
 	}
 
 	@Override
 	public void update(float deltaTime) {
 		// TODO mode fill switchable : Gdx.gl.glEnable(GL20.GL_BLEND); and editor.shapeRenderer.begin(ShapeType.Filled);
 		editor.shapeRenderer.setColor(1, 1, 1, 0.1f);
-		editor.shapeRenderer.setProjectionMatrix(editor.getGameCamera().combined);
 		editor.shapeRenderer.begin(ShapeType.Line);
 		
 		super.update(deltaTime);

@@ -5,20 +5,20 @@ import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 
-import net.mgsx.game.core.EditorScreen;
 import net.mgsx.game.core.GamePipeline;
 import net.mgsx.game.core.annotations.EditableSystem;
+import net.mgsx.game.core.annotations.Inject;
 import net.mgsx.game.core.helpers.RenderDebugHelper;
 import net.mgsx.game.plugins.camera.components.CameraComponent;
+import net.mgsx.game.plugins.editor.systems.DebugRenderSystem;
 
 @EditableSystem(isDebug=true)
 public class CameraDebugSystem extends IteratingSystem
 {
-	private EditorScreen editor;
+	@Inject protected DebugRenderSystem editor;
 
-	public CameraDebugSystem(EditorScreen editor) {
+	public CameraDebugSystem() {
 		super(Family.all(CameraComponent.class).get(), GamePipeline.RENDER_DEBUG);
-		this.editor = editor;
 	}
 	
 	@Override

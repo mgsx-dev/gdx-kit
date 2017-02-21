@@ -5,19 +5,19 @@ import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 
-import net.mgsx.game.core.EditorScreen;
 import net.mgsx.game.core.GamePipeline;
 import net.mgsx.game.core.annotations.EditableSystem;
+import net.mgsx.game.core.annotations.Inject;
 import net.mgsx.game.plugins.core.components.PolygonComponent;
+import net.mgsx.game.plugins.editor.systems.DebugRenderSystem;
 
 @EditableSystem(isDebug=true)
 public class PolygonRenderSystem extends IteratingSystem
 {
-	private EditorScreen editor;
+	@Inject protected DebugRenderSystem editor;
 
-	public PolygonRenderSystem(EditorScreen editor) {
+	public PolygonRenderSystem() {
 		super(Family.all(PolygonComponent.class).get(), GamePipeline.RENDER_DEBUG);
-		this.editor = editor;
 	}
 
 	@Override

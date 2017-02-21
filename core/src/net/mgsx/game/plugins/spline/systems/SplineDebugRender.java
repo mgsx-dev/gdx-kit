@@ -6,19 +6,19 @@ import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector3;
 
-import net.mgsx.game.core.EditorScreen;
 import net.mgsx.game.core.GamePipeline;
 import net.mgsx.game.core.annotations.EditableSystem;
+import net.mgsx.game.core.annotations.Inject;
+import net.mgsx.game.plugins.editor.systems.DebugRenderSystem;
 import net.mgsx.game.plugins.spline.components.PathComponent;
 import net.mgsx.game.plugins.spline.components.SplineDebugComponent;
 
 @EditableSystem(isDebug=true)
 public class SplineDebugRender extends IteratingSystem {
-	private final EditorScreen editor;
+	@Inject protected DebugRenderSystem editor;
 
-	public SplineDebugRender(EditorScreen editor) {
+	public SplineDebugRender() {
 		super(Family.all(PathComponent.class, SplineDebugComponent.class).get(), GamePipeline.RENDER_DEBUG);
-		this.editor = editor;
 	}
 
 	@Override

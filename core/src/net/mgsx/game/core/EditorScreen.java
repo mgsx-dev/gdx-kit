@@ -19,8 +19,6 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Event;
@@ -49,6 +47,7 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.core.annotations.EditableComponent;
 import net.mgsx.game.core.annotations.EditableSystem;
+import net.mgsx.game.core.annotations.Inject;
 import net.mgsx.game.core.components.Movable;
 import net.mgsx.game.core.components.Repository;
 import net.mgsx.game.core.editors.AnnotationBasedComponentEditor;
@@ -88,6 +87,14 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 	
 	private static final String STATUS_HIDDEN_TEXT = "Press F1 to toggle help";
 
+	// new version
+	
+	@Inject protected SelectionSystem selection;
+	@Inject protected EditorSystem editor;
+	
+	// new version
+	
+	
 	private boolean showStatus;
 	private String currentText;
 	
@@ -100,11 +107,7 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 	private Table superGlobal;
 	private VerticalGroup pinStack;
 	
-	private SpriteBatch editorBatch;
-	
-	public EditorRegistry registry;
-	
-	final private Array<ToolGroup> tools = new Array<ToolGroup>();
+	public EditorRegistry registry; // TODO move to a system ?
 	
 	private InputMultiplexer toolDelegator;
 	
@@ -115,7 +118,7 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 	
 	
 	private Array<Tool> autoTools = new Array<Tool>();
-	public ShapeRenderer shapeRenderer;
+	
 	public GameScreen game;
 	
 	private EditorCamera editorCamera;
@@ -183,10 +186,6 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 	
 	private void init()
 	{
-		editorBatch = new SpriteBatch();
-		
-		shapeRenderer = new ShapeRenderer();
-		
 		skin = new Skin(Gdx.files.classpath("uiskin.json"));
 		
 		stage = new Stage(new ScreenViewport());
@@ -238,9 +237,6 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 
 		registry.init(this);
 		
-		selection = entityEngine.getSystem(SelectionSystem.class);
-		editor = entityEngine.getSystem(EditorSystem.class);
-
 		for(final Class<? extends Component> type : registry.components){
 			EditableComponent config = type.getAnnotation(EditableComponent.class);
 			if(config != null){
@@ -268,10 +264,20 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 		}
 		
 		// TODO do it else where
+		registry.inject(entityEngine, this);
+		
+		editor.addTools(prependTools);
+		
 		for(Tool tool : mainToolGroup.tools){
 			registry.inject(entityEngine, tool);
 		}
 		registry.inject(entityEngine, undoTool); // XXX special undoTool don't know why ?
+		for(EntitySystem system : entityEngine.getSystems()){
+			registry.inject(entityEngine, system);
+		}
+		
+		
+		
 		
 		
 		global.addTab("Tools", new ScrollPane(buttons, skin));
@@ -344,11 +350,13 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 		}
 	};
 
+	private Array<ToolGroup> prependTools = new Array<ToolGroup>();
+	
 	public ToolGroup createToolGroup() 
 	{
 		ToolGroup g = new ToolGroup(toolGroupHandler);
 		toolDelegator.addProcessor(g);
-		tools.add(g);
+		prependTools.add(g);
 		return g;
 	}
 	public void addGlobalTool(Tool tool) 
@@ -393,32 +401,10 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 			updateSelection();
 		}
 		
-		shapeRenderer.setProjectionMatrix(getGameCamera().combined);
-		
 		current.render(deltaTime);
 
 		if(displayEnabled){
 			stage.act();
-		}
-		
-		
-		// TODO use systems instead (used by sprite tools ...)
-		
-		editorBatch.setProjectionMatrix(getGameCamera().combined);
-		editorBatch.begin();
-		for(ToolGroup g : tools){
-			g.render(editorBatch);
-		}
-		editorBatch.end();
-		
-		for(ToolGroup g : tools){
-			g.update(deltaTime);
-			g.render(shapeRenderer);
-		}
-		
-		if(displayEnabled){
-
-			
 			stage.draw();
 		}
 		
@@ -748,8 +734,6 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 		}
 	}
 	
-	private SelectionSystem selection;
-	private EditorSystem editor;
 	
 	private boolean displayEnabled = true; // true by default
 

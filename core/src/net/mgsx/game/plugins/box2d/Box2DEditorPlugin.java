@@ -48,8 +48,8 @@ public class Box2DEditorPlugin extends EditorPlugin
 		editor.addSelector(new Box2DBodySelector(editor, context));
 		
 		editor.entityEngine.addSystem(new Box2DRenderDebugSystem(editor));
-		editor.entityEngine.addSystem(new Box2DBoundaryDebugSystem(editor));
-		editor.entityEngine.addSystem(new Box2DRayCastDebugSystem(editor, context));
+		editor.entityEngine.addSystem(new Box2DBoundaryDebugSystem());
+		editor.entityEngine.addSystem(new Box2DRayCastDebugSystem(context));
 
 		editor.registry.registerPlugin(Box2DBodyModel.class, new Box2DBodyEditorPlugin());
 		editor.registry.registerPlugin(Box2DJointModel.class, new Box2DJointEditorPlugin());

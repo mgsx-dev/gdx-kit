@@ -32,6 +32,10 @@ public class ToolGroup extends InputMultiplexer
 		this.defaultTool = defaultTool;
 	}
 	
+	public Tool getActiveTool() {
+		return activeTool;
+	}
+	
 	public void setActiveTool(Tool tool){
 		if(activeTool != null){
 			activeTool.desactivate();

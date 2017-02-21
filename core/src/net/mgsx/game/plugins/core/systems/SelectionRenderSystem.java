@@ -11,14 +11,17 @@ import com.badlogic.gdx.math.Vector3;
 import net.mgsx.game.core.EditorScreen;
 import net.mgsx.game.core.GamePipeline;
 import net.mgsx.game.core.annotations.EditableSystem;
+import net.mgsx.game.core.annotations.Inject;
 import net.mgsx.game.core.components.Movable;
 import net.mgsx.game.core.tools.Tool;
 import net.mgsx.game.plugins.core.components.Transform2DComponent;
+import net.mgsx.game.plugins.editor.systems.DebugRenderSystem;
 import net.mgsx.game.plugins.editor.systems.SelectionSystem;
 
 @EditableSystem(isDebug=true)
 public class SelectionRenderSystem extends IteratingSystem {
 	final private EditorScreen editor;
+	@Inject protected DebugRenderSystem render;
 	final private Vector3 pos = new Vector3();
 	
 	private SelectionSystem selection;
@@ -38,12 +41,12 @@ public class SelectionRenderSystem extends IteratingSystem {
 	public void update(float deltaTime) {
 		
 		
-		editor.shapeRenderer.setProjectionMatrix(editor.getGameCamera().combined);
-		editor.shapeRenderer.begin(ShapeType.Line);
+		render.shapeRenderer.setProjectionMatrix(editor.getGameCamera().combined);
+		render.shapeRenderer.begin(ShapeType.Line);
 		
 		super.update(deltaTime);
 		
-		editor.shapeRenderer.end();
+		render.shapeRenderer.end();
 	}
 
 	@Override
@@ -57,8 +60,8 @@ public class SelectionRenderSystem extends IteratingSystem {
 		
 		Vector2 s = Tool.pixelSize(editor.getGameCamera()).scl(5);
 		boolean inSelection = selection.contains(entity);
-		if(inSelection) editor.shapeRenderer.setColor(1, 1, 0, 1);
-		editor.shapeRenderer.rect(pos.x-s.x, pos.y-s.y, 2*s.x, 2*s.y);
-		if(inSelection) editor.shapeRenderer.setColor(1, 1, 1, 1);
+		if(inSelection) render.shapeRenderer.setColor(1, 1, 0, 1);
+		render.shapeRenderer.rect(pos.x-s.x, pos.y-s.y, 2*s.x, 2*s.y);
+		if(inSelection) render.shapeRenderer.setColor(1, 1, 1, 1);
 	}
 }

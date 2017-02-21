@@ -55,7 +55,7 @@ public class CoreEditorPlugin extends EditorPlugin
 		
 		// systems
 		editor.entityEngine.addSystem(new SelectionRenderSystem(editor));
-		editor.entityEngine.addSystem(new PolygonRenderSystem(editor));
+		editor.entityEngine.addSystem(new PolygonRenderSystem());
 		editor.entityEngine.addSystem(new GridDebugSystem(editor));
 		
 		editor.addTool(new EntityEmitterTool(editor));

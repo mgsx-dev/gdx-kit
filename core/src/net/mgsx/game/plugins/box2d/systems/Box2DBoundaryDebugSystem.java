@@ -8,23 +8,23 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 
-import net.mgsx.game.core.EditorScreen;
 import net.mgsx.game.core.GamePipeline;
 import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.core.annotations.EditableSystem;
+import net.mgsx.game.core.annotations.Inject;
 import net.mgsx.game.plugins.box2d.components.Box2DBodyModel;
+import net.mgsx.game.plugins.editor.systems.DebugRenderSystem;
 
 @EditableSystem(isDebug=true)
 public class Box2DBoundaryDebugSystem extends IteratingSystem 
 {
-	private final EditorScreen editor;
+	@Inject protected DebugRenderSystem editor;
 	
 	@Editable
 	public Box2DDebugRenderer box2dRenderer = new Box2DDebugRenderer();
 
-	public Box2DBoundaryDebugSystem(EditorScreen editor) {
+	public Box2DBoundaryDebugSystem() {
 		super(Family.all(Box2DBodyModel.class).get(), GamePipeline.RENDER_OVER);
-		this.editor = editor;
 	}
 	
 	@Override

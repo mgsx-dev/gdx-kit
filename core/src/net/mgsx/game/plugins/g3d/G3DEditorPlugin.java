@@ -27,8 +27,8 @@ public class G3DEditorPlugin extends EditorPlugin
 		editor.assets.addReloadListener(Model.class, new G3DModelReloader(editor.entityEngine));
 		
 		// systems
-		editor.entityEngine.addSystem(new G3DBoundaryDebugSystem(editor));
-		editor.entityEngine.addSystem(new G3DPointLightDebugSystem(editor));
+		editor.entityEngine.addSystem(new G3DBoundaryDebugSystem());
+		editor.entityEngine.addSystem(new G3DPointLightDebugSystem());
 		editor.entityEngine.addSystem(new G3DProfilerSystem());
 	}
 }

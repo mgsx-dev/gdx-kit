@@ -6,20 +6,20 @@ import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 
-import net.mgsx.game.core.EditorScreen;
 import net.mgsx.game.core.GamePipeline;
 import net.mgsx.game.core.annotations.EditableSystem;
+import net.mgsx.game.core.annotations.Inject;
 import net.mgsx.game.core.components.Hidden;
+import net.mgsx.game.plugins.editor.systems.DebugRenderSystem;
 import net.mgsx.game.plugins.g3d.components.PointLightComponent;
 
 @EditableSystem(isDebug=true)
 public class G3DPointLightDebugSystem extends IteratingSystem
 {
-	private EditorScreen editor;
+	@Inject protected DebugRenderSystem editor;
 	
-	public G3DPointLightDebugSystem(EditorScreen editor) {
+	public G3DPointLightDebugSystem() {
 		super(Family.all(PointLightComponent.class).get(), GamePipeline.RENDER_DEBUG);
-		this.editor = editor;
 	}
 	
 	@Override

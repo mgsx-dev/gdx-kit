@@ -108,9 +108,8 @@ public class EditorRegistry extends GameRegistry
 		super.collect(editor.game);
 	}
 
-	public void inject(Engine engine, EntitySystem system) 
+	public void inject(Engine engine, Object system) 
 	{
-		System.out.println(system.getClass().getSimpleName());
 		for(Accessor accessor : ReflectionCache.fieldsFor(system, Inject.class)){
 			if(EntitySystem.class.isAssignableFrom(accessor.getType()))
 			{

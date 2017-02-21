@@ -17,7 +17,7 @@ public class CameraEditorPlugin extends EditorPlugin
 		editor.addTool(new Camera2DTool(editor));
 		
 		editor.entityEngine.addSystem(new CameraCullingDebugSystem(editor));
-		editor.entityEngine.addSystem(new CameraDebugSystem(editor));
+		editor.entityEngine.addSystem(new CameraDebugSystem());
 		
 		// disable by default
 		editor.entityEngine.getSystem(CameraDebugSystem.class).setProcessing(false);
