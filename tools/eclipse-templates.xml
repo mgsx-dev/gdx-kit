@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<templates>
+	<template autoinsert="true" context="java" deleted="false"
+		description="" enabled="true" name="createComponent">${t:elemType(com.nadlogic.ashley.core.Component)}
+		${newName} = engine.createComponent(${t}.class);</template>
+	<template autoinsert="true" context="java" deleted="false"
+		description="" enabled="true" name="get">${t:elemType(com.nadlogic.ashley.core.Component)}
+		${newName} = ${t}.components.get(entity);</template>
+	<template autoinsert="true" context="java" deleted="false"
+		description="" enabled="true" name="mapper">${a:import(com.badlogic.ashley.core.ComponentMapper)}
+		public final static ComponentMapper&lt;${enclosing_type}&gt;
+		components = ComponentMapper.getFor(${enclosing_type}.class);
+	</template>
+</templates>
