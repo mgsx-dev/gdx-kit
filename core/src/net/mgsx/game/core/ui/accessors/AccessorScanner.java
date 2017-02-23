@@ -47,7 +47,7 @@ public class AccessorScanner {
 				accessors.add(new VoidAccessor(entity, method, editable.value()));
 		}
 		
-		if(method.getName().startsWith("set") && method.getName().length() > 3 && method.getParameterCount() == 1)
+		if(method.getName().startsWith("set") && method.getName().length() > 3 && method.getParameterTypes().length == 1)
 		{
 			String getterName = "g" + method.getName().substring(1);
 			Method getter = ReflectionHelper.method(entity.getClass(), getterName);
