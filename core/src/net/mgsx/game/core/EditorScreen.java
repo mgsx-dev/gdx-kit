@@ -34,7 +34,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectSet;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.core.annotations.EditableComponent;
@@ -121,8 +120,11 @@ public class EditorScreen extends ScreenDelegate implements EditorContext // TOD
 
 	private ObjectSet<EditorListener> listeners = new ObjectSet<EditorListener>();
 	
+	final private EditorConfiguration config;
+	
 	public EditorScreen(EditorConfiguration config, GameScreen screen, EditorAssetManager assets, Engine engine) {
 		super(screen);
+		this.config = config;
 		this.game = screen;
 		this.game.registry = config.registry;
 		this.entityEngine = engine;
@@ -174,7 +176,7 @@ public class EditorScreen extends ScreenDelegate implements EditorContext // TOD
 	{
 		skin = new Skin(Gdx.files.classpath("uiskin.json"));
 		
-		stage = new Stage(new ScreenViewport());
+		stage = new Stage(config.viewport);
 		
 		toolDelegator = new InputMultiplexer();
 		

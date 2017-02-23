@@ -1,6 +1,8 @@
 package net.mgsx.game.core;
 
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 
 import net.mgsx.game.core.plugins.Plugin;
 
@@ -23,4 +25,10 @@ public class EditorConfiguration
 	 * Auto save is done on application exit (with or without exception)
 	 */
 	public String autoSavePath = "kit-autosave.json";
+
+	/**
+	 * Set viewport for editor, default is screen viewport.
+	 * This viewport only apply on editor stage (HUD). Game screens have their own viewport.
+	 */
+	public Viewport viewport = new ScreenViewport();
 }
