@@ -86,7 +86,7 @@ public class EditorScreen extends ScreenDelegate implements EditorContext // TOD
 	private String currentText;
 	
 	private Skin skin;
-	protected Stage stage;
+	public Stage stage; // XXX temp
 	protected Table panel;
 	protected Table buttons;
 	protected Table outline;

@@ -1,5 +1,6 @@
 package net.mgsx.game.plugins.camera.systems;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 
 import net.mgsx.game.core.EditorScreen;
@@ -22,7 +23,7 @@ public class CameraCullingDebugSystem extends TransactionSystem
 	protected boolean updateBefore(float deltaTime) 
 	{
 		if(editor.getEditorCamera().isActive()){
-			
+			editor.stage.getViewport().update(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 			backup = editor.game.camera;
 			editor.game.camera = editor.getEditorCamera().camera();
 			return true;
