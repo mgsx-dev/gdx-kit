@@ -5,6 +5,7 @@ import net.mgsx.game.core.annotations.PluginDef;
 import net.mgsx.game.core.plugins.EditorPlugin;
 import net.mgsx.game.plugins.camera.systems.CameraCullingDebugSystem;
 import net.mgsx.game.plugins.camera.systems.CameraDebugSystem;
+import net.mgsx.game.plugins.camera.systems.ViewportDebugSystem;
 import net.mgsx.game.plugins.camera.tools.Camera2DTool;
 import net.mgsx.game.plugins.camera.tools.ViewportTool;
 
@@ -20,6 +21,7 @@ public class CameraEditorPlugin extends EditorPlugin
 		
 		editor.entityEngine.addSystem(new CameraCullingDebugSystem(editor));
 		editor.entityEngine.addSystem(new CameraDebugSystem());
+		editor.entityEngine.addSystem(new ViewportDebugSystem());
 		
 		// disable by default
 		editor.entityEngine.getSystem(CameraDebugSystem.class).setProcessing(false);

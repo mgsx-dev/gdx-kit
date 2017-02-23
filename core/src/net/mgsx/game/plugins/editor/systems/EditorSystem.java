@@ -4,6 +4,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import com.badlogic.ashley.core.EntitySystem;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.utils.Array;
 
 import net.mgsx.game.core.EditorRegistry;
@@ -49,6 +50,13 @@ public class EditorSystem extends EntitySystem
 
 	public void addTools(Array<ToolGroup> tools) {
 		this.tools.addAll(tools);
+	}
+
+	public boolean isEditorCamera() {
+		return screen.getEditorCamera().isActive();
+	}
+	public Camera getEditorCamera() {
+		return screen.getEditorCamera().camera();
 	}
 	
 
