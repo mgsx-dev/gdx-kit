@@ -392,6 +392,7 @@ public class EditorScreen extends ScreenDelegate implements EditorContext // TOD
 		current.render(deltaTime);
 
 		if(displayEnabled){
+			stage.getViewport().update(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 			stage.act();
 			stage.draw();
 		}
