@@ -20,11 +20,8 @@ public class CameraEditorPlugin extends EditorPlugin
 		editor.addTool(new ViewportTool(editor));
 		
 		editor.entityEngine.addSystem(new CameraCullingDebugSystem(editor));
-		editor.entityEngine.addSystem(new CameraDebugSystem());
-		editor.entityEngine.addSystem(new ViewportDebugSystem());
-		
-		// disable by default
-		editor.entityEngine.getSystem(CameraDebugSystem.class).setProcessing(false);
+		editor.addSystem(new CameraDebugSystem(), false);
+		editor.addSystem(new ViewportDebugSystem(), false);
 	}
 
 }

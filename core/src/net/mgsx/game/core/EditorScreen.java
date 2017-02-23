@@ -830,4 +830,12 @@ public class EditorScreen extends ScreenDelegate implements EditorContext // TOD
 		mainToolGroup.setActiveTool(tool);
 	}
 
+	public void addSystem(EntitySystem system) {
+		addSystem(system, true);
+	}
+	public void addSystem(EntitySystem system, boolean processing) {
+		entityEngine.addSystem(system);
+		system.setProcessing(processing);
+	}
+
 }

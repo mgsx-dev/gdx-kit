@@ -22,7 +22,7 @@ import net.mgsx.game.plugins.camera.components.ViewportComponent;
 import net.mgsx.game.plugins.editor.systems.DebugRenderSystem;
 import net.mgsx.game.plugins.editor.systems.EditorSystem;
 
-@EditableSystem
+@EditableSystem(isDebug=true)
 public class ViewportDebugSystem extends EntitySystem
 {
 	@Inject protected DebugRenderSystem debug;
