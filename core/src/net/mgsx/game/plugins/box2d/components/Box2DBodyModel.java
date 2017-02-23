@@ -7,12 +7,14 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.Pool.Poolable;
 
 import net.mgsx.game.core.annotations.Storable;
 import net.mgsx.game.core.components.Duplicable;
+import net.mgsx.game.plugins.box2d.helper.Box2DHelper;
 import net.mgsx.game.plugins.box2d.listeners.Box2DListener;
 import net.mgsx.game.plugins.box2d.systems.Box2DWorldContext;
 
@@ -49,13 +51,13 @@ public class Box2DBodyModel implements Component, Duplicable, Poolable, Disposab
 	@Override
 	public Component duplicate(Engine engine) {
 		Box2DBodyModel model = engine.createComponent(Box2DBodyModel.class);
-		model.id = id; // TODO ? + " (clone)";
-		model.def = def;
+		model.id = id;
+		model.def = Box2DHelper.clone(new BodyDef(), def);
 		model.context = context;
 		model.fixtures = new Array<Box2DFixtureModel>();
 		for(Box2DFixtureModel fixture : fixtures){
 			Box2DFixtureModel newFixture = new Box2DFixtureModel();
-			newFixture.def = fixture.def;
+			newFixture.def = Box2DHelper.clone(new FixtureDef(), fixture.def);
 			newFixture.id = fixture.id;
 			model.fixtures.add(newFixture);
 		}

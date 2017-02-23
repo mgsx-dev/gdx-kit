@@ -7,6 +7,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
 
 import net.mgsx.game.core.components.Movable;
+import net.mgsx.game.plugins.box2d.components.Box2DBodyModel;
 
 public class BodyMove  extends Movable
 {
@@ -27,6 +28,7 @@ public class BodyMove  extends Movable
 		// body.setGravityScale(1);
 		body.setLinearVelocity(0, 0);
 		body.applyForceToCenter(0, 0, true);
+		updatePosition(entity, body.getPosition());
 	}
 	
 	@Override
@@ -42,6 +44,15 @@ public class BodyMove  extends Movable
 		body.setLinearVelocity(deltaWorld.x, deltaWorld.y); // ensure to wake others !
 		body.setTransform(position, body.getAngle());
 		body.applyForceToCenter(0, 0, true); // wakeup to allow collisions !
+		updatePosition(entity, position);
+	}
+	
+	private void updatePosition(Entity entity, Vector2 position)
+	{
+		Box2DBodyModel physics = Box2DBodyModel.components.get(entity);
+		if(physics != null){
+			physics.def.position.set(position);
+		}
 	}
 	
 	@Override
@@ -49,6 +60,7 @@ public class BodyMove  extends Movable
 	{
 		position.set(pos.x, pos.y);
 		body.setTransform(position, body.getAngle());
+		updatePosition(entity, position);
 	}
 	
 	@Override
