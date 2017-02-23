@@ -13,20 +13,17 @@ import net.mgsx.game.core.annotations.EditableComponent;
 import net.mgsx.game.core.annotations.Storable;
 import net.mgsx.game.core.components.Duplicable;
 
-@Storable(value="camera", auto=true)
-@EditableComponent(autoTool=false, autoClone=true)
+@Storable(value="camera")
+@EditableComponent(autoTool=false)
 public class CameraComponent implements Component, Duplicable
 {
 	public static final ComponentMapper<CameraComponent> components = ComponentMapper.getFor(CameraComponent.class);
 	
-	@Storable
 	@Editable public Camera camera;
-	public boolean frustumDirty;
 	
 	@Override
 	public Component duplicate(Engine engine) {
 		CameraComponent clone = engine.createComponent(CameraComponent.class);
-		clone.frustumDirty = true;
 		if(camera instanceof OrthographicCamera){
 			OrthographicCamera camClone = new OrthographicCamera();
 			camClone.zoom = ((OrthographicCamera) camera).zoom;

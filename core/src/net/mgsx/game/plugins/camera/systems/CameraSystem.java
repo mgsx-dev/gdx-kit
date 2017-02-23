@@ -64,12 +64,7 @@ public class CameraSystem extends IteratingSystem
 			camera.camera.position.y = transform.position.y;
 		}
 		
-		if(camera.frustumDirty){
-			camera.camera.update(true);
-		}
-		camera.camera.update(true); // XXX for editors
-		camera.frustumDirty = false;
-		
+		camera.camera.update(true);
 	}
 
 }
