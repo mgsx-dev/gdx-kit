@@ -10,7 +10,6 @@ import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
-import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.assets.AssetLoaderParameters;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
@@ -313,14 +312,9 @@ public class EditorScreen extends ScreenDelegate implements EditorContext // TOD
 		// build GUI
 		updateSelection();
 		
-		// patch input processor : some systems (HUD) may have set input processor so
-		// we need to just override it, not replace it.
-		InputProcessor previousInputProcessor = Gdx.input.getInputProcessor();
-		if(previousInputProcessor == null){
-			Gdx.input.setInputProcessor(new InputMultiplexer(stage, toolDelegator));
-		}else{
-			Gdx.input.setInputProcessor(new InputMultiplexer(stage, toolDelegator, previousInputProcessor));
-		}
+		// prepend tools and stage: order is first editor stage then tools then others
+		Kit.inputs.addProcessor(0, toolDelegator);
+		Kit.inputs.addProcessor(0, stage);
 	}
 	
 	private ToolGroupHandler toolGroupHandler = new ToolGroupHandler() {

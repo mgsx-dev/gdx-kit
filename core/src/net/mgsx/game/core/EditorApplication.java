@@ -32,6 +32,8 @@ public class EditorApplication extends Game
 	@Override
 	public void create() 
 	{
+		Gdx.input.setInputProcessor(Kit.inputs);
+		
 		assetManager = new EditorAssetManager();
 		assetManager.setLoader(EntityGroup.class, new EntityGroupLoader(assetManager.getFileHandleResolver()));
 		

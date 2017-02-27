@@ -7,6 +7,8 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
+import net.mgsx.game.core.Kit;
+
 /**
  * 
  * Conveniente screen implementation with Scene2D stage.
@@ -28,12 +30,12 @@ public class StageScreen extends ScreenAdapter
 	@Override
 	public void show() {
 		super.show();
-		Gdx.input.setInputProcessor(stage);
+		Kit.inputs.addProcessor(stage);
 	}
 	
 	@Override
 	public void hide() {
-		Gdx.input.setInputProcessor(null);
+		Kit.inputs.removeProcessor(stage);
 		super.hide();
 	}
 	

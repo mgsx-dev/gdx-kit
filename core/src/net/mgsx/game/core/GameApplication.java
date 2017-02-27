@@ -30,6 +30,7 @@ public abstract class GameApplication extends Game
 	public void create() {
 		assets = new AssetManager();
 		Texture.setAssetManager(assets);
+		Gdx.input.setInputProcessor(Kit.inputs);
 	}
 
 	/**
