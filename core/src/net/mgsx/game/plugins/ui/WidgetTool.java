@@ -4,19 +4,20 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 
 import net.mgsx.game.core.EditorScreen;
 import net.mgsx.game.core.annotations.Inject;
 import net.mgsx.game.core.tools.RectangleTool;
 
-public class SliderTool extends RectangleTool
+abstract public class WidgetTool extends RectangleTool
 {
 	@Inject protected WidgetSystem widgets;
 	
-	public SliderTool(EditorScreen editor) {
-		super("GUI Slider", editor);
+	final private WidgetFactory factory;
+	
+	public WidgetTool(String name, EditorScreen editor, WidgetFactory factory) {
+		super(name, editor);
+		this.factory = factory;
 	}
 
 	@Override
@@ -24,9 +25,8 @@ public class SliderTool extends RectangleTool
 	{
 		Entity entity = currentEntity();
 	
-		SliderComponent slider = getEngine().createComponent(SliderComponent.class);
-		slider.widget = new Slider(0, 1, .001f, false, editor.loadAssetNow("uiskin.json", Skin.class));
-		slider.bounds.setSize(0).setCenter(startPoint).merge(endPoint);
+		WidgetComponent widget = getEngine().createComponent(WidgetComponent.class);
+		widget.bounds.setSize(0).setCenter(startPoint).merge(endPoint);
 		
 		Vector3 sa = editor.getGameCamera().project(new Vector3(startPoint, 0));
 		Vector3 sb = editor.getGameCamera().project(new Vector3(endPoint, 0));
@@ -35,9 +35,11 @@ public class SliderTool extends RectangleTool
 		Vector3 a = widgets.viewport.unproject(sa);
 		Vector3 b = widgets.viewport.unproject(sb);
 		
-		slider.bounds.setSize(0).setCenter(new Vector2(a.x, a.y)).merge(new Vector2(b.x, b.y));
-		// slider.bounds.x += widgets.
-		entity.add(slider);
+		widget.widget = factory.createActor(getEngine(), entity, widgets.skin);
+		widget.factory = factory;
+		
+		widget.bounds.setSize(0).setCenter(new Vector2(a.x, a.y)).merge(new Vector2(b.x, b.y));
+		entity.add(widget);
 	}
 
 }

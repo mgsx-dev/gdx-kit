@@ -13,7 +13,6 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
@@ -42,21 +41,25 @@ public class WidgetSystem extends IteratingSystem
 	public ScreenViewport viewport;
 	private ObjectMap<Entity, Actor> actors = new ObjectMap<Entity, Actor>();
 
-	private Skin skin;
+	public Skin skin;
 
 	@Editable
 	public float unitsPerPixel = 0.05f; // arbitrary convert from screen ~1000 to world ~50
 	
+	final private EditorScreen screen;
+	
 	public WidgetSystem(EditorScreen editor) {
-		super(Family.all(SliderComponent.class).get(), GamePipeline.RENDER);
+		super(Family.all(WidgetComponent.class).get(), GamePipeline.RENDER);
 		viewport = new ScreenViewport();
 		stage = new Stage(viewport);
-		skin = editor.loadAssetNow("uiskin.json", Skin.class);
+		screen = editor;
 	}
 	
 	@Override
 	public void addedToEngine(Engine engine) {
 		super.addedToEngine(engine);
+		
+		skin = screen.loadAssetNow("uiskin.json", Skin.class);
 		
 		Kit.inputs.addProcessor(stage);
 		
@@ -69,10 +72,12 @@ public class WidgetSystem extends IteratingSystem
 			
 			@Override
 			public void entityAdded(Entity entity) {
-				SliderComponent slider = SliderComponent.components.get(entity);
-				slider.widget = new Slider(0, 1, .001f, false, skin);
-				actors.put(entity, slider.widget);
-				stage.addActor(slider.widget);
+				WidgetComponent widget = WidgetComponent.components.get(entity);
+				if(widget.widget == null){
+					widget.widget = widget.factory.createActor(getEngine(), entity, skin);
+				}
+				actors.put(entity, widget.widget);
+				stage.addActor(widget.widget);
 			}
 		});
 	}
@@ -104,6 +109,10 @@ public class WidgetSystem extends IteratingSystem
 	@Override
 	public void update(float deltaTime) {
 		stage.getRoot().setTransform(true);
+//		stage.getBatch().setColor(Color.WHITE);
+//		stage.getBatch().enableBlending();
+//		stage.getBatch().setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+		
 		
 		Vector3 base = editor.getEditorCamera().position;
 		
@@ -121,10 +130,8 @@ public class WidgetSystem extends IteratingSystem
 	@Override
 	protected void processEntity(Entity entity, float deltaTime) 
 	{
-		SliderComponent slider = SliderComponent.components.get(entity);
+		WidgetComponent slider = WidgetComponent.components.get(entity);
 		slider.widget.setBounds(slider.bounds.x, slider.bounds.y, slider.bounds.width, slider.bounds.height);
-		slider.widget.invalidate();
-		slider.widget.validate();
 	}
 
 }

@@ -5,9 +5,11 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import net.mgsx.game.core.EditorApplication;
 import net.mgsx.game.core.EditorConfiguration;
 import net.mgsx.game.core.EditorScreen;
+import net.mgsx.game.core.annotations.PluginDef;
 import net.mgsx.game.core.helpers.NativeService;
 import net.mgsx.game.core.meta.ClassRegistry;
 import net.mgsx.game.core.plugins.EditorPlugin;
+import net.mgsx.game.examples.ui.CustomUIPlugin;
 import net.mgsx.game.plugins.DefaultEditorPlugin;
 import net.mgsx.kit.config.ReflectionClassRegistry;
 import net.mgsx.kit.files.DesktopNativeInterface;
@@ -23,6 +25,7 @@ import net.mgsx.pd.audio.PdAudioNone;
  */
 public class CoreEditorDesktopLauncher {
 
+	@PluginDef(dependencies={CustomUIPlugin.class})
 	private static class EmptyPlugin extends EditorPlugin implements DefaultEditorPlugin
 	{
 		@Override
@@ -35,7 +38,8 @@ public class CoreEditorDesktopLauncher {
 		ClassRegistry.instance = new ReflectionClassRegistry(
 				ReflectionClassRegistry.kitCore,
 				ReflectionClassRegistry.kitPlugins,
-				ReflectionClassRegistry.behaviorTree
+				ReflectionClassRegistry.behaviorTree,
+				"net.mgsx.game.examples.ui"
 				);
 		
 		DesktopNativeInterface nativeService = new DesktopNativeInterface(); 
