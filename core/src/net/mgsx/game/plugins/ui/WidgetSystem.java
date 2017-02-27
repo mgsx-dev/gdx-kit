@@ -37,6 +37,9 @@ public class WidgetSystem extends IteratingSystem
 {
 	@Inject EditorSystem editor;
 	
+	@Editable
+	public transient boolean debug = false;
+	
 	private Stage stage;
 	public ScreenViewport viewport;
 	private ObjectMap<Entity, Actor> actors = new ObjectMap<Entity, Actor>();
@@ -109,10 +112,6 @@ public class WidgetSystem extends IteratingSystem
 	@Override
 	public void update(float deltaTime) {
 		stage.getRoot().setTransform(true);
-//		stage.getBatch().setColor(Color.WHITE);
-//		stage.getBatch().enableBlending();
-//		stage.getBatch().setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
-		
 		
 		Vector3 base = editor.getEditorCamera().position;
 		
@@ -121,7 +120,7 @@ public class WidgetSystem extends IteratingSystem
 		syncCamera();
 		viewport.getCamera().position.set(base.x * unitsPerPixel * Gdx.graphics.getHeight() /1.33333f, base.y * unitsPerPixel  * ( Gdx.graphics.getHeight() /1.33333f), 0);
 		viewport.getCamera().update(true);
-		stage.setDebugAll(true);
+		stage.setDebugAll(debug);
 		super.update(deltaTime);
 		stage.act();
 		stage.draw();
