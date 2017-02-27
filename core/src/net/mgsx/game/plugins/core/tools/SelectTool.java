@@ -67,14 +67,13 @@ public class SelectTool extends Tool
 			if(currentSelection.size == 0) {
 				selection().clear();
 			}
-			moving = true;
 			for(Entity entity : selection().selection){
 				Movable movable = entity.getComponent(Movable.class);
 				if(movable != null) movable.moveBegin(entity);
 			}
 			ghostPosition = unproject(screenX, screenY);
 			prev = new Vector2(screenX, screenY);
-			return true;
+			return moving = currentSelection.size > 0;
 		}
 		return super.touchDown(screenX, screenY, pointer, button);
 	}
