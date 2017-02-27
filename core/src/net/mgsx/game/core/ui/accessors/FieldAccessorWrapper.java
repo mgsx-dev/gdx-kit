@@ -1,5 +1,6 @@
 package net.mgsx.game.core.ui.accessors;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 
 import net.mgsx.game.core.annotations.Editable;
@@ -44,5 +45,9 @@ public class FieldAccessorWrapper extends AccessorBase
 	@Override
 	public Editable config() {
 		return field.getAnnotation(Editable.class);
+	}
+	@Override
+	public <T extends Annotation> T config(Class<T> annotation) {
+		return field.getAnnotation(annotation);
 	}
 }

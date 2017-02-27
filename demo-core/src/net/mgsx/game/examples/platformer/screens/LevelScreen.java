@@ -6,6 +6,7 @@ import com.badlogic.gdx.ai.fsm.StateMachine;
 
 import net.mgsx.game.core.GameRegistry;
 import net.mgsx.game.core.GameScreen;
+import net.mgsx.game.core.screen.ScreenManager;
 import net.mgsx.game.examples.platformer.game.PlatformerGame;
 
 public class LevelScreen extends GameScreen
@@ -14,9 +15,9 @@ public class LevelScreen extends GameScreen
 	
 	public final PlatformerGame game;
 	
-	public LevelScreen(PlatformerGame game, GameRegistry registry) 
+	public LevelScreen(ScreenManager screenManager, PlatformerGame game, GameRegistry registry) 
 	{
-		super(game.getAssets(), registry);
+		super(screenManager, game.getAssets(), registry);
 		this.game = game;
 	}
 	

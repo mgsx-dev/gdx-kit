@@ -1,5 +1,6 @@
 package net.mgsx.game.core.ui.accessors;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 
 import net.mgsx.game.core.annotations.Editable;
@@ -69,6 +70,10 @@ public class FieldAccessor extends AccessorBase
 	@Override
 	public int hashCode() {
 		return field.hashCode();
+	}
+	@Override
+	public <T extends Annotation> T config(Class<T> annotation) {
+		return field.getAnnotation(annotation);
 	}
 	
 }

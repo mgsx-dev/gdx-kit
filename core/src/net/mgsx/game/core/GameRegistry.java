@@ -16,8 +16,10 @@ import net.mgsx.game.core.annotations.Storable;
 import net.mgsx.game.core.helpers.ReflectionHelper;
 import net.mgsx.game.core.helpers.TypeMap;
 import net.mgsx.game.core.meta.ClassRegistry;
+import net.mgsx.game.core.meta.ReflectionCache;
 import net.mgsx.game.core.plugins.Plugin;
 import net.mgsx.game.core.storage.serializers.AnnotationBasedSerializer;
+import net.mgsx.game.core.ui.accessors.Accessor;
 
 public class GameRegistry {
 
@@ -160,10 +162,10 @@ public class GameRegistry {
 	{
 		for(EntitySystem system : screen.entityEngine.getSystems())
 		{
-			for(Field field : system.getClass().getFields()){
-				Asset asset = field.getAnnotation(Asset.class);
+			for(Accessor accessor : ReflectionCache.fieldsFor(system, Asset.class)){
+				Asset asset = accessor.config(Asset.class);
 				if(asset != null && !asset.value().isEmpty()){
-					ReflectionHelper.set(system, field, screen.assets.get(asset.value(), field.getType()));
+					accessor.set(screen.assets.get(asset.value(), accessor.getType()));
 				}
 			}
 		}

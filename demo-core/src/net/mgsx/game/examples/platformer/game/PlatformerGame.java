@@ -66,13 +66,13 @@ public class PlatformerGame extends GameApplication
 		// load level loading screen
 		if(levelLoadingScreen == null)
 		{
-			levelLoadingScreen = new LevelLoadingScreen(assets, registry);
+			levelLoadingScreen = new LevelLoadingScreen(this, assets, registry);
 		}
 		levelLoadingScreen.load(Gdx.files.internal("levels/level-load.json"));
 		assets.finishLoading(); // force finish loading assets for level loading screeen.
 		
 		// create the game screen (not cached)
-		levelScreen = new LevelScreen(this, registry);
+		levelScreen = new LevelScreen(this, this, registry);
 		levelScreen.load(Gdx.files.internal("levels/level1.json"));
 	}
 	

@@ -10,11 +10,12 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.Array;
 
 import net.mgsx.game.core.screen.ScreenClip;
+import net.mgsx.game.core.screen.ScreenManager;
 import net.mgsx.game.core.screen.TransitionDesc;
 import net.mgsx.game.core.screen.TransitionScreen;
 import net.mgsx.game.core.screen.Transitions;
 
-public abstract class GameApplication extends Game
+public abstract class GameApplication extends Game implements ScreenManager
 {
 	public AssetManager assets;
 	
@@ -123,6 +124,7 @@ public abstract class GameApplication extends Game
 		setScreen(ts);
 	}
 	
+	@Override
 	public void addTransition(TransitionDesc desc){
 		TransitionScreen ts = new TransitionScreen();
 		ts.setDesc(desc);

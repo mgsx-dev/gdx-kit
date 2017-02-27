@@ -10,13 +10,15 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 
 import net.mgsx.game.core.helpers.EditorAssetManager;
 import net.mgsx.game.core.plugins.Plugin;
+import net.mgsx.game.core.screen.ScreenManager;
+import net.mgsx.game.core.screen.TransitionDesc;
 import net.mgsx.game.core.storage.EntityGroup;
 import net.mgsx.game.core.storage.EntityGroupLoader;
 import net.mgsx.game.core.storage.EntityGroupStorage;
 import net.mgsx.game.core.storage.LoadConfiguration;
 import net.mgsx.game.core.storage.SaveConfiguration;
 
-public class EditorApplication extends Game
+public class EditorApplication extends Game implements ScreenManager
 {
 	final private EditorConfiguration config;
 	
@@ -45,7 +47,7 @@ public class EditorApplication extends Game
 			config.registry.registerPlugin(plugin);
 		}
 		
-		GameScreen screen = new GameScreen(assetManager, config.registry, engine);
+		GameScreen screen = new GameScreen(this, assetManager, config.registry, engine);
 
 		editorScreen = new EditorScreen(config, screen, assetManager, engine);
 		
@@ -119,6 +121,11 @@ public class EditorApplication extends Game
 		backupWork();
 		
 		super.dispose();
+	}
+
+	@Override
+	public void addTransition(TransitionDesc desc) {
+		Gdx.app.log("Screen", "transtion added : " + desc.toString());
 	}
 
 }

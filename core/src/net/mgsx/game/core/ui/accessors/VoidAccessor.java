@@ -1,5 +1,6 @@
 package net.mgsx.game.core.ui.accessors;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 
 import net.mgsx.game.core.annotations.Editable;
@@ -45,6 +46,11 @@ public class VoidAccessor extends AccessorBase
 	@Override
 	public Editable config() {
 		return method.getAnnotation(Editable.class);
+	}
+
+	@Override
+	public <T extends Annotation> T config(Class<T> annotation) {
+		return method.getAnnotation(annotation);
 	}
 
 }

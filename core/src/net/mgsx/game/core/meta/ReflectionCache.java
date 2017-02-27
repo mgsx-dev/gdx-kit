@@ -5,7 +5,6 @@ import java.lang.reflect.Field;
 
 import com.badlogic.gdx.utils.Array;
 
-import net.mgsx.game.core.annotations.Inject;
 import net.mgsx.game.core.ui.accessors.Accessor;
 import net.mgsx.game.core.ui.accessors.FieldAccessor;
 
@@ -32,7 +31,7 @@ public class ReflectionCache
 		for(Class<?> iface : type.getInterfaces()) fieldsFor(r, object, iface, annotatedBy);
 		for(Field field : type.getDeclaredFields())
 		{
-			if(field.getAnnotation(Inject.class) != null){
+			if(field.getAnnotation(annotatedBy) != null){
 				if(!field.isAccessible()){
 					field.setAccessible(true);
 				}
