@@ -11,7 +11,6 @@ public class CustomUIPlugin extends EditorPlugin
 	@Override
 	public void initialize(EditorScreen editor) {
 		editor.addTool(new WidgetTool("Custom UI", editor, new MySliderFactory()){});
-		editor.entityEngine.addSystem(new CustomHUD());
 	}
 
 }

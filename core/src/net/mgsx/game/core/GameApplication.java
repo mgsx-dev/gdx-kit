@@ -115,6 +115,7 @@ public abstract class GameApplication extends Game implements ScreenManager
 		return assets;
 	}
 
+	@Override
 	public void setTransition(TransitionDesc desc)
 	{
 		TransitionScreen ts = new TransitionScreen();

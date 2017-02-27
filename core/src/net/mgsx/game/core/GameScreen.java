@@ -132,4 +132,8 @@ public class GameScreen extends ScreenAdapter implements ScreenManager
 		screenManager.addTransition(desc);
 	}
 
+	public void setTransition(TransitionDesc desc) {
+		screenManager.setTransition(desc);
+	}
+
 }

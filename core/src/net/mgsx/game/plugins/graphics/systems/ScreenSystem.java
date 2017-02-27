@@ -26,8 +26,9 @@ public class ScreenSystem extends EntitySystem
 		return new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
-				for(TransitionDesc transition : transitions)
-					screenManager.addTransition(transition);
+				screenManager.setTransition(transitions[0]);
+				for(int i=1 ; i<transitions.length ; i++)
+					screenManager.addTransition(transitions[i]);					
 			}
 		};
 	}

@@ -3,22 +3,16 @@ package net.mgsx.game.core;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.badlogic.ashley.core.Engine;
-import com.badlogic.ashley.core.EntitySystem;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.ObjectMap.Entry;
 import com.badlogic.gdx.utils.ObjectSet;
 
-import net.mgsx.game.core.annotations.Inject;
 import net.mgsx.game.core.annotations.PluginDef;
 import net.mgsx.game.core.helpers.TypeMap;
-import net.mgsx.game.core.meta.ReflectionCache;
 import net.mgsx.game.core.plugins.EditorPlugin;
 import net.mgsx.game.core.plugins.EntityEditorPlugin;
 import net.mgsx.game.core.plugins.Plugin;
-import net.mgsx.game.core.ui.accessors.Accessor;
 
 public class EditorRegistry extends GameRegistry
 {
@@ -108,19 +102,4 @@ public class EditorRegistry extends GameRegistry
 		super.collect(editor.game);
 	}
 
-	public void inject(Engine engine, Object system) 
-	{
-		for(Accessor accessor : ReflectionCache.fieldsFor(system, Inject.class)){
-			if(EntitySystem.class.isAssignableFrom(accessor.getType()))
-			{
-				EntitySystem dep = engine.getSystem(accessor.getType());
-				if(dep == null){
-					Gdx.app.error("reflection", "system " + accessor.getType().getSimpleName() + " cannot be injected in " + system.getClass().getSimpleName() + " : not found in engine");
-				}
-				accessor.set(dep);
-			}else{
-				Gdx.app.error("reflection", "not supported type injection");
-			}
-		}
-	}
 }

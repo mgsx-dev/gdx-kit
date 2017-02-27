@@ -4,4 +4,6 @@ public interface ScreenManager {
 
 	void addTransition(TransitionDesc desc);
 
+	void setTransition(TransitionDesc desc);
+
 }

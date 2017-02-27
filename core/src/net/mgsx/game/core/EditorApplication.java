@@ -128,4 +128,8 @@ public class EditorApplication extends Game implements ScreenManager
 		Gdx.app.log("Screen", "transtion added : " + desc.toString());
 	}
 
+	public void setTransition(TransitionDesc desc) {
+		Gdx.app.log("Screen", "transtion set : " + desc.toString());
+	}
+
 }
