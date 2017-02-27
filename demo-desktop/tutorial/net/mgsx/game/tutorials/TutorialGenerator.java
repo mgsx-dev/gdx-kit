@@ -81,7 +81,7 @@ public class TutorialGenerator {
         String line;
         while ((line = br.readLine()) != null) {
         	if(md){
-        		if(line.trim().equals("md*/")){
+        		if(line.trim().equals("md*/") || line.trim().equals("@md*/")){
         			md = false;
         		}else{
         			writer.println(line);
@@ -94,7 +94,7 @@ public class TutorialGenerator {
         		}else{
         			writer.println(line);
         		}
-        	} else if(line.trim().equals("/*md")){
+        	} else if(line.trim().equals("/*md") || line.trim().equals("/**@md")){
         		md = true;
         	}else if(line.trim().equals("//code")){
         		code = true;

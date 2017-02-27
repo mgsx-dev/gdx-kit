@@ -6,13 +6,13 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import net.mgsx.game.core.helpers.NativeService;
 import net.mgsx.kit.files.DesktopNativeInterface;
 
-/*md
+/**@md
 
 This is the first tutorial. Our goal is to launch a basic desktop Kit application.
 
 Here is the boiler plate. No real changes from LibGDX setup boiler plate.
 
-md*/
+@md*/
 
 //code
 public class DesktopLauncher {
@@ -28,7 +28,7 @@ public class DesktopLauncher {
 }
 //code
 
-/*md
+/**@md
 
 For other targeted platforms, boiler plate is almost the same since there is no platform specific
 code to add in order to use Kit at game runtime.
@@ -54,4 +54,4 @@ public class AndroidLauncher extends AndroidApplication {
 
 It sould be the same for any other launchers.
 
-md*/
+@md*/
