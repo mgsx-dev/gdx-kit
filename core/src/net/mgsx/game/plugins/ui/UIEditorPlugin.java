@@ -15,6 +15,9 @@ public class UIEditorPlugin extends EditorPlugin
 	@Override
 	public void initialize(EditorScreen editor) {
 		// FIXME not in editor ...
+		
+		editor.entityEngine.addSystem(new ScalarSystem());
+		
 		editor.entityEngine.addSystem(new WidgetSystem(editor));
 		
 		editor.addTool(new WidgetTool("VSlider", editor, new WidgetFactory() {
