@@ -22,6 +22,7 @@ public class SelectTool extends Tool
 	
 	private Vector2 ghostPosition = new Vector2();
 	private Vector2 snapPosition = new Vector2();
+	private Vector2 prevSnapPosition = new Vector2();
 	
 	public SelectTool(EditorScreen editor) {
 		super("Select", editor);
@@ -72,6 +73,7 @@ public class SelectTool extends Tool
 				if(movable != null) movable.moveBegin(entity);
 			}
 			ghostPosition = unproject(screenX, screenY);
+			prevSnapPosition.set(ghostPosition);
 			prev = new Vector2(screenX, screenY);
 			return moving = currentSelection.size > 0;
 		}
@@ -95,22 +97,22 @@ public class SelectTool extends Tool
 			
 			snap(snapPosition.set(ghostPosition));
 			
+			delta.set(snapPosition, 0).sub(prevSnapPosition.x, prevSnapPosition.y, 0);
+			
 			for(Entity entity : selection().selection){
 				Movable movable = entity.getComponent(Movable.class);
 				if(movable != null){
-					Vector3 p = new Vector3();
-					movable.getPosition(entity, p);
-					delta.set(snapPosition, 0).sub(p);
 					movable.move(entity, delta);
 				}
 				else{
 					Transform2DComponent transform = Transform2DComponent.components.get(entity);
 					if(transform != null){
-						transform.position.set(snapPosition);
+						transform.position.add(delta.x, delta.y);
 					}
 				}
 			}
 			prev.set(worldPos.x, worldPos.y);
+			prevSnapPosition.set(snapPosition);
 			return true; // catch event
 		}
 		return super.touchDragged(screenX, screenY, pointer);
