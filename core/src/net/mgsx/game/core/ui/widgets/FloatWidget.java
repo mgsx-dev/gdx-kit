@@ -2,12 +2,14 @@ package net.mgsx.game.core.ui.widgets;
 
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.utils.FocusListener;
 import com.badlogic.gdx.utils.Align;
 
 import net.mgsx.game.core.ui.accessors.Accessor;
@@ -37,12 +39,18 @@ public class FloatWidget extends Label
 			setColor(Color.CYAN);
 		}else{
 			setColor(Color.ORANGE);
+			addListener(new FocusListener() {
+				@Override
+				public void keyboardFocusChanged(FocusEvent event, Actor actor, boolean focused) {
+					actor.setDebug(focused);
+					super.keyboardFocusChanged(event, actor, focused);
+				}
+			});
 			addListener(new ClickListener(){
 				@Override
 				public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-					if(getTapCount() >= 1){
+					if(getTapCount() >= 1){ // TODO not work properly
 						typing = "";
-						setDebug(true);
 						getStage().setKeyboardFocus(FloatWidget.this);
 					}
 					return super.touchDown(event, x, y, pointer, button);
@@ -94,10 +102,8 @@ public class FloatWidget extends Label
 				{
 					if(keycode == Input.Keys.ENTER){
 						getStage().setKeyboardFocus(null);
-						setDebug(false);
 					}else if(keycode == Input.Keys.ESCAPE){
 						getStage().setKeyboardFocus(null);
-						setDebug(false);
 					}
 					
 					// TODO Auto-generated method stub
