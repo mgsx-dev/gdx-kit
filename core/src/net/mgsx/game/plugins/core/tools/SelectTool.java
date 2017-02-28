@@ -98,18 +98,37 @@ public class SelectTool extends Tool
 			
 			snap(snapPosition.set(ghostPosition));
 			
-			delta.set(snapPosition, 0).sub(prevSnapPosition.x, prevSnapPosition.y, 0);
 			
-			for(Entity entity : selection().selection){
-				if(Locked.components.has(entity)) continue;
+			if(selection().selection.size > 1)
+			{
+				delta.set(snapPosition, 0).sub(prevSnapPosition.x, prevSnapPosition.y, 0);
+				
+				for(Entity entity : selection().selection){
+					if(Locked.components.has(entity)) continue;
+					Movable movable = entity.getComponent(Movable.class);
+					if(movable != null){
+						movable.move(entity, delta);
+					}
+					else{
+						Transform2DComponent transform = Transform2DComponent.components.get(entity);
+						if(transform != null){
+							transform.position.add(delta.x, delta.y);
+						}
+					}
+				}
+			}else{
+				Entity entity = selection().selection.first();
 				Movable movable = entity.getComponent(Movable.class);
 				if(movable != null){
-					movable.move(entity, delta);
+					movable.getPosition(entity, delta);
+					delta.x = snapPosition.x;
+					delta.y = snapPosition.y;
+					movable.moveTo(entity, delta);
 				}
 				else{
 					Transform2DComponent transform = Transform2DComponent.components.get(entity);
 					if(transform != null){
-						transform.position.add(delta.x, delta.y);
+						transform.position.set(snapPosition);
 					}
 				}
 			}
