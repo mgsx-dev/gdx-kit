@@ -12,6 +12,7 @@ import net.mgsx.game.core.EditorScreen;
 import net.mgsx.game.core.components.Movable;
 import net.mgsx.game.core.plugins.SelectorPlugin;
 import net.mgsx.game.core.tools.Tool;
+import net.mgsx.game.plugins.core.components.Locked;
 import net.mgsx.game.plugins.core.components.Transform2DComponent;
 
 public class SelectTool extends Tool
@@ -70,7 +71,7 @@ public class SelectTool extends Tool
 			}
 			for(Entity entity : selection().selection){
 				Movable movable = entity.getComponent(Movable.class);
-				if(movable != null) movable.moveBegin(entity);
+				if(movable != null && !Locked.components.has(entity)) movable.moveBegin(entity);
 			}
 			ghostPosition = unproject(screenX, screenY);
 			prevSnapPosition.set(ghostPosition);
@@ -100,6 +101,7 @@ public class SelectTool extends Tool
 			delta.set(snapPosition, 0).sub(prevSnapPosition.x, prevSnapPosition.y, 0);
 			
 			for(Entity entity : selection().selection){
+				if(Locked.components.has(entity)) continue;
 				Movable movable = entity.getComponent(Movable.class);
 				if(movable != null){
 					movable.move(entity, delta);
@@ -125,6 +127,7 @@ public class SelectTool extends Tool
 			moving = false;
 			
 			for(Entity entity : selection().selection){
+				if(Locked.components.has(entity)) continue;
 				Movable movable = entity.getComponent(Movable.class);
 				if(movable != null) movable.moveEnd(entity);
 			}
