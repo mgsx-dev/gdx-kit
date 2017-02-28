@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Align;
@@ -16,6 +17,7 @@ public class FloatWidget extends Label
 {
 	private Accessor accessor;
 	private boolean dynamic;
+	private String typing;
 	
 	@Override
 	public float getPrefWidth() {
@@ -35,6 +37,17 @@ public class FloatWidget extends Label
 			setColor(Color.CYAN);
 		}else{
 			setColor(Color.ORANGE);
+			addListener(new ClickListener(){
+				@Override
+				public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+					if(getTapCount() >= 1){
+						typing = "";
+						setDebug(true);
+						getStage().setKeyboardFocus(FloatWidget.this);
+					}
+					return super.touchDown(event, x, y, pointer, button);
+				}
+			});
 			addListener(new DragListener(){
 				@Override
 				public void drag(InputEvent event, float x, float y, int pointer) {
@@ -62,6 +75,35 @@ public class FloatWidget extends Label
 					}
 					super.touchUp(event, x, y, pointer, button);
 				}
+				@Override
+				public boolean keyTyped(InputEvent event, char character) {
+					if(typing != null && character != 0){
+						try{
+							float f = Float.valueOf(typing + character);
+							typing += character;
+							setValue(f);
+							fireChange();
+						}catch(NumberFormatException e){
+							// silent fail
+						}
+					}
+					return super.keyTyped(event, character);
+				}
+				@Override
+				public boolean keyDown(InputEvent event, int keycode) 
+				{
+					if(keycode == Input.Keys.ENTER){
+						getStage().setKeyboardFocus(null);
+						setDebug(false);
+					}else if(keycode == Input.Keys.ESCAPE){
+						getStage().setKeyboardFocus(null);
+						setDebug(false);
+					}
+					
+					// TODO Auto-generated method stub
+					return super.keyDown(event, keycode);
+				}
+				
 			});
 		}
 		updateValue();
