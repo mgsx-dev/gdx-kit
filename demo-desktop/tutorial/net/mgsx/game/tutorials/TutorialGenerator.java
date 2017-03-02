@@ -12,8 +12,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import net.mgsx.game.tutorials.tutorial1.DesktopLauncher;
-import net.mgsx.game.tutorials.tutorial1.TutorialGame;
+import org.reflections.Reflections;
+import org.reflections.scanners.TypeAnnotationsScanner;
 
 /**
  * Generate markdown tutorial from sources.
@@ -41,7 +41,11 @@ public class TutorialGenerator {
 
 		new File("tutorial-gen").mkdirs();
 		
-		tutorial("tutorial-01.md", DesktopLauncher.class, TutorialGame.class);
+		Reflections ref = new Reflections(TutorialGenerator.class.getPackage().getName() + ".chapters", new TypeAnnotationsScanner());
+		for(Class<?> type : ref.getTypesAnnotatedWith(Tutorial.class)){
+			Tutorial config = type.getAnnotation(Tutorial.class);
+			tutorial(config.id() + ".md", type);
+		}
 		
 		generate(args.length > 0 && args[0].equals("-dry"));
 	}
@@ -61,8 +65,8 @@ public class TutorialGenerator {
 				generate(new PrintWriter(writer), type);
 			}
 			
+			System.out.println("File : " + name);
 			if(dry){
-				System.out.println("File : " + name);
 				System.out.println(writer.toString());
 			}else{
 				writer.close();
@@ -84,11 +88,15 @@ public class TutorialGenerator {
         		if(line.trim().equals("md*/") || line.trim().equals("@md*/")){
         			md = false;
         		}else{
+        			line = line.replaceAll("\\{@link ([A-Za-z]+)\\}", "[$1](http://todoc.io#$1)");
+        			line = line.replaceAll("\\{@link #(.+)\\}", "*$1*");
+        			line = line.trim();
         			writer.println(line);
         		}
         	}else if(code){
-        		if(line.trim().equals("//code")){
+        		if(line.trim().equals("//@code")){
         			code = false;
+        			writer.println();
         			writer.println("```");
         			writer.println();
         		}else{
@@ -96,10 +104,11 @@ public class TutorialGenerator {
         		}
         	} else if(line.trim().equals("/*md") || line.trim().equals("/**@md")){
         		md = true;
-        	}else if(line.trim().equals("//code")){
+        	}else if(line.trim().equals("//@code")){
         		code = true;
         		writer.println();
         		writer.println("```java");
+        		writer.println();
         	}
         	
         }

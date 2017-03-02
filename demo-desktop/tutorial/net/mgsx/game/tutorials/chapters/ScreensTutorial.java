@@ -1,4 +1,4 @@
-package net.mgsx.game.tutorials.screens;
+package net.mgsx.game.tutorials.chapters;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
@@ -30,6 +30,7 @@ import net.mgsx.game.core.screen.ScreenClip;
 import net.mgsx.game.core.screen.StageScreen;
 import net.mgsx.game.core.screen.TransitionDesc;
 import net.mgsx.game.core.screen.Transitions;
+import net.mgsx.game.tutorials.Tutorial;
 
 // TODO maybe separate in 2 tutorials : workflow and customization (from custom shader, ... to custom transition)
 /**@md
@@ -41,6 +42,9 @@ All built-in transitions can be accessed throw {@link Transitions} like you do w
 In order to use KIT screen API, we need to extends {@link GameApplication} which is no more than a {@link Game} with
 KIT screens features, it is a screen management implementation.
 @md*/
+
+@Tutorial(id="screens", title="Using KIT Screen API")
+
 //@code
 public class ScreensTutorial extends GameApplication
 //@code

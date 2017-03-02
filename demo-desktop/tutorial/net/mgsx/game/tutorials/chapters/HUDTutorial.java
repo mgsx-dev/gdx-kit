@@ -1,4 +1,4 @@
-package net.mgsx.game.tutorials.hud;
+package net.mgsx.game.tutorials.chapters;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
@@ -18,6 +18,7 @@ import net.mgsx.game.core.screen.Transitions;
 import net.mgsx.game.plugins.core.systems.HUDSystem;
 import net.mgsx.game.plugins.graphics.GraphicsPlugin;
 import net.mgsx.game.plugins.graphics.systems.ScreenSystem;
+import net.mgsx.game.tutorials.Tutorial;
 
 /**@md
 
@@ -30,7 +31,8 @@ used in the "game start" screen and contains 3 buttons.
 
 @md*/
 
-/** tutorial */
+@Tutorial(id="hud", title="Create your game HUD")
+
 public class HUDTutorial extends GameApplication
 {
 	public static void main (final String[] args) 
