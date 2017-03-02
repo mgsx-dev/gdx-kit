@@ -54,14 +54,18 @@ public class ShaderTransition implements ScreenTransition
 	public void render(Screen src, Screen dst, float deltaTime, float t) 
 	{
 		if(t <= 0){
+			src.resize(width, height);
 			src.render(deltaTime);
 		}else if(t >= 1){
+			dst.resize(width, height);
 			dst.render(deltaTime);
 		}else{
 			srcBuffer.bind();
+			src.resize(width, height);
 			src.render(deltaTime);
 			
 			dstBuffer.bind();
+			dst.resize(width, height);
 			dst.render(deltaTime);
 			
 			FrameBuffer.unbind();
