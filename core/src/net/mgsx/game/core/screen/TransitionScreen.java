@@ -37,6 +37,7 @@ public class TransitionScreen implements ScreenClip
 		time += deltaTime;
 		if(!complete && time > desc.duration){
 			complete = true;
+			source.hide();
 			if(desc.listener != null) desc.listener.end();
 		}
 		float t = desc.interpolation.apply(MathUtils.clamp(time / desc.duration, 0, 1));
