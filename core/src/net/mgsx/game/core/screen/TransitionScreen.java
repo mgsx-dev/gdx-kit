@@ -20,6 +20,7 @@ public class TransitionScreen implements ScreenClip
 
 	@Override
 	public void show() {
+		reset();
 		desc.destination.show();
 	}
 	
@@ -83,6 +84,7 @@ public class TransitionScreen implements ScreenClip
 
 	public void reset() 
 	{
+		complete = false;
 		time = 0;
 	}
 	

@@ -122,6 +122,7 @@ public abstract class GameApplication extends Game implements ScreenManager
 		ts.setDesc(desc);
 		ts.source = screen;
 		screen = null;
+		sequences.clear();
 		setScreen(ts);
 	}
 	
