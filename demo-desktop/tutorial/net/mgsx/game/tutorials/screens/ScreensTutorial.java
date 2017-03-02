@@ -31,6 +31,7 @@ import net.mgsx.game.core.screen.StageScreen;
 import net.mgsx.game.core.screen.TransitionDesc;
 import net.mgsx.game.core.screen.Transitions;
 
+// TODO maybe separate in 2 tutorials : workflow and customization (from custom shader, ... to custom transition)
 /**@md
 This tutorial desmonstrate use of screens in KIT.
 KIT screen API is based on LibGDX screen API so if your familiar with {@link Game} and {@link Screen} you

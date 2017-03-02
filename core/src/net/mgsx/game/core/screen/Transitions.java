@@ -172,4 +172,8 @@ public class Transitions
 		};
 	}
 
+	// TODO find a way to easily queue some transitions in order to build
+	// complex sequences. maybe with a builder pattern...
+	// public static TransitionDesc sequence(TransitionDesc ... transitions) 
+
 }
