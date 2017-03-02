@@ -1,6 +1,7 @@
 package net.mgsx.game.core;
 
 import com.badlogic.ashley.core.Engine;
+import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
@@ -11,6 +12,7 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.utils.Array;
 
+import net.mgsx.game.core.helpers.ArrayHelper;
 import net.mgsx.game.core.screen.ScreenManager;
 import net.mgsx.game.core.screen.TransitionDesc;
 import net.mgsx.game.core.storage.EngineStorage;
@@ -33,6 +35,7 @@ public class GameScreen extends ScreenAdapter implements ScreenManager
 	final private ScreenManager screenManager;
 	
 	final private Array<String> pendingGroups = new Array<String>();
+	final private Array<FileHandle> loadedFiles = new Array<FileHandle>();
 	
 	final public Engine entityEngine;
 	public GameRegistry registry;
@@ -105,6 +108,7 @@ public class GameScreen extends ScreenAdapter implements ScreenManager
 			
 			String name = file.path();
 			pendingGroups.add(name);
+			loadedFiles.add(file);
 			
 			final LoadConfiguration config = new LoadConfiguration();
 			config.assets = assets;
@@ -134,6 +138,21 @@ public class GameScreen extends ScreenAdapter implements ScreenManager
 
 	public void setTransition(TransitionDesc desc) {
 		screenManager.setTransition(desc);
+	}
+	
+	@Override
+	public void dispose() 
+	{
+		for(FileHandle loadedFile : loadedFiles){
+			assets.unload(loadedFile.name());
+		}
+		loadedFiles.clear();
+		pendingGroups.clear();
+		entityEngine.removeAllEntities();
+		for(EntitySystem system : ArrayHelper.array(entityEngine.getSystems())){
+			entityEngine.removeSystem(system);
+		}
+		super.dispose();
 	}
 
 }
