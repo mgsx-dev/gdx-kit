@@ -153,6 +153,7 @@ public class GameRegistry {
 			for(Accessor accessor : ReflectionCache.fieldsFor(system, Asset.class)){
 				Asset asset = accessor.config(Asset.class);
 				if(asset != null && !asset.value().isEmpty()){
+					// FIXME unload when context is disposed !!
 					screen.assets.load(asset.value(), accessor.getType());
 				}
 			}
