@@ -12,6 +12,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -215,6 +216,14 @@ public class ScreensTutorial extends GameApplication
 			addTransitButton("Clip Screen", Transitions.fade(new AnimatedScreen("just wait animation to be completed"), 2));
 			addTransitButton("Interactive Screen", Transitions.fade(new InteractiveScreen("touch screen to end this screen"), 2));
 			addTransitButton("Endless Screen", Transitions.fade(Transitions.timeout(new TutorialScreen("just wait 4s timeout"), 4), 2));
+			
+			addTransitButton("Fade transition", Transitions.fade(Transitions.timeout(new TutorialScreen("fade"), 4), 2));
+			
+			addTransitButton("Fade transition (custom interpolation)", 
+					Transitions.fade(Transitions.timeout(new TutorialScreen("fade"), 4), 2, Interpolation.pow5In, null));
+			
+			addTransitButton("Swap transition", 
+					Transitions.swap(Transitions.timeout(new TutorialScreen("swap"), 4)));
 			
 			// TODO loader with endless screen
 			// TODO loader with endless screen and minimum time

@@ -45,6 +45,18 @@ public class Transitions
 		}
 	}
 	
+	private static class SwapTransition implements ScreenTransition{
+
+		@Override
+		public void render(Screen src, Screen dst, float deltaTime, float t) {
+			dst.render(deltaTime);
+		}
+
+		@Override
+		public void resize(int width, int height) {
+		}
+	}
+	
 	private static FadeTransition fadeTransition;
 	public static ScreenTransition fadeTransition() 
 	{
@@ -54,17 +66,38 @@ public class Transitions
 		return fadeTransition;
 	}
 	
+	private static SwapTransition swapTransition;
+	public static ScreenTransition swapTransition() 
+	{
+		if(swapTransition == null){
+			swapTransition = new SwapTransition();
+		}
+		return swapTransition;
+	}
+	
 	public static TransitionDesc fade(Screen destination, float duration){
 		return fade(destination, duration, null);
 	} 
 	public static TransitionDesc fade(Screen destination, float duration, TransitionListener listener) 
 	{
+		return fade(destination, duration, Interpolation.linear, listener);
+	}
+	public static TransitionDesc fade(Screen destination, float duration, Interpolation interpolation, TransitionListener listener) 
+	{
 		TransitionDesc desc = new TransitionDesc();
 		desc.destination = destination;
 		desc.duration = duration;
-		desc.interpolation = Interpolation.linear;
+		desc.interpolation = interpolation;
 		desc.transition = fadeTransition();
 		desc.listener = listener;
+		return desc;
+	}
+	
+	public static TransitionDesc swap(Screen destination) 
+	{
+		TransitionDesc desc = new TransitionDesc();
+		desc.destination = destination;
+		desc.transition = swapTransition();
 		return desc;
 	}
 	

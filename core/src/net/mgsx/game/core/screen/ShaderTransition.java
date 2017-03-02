@@ -64,7 +64,7 @@ public class ShaderTransition implements ScreenTransition
 			Gdx.gl.glClearColor(0, 0, 0, 0);
 			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 			
-			
+			batch.disableBlending();
 			batch.begin();
 			shader.setUniformf(locTime, t);
 			shader.setUniformi("u_texture1", 1);
