@@ -23,6 +23,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 
 import net.mgsx.game.core.GameApplication;
 import net.mgsx.game.core.Kit;
@@ -69,6 +71,12 @@ public class ScreensTutorial extends GameApplication
 		public TutorialScreen(String text) {
 			super(null);
 			this.text = text;
+		}
+		
+		public TutorialScreen(String text, Viewport vp) {
+			super(null);
+			this.text = text;
+			stage.setViewport(vp);
 		}
 		
 		@Override
@@ -230,6 +238,9 @@ public class ScreensTutorial extends GameApplication
 			addTransitButton("Swap transition", 
 					Transitions.swap(Transitions.timeout(new TutorialScreen("swap"), 4)));
 			
+			addTransitButton("Swap transition (custom viewport)", 
+					Transitions.fade(Transitions.timeout(new TutorialScreen("test", new FitViewport(480, 640)), 4), 2));
+			
 			// TODO loader with endless screen
 			// TODO loader with endless screen and minimum time
 			// TODO custom loader (responding to asset manager progress)
@@ -276,7 +287,7 @@ public class ScreensTutorial extends GameApplication
 	public void create() {
 		super.create();
 		setScreen(Transitions.loader(assets, Transitions.empty(Color.BLACK)));
-		addTransition(Transitions.fade(Transitions.timeout(new TutorialScreen("Classic cross fade"), 2), 2.3f));
+		addTransition(Transitions.fade(Transitions.timeout(new TutorialScreen("KIT screens tutorial"), 2), .5f));
 		addTransition(Transitions.fade(new MenuScreen("A simple menu screen waiting for user interaction"), 2.3f));
 	}
 	//@code

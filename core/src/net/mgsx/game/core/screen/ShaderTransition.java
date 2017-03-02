@@ -10,6 +10,8 @@ import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 
 /*
  * TODO refactor and separate :
@@ -39,11 +41,13 @@ public class ShaderTransition implements ScreenTransition
 	private SpriteBatch batch;
 	private ShaderProgram shader;
 	private int locTime;
+	private Viewport viewport;
 	
 	public ShaderTransition(ShaderProgram shader) {
 		this.shader = shader;
 		batch = new SpriteBatch(1, shader);
 		locTime = shader.getUniformLocation("u_time");
+		viewport = new ScreenViewport();
 	}
 	
 	@Override
@@ -63,7 +67,8 @@ public class ShaderTransition implements ScreenTransition
 			FrameBuffer.unbind();
 			Gdx.gl.glClearColor(0, 0, 0, 0);
 			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-			
+			viewport.update(width, height, true);
+			batch.setProjectionMatrix(viewport.getCamera().combined);
 			batch.disableBlending();
 			batch.begin();
 			shader.setUniformf(locTime, t);
