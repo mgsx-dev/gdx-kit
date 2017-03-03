@@ -9,8 +9,8 @@ import net.mgsx.game.core.annotations.EditableSystem;
 import net.mgsx.game.plugins.pd.midi.LiveSequencer;
 import net.mgsx.game.plugins.pd.midi.LiveTrack;
 import net.mgsx.game.plugins.pd.midi.MidiLoop;
-import net.mgsx.game.plugins.pd.midi.PdMidiSynth;
 import net.mgsx.game.plugins.pd.midi.SequenceDesc;
+import net.mgsx.midi.playback.PdMidiSynth;
 import net.mgsx.midi.sequence.MidiSequence;
 import net.mgsx.pd.Pd;
 
