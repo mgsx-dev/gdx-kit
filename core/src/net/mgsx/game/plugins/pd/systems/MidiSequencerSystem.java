@@ -10,7 +10,6 @@ import net.mgsx.game.plugins.pd.midi.LiveSequencer;
 import net.mgsx.game.plugins.pd.midi.LiveTrack;
 import net.mgsx.game.plugins.pd.midi.MidiLoop;
 import net.mgsx.game.plugins.pd.midi.SequenceDesc;
-import net.mgsx.midi.playback.PdMidiSynth;
 import net.mgsx.midi.sequence.MidiSequence;
 import net.mgsx.pd.Pd;
 
@@ -53,7 +52,7 @@ public class MidiSequencerSystem extends EntitySystem
 	public MidiSequencerSystem(GameScreen game) {
 		super(GamePipeline.AFTER_LOGIC);
 		this.game = game;
-		this.sequencer = new LiveSequencer(new PdMidiSynth());
+		this.sequencer = new LiveSequencer(Pd.midi.getPdSynth());
 	}
 	
 	public void loadSequence(MidiSequence sequence) {
