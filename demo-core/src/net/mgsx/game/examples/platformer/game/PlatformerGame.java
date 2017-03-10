@@ -11,6 +11,8 @@ import net.mgsx.game.examples.platformer.screens.GameLoadingScreen;
 import net.mgsx.game.examples.platformer.screens.GameMenuScreen;
 import net.mgsx.game.examples.platformer.screens.LevelLoadingScreen;
 import net.mgsx.game.examples.platformer.screens.LevelScreen;
+import net.mgsx.pd.Pd;
+import net.mgsx.pd.PdConfiguration;
 
 /**
  * Platformer Game Application (entry point)
@@ -39,7 +41,7 @@ public class PlatformerGame extends GameApplication
 	public void create() 
 	{
 		super.create();
-		
+		Pd.audio.create(new PdConfiguration());
 		fsm = new DefaultStateMachine<PlatformerGame, PlatformerGameState>(this, PlatformerGameState.INIT, PlatformerGameState.GLOBAL);
 	}
 	

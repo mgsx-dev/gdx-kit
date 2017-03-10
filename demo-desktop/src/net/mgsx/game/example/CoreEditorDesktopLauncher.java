@@ -16,7 +16,6 @@ import net.mgsx.kit.files.DesktopNativeInterface;
 import net.mgsx.kit.launcher.DesktopApplication;
 import net.mgsx.pd.Pd;
 import net.mgsx.pd.PdConfiguration;
-import net.mgsx.pd.audio.PdAudioNone;
 
 /**
  * Desktop launcher for level editor
@@ -47,7 +46,7 @@ public class CoreEditorDesktopLauncher {
 		
 		// set no Pd audio by default to allow running Pd and game at the same time.
 		// all real audio implementations (java or openAL) will lock audio.
-		Pd.audio = new PdAudioNone();
+		PdConfiguration.remoteEnabled = true;
 		LwjglApplicationConfiguration.disableAudio = true;
 
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
