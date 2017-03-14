@@ -64,7 +64,7 @@ public class MidiSequencerSystem extends EntitySystem
 	{
 		// simply send bpm to pd in order to apply some sync FX (delay, tremolo ...)
 		// TODO maybe send only when changed ?
-		Pd.audio.sendFloat("bpm", sequencer.bpm);
+		// Pd.audio.sendFloat("bpm", sequencer.bpm);
 		
 	}
 }
