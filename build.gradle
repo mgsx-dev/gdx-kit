@@ -51,6 +51,8 @@ project(":core") {
         compile "com.badlogicgames.ashley:ashley:$ashleyVersion"
         compile "com.badlogicgames.gdx:gdx-controllers:$gdxVersion"
         
+        compileOnly "com.badlogicgames.gdx:gdx-bullet:$gdxVersion"
+        
         compile "net.mgsx.gdx:gdx-pd:$pdVersion"
         
         testCompile "junit:junit:$junitVersion"
@@ -95,6 +97,9 @@ project(":demo-desktop") {
         
         compile "com.badlogicgames.gdx:gdx-controllers-desktop:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-controllers-platform:$gdxVersion:natives-desktop"
+        
+        compile "com.badlogicgames.gdx:gdx-bullet:$gdxVersion"
+        compile "com.badlogicgames.gdx:gdx-bullet-platform:$gdxVersion:natives-desktop"
     }
 }
 

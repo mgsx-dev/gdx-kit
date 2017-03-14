@@ -22,9 +22,11 @@ public class EditorRegistry extends GameRegistry
 	protected ObjectMap<Object, String> objectTags = new ObjectMap<Object, String>();
 	
 	@Override
-	public void registerPlugin(Plugin plugin) 
+	public boolean registerPlugin(Plugin plugin) 
 	{
-		super.registerPlugin(plugin);
+		if(!super.registerPlugin(plugin)){
+			return false;
+		}
 		
 		if(plugin instanceof EditorPlugin && !editablePlugins.containsKey(plugin.getClass()))
 		{
@@ -45,6 +47,7 @@ public class EditorRegistry extends GameRegistry
 			}
 			packagePrefixToTag.put(packageName, name);
 		}
+		return true;
 	}
 	
 	public void setTag(Object object, String tag) 

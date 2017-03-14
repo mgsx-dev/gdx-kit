@@ -38,16 +38,31 @@ public class GameRegistry {
 		return (T)plugins.get(type);
 	}
 	
-	public void registerPlugin(Plugin plugin) 
+	public boolean registerPlugin(Plugin plugin) 
 	{
-		if(plugins.containsKey(plugin.getClass())) return;
-		
-		scan(plugin.getClass());
-		
-		plugins.put(plugin.getClass(), plugin);
+		if(plugins.containsKey(plugin.getClass())) return false;
+	
+		Class<?> type = plugin.getClass();
+		boolean shouldBeLoaded = true;
+		PluginDef def = type.getAnnotation(PluginDef.class);
+		if(def != null){
+			for(String fqnTypeDep : def.requires()){
+				if(!ReflectionHelper.hasName(fqnTypeDep)){
+					Gdx.app.log("KIT", "plugin " + type.getName() + " not loaded : require " + fqnTypeDep);
+					shouldBeLoaded = false;
+				}
+			}
+		}
+		if(shouldBeLoaded) {
+			scan(plugin.getClass());
+			plugins.put(plugin.getClass(), plugin);
+			return true;
+		}
+		plugins.put(plugin.getClass(), null);
+		return false;
 	}
 	
-	private void scan(Class<?> type)
+	private boolean scan(Class<?> type)
 	{
 		// TODO if debug : Gdx.app.log("registry", type.getName());
 		if(type.getSuperclass() != null){
@@ -65,6 +80,7 @@ public class GameRegistry {
 				register(component);
 			}
 		}
+		return true;
 	}
 
 	public <T> void addSerializer(Class<T> type, Json.Serializer<T> serializer) {
@@ -122,13 +138,14 @@ public class GameRegistry {
 		}
 	}
 	
+	
 	void init(GameScreen screen) 
 	{
 		// bootstrap here ...
 		scanPackages();
 		
 		for(Plugin plugin : plugins.values()){
-			plugin.initialize(screen);
+			if(plugin != null) plugin.initialize(screen);
 		}
 		// register automatic serializers
 		for(Entry<String, Class<? extends Component>> entry : typeMap.entries())

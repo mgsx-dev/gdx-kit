@@ -5,6 +5,7 @@ import net.mgsx.game.plugins.ashley.AshleyEditorPlugin;
 import net.mgsx.game.plugins.assets.AssetsEditorPlugin;
 import net.mgsx.game.plugins.boundary.BoundaryEditorPlugin;
 import net.mgsx.game.plugins.box2d.Box2DEditorPlugin;
+import net.mgsx.game.plugins.bullet.BulletEditorPlugin;
 import net.mgsx.game.plugins.camera.CameraEditorPlugin;
 import net.mgsx.game.plugins.core.CoreEditorPlugin;
 import net.mgsx.game.plugins.editor.KitEditorPlugin;
@@ -40,7 +41,8 @@ import net.mgsx.game.plugins.ui.UIEditorPlugin;
 	StateMachineEditorPlugin.class,
 	TilesEditorPlugin.class,
 	PdEditorPlugin.class,
-	UIEditorPlugin.class
+	UIEditorPlugin.class,
+	BulletEditorPlugin.class
 })
 public interface DefaultEditorPlugin extends DefaultPlugin {
 
