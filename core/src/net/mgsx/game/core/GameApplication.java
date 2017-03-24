@@ -121,6 +121,13 @@ public abstract class GameApplication extends Game implements ScreenManager
 	{
 		TransitionScreen ts = new TransitionScreen();
 		ts.setDesc(desc);
+		
+		// case when set transition when current transition is not complete or just complete
+		if(screen instanceof TransitionScreen){
+			((TransitionScreen) screen).hide();
+			screen = ((TransitionScreen) screen).getDestination();
+		}
+		
 		ts.source = screen;
 		screen = null;
 		sequences.clear();
