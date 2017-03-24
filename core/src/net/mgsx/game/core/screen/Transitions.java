@@ -7,7 +7,6 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Interpolation;
-import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 
 /**
  * Static convenience methods for screen transitions, inspired by scene2D {@link Actions}
@@ -17,7 +16,7 @@ import com.badlogic.gdx.scenes.scene2d.actions.Actions;
  */
 public class Transitions 
 {
-	private static class ColorScreen extends ScreenClipAdapter {
+	public static class ColorScreen extends ScreenClipAdapter {
 		private final Color color;
 
 		public ColorScreen(Color color) {

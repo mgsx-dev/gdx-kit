@@ -4,4 +4,11 @@ import com.badlogic.gdx.ScreenAdapter;
 
 abstract public class ScreenClipAdapter extends ScreenAdapter implements ScreenClip
 {
+	@Override
+	public void preHide() {
+	}
+	
+	@Override
+	public void postShow() {
+	}
 }

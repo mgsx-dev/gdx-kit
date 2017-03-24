@@ -16,7 +16,7 @@ import net.mgsx.game.core.Kit;
  * @author mgsx
  *
  */
-public class StageScreen extends ScreenAdapter
+public class StageScreen extends ScreenAdapter implements ScreenTransitionListener
 {
 	protected Stage stage;
 	protected Skin skin;
@@ -28,15 +28,13 @@ public class StageScreen extends ScreenAdapter
 	}
 	
 	@Override
-	public void show() {
-		super.show();
+	public void postShow() {
 		Kit.inputs.addProcessor(stage);
 	}
 	
 	@Override
-	public void hide() {
+	public void preHide() {
 		Kit.inputs.removeProcessor(stage);
-		super.hide();
 	}
 	
 	@Override

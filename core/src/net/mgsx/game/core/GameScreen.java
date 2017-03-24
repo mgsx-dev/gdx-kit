@@ -4,7 +4,6 @@ import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.assets.AssetLoaderParameters.LoadedCallback;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.files.FileHandle;
@@ -13,6 +12,7 @@ import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.utils.Array;
 
 import net.mgsx.game.core.helpers.ArrayHelper;
+import net.mgsx.game.core.screen.ScreenClipAdapter;
 import net.mgsx.game.core.screen.ScreenManager;
 import net.mgsx.game.core.screen.TransitionDesc;
 import net.mgsx.game.core.storage.EngineStorage;
@@ -28,7 +28,7 @@ import net.mgsx.game.core.storage.LoadConfiguration;
  * @author mgsx
  *
  */
-public class GameScreen extends ScreenAdapter implements ScreenManager
+public class GameScreen extends ScreenClipAdapter implements ScreenManager
 {
 	final public AssetManager assets;
 	
@@ -153,6 +153,11 @@ public class GameScreen extends ScreenAdapter implements ScreenManager
 			entityEngine.removeSystem(system);
 		}
 		super.dispose();
+	}
+
+	@Override
+	public boolean isComplete() {
+		return false;
 	}
 
 }

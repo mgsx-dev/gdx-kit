@@ -11,6 +11,7 @@ import com.badlogic.gdx.utils.Array;
 
 import net.mgsx.game.core.screen.ScreenClip;
 import net.mgsx.game.core.screen.ScreenManager;
+import net.mgsx.game.core.screen.ScreenTransitionListener;
 import net.mgsx.game.core.screen.TransitionDesc;
 import net.mgsx.game.core.screen.TransitionScreen;
 import net.mgsx.game.core.screen.Transitions;
@@ -140,6 +141,18 @@ public abstract class GameApplication extends Game implements ScreenManager
 	 */
 	public void addScreen(Screen screen){
 		sequences.add(screen);
+	}
+	
+	@Override
+	public void setScreen(Screen screen) 
+	{
+		if (this.screen instanceof ScreenTransitionListener) {
+			((ScreenTransitionListener) this.screen).preHide();
+		}
+		super.setScreen(screen);
+		if (this.screen instanceof ScreenTransitionListener) {
+			((ScreenTransitionListener) this.screen).postShow();
+		}
 	}
 	
 }
