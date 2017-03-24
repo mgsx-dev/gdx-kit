@@ -18,7 +18,7 @@ public class UIEditorPlugin extends EditorPlugin
 		
 		editor.entityEngine.addSystem(new ScalarSystem());
 		
-		editor.entityEngine.addSystem(new WidgetSystem(editor));
+		editor.entityEngine.addSystem(new WidgetSystem());
 		
 		editor.addTool(new WidgetTool("VSlider", editor, new WidgetFactory() {
 			@Override

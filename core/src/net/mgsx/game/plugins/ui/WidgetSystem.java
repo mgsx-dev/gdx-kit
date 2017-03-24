@@ -16,13 +16,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
-import net.mgsx.game.core.EditorScreen;
 import net.mgsx.game.core.GamePipeline;
 import net.mgsx.game.core.Kit;
 import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.core.annotations.EditableSystem;
 import net.mgsx.game.core.annotations.Inject;
-import net.mgsx.game.plugins.core.components.Transform2DComponent;
 import net.mgsx.game.plugins.editor.systems.EditorSystem;
 
 /**
@@ -49,20 +47,19 @@ public class WidgetSystem extends IteratingSystem
 	@Editable
 	public float unitsPerPixel = 0.05f; // arbitrary convert from screen ~1000 to world ~50
 	
-	final private EditorScreen screen;
-	
-	public WidgetSystem(EditorScreen editor) {
+	public WidgetSystem() {
 		super(Family.all(WidgetComponent.class).get(), GamePipeline.RENDER);
 		viewport = new ScreenViewport();
 		stage = new Stage(viewport);
-		screen = editor;
 	}
 	
 	@Override
 	public void addedToEngine(Engine engine) {
 		super.addedToEngine(engine);
 		
-		skin = screen.loadAssetNow("uiskin.json", Skin.class);
+		// TODO when variable will be injected before added to system :
+		// skin = editor.getSkin();
+		skin = new Skin(Gdx.files.classpath("uiskin.json"));
 		
 		Kit.inputs.addProcessor(stage);
 		
