@@ -93,6 +93,12 @@ public class EngineStorage {
 							}
 						}
 					}
+					
+					if(system instanceof SystemSettingsListener)
+					{
+						((SystemSettingsListener) system).onSettingsLoaded();
+					}
+					
 				}else{
 					Gdx.app.error("Reflection", "unknown system " + type);
 				}
