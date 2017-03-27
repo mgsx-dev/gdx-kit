@@ -3,7 +3,7 @@
 
 **API is changing continuously and should only be used for prototyping purposes.**
 
-**Issue tracker is only used by project contributors **
+**Issue tracker is only used by project contributors.**
 
 **This notice will changed as soon as the project become stable.**
 
