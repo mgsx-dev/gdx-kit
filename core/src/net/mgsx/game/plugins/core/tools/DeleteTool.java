@@ -20,10 +20,10 @@ public class DeleteTool extends Tool {
 	protected void activate() 
 	{
 		
-		editor.history.add(new Command(){
+		historySystem.performCommand(new Command(){
 			
 			// copy current selection
-			final Array<Entity> entities = new Array<Entity>(editor.selection);
+			final Array<Entity> entities = new Array<Entity>(selection().selection);
 			
 			// TODO remove components and store for futur restoration
 			final Array<Array<Component>> backup = new Array<Array<Component>>();
@@ -31,8 +31,7 @@ public class DeleteTool extends Tool {
 			@Override
 			public void commit() {
 				// clear selection
-				editor.selection.clear();
-				editor.invalidateSelection();
+				selection().clear();
 				// remove netities
 				for(Entity entity : entities){
 					backup.add(ArrayHelper.array(entity.getComponents()));
@@ -55,8 +54,7 @@ public class DeleteTool extends Tool {
 					editor.entityEngine.addEntity(entity);
 				}
 				// restore selection
-				editor.selection.addAll(entities);
-				editor.invalidateSelection();
+				selection().addAll(entities);
 			}
 		});
 	}

@@ -69,6 +69,13 @@ btree_success
   orig: 16, 16
   offset: 0, 0
   index: -1
+kit_tool
+  rotate: false
+  xy: 144, 166
+  size: 11, 11
+  orig: 11, 11
+  offset: 0, 0
+  index: -1
 check-off
   rotate: false
   xy: 50, 125
@@ -125,7 +132,7 @@ default-pane-noborder
   index: -1
 default-rect
   rotate: false
-  xy: 144, 174
+  xy: 156, 174
   size: 3, 3
   split: 1, 1, 1, 1
   orig: 3, 3

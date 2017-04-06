@@ -1,9 +1,9 @@
 package net.mgsx.game.core;
 
 import com.badlogic.ashley.core.Engine;
+import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.assets.AssetLoaderParameters.LoadedCallback;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.files.FileHandle;
@@ -11,6 +11,10 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.utils.Array;
 
+import net.mgsx.game.core.helpers.ArrayHelper;
+import net.mgsx.game.core.screen.ScreenClipAdapter;
+import net.mgsx.game.core.screen.ScreenManager;
+import net.mgsx.game.core.screen.TransitionDesc;
 import net.mgsx.game.core.storage.EngineStorage;
 import net.mgsx.game.core.storage.EntityGroup;
 import net.mgsx.game.core.storage.EntityGroupLoader;
@@ -24,11 +28,14 @@ import net.mgsx.game.core.storage.LoadConfiguration;
  * @author mgsx
  *
  */
-public class GameScreen extends ScreenAdapter
+public class GameScreen extends ScreenClipAdapter implements ScreenManager
 {
 	final public AssetManager assets;
 	
+	final private ScreenManager screenManager;
+	
 	final private Array<String> pendingGroups = new Array<String>();
+	final private Array<FileHandle> loadedFiles = new Array<FileHandle>();
 	
 	final public Engine entityEngine;
 	public GameRegistry registry;
@@ -40,15 +47,16 @@ public class GameScreen extends ScreenAdapter
 	 * @param assets
 	 * @param registry
 	 */
-	public GameScreen(AssetManager assets, GameRegistry registry) {
-		this(assets, registry, new PooledEngine());
+	public GameScreen(ScreenManager screenManager, AssetManager assets, GameRegistry registry) {
+		this(screenManager, assets, registry, new PooledEngine());
 	}
 	
-	public GameScreen(AssetManager assets, GameRegistry registry, Engine engine) {
+	public GameScreen(ScreenManager screenManager, AssetManager assets, GameRegistry registry, Engine engine) {
 		super();
 		this.assets = assets;
 		this.registry = registry;
 		this.entityEngine = engine;
+		this.screenManager = screenManager;
 		
 		// TODO default camera with magic numbers ... how to configure ?
 		Camera gameCamera = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -100,6 +108,7 @@ public class GameScreen extends ScreenAdapter
 			
 			String name = file.path();
 			pendingGroups.add(name);
+			loadedFiles.add(file);
 			
 			final LoadConfiguration config = new LoadConfiguration();
 			config.assets = assets;
@@ -120,6 +129,35 @@ public class GameScreen extends ScreenAdapter
 			
 			EntityGroupStorage.load(name, config);
 		}
+	}
+
+	@Override
+	public void addTransition(TransitionDesc desc) {
+		screenManager.addTransition(desc);
+	}
+
+	public void setTransition(TransitionDesc desc) {
+		screenManager.setTransition(desc);
+	}
+	
+	@Override
+	public void dispose() 
+	{
+		for(FileHandle loadedFile : loadedFiles){
+			assets.unload(loadedFile.name());
+		}
+		loadedFiles.clear();
+		pendingGroups.clear();
+		entityEngine.removeAllEntities();
+		for(EntitySystem system : ArrayHelper.array(entityEngine.getSystems())){
+			entityEngine.removeSystem(system);
+		}
+		super.dispose();
+	}
+
+	@Override
+	public boolean isComplete() {
+		return false;
 	}
 
 }

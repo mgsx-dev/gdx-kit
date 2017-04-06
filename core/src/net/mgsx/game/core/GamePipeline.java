@@ -59,8 +59,10 @@ final public class GamePipeline
 	// special render phase for tools (last render after any FBO process)
 	public static final int RENDER_DEBUG = HUD + SLOTS;
 	
+	public static final int RENDER_TOOLS = RENDER_DEBUG + SLOTS;
+	
 	// 
-	public static final int LAST = RENDER_DEBUG + SLOTS;
+	public static final int LAST = RENDER_TOOLS + SLOTS;
 	
 	// some alias
 	public static final int RENDER = RENDER_OPAQUE;

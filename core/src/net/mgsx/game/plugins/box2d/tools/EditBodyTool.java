@@ -3,7 +3,6 @@ package net.mgsx.game.plugins.box2d.tools;
 import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
-import com.badlogic.ashley.core.Family;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.ChainShape;
 import com.badlogic.gdx.physics.box2d.Fixture;
@@ -11,7 +10,7 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.utils.Array;
 
 import net.mgsx.game.core.EditorScreen;
-import net.mgsx.game.core.tools.ComponentTool;
+import net.mgsx.game.core.tools.Tool;
 import net.mgsx.game.plugins.box2d.components.Box2DBodyModel;
 import net.mgsx.game.plugins.box2d.components.Box2DFixtureModel;
 import net.mgsx.game.plugins.core.components.PolygonComponent;
@@ -19,14 +18,14 @@ import net.mgsx.game.plugins.core.components.Transform2DComponent;
 
 // TODO generalize shape / box2D shape conversion
 // TODO support all shapes ! ShapeAccessor ???
-public class EditBodyTool extends ComponentTool
+public class EditBodyTool extends Tool
 {
 	private Entity current;
 	private Array<Entity> shapeEntities;
 	private Array<Entity> vertexEntities;
 
 	public EditBodyTool(EditorScreen editor) {
-		super("Edit body", editor, Family.all(Box2DBodyModel.class).get());
+		super("Edit body", editor);
 	}
 	
 	@Override
@@ -46,7 +45,7 @@ public class EditBodyTool extends ComponentTool
 	{
 		shapeEntities = new Array<Entity>();
 		vertexEntities = new Array<Entity>();
-		current = editor.currentEntity();
+		current = currentEntity();
 		
 		// create entities for each shapes !
 		Box2DBodyModel body = Box2DBodyModel.components.get(current);
@@ -172,21 +171,14 @@ public class EditBodyTool extends ComponentTool
 			editor.entityEngine.removeEntity(entity);
 		}
 		
-		editor.selection.clear();
-		editor.selection.add(current);
-		editor.invalidateSelection();
+		selection().clear();
+		selection().add(current);
 		
 		shapeEntities.clear();
 		vertexEntities.clear();
 		current = null;
 		
 		super.desactivate();
-	}
-
-	@Override
-	protected Component createComponent(Entity entity) {
-		// we don't create component here : just some other entities.
-		return null;
 	}
 
 }

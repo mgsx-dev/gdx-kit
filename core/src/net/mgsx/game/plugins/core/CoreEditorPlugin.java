@@ -26,6 +26,7 @@ import net.mgsx.game.plugins.core.tools.EntityGroupEditor;
 import net.mgsx.game.plugins.core.tools.ExportClassesTool;
 import net.mgsx.game.plugins.core.tools.GridTool;
 import net.mgsx.game.plugins.core.tools.ImportEntitiesTool;
+import net.mgsx.game.plugins.core.tools.LockTool;
 import net.mgsx.game.plugins.core.tools.MultiCloneTool;
 import net.mgsx.game.plugins.core.tools.OpenTool;
 import net.mgsx.game.plugins.core.tools.PanTool;
@@ -55,7 +56,7 @@ public class CoreEditorPlugin extends EditorPlugin
 		
 		// systems
 		editor.entityEngine.addSystem(new SelectionRenderSystem(editor));
-		editor.entityEngine.addSystem(new PolygonRenderSystem(editor));
+		editor.entityEngine.addSystem(new PolygonRenderSystem());
 		editor.entityEngine.addSystem(new GridDebugSystem(editor));
 		
 		editor.addTool(new EntityEmitterTool(editor));
@@ -73,6 +74,7 @@ public class CoreEditorPlugin extends EditorPlugin
 		editor.addGlobalTool(new SwitchModeTool(editor));
 		editor.addGlobalTool(new ToggleHelpTool(editor));
 		editor.addGlobalTool(new GridTool(editor));
+		editor.addGlobalTool(new LockTool(editor));
 
 		editor.addGlobalTool(new SwitchCameraTool(editor));
 		

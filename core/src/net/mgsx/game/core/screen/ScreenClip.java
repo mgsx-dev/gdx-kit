@@ -13,7 +13,7 @@ import com.badlogic.gdx.Screen;
  * @author mgsx
  *
  */
-public interface ScreenClip extends Screen
+public interface ScreenClip extends Screen, ScreenTransitionListener
 {
 	public boolean isComplete();
 }

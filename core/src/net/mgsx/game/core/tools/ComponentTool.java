@@ -9,30 +9,17 @@ import net.mgsx.game.core.components.Initializable;
 
 abstract public class ComponentTool extends Tool
 {
-	private Class<? extends Component> assignableFor;
-	
-	public ComponentTool(String name, EditorScreen editor, Class<? extends Component> assignableFor) {
-		this(name, editor, Family.one(assignableFor).get());
-		this.assignableFor = assignableFor;
-	}
+	private Class<? extends Component> assignableFor; // TODO remove this in favor to allowed method
 	
 	public ComponentTool(String name, EditorScreen editor, Family activator) {
 		super(name, editor);
-		this.activator = activator;
-	}
-	
-	public Class<? extends Component> getAssignableFor() {
-		return assignableFor;
-	}
-	
-	public ComponentTool(String name, EditorScreen editor) {
-		super(name, editor);
+		this.activator = activator; // TODO remove this in favor to allowed method
 	}
 	
 	@Override
 	protected void activate() 
 	{
-		Entity entity = editor.currentEntity();
+		Entity entity = currentEntity();
 		Component component = createComponent(entity);
 		if(component != null)
 		{

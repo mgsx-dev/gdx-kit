@@ -24,6 +24,6 @@ public class SplineEditorPlugin extends EditorPlugin
 		
 		editor.addTool(new BezierTool(editor));
 		
-		editor.entityEngine.addSystem(new SplineDebugRender(editor));
+		editor.entityEngine.addSystem(new SplineDebugRender());
 	}
 }

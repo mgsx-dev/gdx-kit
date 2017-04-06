@@ -30,7 +30,7 @@ public class EntityEmitterTool extends Tool
 				config.registry = editor.registry;
 				config.engine = editor.entityEngine;
 				
-				Entity master = editor.currentEntity();
+				Entity master = currentEntity();
 				EntityEmitter emitter = getEngine().createComponent(EntityEmitter.class);
 				emitter.template = EntityGroupStorage.loadNow(file.path(), config);
 				master.add(emitter);

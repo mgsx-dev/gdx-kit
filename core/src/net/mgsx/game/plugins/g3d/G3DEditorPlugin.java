@@ -12,6 +12,7 @@ import net.mgsx.game.plugins.g3d.systems.G3DPointLightDebugSystem;
 import net.mgsx.game.plugins.g3d.systems.G3DProfilerSystem;
 import net.mgsx.game.plugins.g3d.tools.AddModelTool;
 import net.mgsx.game.plugins.g3d.tools.G3DModelReloader;
+import net.mgsx.game.plugins.g3d.tools.ImportFbxTool;
 import net.mgsx.game.plugins.g3d.tools.ModelSelector;
 
 @PluginDef(dependencies={G3DPlugin.class})
@@ -22,13 +23,14 @@ public class G3DEditorPlugin extends EditorPlugin
 	{
 		// tools
 		editor.addTool(new AddModelTool(editor));
+		editor.addTool(new ImportFbxTool(editor));
 		editor.registry.registerPlugin(G3DModel.class, new G3DNodeEditor());
 		editor.addSelector(new ModelSelector(editor));
 		editor.assets.addReloadListener(Model.class, new G3DModelReloader(editor.entityEngine));
 		
 		// systems
-		editor.entityEngine.addSystem(new G3DBoundaryDebugSystem(editor));
-		editor.entityEngine.addSystem(new G3DPointLightDebugSystem(editor));
+		editor.entityEngine.addSystem(new G3DBoundaryDebugSystem());
+		editor.entityEngine.addSystem(new G3DPointLightDebugSystem());
 		editor.entityEngine.addSystem(new G3DProfilerSystem());
 	}
 }

@@ -8,12 +8,13 @@ import net.mgsx.game.core.GameRegistry;
 import net.mgsx.game.core.GameScreen;
 import net.mgsx.game.core.helpers.ActionsHelper;
 import net.mgsx.game.core.screen.ScreenClip;
+import net.mgsx.game.core.screen.ScreenManager;
 
 public class LevelLoadingScreen extends GameScreen implements ScreenClip
 {
 	private Actor mainActor;
-	public LevelLoadingScreen(AssetManager assets, GameRegistry registry) {
-		super(assets, registry);
+	public LevelLoadingScreen(ScreenManager screenManager, AssetManager assets, GameRegistry registry) {
+		super(screenManager, assets, registry);
 	}
 	
 	@Override

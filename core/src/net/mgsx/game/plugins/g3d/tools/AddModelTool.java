@@ -33,7 +33,7 @@ public class AddModelTool extends Tool
 			public void selected(FileHandle file) {
 				Model model = editor.loadAssetNow(file.path(), Model.class);
 				modelInstance = new ModelInstance(model);
-				Entity entity = editor.currentEntity();
+				Entity entity = currentEntity();
 				G3DModel data = new G3DModel();
 				data.modelInstance = modelInstance;
 

@@ -1,13 +1,16 @@
 package net.mgsx.game.core.screen;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputAdapter;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Interpolation;
-import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+
+import net.mgsx.game.core.Kit;
 
 /**
  * Static convenience methods for screen transitions, inspired by scene2D {@link Actions}
@@ -17,7 +20,7 @@ import com.badlogic.gdx.scenes.scene2d.actions.Actions;
  */
 public class Transitions 
 {
-	private static class ColorScreen extends ScreenClipAdapter {
+	public static class ColorScreen extends ScreenClipAdapter {
 		private final Color color;
 
 		public ColorScreen(Color color) {
@@ -45,6 +48,18 @@ public class Transitions
 		}
 	}
 	
+	private static class SwapTransition implements ScreenTransition{
+
+		@Override
+		public void render(Screen src, Screen dst, float deltaTime, float t) {
+			dst.render(deltaTime);
+		}
+
+		@Override
+		public void resize(int width, int height) {
+		}
+	}
+	
 	private static FadeTransition fadeTransition;
 	public static ScreenTransition fadeTransition() 
 	{
@@ -54,17 +69,38 @@ public class Transitions
 		return fadeTransition;
 	}
 	
+	private static SwapTransition swapTransition;
+	public static ScreenTransition swapTransition() 
+	{
+		if(swapTransition == null){
+			swapTransition = new SwapTransition();
+		}
+		return swapTransition;
+	}
+	
 	public static TransitionDesc fade(Screen destination, float duration){
 		return fade(destination, duration, null);
 	} 
 	public static TransitionDesc fade(Screen destination, float duration, TransitionListener listener) 
 	{
+		return fade(destination, duration, Interpolation.linear, listener);
+	}
+	public static TransitionDesc fade(Screen destination, float duration, Interpolation interpolation, TransitionListener listener) 
+	{
 		TransitionDesc desc = new TransitionDesc();
 		desc.destination = destination;
 		desc.duration = duration;
-		desc.interpolation = Interpolation.linear;
+		desc.interpolation = interpolation;
 		desc.transition = fadeTransition();
 		desc.listener = listener;
+		return desc;
+	}
+	
+	public static TransitionDesc swap(Screen destination) 
+	{
+		TransitionDesc desc = new TransitionDesc();
+		desc.destination = destination;
+		desc.transition = swapTransition();
 		return desc;
 	}
 	
@@ -104,11 +140,46 @@ public class Transitions
 			}
 			@Override
 			public boolean isComplete() {
+				if(screen instanceof ScreenClip)
+					if(((ScreenClip) screen).isComplete())
+						return true;
 				return time >= duration;
 			}
 		};
 	}
 	
+	public static ScreenClip touch(final Screen screen)
+	{
+		return new ScreenClipDelegate(screen){
+			private boolean hasBeenTouched = false;
+			private InputProcessor processor ;
+			@Override
+			public void show() {
+				super.show();
+				hasBeenTouched = Gdx.input.isTouched();
+				Kit.inputs.addProcessor(processor = new InputAdapter(){
+					@Override
+					public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+						hasBeenTouched = true;
+						return true;
+					}
+				});
+			}
+			@Override
+			public void preHide() {
+				Kit.inputs.removeProcessor(processor);
+				processor = null;
+				super.preHide();
+			}
+			@Override
+			public boolean isComplete() {
+				if(screen instanceof ScreenClip)
+					if(((ScreenClip) screen).isComplete())
+						return true;
+				return hasBeenTouched;
+			}
+		};
+	}
 	
 	public static ScreenClip empty(final Color color){
 		return new ColorScreen(color);
@@ -138,5 +209,9 @@ public class Transitions
 			}
 		};
 	}
+
+	// TODO find a way to easily queue some transitions in order to build
+	// complex sequences. maybe with a builder pattern...
+	// public static TransitionDesc sequence(TransitionDesc ... transitions) 
 
 }

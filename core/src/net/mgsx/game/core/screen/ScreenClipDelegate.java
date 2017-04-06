@@ -17,4 +17,16 @@ public class ScreenClipDelegate extends ScreenDelegate implements ScreenClip
 		}
 		return true;
 	}
+
+	@Override
+	public void preHide() {
+		if(current instanceof ScreenTransitionListener)
+			((ScreenTransitionListener) current).preHide();
+	}
+
+	@Override
+	public void postShow() {
+		if(current instanceof ScreenTransitionListener)
+			((ScreenTransitionListener) current).postShow();
+	}
 }

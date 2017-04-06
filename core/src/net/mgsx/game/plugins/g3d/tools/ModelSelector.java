@@ -49,7 +49,7 @@ public class ModelSelector  extends SelectorPlugin
 					Mesh mesh = part.mesh;
 					short[] indices = new short[mesh.getNumIndices()];
 					mesh.getIndices(indices);
-					int floatsPerVertex = mesh.getVertexSize() / Float.BYTES;
+					int floatsPerVertex = mesh.getVertexSize() / (Float.SIZE / 8);
 					float[] vertices = new float[mesh.getNumVertices() * floatsPerVertex];
 					mesh.getVertices(vertices );
 					if(Intersector.intersectRayTriangles(localRay, vertices, indices, floatsPerVertex, new Vector3())){

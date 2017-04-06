@@ -23,7 +23,7 @@ public class MultiCloneTool extends RectangleTool
 	@Override
 	protected void activate() {
 		super.activate();
-		if(editor.selection.size == 0) end();
+		if(selection().isEmpty()) end();
 	}
 
 	@Override
@@ -31,7 +31,7 @@ public class MultiCloneTool extends RectangleTool
 	{
 		for(int i=0 ; i<count ; i++)
 		{
-			Entity clone = EntityHelper.clone(getEngine(), editor.selection.peek());
+			Entity clone = EntityHelper.clone(getEngine(), selection().last());
 			Transform2DComponent transform = Transform2DComponent.components.get(clone);
 			if(transform != null){
 				transform.position.set(MathUtils.random(startPoint.x, endPoint.x), MathUtils.random(startPoint.y, endPoint.y));

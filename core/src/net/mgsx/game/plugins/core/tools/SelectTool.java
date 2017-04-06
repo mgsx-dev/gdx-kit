@@ -12,16 +12,18 @@ import net.mgsx.game.core.EditorScreen;
 import net.mgsx.game.core.components.Movable;
 import net.mgsx.game.core.plugins.SelectorPlugin;
 import net.mgsx.game.core.tools.Tool;
+import net.mgsx.game.plugins.core.components.Locked;
 import net.mgsx.game.plugins.core.components.Transform2DComponent;
 
 public class SelectTool extends Tool
 {
-	private Array<Entity> selection = new Array<Entity>();
+	private Array<Entity> currentSelection = new Array<Entity>();
 	protected Vector2 prev;
 	protected boolean moving = false;
 	
 	private Vector2 ghostPosition = new Vector2();
 	private Vector2 snapPosition = new Vector2();
+	private Vector2 prevSnapPosition = new Vector2();
 	
 	public SelectTool(EditorScreen editor) {
 		super("Select", editor);
@@ -35,12 +37,13 @@ public class SelectTool extends Tool
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) 
 	{
 		if(button == Input.Buttons.LEFT){
-			selection.clear();
-			for(SelectorPlugin selector : editor.selectors){
-				selector.getSelection(selection, screenX, screenY);
+			currentSelection.clear();
+			for(SelectorPlugin selector : selection().selectors){
+				selector.getSelection(currentSelection, screenX, screenY);
 			}
 			// TODO select by knot only if not in selection ?
 			// then add selection for movables : TODO use engine query instead
+			// TODO make selector instead !
 			for(Entity entity : editor.entityEngine.getEntities()){
 				Vector3 pos = new Vector3();
 				Movable movable = entity.getComponent(Movable.class);
@@ -55,26 +58,25 @@ public class SelectTool extends Tool
 				Vector2 s = new Vector2(5, 5); // size of displayed knot !
 				Vector3 v = editor.getGameCamera().project(pos);
 				if(new Rectangle(v.x-s.x, v.y-s.y, 2*s.x, 2*s.y).contains(screenX, Gdx.graphics.getHeight() - screenY)){
-					selection.add(entity);
+					currentSelection.add(entity);
 				}
 			}
 			
 			
-			for(Entity entity : selection){
-				handleSelection(entity, editor.selection);
+			for(Entity entity : currentSelection){
+				handleSelection(entity, selection().selection);
 			}
-			if(selection.size == 0) {
-				editor.selection.clear();
-				editor.invalidateSelection();
+			if(currentSelection.size == 0) {
+				selection().clear();
 			}
-			moving = true;
-			for(Entity entity : editor.selection){
+			for(Entity entity : selection().selection){
 				Movable movable = entity.getComponent(Movable.class);
-				if(movable != null) movable.moveBegin(entity);
+				if(movable != null && !Locked.components.has(entity)) movable.moveBegin(entity);
 			}
 			ghostPosition = unproject(screenX, screenY);
+			prevSnapPosition.set(ghostPosition);
 			prev = new Vector2(screenX, screenY);
-			return true;
+			return moving = currentSelection.size > 0;
 		}
 		return super.touchDown(screenX, screenY, pointer, button);
 	}
@@ -96,13 +98,32 @@ public class SelectTool extends Tool
 			
 			snap(snapPosition.set(ghostPosition));
 			
-			for(Entity entity : editor.selection){
+			
+			if(selection().selection.size > 1)
+			{
+				delta.set(snapPosition, 0).sub(prevSnapPosition.x, prevSnapPosition.y, 0);
+				
+				for(Entity entity : selection().selection){
+					if(Locked.components.has(entity)) continue;
+					Movable movable = entity.getComponent(Movable.class);
+					if(movable != null){
+						movable.move(entity, delta);
+					}
+					else{
+						Transform2DComponent transform = Transform2DComponent.components.get(entity);
+						if(transform != null){
+							transform.position.add(delta.x, delta.y);
+						}
+					}
+				}
+			}else{
+				Entity entity = selection().selection.first();
 				Movable movable = entity.getComponent(Movable.class);
 				if(movable != null){
-					Vector3 p = new Vector3();
-					movable.getPosition(entity, p);
-					delta.set(snapPosition, 0).sub(p);
-					movable.move(entity, delta);
+					movable.getPosition(entity, delta);
+					delta.x = snapPosition.x;
+					delta.y = snapPosition.y;
+					movable.moveTo(entity, delta);
 				}
 				else{
 					Transform2DComponent transform = Transform2DComponent.components.get(entity);
@@ -112,6 +133,7 @@ public class SelectTool extends Tool
 				}
 			}
 			prev.set(worldPos.x, worldPos.y);
+			prevSnapPosition.set(snapPosition);
 			return true; // catch event
 		}
 		return super.touchDragged(screenX, screenY, pointer);
@@ -123,7 +145,8 @@ public class SelectTool extends Tool
 		if(moving){
 			moving = false;
 			
-			for(Entity entity : editor.selection){
+			for(Entity entity : selection().selection){
+				if(Locked.components.has(entity)) continue;
 				Movable movable = entity.getComponent(Movable.class);
 				if(movable != null) movable.moveEnd(entity);
 			}
@@ -137,20 +160,20 @@ public class SelectTool extends Tool
 		if(ctrl()){
 			if(selection.contains(itemSelected, true)){
 				selection.removeValue(itemSelected, true);
-				editor.invalidateSelection();
+				selection().invalidate();
 			}else{
 				selection.add(itemSelected);
-				editor.invalidateSelection();
+				selection().invalidate();
 			}
 		}else if(shift()){
 			if(!selection.contains(itemSelected, true)){
 				selection.add(itemSelected);
-				editor.invalidateSelection();
+				selection().invalidate();
 			}
 		}else if(!selection.contains(itemSelected, true)){
 			selection.clear();
 			selection.add(itemSelected);
-			editor.invalidateSelection();
+			selection().invalidate();
 		}
 	}
 

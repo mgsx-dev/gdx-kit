@@ -10,12 +10,16 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.FlushablePool;
 
 import net.mgsx.game.core.EditorScreen;
+import net.mgsx.game.core.annotations.Inject;
 import net.mgsx.game.core.tools.Tool;
 import net.mgsx.game.plugins.box2d.components.Box2DBodyModel;
 import net.mgsx.game.plugins.box2d.systems.Box2DWorldContext;
+import net.mgsx.game.plugins.editor.systems.SelectionSystem;
 
 public class ParticleTool extends Tool
 {
+	@Inject SelectionSystem selection;
+	
 	public float life = 3;
 	public float rate = 4;
 	private float time;
@@ -52,7 +56,7 @@ public class ParticleTool extends Tool
 	protected void activate() 
 	{
 		super.activate();
-		Entity entity = editor.getSelected();
+		Entity entity = selection.selected();
 		if(entity != null){
 			Box2DBodyModel physics = Box2DBodyModel.components.get(entity);
 			if(physics != null){

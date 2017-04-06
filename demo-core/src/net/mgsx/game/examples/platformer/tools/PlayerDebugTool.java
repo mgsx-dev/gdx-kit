@@ -10,6 +10,7 @@ import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.joints.DistanceJointDef;
 
 import net.mgsx.game.core.EditorScreen;
+import net.mgsx.game.core.annotations.Inject;
 import net.mgsx.game.core.tools.RectangleTool;
 import net.mgsx.game.examples.platformer.animations.WalkingComponent;
 import net.mgsx.game.examples.platformer.inputs.KeyboardController;
@@ -18,9 +19,12 @@ import net.mgsx.game.plugins.box2d.components.Box2DBodyModel;
 import net.mgsx.game.plugins.box2d.components.Box2DFixtureModel;
 import net.mgsx.game.plugins.box2d.listeners.Box2DEntityListener;
 import net.mgsx.game.plugins.box2d.systems.Box2DWorldSystem;
+import net.mgsx.game.plugins.editor.systems.SelectionSystem;
 
 public class PlayerDebugTool extends RectangleTool
 {
+	@Inject protected SelectionSystem selection;
+	
 	public PlayerDebugTool(EditorScreen editor) {
 		super("Create Player Debug", editor);
 	}
@@ -94,7 +98,7 @@ public class PlayerDebugTool extends RectangleTool
 		
 		getEngine().addEntity(entity);
 		
-		editor.setSelection(entity);
+		selection.set(entity);
 	}
 
 }

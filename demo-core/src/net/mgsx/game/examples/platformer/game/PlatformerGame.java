@@ -11,6 +11,8 @@ import net.mgsx.game.examples.platformer.screens.GameLoadingScreen;
 import net.mgsx.game.examples.platformer.screens.GameMenuScreen;
 import net.mgsx.game.examples.platformer.screens.LevelLoadingScreen;
 import net.mgsx.game.examples.platformer.screens.LevelScreen;
+import net.mgsx.pd.Pd;
+import net.mgsx.pd.PdConfiguration;
 
 /**
  * Platformer Game Application (entry point)
@@ -39,7 +41,7 @@ public class PlatformerGame extends GameApplication
 	public void create() 
 	{
 		super.create();
-		
+		Pd.audio.create(new PdConfiguration());
 		fsm = new DefaultStateMachine<PlatformerGame, PlatformerGameState>(this, PlatformerGameState.INIT, PlatformerGameState.GLOBAL);
 	}
 	
@@ -66,13 +68,13 @@ public class PlatformerGame extends GameApplication
 		// load level loading screen
 		if(levelLoadingScreen == null)
 		{
-			levelLoadingScreen = new LevelLoadingScreen(assets, registry);
+			levelLoadingScreen = new LevelLoadingScreen(this, assets, registry);
 		}
 		levelLoadingScreen.load(Gdx.files.internal("levels/level-load.json"));
 		assets.finishLoading(); // force finish loading assets for level loading screeen.
 		
 		// create the game screen (not cached)
-		levelScreen = new LevelScreen(this, registry);
+		levelScreen = new LevelScreen(this, this, registry);
 		levelScreen.load(Gdx.files.internal("levels/level1.json"));
 	}
 	

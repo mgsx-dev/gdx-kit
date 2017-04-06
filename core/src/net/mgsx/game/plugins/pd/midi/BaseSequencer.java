@@ -16,5 +16,9 @@ public abstract class BaseSequencer
 		this.listener = listener;
 	}
 
+	public void sendAllNotesOff()
+	{
+		net.mgsx.midi.playback.BaseSequencer.sendAllNotesOff(listener);
+	}
 	
 }

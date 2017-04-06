@@ -5,7 +5,6 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -15,7 +14,10 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 
 import net.mgsx.game.core.EditorScreen;
+import net.mgsx.game.core.annotations.Inject;
 import net.mgsx.game.plugins.core.systems.GridDebugSystem;
+import net.mgsx.game.plugins.editor.systems.HistorySystem;
+import net.mgsx.game.plugins.editor.systems.SelectionSystem;
 
 /**
  * A tool may be active in an editor.
@@ -32,12 +34,17 @@ import net.mgsx.game.plugins.core.systems.GridDebugSystem;
  * 
  * See ToolGroup : exclusive tool (eg select + draw)
  */
-abstract public class Tool extends InputAdapter
+abstract public class Tool extends AbstractInputSystem
 {
 	final protected EditorScreen editor;
 	ToolGroup group;
 	
-	public Family activator;
+	public Family activator; // TODO remove in favor to allowed method
+	
+	private SelectionSystem selectionSystem;
+	
+	@Inject
+	protected HistorySystem historySystem;
 	
 	public Tool(EditorScreen editor) {
 		this("no name", editor);
@@ -46,6 +53,7 @@ abstract public class Tool extends InputAdapter
 		super();
 		this.editor = editor;
 		this.name = name;
+		selectionSystem = editor.entityEngine.getSystem(SelectionSystem.class);
 	}
 
 	final protected void end(){
@@ -54,10 +62,31 @@ abstract public class Tool extends InputAdapter
 		}
 	}
 	
+	protected SelectionSystem selection(){
+		return selectionSystem;
+	}
+	
 	public Engine getEngine()
 	{
-		return editor.entityEngine;
+		return editor.entityEngine; // XXX override for now, to be removed latter
 	}
+	
+	/**
+	 * get current entity which can be the selected entity (last in selection)
+	 * or a fresh new one.
+	 * Note that entity will have repository component which mark it as persistable.
+	 * use {@link #transcientEntity()} to create a non persistable entity.
+	 * @return
+	 */
+	protected Entity currentEntity() 
+	{
+		return selectionSystem.currentEntity();
+	}
+	
+	protected Entity transcientEntity(){
+		return selectionSystem.transcientEntity();
+	}
+	
 
 	protected void activate(){
 		editor.setInfo("This tool doesn't provide help. Call editor.setInfo in activate method.");
@@ -177,8 +206,15 @@ abstract public class Tool extends InputAdapter
 	 * @param selection selection to analyse (not null but may be empty).
 	 * @return true id allowed, in other case, tool won't be activated.
 	 */
-	public boolean allowed(Array<Entity> selection) {
-		return selection.size <= 1;
+	public boolean allowed(Array<Entity> selection) 
+	{
+		if(selection.size > 1) return false;
+		if(activator != null)
+		{
+			if(selection.size > 0) return activator.matches(selection.first());
+			return false;
+		}
+		return true;
 	}
 	
 	

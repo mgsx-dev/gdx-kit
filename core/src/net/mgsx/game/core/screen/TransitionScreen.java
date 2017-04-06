@@ -18,11 +18,6 @@ public class TransitionScreen implements ScreenClip
 	private float time;
 	private boolean complete;
 
-	@Override
-	public void show() {
-		desc.destination.show();
-	}
-	
 	public Screen getDestination(){
 		return desc.destination;
 	}
@@ -37,6 +32,7 @@ public class TransitionScreen implements ScreenClip
 		time += deltaTime;
 		if(!complete && time > desc.duration){
 			complete = true;
+			end();
 			if(desc.listener != null) desc.listener.end();
 		}
 		float t = desc.interpolation.apply(MathUtils.clamp(time / desc.duration, 0, 1));
@@ -49,6 +45,25 @@ public class TransitionScreen implements ScreenClip
 		desc.destination.resize(width, height);
 		desc.transition.resize(width, height);
 	}
+	
+	private void begin() 
+	{
+		if(source instanceof ScreenTransitionListener) {
+			((ScreenTransitionListener) source).preHide();
+		}
+		
+		desc.destination.show();
+	}
+
+	private void end() 
+	{
+		source.hide();
+		
+		if(desc.destination instanceof ScreenTransitionListener) {
+			((ScreenTransitionListener) desc.destination).postShow();
+		}
+	}
+
 
 	@Override
 	public void pause() {
@@ -63,11 +78,18 @@ public class TransitionScreen implements ScreenClip
 	}
 
 	@Override
+	public void show() {
+		reset();
+		begin();
+	}
+	
+	@Override
 	public void hide() 
 	{
 		// called only if transition is cancelled.
 		// in that case we have to hide both source and destination ? TODO
-		source.hide(); // don't hide destination
+		// we don't hide destination
+		end();
 	}
 
 	@Override
@@ -82,7 +104,18 @@ public class TransitionScreen implements ScreenClip
 
 	public void reset() 
 	{
+		complete = false;
 		time = 0;
+	}
+
+	@Override
+	public void preHide() {
+		// transition screens doesn't support nested transitions.
+	}
+
+	@Override
+	public void postShow() {
+		// transition screens doesn't support nested transitions.
 	}
 	
 }

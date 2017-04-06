@@ -1,5 +1,6 @@
 package net.mgsx.game.core.ui.accessors;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 
 import net.mgsx.game.core.annotations.Editable;
@@ -52,6 +53,14 @@ public class MethodAccessor extends AccessorBase
 		Editable a = setter.getAnnotation(Editable.class);
 		if(a == null){
 			a = getter.getAnnotation(Editable.class);
+		}
+		return a;
+	}
+	@Override
+	public <T extends Annotation> T config(Class<T> annotation) {
+		T a = setter.getAnnotation(annotation);
+		if(a == null){
+			a = getter.getAnnotation(annotation);
 		}
 		return a;
 	}

@@ -10,11 +10,13 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.Array;
 
 import net.mgsx.game.core.screen.ScreenClip;
+import net.mgsx.game.core.screen.ScreenManager;
+import net.mgsx.game.core.screen.ScreenTransitionListener;
 import net.mgsx.game.core.screen.TransitionDesc;
 import net.mgsx.game.core.screen.TransitionScreen;
 import net.mgsx.game.core.screen.Transitions;
 
-public abstract class GameApplication extends Game
+public abstract class GameApplication extends Game implements ScreenManager
 {
 	public AssetManager assets;
 	
@@ -30,6 +32,7 @@ public abstract class GameApplication extends Game
 	public void create() {
 		assets = new AssetManager();
 		Texture.setAssetManager(assets);
+		Gdx.input.setInputProcessor(Kit.inputs);
 	}
 
 	/**
@@ -113,15 +116,25 @@ public abstract class GameApplication extends Game
 		return assets;
 	}
 
+	@Override
 	public void setTransition(TransitionDesc desc)
 	{
 		TransitionScreen ts = new TransitionScreen();
 		ts.setDesc(desc);
+		
+		// case when set transition when current transition is not complete or just complete
+		if(screen instanceof TransitionScreen){
+			((TransitionScreen) screen).hide();
+			screen = ((TransitionScreen) screen).getDestination();
+		}
+		
 		ts.source = screen;
 		screen = null;
+		sequences.clear();
 		setScreen(ts);
 	}
 	
+	@Override
 	public void addTransition(TransitionDesc desc){
 		TransitionScreen ts = new TransitionScreen();
 		ts.setDesc(desc);
@@ -135,6 +148,18 @@ public abstract class GameApplication extends Game
 	 */
 	public void addScreen(Screen screen){
 		sequences.add(screen);
+	}
+	
+	@Override
+	public void setScreen(Screen screen) 
+	{
+		if (this.screen instanceof ScreenTransitionListener) {
+			((ScreenTransitionListener) this.screen).preHide();
+		}
+		super.setScreen(screen);
+		if (this.screen instanceof ScreenTransitionListener) {
+			((ScreenTransitionListener) this.screen).postShow();
+		}
 	}
 	
 }

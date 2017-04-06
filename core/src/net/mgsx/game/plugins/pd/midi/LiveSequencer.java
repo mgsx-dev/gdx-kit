@@ -1,6 +1,7 @@
 package net.mgsx.game.plugins.pd.midi;
 
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.ObjectMap;
 
 import net.mgsx.game.plugins.pd.systems.MidiEventMultiplexer;
@@ -8,7 +9,7 @@ import net.mgsx.midi.sequence.MidiSequence;
 import net.mgsx.midi.sequence.MidiTrack;
 import net.mgsx.midi.sequence.util.MidiEventListener;
 
-public class LiveSequencer extends BaseSequencer
+public class LiveSequencer extends BaseSequencer implements Disposable
 {
 	private final Array<LiveTrack> tracks = new Array<LiveTrack>();
 	private final ObjectMap<String, LiveTrack> tracksByName = new ObjectMap<String, LiveTrack>();
@@ -98,13 +99,8 @@ public class LiveSequencer extends BaseSequencer
 						// silent fail.
 					}
 				}
-				// XXX force all note off (all note and all channels)
-				ResetNote off = new ResetNote();
-				for(int i=0 ; i<16 ; i++){
-					for(int j=0 ; j<127 ; j++){
-						listener.onEvent(off.set(i, j), 0);
-					}
-				}
+				
+				sendAllNotesOff();
 				
 			}
 		}, "LiveSequencer");
@@ -127,5 +123,11 @@ public class LiveSequencer extends BaseSequencer
 	public long position(long position, int division) {
 		return division * position / resolution;
 	}
+
+	@Override
+	public void dispose() {
+		stop();
+	}
+
 
 }

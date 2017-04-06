@@ -5,18 +5,23 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 
 import net.mgsx.game.core.EditorScreen;
+import net.mgsx.game.core.annotations.Inject;
 import net.mgsx.game.core.tools.RectangleTool;
 import net.mgsx.game.plugins.boundary.components.BoundaryComponent;
 import net.mgsx.game.plugins.core.components.Transform2DComponent;
+import net.mgsx.game.plugins.editor.systems.SelectionSystem;
 
 public class ManualBoundaryTool extends RectangleTool {
+	
+	@Inject SelectionSystem selection;
+	
 	public ManualBoundaryTool(EditorScreen editor) {
 		super("Manual Boundary", editor);
 	}
 
 	@Override
 	protected void create(Vector2 startPoint, Vector2 endPoint) {
-		Entity entity = editor.getSelected();
+		Entity entity = selection.selected();
 		BoundaryComponent boundary = BoundaryComponent.components.get(entity);
 		if(boundary == null){
 			boundary = new BoundaryComponent();

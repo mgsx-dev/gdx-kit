@@ -5,11 +5,13 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.ashley.utils.ImmutableArray;
+import com.badlogic.gdx.Gdx;
 
 import net.mgsx.game.core.GamePipeline;
 import net.mgsx.game.core.GameScreen;
 import net.mgsx.game.plugins.camera.components.ActiveCamera;
 import net.mgsx.game.plugins.camera.components.CameraComponent;
+import net.mgsx.game.plugins.camera.components.ViewportComponent;
 import net.mgsx.game.plugins.core.components.Transform2DComponent;
 
 public class CameraSystem extends IteratingSystem
@@ -30,12 +32,24 @@ public class CameraSystem extends IteratingSystem
 	}
 	
 	@Override
-	public void update(float deltaTime) {
+	public void update(float deltaTime) 
+	{
+		// first update all active cameras
 		super.update(deltaTime);
 		
+		// then copy first one to current camera matrices
 		if(activeCameras.size() > 0)
 		{
-			CameraComponent camera = CameraComponent.components.get(activeCameras.first());
+			Entity activeCamera = activeCameras.first();
+			
+			CameraComponent camera = CameraComponent.components.get(activeCamera);
+			
+			ViewportComponent viewport = ViewportComponent.components.get(activeCamera);
+			if(viewport != null)
+			{
+				viewport.viewport.setCamera(camera.camera);
+				viewport.viewport.update(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false);
+			}
 			
 			// copy camera settings to game
 			game.camera.position.set(camera.camera.position);
@@ -63,13 +77,8 @@ public class CameraSystem extends IteratingSystem
 			camera.camera.position.x = transform.position.x;
 			camera.camera.position.y = transform.position.y;
 		}
-		
-		if(camera.frustumDirty){
-			camera.camera.update(true);
-		}
-		camera.camera.update(true); // XXX for editors
-		camera.frustumDirty = false;
-		
+		// always update cameras (for hidden ones ?)
+		camera.camera.update(true);
 	}
 
 }

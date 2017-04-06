@@ -97,6 +97,14 @@ public class ReflectionHelper {
 			throw new ReflectionError(e);
 		}
 	}
+	public static boolean hasName(String className) {
+		try {
+			Class.forName(className);
+		} catch (ClassNotFoundException e) {
+			return false;
+		}
+		return true;
+	}
 	public static Method method(Class type, String name, Class ...parameterTypes) {
 		try {
 			return type.getMethod(name, parameterTypes);

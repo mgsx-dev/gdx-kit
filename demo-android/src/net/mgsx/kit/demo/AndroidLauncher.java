@@ -14,9 +14,7 @@ import net.mgsx.game.core.meta.StaticClassRegistry;
 import net.mgsx.game.examples.platformer.PlatformerEditorPlugin;
 import net.mgsx.kit.KitClass;
 import net.mgsx.pd.Pd;
-import net.mgsx.pd.PdAudioAndroid;
 import net.mgsx.pd.PdConfiguration;
-import net.mgsx.pd.midi.DefaultPdMidi;
 
 public class AndroidLauncher extends AndroidApplication {
 	@Override
@@ -44,8 +42,6 @@ public class AndroidLauncher extends AndroidApplication {
 		
 		
 		super.onCreate(savedInstanceState);
-		Pd.audio = new PdAudioAndroid(this);
-		Pd.midi = new DefaultPdMidi();
 		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
 		initialize(new EditorApplication(editConfig){
 			@Override

@@ -19,7 +19,7 @@ public class P2DBoundaryTool extends Tool
 	protected void activate() {
 		
 		
-		Entity entity = editor.currentEntity();
+		Entity entity = currentEntity();
 		Particle2DComponent p = Particle2DComponent.components.get(entity);
 		
 		BoundaryComponent boundary = BoundaryComponent.components.get(entity);

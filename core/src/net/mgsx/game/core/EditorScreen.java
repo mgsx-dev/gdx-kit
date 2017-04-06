@@ -1,7 +1,6 @@
 package net.mgsx.game.core;
 
 import java.util.Comparator;
-import java.util.Map.Entry;
 
 import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.Engine;
@@ -11,23 +10,17 @@ import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
-import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.assets.AssetLoaderParameters;
-import com.badlogic.gdx.assets.loaders.TextureLoader.TextureParameter;
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.Texture.TextureFilter;
-import com.badlogic.gdx.graphics.Texture.TextureWrap;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
@@ -39,38 +32,33 @@ import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.Json.Serializer;
-import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.ObjectSet;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.core.annotations.EditableComponent;
 import net.mgsx.game.core.annotations.EditableSystem;
-import net.mgsx.game.core.commands.Command;
-import net.mgsx.game.core.commands.CommandHistory;
+import net.mgsx.game.core.annotations.Inject;
 import net.mgsx.game.core.components.Movable;
-import net.mgsx.game.core.components.Repository;
 import net.mgsx.game.core.editors.AnnotationBasedComponentEditor;
 import net.mgsx.game.core.helpers.AssetHelper;
-import net.mgsx.game.core.helpers.AssetLookupCallback;
 import net.mgsx.game.core.helpers.EditorAssetManager;
-import net.mgsx.game.core.helpers.NativeService;
-import net.mgsx.game.core.helpers.NativeService.DefaultCallback;
+import net.mgsx.game.core.plugins.EngineEditor;
 import net.mgsx.game.core.plugins.EntityEditorPlugin;
-import net.mgsx.game.core.plugins.GlobalEditorPlugin;
 import net.mgsx.game.core.plugins.SelectorPlugin;
 import net.mgsx.game.core.screen.ScreenDelegate;
 import net.mgsx.game.core.storage.LoadConfiguration;
 import net.mgsx.game.core.tools.ComponentTool;
 import net.mgsx.game.core.tools.Tool;
 import net.mgsx.game.core.tools.ToolGroup;
+import net.mgsx.game.core.tools.ToolGroup.ToolGroupHandler;
 import net.mgsx.game.core.ui.EntityEditor;
 import net.mgsx.game.core.ui.accessors.Accessor;
 import net.mgsx.game.core.ui.events.AccessorHelpEvent;
 import net.mgsx.game.core.ui.events.EditorListener;
 import net.mgsx.game.core.ui.widgets.TabPane;
 import net.mgsx.game.plugins.core.tools.UndoTool;
+import net.mgsx.game.plugins.editor.systems.EditorSystem;
+import net.mgsx.game.plugins.editor.systems.SelectionSystem;
 
 /**
  * Base screen for game editor.
@@ -79,19 +67,25 @@ import net.mgsx.game.plugins.core.tools.UndoTool;
  * @author mgsx
  *
  */
-public class EditorScreen extends ScreenDelegate implements EditorContext
+public class EditorScreen extends ScreenDelegate implements EditorContext // TODO should be a HUD system (system with stage)
 {
 	// TODO handle selection in separated class
 	
 	private static final String STATUS_HIDDEN_TEXT = "Press F1 to toggle help";
 
-	public CommandHistory history;
+	// new version
+	
+	@Inject protected SelectionSystem selection;
+	@Inject protected EditorSystem editor;
+	
+	// new version
+	
 	
 	private boolean showStatus;
 	private String currentText;
 	
-	public Skin skin;
-	protected Stage stage;
+	private Skin skin;
+	public Stage stage; // XXX temp
 	protected Table panel;
 	protected Table buttons;
 	protected Table outline;
@@ -99,13 +93,7 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 	private Table superGlobal;
 	private VerticalGroup pinStack;
 	
-	private SpriteBatch editorBatch;
-	
-	public EditorRegistry registry;
-	
-	public Array<SelectorPlugin> selectors = new Array<SelectorPlugin>();
-	
-	final private Array<ToolGroup> tools = new Array<ToolGroup>();
+	public EditorRegistry registry; // TODO move to a system ?
 	
 	private InputMultiplexer toolDelegator;
 	
@@ -116,7 +104,7 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 	
 	
 	private Array<Tool> autoTools = new Array<Tool>();
-	public ShapeRenderer shapeRenderer;
+	
 	public GameScreen game;
 	
 	private EditorCamera editorCamera;
@@ -124,7 +112,6 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 	final public EditorAssetManager assets;
 	final public Engine entityEngine;
 	
-	public final ObjectMap<Class, Serializer> serializers;
 
 	private Label status;
 
@@ -132,13 +119,15 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 
 	private ObjectSet<EditorListener> listeners = new ObjectSet<EditorListener>();
 	
+	final private EditorConfiguration config;
+	
 	public EditorScreen(EditorConfiguration config, GameScreen screen, EditorAssetManager assets, Engine engine) {
 		super(screen);
+		this.config = config;
 		this.game = screen;
 		this.game.registry = config.registry;
 		this.entityEngine = engine;
 		this.assets = assets;
-		this.serializers = config.registry.serializers;
 		this.registry = config.registry;
 		editorCamera = new EditorCamera();
 		init();
@@ -184,14 +173,9 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 	
 	private void init()
 	{
-		editorBatch = new SpriteBatch();
-		
-		shapeRenderer = new ShapeRenderer();
-		
 		skin = new Skin(Gdx.files.classpath("uiskin.json"));
 		
-		stage = new Stage(new ScreenViewport());
-		history = new CommandHistory();
+		stage = new Stage(config.viewport);
 		
 		toolDelegator = new InputMultiplexer();
 		
@@ -233,13 +217,13 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 				return false;
 			}
 		});
-		
-		createToolGroup().addProcessor(new UndoTool(this));
+		UndoTool undoTool = new UndoTool(this);
+		createToolGroup().addProcessor(undoTool);
 		
 		mainToolGroup = createToolGroup();
 
 		registry.init(this);
-
+		
 		for(final Class<? extends Component> type : registry.components){
 			EditableComponent config = type.getAnnotation(EditableComponent.class);
 			if(config != null){
@@ -266,11 +250,27 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 			addTool(tool);
 		}
 		
+		// TODO do it else where
+		registry.inject(entityEngine, this);
+		
+		editor.addTools(prependTools);
+		
+		for(Tool tool : mainToolGroup.tools){
+			registry.inject(entityEngine, tool);
+		}
+		registry.inject(entityEngine, undoTool); // XXX special undoTool don't know why ?
+		for(EntitySystem system : entityEngine.getSystems()){
+			registry.inject(entityEngine, system);
+		}
+		
+		
+		
+		
 		
 		global.addTab("Tools", new ScrollPane(buttons, skin));
 		global.addTab("Components", new ScrollPane(outline, skin, "light"));
-		for(Entry<String, GlobalEditorPlugin> entry : registry.globalEditors.entrySet()){
-			global.addTab(entry.getKey(), entry.getValue().createEditor(this, skin));
+		for(java.util.Map.Entry<String, EngineEditor> entry : entityEngine.getSystem(EditorSystem.class).globalEditors.entrySet()){
+			global.addTab(entry.getKey(), entry.getValue().createEditor(this.entityEngine, assets, skin));
 		}
 		
 		// listener for component add/remove
@@ -278,14 +278,14 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 			
 			@Override
 			public void entityRemoved(Entity entity) {
-				if(selection.contains(entity, true)){
-					invalidateSelection();
+				if(selection.contains(entity)){
+					selection.invalidate();
 				}
 			}
 			
 			@Override
 			public void entityAdded(Entity entity) {
-				if(entity == getSelected()) invalidateSelection();
+				if(entity == selection.selected()) selection.invalidate();
 			}
 		};
 		
@@ -298,9 +298,8 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 			
 			@Override
 			public void entityRemoved(Entity entity) {
-				if(selection.contains(entity, true)){
-					selection.removeValue(entity, true);
-					invalidateSelection();
+				if(selection.contains(entity)){
+					selection.remove(entity);
 				}
 			}
 			
@@ -313,21 +312,33 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 		// build GUI
 		updateSelection();
 		
-		// patch input processor : some systems (HUD) may have set input processor so
-		// we need to just override it, not replace it.
-		InputProcessor previousInputProcessor = Gdx.input.getInputProcessor();
-		if(previousInputProcessor == null){
-			Gdx.input.setInputProcessor(new InputMultiplexer(stage, toolDelegator));
-		}else{
-			Gdx.input.setInputProcessor(new InputMultiplexer(stage, toolDelegator, previousInputProcessor));
-		}
+		// prepend tools and stage: order is first editor stage then tools then others
+		Kit.inputs.addProcessor(0, toolDelegator);
+		Kit.inputs.addProcessor(0, stage);
 	}
+	
+	private ToolGroupHandler toolGroupHandler = new ToolGroupHandler() {
+		@Override
+		public void onToolChanged(Tool tool) {
+			toolOutline.clear();
+			if(tool != null){
+				Table table = new Table(skin);
+				Table view = new EntityEditor(tool, true, skin);
+				table.setBackground(skin.getDrawable("default-rect"));
+				table.add(tool.name).row();
+				table.add(view).row();
+				toolOutline.add(table);
+			}
+		}
+	};
 
+	private Array<ToolGroup> prependTools = new Array<ToolGroup>();
+	
 	public ToolGroup createToolGroup() 
 	{
-		ToolGroup g = new ToolGroup(this);
+		ToolGroup g = new ToolGroup(toolGroupHandler);
 		toolDelegator.addProcessor(g);
-		tools.add(g);
+		prependTools.add(g);
 		return g;
 	}
 	public void addGlobalTool(Tool tool) 
@@ -367,38 +378,16 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 	@Override
 	public void render(float deltaTime) 
 	{
-		if(selectionDirty)
+		if(selection.validate())
 		{
-			selectionDirty = false;
 			updateSelection();
 		}
-		
-		shapeRenderer.setProjectionMatrix(getGameCamera().combined);
 		
 		current.render(deltaTime);
 
 		if(displayEnabled){
+			stage.getViewport().update(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 			stage.act();
-		}
-		
-		
-		// TODO use systems instead (used by sprite tools ...)
-		
-		editorBatch.setProjectionMatrix(getGameCamera().combined);
-		editorBatch.begin();
-		for(ToolGroup g : tools){
-			g.render(editorBatch);
-		}
-		editorBatch.end();
-		
-		for(ToolGroup g : tools){
-			g.update(deltaTime);
-			g.render(shapeRenderer);
-		}
-		
-		if(displayEnabled){
-
-			
 			stage.draw();
 		}
 		
@@ -431,12 +420,14 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 	}
 
 	private String pluginFilter;
-
+	public boolean showAllTools = false;
+	
+	// TODO will be part of system save !
 	public final Array<EntitySystem> pinnedSystems = new Array<EntitySystem>();
 	
 	private void updateSelection() 
 	{
-		final Entity entity = selection.size > 0 ? selection.peek() : null;
+		final Entity entity = selection.size() > 0 ? selection.last() : null;
 		
 		for(Button button : contextualButtons ){
 			mainToolGroup.removeButton(button);
@@ -447,7 +438,7 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 		outline.clear();
 		outline.setBackground((Drawable)null);
 		
-		buttons.add(String.valueOf(selection.size) + " entities").expandX().fill().row();
+		buttons.add(String.valueOf(selection.size()) + " entities").expandX().fill().row();
 			
 		
 		// TODO move to Tool bar class update ...
@@ -457,7 +448,7 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 		
 		// add filter
 		final SelectBox<String> pluginFilterBox = new SelectBox<String>(skin);
-		buttons.add(pluginFilterBox).expandX().center().row();
+		
 		Array<String> allPlugins = new Array<String>();
 		allPlugins.add("");
 		allPlugins.addAll(registry.allTags());
@@ -472,6 +463,20 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 			}
 		});
 		
+		
+		buttons.add(pluginFilterBox).expandX().center();
+		
+		final Button btShow = EntityEditor.createBoolean(skin, showAllTools);
+		btShow.addListener(new ChangeListener() {
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				showAllTools = btShow.isChecked();
+				selection.invalidate();
+			}
+		});
+		buttons.add("Unavailable");
+		buttons.add(btShow).row();
+		
 		// TODO maybe not at each time ... ?
 		mainTools.sort(new Comparator<Tool>() {
 
@@ -485,34 +490,19 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 		{
 			// check if tool is in current plugin filter.
 			boolean accepted = true;
-			accepted &= tool.allowed(selection);
+			boolean allowed = tool.allowed(selection.selection);
 			accepted &= pluginFilter == null || pluginFilter.isEmpty() || pluginFilter.equals(registry.getTag(tool));
 			accepted &= tool.activator == null || (entity != null && tool.activator.matches(entity));
-			if(accepted)
+			if(accepted && (allowed || showAllTools))
 			{
-				boolean handled = false;
-				
-				if(tool instanceof ComponentTool && entity != null){
-					ComponentTool componentTool = ((ComponentTool) tool);
-					Class<? extends Component> componentType = componentTool.getAssignableFor();
-					if(componentType != null){
-						Component component = entity.getComponent(componentType);
-						if(component == null){
-							buttons.add(createOutline(entity, component)).expandX().fill().row();
-							handled = true;
-						}
-					}
-				}
-				if(!handled){
-					Button button = createToolButton(tool.name, mainToolGroup, tool);
-					contextualButtons.add(button);
-					buttons.add(button).fill().row();
-				}
+				Button button = createToolButton(tool.name, mainToolGroup, tool, allowed);
+				contextualButtons.add(button);
+				buttons.add(button).fill().row();
 			}
 		}
 		
 		// Display all entity components (unique entity only)
-		if(selection.size == 1)
+		if(selection.size() == 1)
 		{
 			Button btRemove = new Button(skin.getDrawable("tree-minus"));
 			btRemove.addListener(new ChangeListener(){
@@ -593,14 +583,10 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 		return group;
 	}
 	
-	public void pinEditor(Entity entity, Component component) 
+	private void pinEditor(Entity entity, Component component) 
 	{
 		pinStack.addActor(createPinEditor(entity, component));
 		
-	}
-	public void pinEditor(Actor editor) 
-	{
-		pinStack.addActor(editor);
 	}
 	public void pinEditor(EntitySystem system) 
 	{
@@ -609,14 +595,14 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 			pinStack.addActor(createPinEditor(system));
 		}
 	}
-	public void pinEditors(Array<EntitySystem> systems) {
+	private void pinEditors(Array<EntitySystem> systems) {
 		for(EntitySystem system : systems)
 		{
 			pinEditor(system);
 		}
 	}
 	
-	public void unpinEditor(Actor editor){
+	private void unpinEditor(Actor editor){
 		pinStack.removeActor(editor);
 	}
 
@@ -730,40 +716,10 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 	}
 	
 	
-	public Array<Entity> selection = new Array<Entity>();
-	private boolean selectionDirty;
 	private boolean displayEnabled = true; // true by default
 
 	public Table toolOutline;
 
-	/**
-	 * get current entity which can be the selected entity (last in selection)
-	 * or a fresh new one.
-	 * Note that entity will have repository component which mark it as persistable.
-	 * use {@link #transcientEntity()} to create a non persistable entity.
-	 * @return
-	 */
-	public Entity currentEntity() 
-	{
-		if(selection.size <= 0){
-			Entity entity = entityEngine.createEntity();
-			entity.add(entityEngine.createComponent(Repository.class));
-			entityEngine.addEntity(entity);
-			return entity;
-		}
-		return selection.get(selection.size-1);
-	}
-	
-	public Entity transcientEntity(){
-		if(selection.size <= 0){
-			return entityEngine.createEntity();
-		}
-		Entity entity = selection.get(selection.size-1);
-		if(Repository.components.has(entity)){
-			return entityEngine.createEntity();
-		}
-		return entity;
-	}
 
 	public void addTool(Tool tool) {
 		mainToolGroup.tools.add(tool);
@@ -771,40 +727,46 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 	}
 	public void addSuperTool(Tool tool) {
 		mainToolGroup.tools.add(tool);
-		superGlobal.add(createToolButton(tool));
+		superGlobal.add(createToolButton(tool, true));
 	}
 	
-	public void addSubTool(Tool tool) {
-		mainToolGroup.tools.add(tool);
-	}
-	
-	
-	public TextButton createToolButton(final Tool tool) 
+	public Button createToolButton(final Tool tool, boolean enabled) 
 	{
-		return createToolButton(tool.name, mainToolGroup, tool); // all groups
+		return createToolButton(tool.name, mainToolGroup, tool, enabled); // all groups
 	}
-	protected TextButton createToolButton(String name, final ToolGroup group, final Tool tool) 
+	private Button createToolButton(String name, final ToolGroup group, final Tool tool, boolean enabled) 
 	{
-		final TextButton btTool = new TextButton(name, skin, "toggle");
+		final Button btTool = new ImageButton(skin, "toggle");
+				// new TextButton("", skin, "toggle");
 		btTool.addListener(new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
 				if(btTool.isChecked()) group.setActiveTool(tool);
-				// else group.setActiveTool(null);
+				else group.setActiveTool(null);
 			}
 		});
+
+		Image img = new Image(skin, "kit_tool");
+		
+		Color color;
+		if(!enabled)
+		{
+			btTool.setDisabled(true);
+			color = Color.GRAY;
+		}
+		else
+		{
+			color = tool instanceof ComponentTool ? Color.GREEN : Color.ORANGE;
+		}
+		
+		Label nameLabel = new Label(name, skin);
+		nameLabel.setColor(btTool.isDisabled() ? Color.LIGHT_GRAY : Color.WHITE);
+		
+		img.setColor(color);
+		btTool.add(img).padRight(6);
+		btTool.add(nameLabel).expand().fill();
 		group.addButton(btTool);
 		return btTool;
-	}
-
-	public void invalidateSelection() {
-		selectionDirty = true;
-	}
-
-	public Entity getSelected() 
-	{
-		// returns the last selected.
-		return selection.size > 0 ? selection.get(selection.size-1) : null;
 	}
 
 	public <T> T loadAssetNow(String fileName, Class<T> type) {
@@ -818,41 +780,14 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 		return Tool.unproject(getGameCamera(), screenX, screenY);
 	}
 
+	/**
+	 * @deprecated inject {@link SelectionSystem} instead
+	 */
+	@Deprecated
 	public void addSelector(SelectorPlugin selector) {
-		selectors.add(selector);
+		entityEngine.getSystem(SelectionSystem.class).selectors.add(selector);
 	}
-	public void assetLookup(Class<Texture> type, final AssetLookupCallback<Texture> callback) 
-	{
-		// TODO open texture region selector if any registered
-		// else auto open import window
-		NativeService.instance.openLoadDialog(new DefaultCallback() {
-			@Override
-			public void selected(FileHandle file) 
-			{
-				TextureParameter parameters = new TextureParameter();
-				parameters.genMipMaps = true;
-				Texture tex = loadAssetNow(file.path(), Texture.class, parameters);
-				tex.setFilter(TextureFilter.MipMapLinearLinear, TextureFilter.MipMapLinearLinear);
-				tex.setWrap(TextureWrap.ClampToEdge, TextureWrap.ClampToEdge); // XXX maybe not !
-				callback.selected(tex);
-			}
-			@Override
-			public boolean match(FileHandle file) {
-				// TODO others ?
-				return file.extension().equals("png") || file.extension().equals("jpg") || file.extension().equals("bmp");
-			}
-			@Override
-			public String description() {
-				return "Pixel files (png, jpg, bmp)";
-			}
-		});
-	}
-
-	public void performCommand(Command command) 
-	{
-		history.add(command);
-	}
-
+	
 	public void reset() 
 	{
 		entityEngine.removeAllEntities();
@@ -863,14 +798,6 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 		editorCamera.reset();
 		
 		selection.clear();
-		invalidateSelection();
-	}
-
-	// TODO externalize selection : editor.selection.set/clear/add...etc invalidating is done in it
-	public void setSelection(Entity entity) {
-		selection.clear();
-		selection.add(entity);
-		invalidateSelection();
 	}
 
 	public void setInfo(String message) {
@@ -895,6 +822,14 @@ public class EditorScreen extends ScreenDelegate implements EditorContext
 	public void setTool(Tool tool) 
 	{
 		mainToolGroup.setActiveTool(tool);
+	}
+
+	public void addSystem(EntitySystem system) {
+		addSystem(system, true);
+	}
+	public void addSystem(EntitySystem system, boolean processing) {
+		entityEngine.addSystem(system);
+		system.setProcessing(processing);
 	}
 
 }

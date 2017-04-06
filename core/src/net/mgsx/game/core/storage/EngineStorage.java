@@ -9,6 +9,7 @@ import com.badlogic.gdx.utils.ObjectMap;
 
 import net.mgsx.game.core.annotations.Storable;
 import net.mgsx.game.core.helpers.ReflectionHelper;
+import net.mgsx.game.core.helpers.ReflectionHelper.ReflectionError;
 import net.mgsx.game.core.ui.accessors.Accessor;
 import net.mgsx.game.core.ui.accessors.AccessorScanner;
 
@@ -87,9 +88,17 @@ public class EngineStorage {
 						if(accessor.getType() != void.class){
 							JsonValue jsonValue = systemSettings.get(accessor.getName());
 							Object value = json.readValue(accessor.getType(), jsonValue);
-							accessor.set(value);
+							if(value != null){
+								accessor.set(value);
+							}
 						}
 					}
+					
+					if(system instanceof SystemSettingsListener)
+					{
+						((SystemSettingsListener) system).onSettingsLoaded();
+					}
+					
 				}else{
 					Gdx.app.error("Reflection", "unknown system " + type);
 				}
@@ -103,7 +112,11 @@ public class EngineStorage {
 				String type = systemSettings.asString();
 				EntitySystem system = systemRegistry.get(type);
 				if(system == null){
-					system = config.engine.getSystem(ReflectionHelper.forName(type));
+					try{
+						system = config.engine.getSystem(ReflectionHelper.forName(type));
+					}catch(ReflectionError e){
+						// silent error (class not found), log after
+					}
 				}
 				if(system != null){
 					config.visibleSystems.add(system);

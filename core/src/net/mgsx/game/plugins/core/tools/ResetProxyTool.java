@@ -5,15 +5,18 @@ import com.badlogic.ashley.core.Family;
 import com.badlogic.gdx.utils.Array;
 
 import net.mgsx.game.core.EditorScreen;
+import net.mgsx.game.core.annotations.Inject;
 import net.mgsx.game.core.storage.EntityGroupStorage;
 import net.mgsx.game.core.tools.Tool;
 import net.mgsx.game.plugins.btree.BTreeModel;
 import net.mgsx.game.plugins.core.components.ProxyComponent;
 import net.mgsx.game.plugins.core.systems.DependencySystem;
+import net.mgsx.game.plugins.editor.systems.SelectionSystem;
 
 public class ResetProxyTool extends Tool
 {
-
+	@Inject SelectionSystem selection;
+	
 	public ResetProxyTool(EditorScreen editor) {
 		super("Reset Proxy", editor);
 		activator = Family.all(ProxyComponent.class).get();
@@ -23,7 +26,7 @@ public class ResetProxyTool extends Tool
 	protected void activate() {
 		super.activate();
 		
-		Entity master = editor.getSelected();
+		Entity master = selection.selected();
 		ProxyComponent proxy = ProxyComponent.components.get(master);
 		
 		// remove clones

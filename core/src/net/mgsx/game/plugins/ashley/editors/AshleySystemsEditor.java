@@ -2,8 +2,10 @@ package net.mgsx.game.plugins.ashley.editors;
 
 import java.lang.reflect.Field;
 
+import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.ashley.systems.IteratingSystem;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
@@ -15,44 +17,48 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 
-import net.mgsx.game.core.EditorScreen;
 import net.mgsx.game.core.GamePipeline;
 import net.mgsx.game.core.annotations.EditableSystem;
 import net.mgsx.game.core.helpers.ReflectionHelper;
-import net.mgsx.game.core.plugins.GlobalEditorPlugin;
+import net.mgsx.game.core.plugins.EngineEditor;
 import net.mgsx.game.core.storage.LoadConfiguration;
 import net.mgsx.game.core.ui.EntityEditor;
 import net.mgsx.game.core.ui.accessors.MethodAccessor;
 import net.mgsx.game.core.ui.events.EditorListener;
+import net.mgsx.game.plugins.editor.systems.EditorSystem;
 
-public class AshleySystemsEditor implements GlobalEditorPlugin
+public class AshleySystemsEditor implements EngineEditor
 {
 	private String pluginFilter;
 	
 	@Override
-	public Actor createEditor(final EditorScreen editor, final Skin skin) 
+	public Actor createEditor(final Engine engine, AssetManager assets, final Skin skin) 
 	{
 		final Table table = new Table(skin);
 		table.setBackground(skin.getDrawable("default-window-body-right"));
 		
-		rebuildUI(editor, table, skin);
+		EditorSystem editorSystem = engine.getSystem(EditorSystem.class);
 		
-		editor.addListener(new EditorListener(){
+		rebuildUI(engine, table, skin);
+		
+		editorSystem.addListener(new EditorListener(){
 			@Override
 			public void onLoad(LoadConfiguration cfg) {
-				rebuildUI(editor, table, skin);
+				rebuildUI(engine, table, skin);
 			}
 		});
 		
 		return new ScrollPane(table, skin, "light");
 	}
 	
-	private Actor createFilterBox(final EditorScreen editor, final Table table, final Skin skin)
+	private Actor createFilterBox(final Engine engine, final Table table, final Skin skin)
 	{
+		EditorSystem editorSystem = engine.getSystem(EditorSystem.class);
+		
 		final SelectBox<String> pluginFilterBox = new SelectBox<String>(skin);
 		Array<String> allPlugins = new Array<String>();
 		allPlugins.add("");
-		allPlugins.addAll(editor.registry.allTags());
+		allPlugins.addAll(editorSystem.registry.allTags());
 		allPlugins.sort();
 		pluginFilterBox.setItems(allPlugins);
 		pluginFilterBox.setSelected(pluginFilter == null ? "" : pluginFilter);
@@ -60,14 +66,16 @@ public class AshleySystemsEditor implements GlobalEditorPlugin
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
 				pluginFilter = pluginFilterBox.getSelected();
-				rebuildUI(editor, table, skin);
+				rebuildUI(engine, table, skin);
 			}
 		});
 		return pluginFilterBox;
 	}
 	
-	private void rebuildUI(final EditorScreen editor, final Table table, final Skin skin) 
+	private void rebuildUI(final Engine engine, final Table table, final Skin skin) 
 	{
+		final EditorSystem editorSystem = engine.getSystem(EditorSystem.class);
+		
 		table.clearChildren();
 		
 		TextButton btRefresh = new TextButton("refresh", skin);
@@ -76,7 +84,7 @@ public class AshleySystemsEditor implements GlobalEditorPlugin
 			
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
-				rebuildUI(editor, table, skin);
+				rebuildUI(engine, table, skin);
 			}
 		});
 		
@@ -91,7 +99,7 @@ public class AshleySystemsEditor implements GlobalEditorPlugin
 		
 		
 		// table with 5 columns
-		table.add(createFilterBox(editor, table, skin)).fill();
+		table.add(createFilterBox(engine, table, skin)).fill();
 		table.add(); // TODO priority filter ? sorter ?
 		table.add(btRefresh);
 		table.add(); // TODO process all ? filter processing / not processing ?
@@ -104,12 +112,12 @@ public class AshleySystemsEditor implements GlobalEditorPlugin
 			Integer priority = (Integer)ReflectionHelper.get(null, field);
 			if(priority != null) pipelineLegend.put(priority, field.getName());
 		}
-		for(final EntitySystem system : editor.entityEngine.getSystems())
+		for(final EntitySystem system : engine.getSystems())
 		{
 			// filter systems
 			if(pluginFilter != null && !pluginFilter.isEmpty())
 			{
-				if(!pluginFilter.equals(editor.registry.getTag(system))){
+				if(!pluginFilter.equals(editorSystem.registry.getTag(system))){
 					continue;
 				}
 			}
@@ -133,7 +141,7 @@ public class AshleySystemsEditor implements GlobalEditorPlugin
 				edit.addListener(new ChangeListener(){
 					@Override
 					public void changed(ChangeEvent event, Actor actor) {
-						editor.pinEditor(system);
+						editorSystem.pinEditor(system);
 					}
 				});
 			}else{

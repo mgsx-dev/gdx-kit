@@ -1,7 +1,6 @@
 package net.mgsx.game.core;
 
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.Map;
 
 import com.badlogic.gdx.utils.Array;
@@ -13,21 +12,21 @@ import net.mgsx.game.core.annotations.PluginDef;
 import net.mgsx.game.core.helpers.TypeMap;
 import net.mgsx.game.core.plugins.EditorPlugin;
 import net.mgsx.game.core.plugins.EntityEditorPlugin;
-import net.mgsx.game.core.plugins.GlobalEditorPlugin;
 import net.mgsx.game.core.plugins.Plugin;
 
 public class EditorRegistry extends GameRegistry
 {
 	protected Map<Class, Array<EntityEditorPlugin>> editablePlugins = new HashMap<Class, Array<EntityEditorPlugin>>();
 	protected TypeMap<EditorPlugin> editorPlugins = new TypeMap<EditorPlugin>();
-	public Map<String, GlobalEditorPlugin> globalEditors = new LinkedHashMap<String, GlobalEditorPlugin>();
 	protected ObjectMap<String, String> packagePrefixToTag = new ObjectMap<String, String>();
 	protected ObjectMap<Object, String> objectTags = new ObjectMap<Object, String>();
 	
 	@Override
-	public void registerPlugin(Plugin plugin) 
+	public boolean registerPlugin(Plugin plugin) 
 	{
-		super.registerPlugin(plugin);
+		if(!super.registerPlugin(plugin)){
+			return false;
+		}
 		
 		if(plugin instanceof EditorPlugin && !editablePlugins.containsKey(plugin.getClass()))
 		{
@@ -48,6 +47,7 @@ public class EditorRegistry extends GameRegistry
 			}
 			packagePrefixToTag.put(packageName, name);
 		}
+		return true;
 	}
 	
 	public void setTag(Object object, String tag) 
@@ -85,11 +85,6 @@ public class EditorRegistry extends GameRegistry
 		return r;
 	}
 	
-	public void addGlobalEditor(String name, GlobalEditorPlugin plugin) 
-	{
-		globalEditors.put(name, plugin);
-	}
-
 	public <T> void registerPlugin(Class<T> type, EntityEditorPlugin plugin) 
 	{
 		Array<EntityEditorPlugin> plugins = editablePlugins.get(type);
@@ -109,4 +104,5 @@ public class EditorRegistry extends GameRegistry
 		}
 		super.collect(editor.game);
 	}
+
 }

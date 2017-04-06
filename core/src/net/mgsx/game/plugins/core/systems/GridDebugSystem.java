@@ -13,6 +13,8 @@ import net.mgsx.game.core.EditorScreen;
 import net.mgsx.game.core.GamePipeline;
 import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.core.annotations.EditableSystem;
+import net.mgsx.game.core.annotations.Inject;
+import net.mgsx.game.plugins.editor.systems.DebugRenderSystem;
 
 @EditableSystem(isDebug=true)
 public class GridDebugSystem extends EntitySystem
@@ -28,6 +30,8 @@ public class GridDebugSystem extends EntitySystem
 	
 	@Editable
 	public boolean snap = true;
+	
+	@Inject protected DebugRenderSystem renderer;
 	
 	private EditorScreen editor;
 	
@@ -45,9 +49,9 @@ public class GridDebugSystem extends EntitySystem
 	@Override
 	public void update(float deltaTime) 
 	{
-		editor.shapeRenderer.begin(ShapeType.Line);
-		editor.shapeRenderer.setColor(Color.BROWN);
-		editor.shapeRenderer.getColor().a = opacity;
+		renderer.shapeRenderer.begin(ShapeType.Line);
+		renderer.shapeRenderer.setColor(Color.BROWN);
+		renderer.shapeRenderer.getColor().a = opacity;
 		Gdx.gl.glEnable(GL20.GL_BLEND);
 		Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_DST_COLOR);
 		editor.getEditorCamera().camera().project(center.setZero());
@@ -66,17 +70,17 @@ public class GridDebugSystem extends EntitySystem
 
 		for(int y=ymin ; y<ymax ; y++){
 			float gy = y * newSize;
-			editor.shapeRenderer.line(box.min.x, gy, box.max.x, gy);
+			renderer.shapeRenderer.line(box.min.x, gy, box.max.x, gy);
 		}
 		int xmin = MathUtils.ceil(box.min.x / size);
 		int xmax = MathUtils.ceil(box.max.x / size);
 		for(int x=xmin ; x<xmax ; x++){
 			float gx = x * newSize;
-			editor.shapeRenderer.line(gx, box.min.y, gx, box.max.y);
+			renderer.shapeRenderer.line(gx, box.min.y, gx, box.max.y);
 		}
 		
 		
-		editor.shapeRenderer.end();
+		renderer.shapeRenderer.end();
 		Gdx.gl.glDisable(GL20.GL_BLEND);
 		
 	}

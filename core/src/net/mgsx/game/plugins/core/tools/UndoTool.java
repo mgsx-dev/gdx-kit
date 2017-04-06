@@ -18,9 +18,9 @@ public class UndoTool extends Tool
 			if(ctrl())
 			{
 				if(shift()){
-					editor.history.redo();
+					historySystem.history.redo();
 				}else{
-					editor.history.undo();
+					historySystem.history.undo();
 				}
 				return true;
 			}

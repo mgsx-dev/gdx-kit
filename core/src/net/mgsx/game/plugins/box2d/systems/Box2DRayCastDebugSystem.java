@@ -7,16 +7,17 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pool;
 
-import net.mgsx.game.core.EditorScreen;
 import net.mgsx.game.core.GamePipeline;
 import net.mgsx.game.core.annotations.EditableSystem;
+import net.mgsx.game.core.annotations.Inject;
 import net.mgsx.game.plugins.box2d.helper.RayCast;
 import net.mgsx.game.plugins.box2d.helper.WorldProvider;
+import net.mgsx.game.plugins.editor.systems.DebugRenderSystem;
 
 @EditableSystem(isDebug=true)
 public class Box2DRayCastDebugSystem  extends EntitySystem 
 {
-	private final EditorScreen editor;
+	@Inject protected DebugRenderSystem editor;
 	private final Box2DWorldContext context;
 
 	private WorldProvider original, tracker;
@@ -43,9 +44,8 @@ public class Box2DRayCastDebugSystem  extends EntitySystem
 		
 	}
 	
-	public Box2DRayCastDebugSystem(EditorScreen editor, Box2DWorldContext context) {
+	public Box2DRayCastDebugSystem(Box2DWorldContext context) {
 		super(GamePipeline.RENDER_OVER);
-		this.editor = editor;
 		this.context = context;
 		
 		// override provider to keep track of raycast during a frame.

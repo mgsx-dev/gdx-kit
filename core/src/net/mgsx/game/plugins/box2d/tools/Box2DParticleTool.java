@@ -8,13 +8,17 @@ import com.badlogic.gdx.math.Vector2;
 
 import net.mgsx.game.core.EditorScreen;
 import net.mgsx.game.core.annotations.Editable;
+import net.mgsx.game.core.annotations.Inject;
 import net.mgsx.game.core.helpers.EntityHelper;
 import net.mgsx.game.core.tools.Tool;
 import net.mgsx.game.plugins.box2d.components.Box2DBodyModel;
 import net.mgsx.game.plugins.core.components.ExpiryComponent;
+import net.mgsx.game.plugins.editor.systems.SelectionSystem;
 
 public class Box2DParticleTool  extends Tool
 {
+	@Inject SelectionSystem selection;
+	
 	@Editable public float life = 3;
 	@Editable public float rate = 4;
 	@Editable public float expiryDelay = 2;
@@ -34,7 +38,7 @@ public class Box2DParticleTool  extends Tool
 	@Override
 	protected void activate() {
 		super.activate();
-		base = editor.getSelected();
+		base = selection.selected();
 	}
 	
 	@Override

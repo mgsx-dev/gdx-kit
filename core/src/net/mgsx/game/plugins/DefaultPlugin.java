@@ -4,12 +4,14 @@ import net.mgsx.game.core.annotations.PluginDef;
 import net.mgsx.game.plugins.boundary.BoundaryPlugin;
 import net.mgsx.game.plugins.box2d.Box2DPlugin;
 import net.mgsx.game.plugins.btree.BTreePlugin;
+import net.mgsx.game.plugins.bullet.BulletPlugin;
 import net.mgsx.game.plugins.camera.CameraPlugin;
 import net.mgsx.game.plugins.controller.ControllerPlugin;
 import net.mgsx.game.plugins.core.CorePlugin;
 import net.mgsx.game.plugins.fsm.StateMachinePlugin;
 import net.mgsx.game.plugins.g2d.G2DPlugin;
 import net.mgsx.game.plugins.g3d.G3DPlugin;
+import net.mgsx.game.plugins.graphics.GraphicsPlugin;
 import net.mgsx.game.plugins.parallax.ParallaxPlugin;
 import net.mgsx.game.plugins.particle2d.Particle2DPlugin;
 import net.mgsx.game.plugins.pd.PdPlugin;
@@ -23,6 +25,7 @@ import net.mgsx.game.plugins.tiles.TilesPlugin;
  *
  */
 @PluginDef(dependencies={
+	GraphicsPlugin.class,
 	BoundaryPlugin.class,
 	Box2DPlugin.class,
 	BTreePlugin.class,
@@ -38,7 +41,8 @@ import net.mgsx.game.plugins.tiles.TilesPlugin;
 	CameraPlugin.class,
 	BTreePlugin.class,
 	ControllerPlugin.class,
-	PdPlugin.class
+	PdPlugin.class,
+	BulletPlugin.class
 })
 public interface DefaultPlugin {
 

@@ -1,5 +1,7 @@
 package net.mgsx.game.core.ui.accessors;
 
+import java.lang.annotation.Annotation;
+
 abstract public class AccessorBase implements Accessor
 {
 
@@ -9,6 +11,11 @@ abstract public class AccessorBase implements Accessor
 		if(value != null && type.isAssignableFrom(value.getClass())){
 			return (T)get();
 		}
+		return null;
+	}
+	
+	@Override
+	public <T extends Annotation> T config(Class<T> annotation) {
 		return null;
 	}
 

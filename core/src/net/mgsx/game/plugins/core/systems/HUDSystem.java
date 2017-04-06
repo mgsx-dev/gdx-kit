@@ -7,6 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 import net.mgsx.game.core.GamePipeline;
+import net.mgsx.game.core.Kit;
 
 abstract public class HUDSystem extends EntitySystem
 {
@@ -21,14 +22,14 @@ abstract public class HUDSystem extends EntitySystem
 	@Override
 	public void addedToEngine(Engine engine) {
 		super.addedToEngine(engine);
-		Gdx.input.setInputProcessor(stage);
+		Kit.inputs.addProcessor(stage);
 		stage.getViewport().update(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);
 	}
 	
 	@Override
 	public void removedFromEngine(Engine engine) 
 	{
-		Gdx.input.setInputProcessor(null);
+		Kit.inputs.removeProcessor(stage);
 		super.removedFromEngine(engine);
 	}
 	

@@ -1,9 +1,9 @@
 package net.mgsx.game.core;
 
-import java.lang.reflect.Field;
-
 import com.badlogic.ashley.core.Component;
+import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.EntitySystem;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.Json.Serializer;
@@ -11,13 +11,16 @@ import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.ObjectMap.Entry;
 
 import net.mgsx.game.core.annotations.Asset;
+import net.mgsx.game.core.annotations.Inject;
 import net.mgsx.game.core.annotations.PluginDef;
 import net.mgsx.game.core.annotations.Storable;
 import net.mgsx.game.core.helpers.ReflectionHelper;
 import net.mgsx.game.core.helpers.TypeMap;
 import net.mgsx.game.core.meta.ClassRegistry;
+import net.mgsx.game.core.meta.ReflectionCache;
 import net.mgsx.game.core.plugins.Plugin;
 import net.mgsx.game.core.storage.serializers.AnnotationBasedSerializer;
+import net.mgsx.game.core.ui.accessors.Accessor;
 
 public class GameRegistry {
 
@@ -35,16 +38,31 @@ public class GameRegistry {
 		return (T)plugins.get(type);
 	}
 	
-	public void registerPlugin(Plugin plugin) 
+	public boolean registerPlugin(Plugin plugin) 
 	{
-		if(plugins.containsKey(plugin.getClass())) return;
-		
-		scan(plugin.getClass());
-		
-		plugins.put(plugin.getClass(), plugin);
+		if(plugins.containsKey(plugin.getClass())) return false;
+	
+		Class<?> type = plugin.getClass();
+		boolean shouldBeLoaded = true;
+		PluginDef def = type.getAnnotation(PluginDef.class);
+		if(def != null){
+			for(String fqnTypeDep : def.requires()){
+				if(!ReflectionHelper.hasName(fqnTypeDep)){
+					Gdx.app.log("KIT", "plugin " + type.getName() + " not loaded : require " + fqnTypeDep);
+					shouldBeLoaded = false;
+				}
+			}
+		}
+		if(shouldBeLoaded) {
+			scan(plugin.getClass());
+			plugins.put(plugin.getClass(), plugin);
+			return true;
+		}
+		plugins.put(plugin.getClass(), null);
+		return false;
 	}
 	
-	private void scan(Class<?> type)
+	private boolean scan(Class<?> type)
 	{
 		// TODO if debug : Gdx.app.log("registry", type.getName());
 		if(type.getSuperclass() != null){
@@ -62,6 +80,7 @@ public class GameRegistry {
 				register(component);
 			}
 		}
+		return true;
 	}
 
 	public <T> void addSerializer(Class<T> type, Json.Serializer<T> serializer) {
@@ -119,13 +138,14 @@ public class GameRegistry {
 		}
 	}
 	
+	
 	void init(GameScreen screen) 
 	{
 		// bootstrap here ...
 		scanPackages();
 		
 		for(Plugin plugin : plugins.values()){
-			plugin.initialize(screen);
+			if(plugin != null) plugin.initialize(screen);
 		}
 		// register automatic serializers
 		for(Entry<String, Class<? extends Component>> entry : typeMap.entries())
@@ -139,7 +159,7 @@ public class GameRegistry {
 			}
 		}
 		
-		
+		collect(screen);
 	}
 	
 	void collect(GameScreen screen)
@@ -147,25 +167,43 @@ public class GameRegistry {
 		// scan all systems in order to inject assets
 		for(EntitySystem system : screen.entityEngine.getSystems())
 		{
-			for(Field field : system.getClass().getFields()){
-				Asset asset = field.getAnnotation(Asset.class);
+			for(Accessor accessor : ReflectionCache.fieldsFor(system, Asset.class)){
+				Asset asset = accessor.config(Asset.class);
 				if(asset != null && !asset.value().isEmpty()){
-					screen.assets.load(asset.value(), field.getType());
+					// FIXME unload when context is disposed !!
+					screen.assets.load(asset.value(), accessor.getType());
 				}
 			}
 		}
 	}
 
+	public void inject(Engine engine, Object system) 
+	{
+		for(Accessor accessor : ReflectionCache.fieldsFor(system, Inject.class)){
+			if(EntitySystem.class.isAssignableFrom(accessor.getType()))
+			{
+				EntitySystem dep = engine.getSystem(accessor.getType());
+				if(dep == null){
+					Gdx.app.error("reflection", "system " + accessor.getType().getSimpleName() + " cannot be injected in " + system.getClass().getSimpleName() + " : not found in engine");
+				}
+				accessor.set(dep);
+			}else{
+				Gdx.app.error("reflection", "not supported type injection");
+			}
+		}
+	}
+	
 	void inject(GameScreen screen) 
 	{
 		for(EntitySystem system : screen.entityEngine.getSystems())
 		{
-			for(Field field : system.getClass().getFields()){
-				Asset asset = field.getAnnotation(Asset.class);
+			for(Accessor accessor : ReflectionCache.fieldsFor(system, Asset.class)){
+				Asset asset = accessor.config(Asset.class);
 				if(asset != null && !asset.value().isEmpty()){
-					ReflectionHelper.set(system, field, screen.assets.get(asset.value(), field.getType()));
+					accessor.set(screen.assets.get(asset.value(), accessor.getType()));
 				}
 			}
+			inject(screen.entityEngine, system);
 		}
 	}
 	

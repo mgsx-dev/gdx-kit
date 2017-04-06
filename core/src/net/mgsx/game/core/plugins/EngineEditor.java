@@ -1,14 +1,14 @@
 package net.mgsx.game.core.plugins;
 
+import com.badlogic.ashley.core.Engine;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-
-import net.mgsx.game.core.EditorScreen;
 
 /**
  * Base for a global (all entities) editor view
  */
-public interface GlobalEditorPlugin {
+public interface EngineEditor {
 
 	/**
 	 * return a new editor. Note that this methd is called once, editor is reused during
@@ -17,5 +17,5 @@ public interface GlobalEditorPlugin {
 	 * @param skin
 	 * @return
 	 */
-	public Actor createEditor(EditorScreen editor, Skin skin);
+	public Actor createEditor(Engine engine, AssetManager assets, Skin skin);
 }
