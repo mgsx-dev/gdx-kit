@@ -26,13 +26,13 @@ public class AttachTool extends Tool
 		editor.setInfo("Attach to last selected entities other selected entities.");
 		
 		// get mother ship (selection.last)
-		Entity parentEntity = editor.selection.peek();
+		Entity parentEntity = selection().selection.peek();
 		Transform2DComponent parentTransform = Transform2DComponent.components.get(parentEntity);
 		
 		// attach/detach towers (selection - last)
-		for(int i=0 ; i<editor.selection.size-1 ; i++)
+		for(int i=0 ; i<selection().selection.size-1 ; i++)
 		{
-			Entity entity = editor.selection.get(i);
+			Entity entity = selection().selection.get(i);
 			entity.remove(Attachement.class);
 			Transform2DComponent transform = Transform2DComponent.components.get(entity);
 			if(transform != null)

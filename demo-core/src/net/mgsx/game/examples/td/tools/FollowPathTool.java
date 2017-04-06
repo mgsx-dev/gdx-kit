@@ -14,7 +14,6 @@ import net.mgsx.game.plugins.spline.components.SplineDebugComponent;
 
 public class FollowPathTool extends PathTool
 {
-
 	public FollowPathTool(EditorScreen editor) {
 		super("Follow Path", editor);
 	}
@@ -23,7 +22,7 @@ public class FollowPathTool extends PathTool
 	protected void complete(Array<Vector2> points) 
 	{
 		
-		Entity entity = editor.currentEntity();
+		Entity entity = currentEntity();
 		
 		// shift entity start point
 		Transform2DComponent transform = Transform2DComponent.components.get(entity);

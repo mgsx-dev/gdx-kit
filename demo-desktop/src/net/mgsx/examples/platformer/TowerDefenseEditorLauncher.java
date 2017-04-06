@@ -12,7 +12,6 @@ import net.mgsx.kit.config.ReflectionClassRegistry;
 import net.mgsx.kit.files.DesktopNativeInterface;
 import net.mgsx.pd.Pd;
 import net.mgsx.pd.PdConfiguration;
-import net.mgsx.pd.audio.PdAudioNone;
 
 /**
  * Desktop launcher for level editor
@@ -36,8 +35,7 @@ public class TowerDefenseEditorLauncher {
 		
 		// set no Pd audio by default to allow running Pd and game at the same time.
 		// all real audio implementations (java or openAL) will lock audio.
-		Pd.audio = new PdAudioNone();
-		LwjglApplicationConfiguration.disableAudio = true;
+		PdConfiguration.disabled = true;
 
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 
