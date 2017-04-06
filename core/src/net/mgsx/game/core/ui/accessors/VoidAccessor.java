@@ -16,6 +16,10 @@ public class VoidAccessor extends AccessorBase
 		this(object, method, method.getName());
 	}
 	
+	public VoidAccessor(Object object, String method) {
+		this(object, ReflectionHelper.method(object.getClass(), method));
+	}
+	
 	public VoidAccessor(Object object, Method method, String name) {
 		super();
 		this.object = object;
