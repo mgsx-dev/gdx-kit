@@ -9,6 +9,7 @@ import net.mgsx.game.examples.td.systems.EnemyAnalysisSystem;
 import net.mgsx.game.examples.td.systems.EnemyLogicSystem;
 import net.mgsx.game.examples.td.systems.EnemyRenderer;
 import net.mgsx.game.examples.td.systems.EntryRenderer;
+import net.mgsx.game.examples.td.systems.FollowSystem;
 import net.mgsx.game.examples.td.systems.FreezeSystem;
 import net.mgsx.game.examples.td.systems.FrozenRender;
 import net.mgsx.game.examples.td.systems.FrozenSystem;
@@ -42,6 +43,7 @@ import net.mgsx.game.examples.td.systems.TowerRender;
 import net.mgsx.game.examples.td.systems.WaveSystem;
 import net.mgsx.game.examples.td.tools.AttachTool;
 import net.mgsx.game.examples.td.tools.FollowPathTool;
+import net.mgsx.game.examples.td.tools.FollowTool;
 import net.mgsx.game.examples.td.tools.PlatformTool;
 import net.mgsx.game.examples.td.tools.RoadTool;
 import net.mgsx.game.examples.td.tools.TileSelector;
@@ -61,6 +63,7 @@ public class TowerDefenseEditorPlugin extends EditorPlugin implements DefaultEdi
 		editor.addTool(new PlatformTool(editor));
 		editor.addTool(new FollowPathTool(editor));
 		editor.addTool(new AttachTool(editor));
+		editor.addTool(new FollowTool(editor));
 		
 		editor.entityEngine.addSystem(new WaveSystem());
 		editor.entityEngine.addSystem(new MapSystem());
@@ -103,6 +106,7 @@ public class TowerDefenseEditorPlugin extends EditorPlugin implements DefaultEdi
 		editor.entityEngine.addSystem(new LifeSystem());
 		
 		editor.entityEngine.addSystem(new PathFollowerSystem());
+		editor.entityEngine.addSystem(new FollowSystem());
 
 		
 		// render ground
