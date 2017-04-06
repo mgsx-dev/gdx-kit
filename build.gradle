@@ -14,7 +14,7 @@ allprojects {
     apply plugin: "eclipse"
     apply plugin: "idea"
 	
-    version = '0.0.3'
+    version = '0.0.4-SNAPSHOT'
     ext {
     	groupName = "net.mgsx.gdx"
         appName = "gdx-kit"
