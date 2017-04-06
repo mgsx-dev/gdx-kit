@@ -1,12 +1,16 @@
 package net.mgsx.game.core.screen;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputAdapter;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Interpolation;
+
+import net.mgsx.game.core.Kit;
 
 /**
  * Static convenience methods for screen transitions, inspired by scene2D {@link Actions}
@@ -136,11 +140,46 @@ public class Transitions
 			}
 			@Override
 			public boolean isComplete() {
+				if(screen instanceof ScreenClip)
+					if(((ScreenClip) screen).isComplete())
+						return true;
 				return time >= duration;
 			}
 		};
 	}
 	
+	public static ScreenClip touch(final Screen screen)
+	{
+		return new ScreenClipDelegate(screen){
+			private boolean hasBeenTouched = false;
+			private InputProcessor processor ;
+			@Override
+			public void show() {
+				super.show();
+				hasBeenTouched = Gdx.input.isTouched();
+				Kit.inputs.addProcessor(processor = new InputAdapter(){
+					@Override
+					public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+						hasBeenTouched = true;
+						return true;
+					}
+				});
+			}
+			@Override
+			public void preHide() {
+				Kit.inputs.removeProcessor(processor);
+				processor = null;
+				super.preHide();
+			}
+			@Override
+			public boolean isComplete() {
+				if(screen instanceof ScreenClip)
+					if(((ScreenClip) screen).isComplete())
+						return true;
+				return hasBeenTouched;
+			}
+		};
+	}
 	
 	public static ScreenClip empty(final Color color){
 		return new ColorScreen(color);
