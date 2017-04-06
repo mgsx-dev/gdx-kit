@@ -22,6 +22,9 @@ public class EngineStorage {
 		for(EntitySystem system : config.engine.getSystems()){
 			Storable store = system.getClass().getAnnotation(Storable.class);
 			if(store != null){
+				if(system instanceof SystemSettingsListener){
+					((SystemSettingsListener) system).beforeSettingsSaved();
+				}
 				json.writeObjectStart();
 				json.writeValue("type", store.value());
 				json.writeValue("enabled", system.checkProcessing()); // TODO status won't be saved for non storable systems

@@ -38,6 +38,8 @@ import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.core.annotations.EditableComponent;
 import net.mgsx.game.core.annotations.EditableSystem;
 import net.mgsx.game.core.annotations.Inject;
+import net.mgsx.game.core.annotations.Storable;
+import net.mgsx.game.core.binding.Learnable;
 import net.mgsx.game.core.components.Movable;
 import net.mgsx.game.core.editors.AnnotationBasedComponentEditor;
 import net.mgsx.game.core.helpers.AssetHelper;
@@ -53,6 +55,7 @@ import net.mgsx.game.core.tools.ToolGroup;
 import net.mgsx.game.core.tools.ToolGroup.ToolGroupHandler;
 import net.mgsx.game.core.ui.EntityEditor;
 import net.mgsx.game.core.ui.accessors.Accessor;
+import net.mgsx.game.core.ui.accessors.VoidAccessor;
 import net.mgsx.game.core.ui.events.AccessorHelpEvent;
 import net.mgsx.game.core.ui.events.EditorListener;
 import net.mgsx.game.core.ui.widgets.TabPane;
@@ -84,7 +87,7 @@ public class EditorScreen extends ScreenDelegate implements EditorContext // TOD
 	private boolean showStatus;
 	private String currentText;
 	
-	private Skin skin;
+	public Skin skin;
 	public Stage stage; // XXX temp
 	protected Table panel;
 	protected Table buttons;
@@ -734,9 +737,39 @@ public class EditorScreen extends ScreenDelegate implements EditorContext // TOD
 	{
 		return createToolButton(tool.name, mainToolGroup, tool, enabled); // all groups
 	}
+	
+	public static class ToolButton extends ImageButton implements Learnable
+	{
+		private Tool tool;
+		public ToolButton(Tool tool, Skin skin, String styleName) {
+			super(skin, styleName);
+			this.tool = tool;
+		}
+		
+		@Editable
+		public void execute(){
+			setChecked(!isChecked());
+		}
+
+		@Override
+		public Accessor accessorToBind() {
+			return new VoidAccessor(this, "execute");
+		}
+		
+		@Override
+		public String bindKey() {
+			Storable storable = tool.getClass().getAnnotation(Storable.class);
+			if(storable != null)
+				return storable.value() + "#activate";
+			// Warning : type mapping ...
+			return tool.getClass().getName() + "#activate";
+		}
+		
+	}
+	
 	private Button createToolButton(String name, final ToolGroup group, final Tool tool, boolean enabled) 
 	{
-		final Button btTool = new ImageButton(skin, "toggle");
+		final Button btTool = new ToolButton(tool, skin, "toggle");
 				// new TextButton("", skin, "toggle");
 		btTool.addListener(new ChangeListener() {
 			@Override
