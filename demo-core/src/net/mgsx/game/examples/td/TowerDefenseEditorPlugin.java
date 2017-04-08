@@ -4,11 +4,13 @@ import net.mgsx.game.core.EditorScreen;
 import net.mgsx.game.core.plugins.EditorPlugin;
 import net.mgsx.game.examples.td.components.Attachement;
 import net.mgsx.game.examples.td.storage.AttachementSerializer;
+import net.mgsx.game.examples.td.systems.ActiveRenderer;
 import net.mgsx.game.examples.td.systems.AttachementSystem;
 import net.mgsx.game.examples.td.systems.EnemyAnalysisSystem;
 import net.mgsx.game.examples.td.systems.EnemyLogicSystem;
 import net.mgsx.game.examples.td.systems.EnemyRenderer;
 import net.mgsx.game.examples.td.systems.EntryRenderer;
+import net.mgsx.game.examples.td.systems.FollowRenderSystem;
 import net.mgsx.game.examples.td.systems.FollowSystem;
 import net.mgsx.game.examples.td.systems.FreezeSystem;
 import net.mgsx.game.examples.td.systems.FrozenRender;
@@ -44,6 +46,7 @@ import net.mgsx.game.examples.td.systems.WaveSystem;
 import net.mgsx.game.examples.td.tools.AttachTool;
 import net.mgsx.game.examples.td.tools.FollowPathTool;
 import net.mgsx.game.examples.td.tools.FollowTool;
+import net.mgsx.game.examples.td.tools.GameTool;
 import net.mgsx.game.examples.td.tools.PlatformTool;
 import net.mgsx.game.examples.td.tools.RoadTool;
 import net.mgsx.game.examples.td.tools.TileSelector;
@@ -64,6 +67,7 @@ public class TowerDefenseEditorPlugin extends EditorPlugin implements DefaultEdi
 		editor.addTool(new FollowPathTool(editor));
 		editor.addTool(new AttachTool(editor));
 		editor.addTool(new FollowTool(editor));
+		editor.addTool(new GameTool(editor));
 		
 		editor.entityEngine.addSystem(new WaveSystem());
 		editor.entityEngine.addSystem(new MapSystem());
@@ -125,6 +129,9 @@ public class TowerDefenseEditorPlugin extends EditorPlugin implements DefaultEdi
 		editor.entityEngine.addSystem(new TowerRender(editor.game));
 		editor.entityEngine.addSystem(new EnemyRenderer(editor.game));
 		editor.entityEngine.addSystem(new ShotRender(editor.game));
+		
+		editor.entityEngine.addSystem(new FollowRenderSystem(editor.game));
+		editor.entityEngine.addSystem(new ActiveRenderer(editor.game));
 		
 		// render status
 		editor.entityEngine.addSystem(new LifeRenderer(editor.game));

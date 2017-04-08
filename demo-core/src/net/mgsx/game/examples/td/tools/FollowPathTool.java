@@ -18,6 +18,12 @@ public class FollowPathTool extends PathTool
 		super("Follow Path", editor);
 	}
 	
+	
+	public FollowPathTool(String name, EditorScreen editor) {
+		super(name, editor);
+	}
+
+
 	@Override
 	protected void complete(Array<Vector2> points) 
 	{
