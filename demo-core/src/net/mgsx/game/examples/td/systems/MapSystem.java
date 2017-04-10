@@ -5,6 +5,7 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntityListener;
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.ashley.core.Family;
+import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.math.Bezier;
 import com.badlogic.gdx.math.CatmullRomSpline;
 import com.badlogic.gdx.math.MathUtils;
@@ -13,6 +14,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 
 import net.mgsx.game.core.GamePipeline;
+import net.mgsx.game.core.annotations.Asset;
 import net.mgsx.game.core.components.Repository;
 import net.mgsx.game.examples.td.components.Home;
 import net.mgsx.game.examples.td.components.PathFollower;
@@ -23,6 +25,9 @@ import net.mgsx.game.plugins.core.components.Transform2DComponent;
 public class MapSystem extends EntitySystem
 {
 	public static final int [][] ADJ_MATRIX = {{-1,0}, {0,1}, {1,0}, {0,-1}};
+	
+	@Asset("td/monster.g3dj")
+	public Model monsterModel;
 	
 	private Entity [] tiles;
 	public int width = 32, height = 32;

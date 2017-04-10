@@ -2,6 +2,8 @@ package net.mgsx.game.examples.td.tasks;
 
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.ai.btree.annotation.TaskAttribute;
+import com.badlogic.gdx.graphics.g3d.ModelInstance;
+import com.badlogic.gdx.graphics.g3d.utils.AnimationController;
 
 import net.mgsx.game.examples.td.components.Damage;
 import net.mgsx.game.examples.td.components.Enemy;
@@ -15,6 +17,7 @@ import net.mgsx.game.examples.td.systems.WaveSystem;
 import net.mgsx.game.plugins.btree.BTreePlugin.EntityLeafTask;
 import net.mgsx.game.plugins.btree.annotations.TaskAlias;
 import net.mgsx.game.plugins.core.components.Transform2DComponent;
+import net.mgsx.game.plugins.g3d.components.G3DModel;
 
 @TaskAlias("enemy")
 public class EmitEnemyTask extends EntityLeafTask
@@ -73,6 +76,33 @@ public class EmitEnemyTask extends EntityLeafTask
 		entity.add(life);
 		entity.add(damage);
 		entity.add(speed);
+		
+		// getEngine().getSystem(EditorSystem.class).
+		G3DModel model = new G3DModel();
+		model.modelInstance = new ModelInstance(map.monsterModel);
+		
+//		Node node;
+//		
+//		node = model.modelInstance.getNode("leg2.r");
+//		node.getParent().removeChild(node);
+//		
+//		node = model.modelInstance.getNode("leg2.l");
+//		node.getParent().removeChild(node);
+//		
+//		node = model.modelInstance.getNode("mesh");
+//		
+//		for(NodePart part : node.parts){
+//			if("Cube_part1".equals(part.meshPart.id)){
+//				part.enabled = false;
+//				
+//			}
+//		}
+		
+		model.animationController = new AnimationController(model.modelInstance);
+		
+		
+		
+		entity.add(model);
 		
 		getEngine().addEntity(entity);
 		

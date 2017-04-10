@@ -8,6 +8,7 @@ import net.mgsx.game.examples.td.systems.ActiveRenderer;
 import net.mgsx.game.examples.td.systems.AttachementSystem;
 import net.mgsx.game.examples.td.systems.EnemyAnalysisSystem;
 import net.mgsx.game.examples.td.systems.EnemyLogicSystem;
+import net.mgsx.game.examples.td.systems.EnemyModelSystem;
 import net.mgsx.game.examples.td.systems.EnemyRenderer;
 import net.mgsx.game.examples.td.systems.EntryRenderer;
 import net.mgsx.game.examples.td.systems.FollowRenderSystem;
@@ -95,6 +96,8 @@ public class TowerDefenseEditorPlugin extends EditorPlugin implements DefaultEdi
 		editor.entityEngine.addSystem(new LoadSystem());
 		editor.entityEngine.addSystem(new ShooterSystem());
 		editor.entityEngine.addSystem(new LazerSystem());
+		
+		editor.addSystem(new EnemyModelSystem());
 		
 		editor.entityEngine.addSystem(new ShotSystem());
 
