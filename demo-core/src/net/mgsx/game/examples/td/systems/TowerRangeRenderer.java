@@ -3,7 +3,6 @@ package net.mgsx.game.examples.td.systems;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 
 import net.mgsx.game.core.GamePipeline;
@@ -29,8 +28,8 @@ public class TowerRangeRenderer extends AbstractShapeSystem
 	protected void processEntity(Entity entity, float deltaTime) {
 		Transform2DComponent transform = Transform2DComponent.components.get(entity);
 		Range range = Range.components.get(entity);
-		renderer.setColor(Color.BLUE);
-		renderer.getColor().a = .2f;
+		renderer.setColor(0,0,1.01f,1);
+		renderer.getColor().a = 0.1f;
 		renderer.identity();
 		renderer.circle(transform.position.x, transform.position.y, range.distance, 16);
 	}

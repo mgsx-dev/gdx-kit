@@ -1,0 +1,77 @@
+{
+entities: [
+	{
+		id: 0
+		td.shooter: {}
+		td.aim: {
+			angle: -301.27972
+			inSights: true
+		}
+		td.target: {}
+		td.load: {
+			reload: 1
+		}
+		td.range: {
+			distance: 2.0056357
+		}
+		2d: {
+			position: {
+				x: 1.4709705
+				y: 4.9173717
+			}
+			angle: 269.07596
+		}
+		td.tower: {}
+		td.life: {
+			current: 0.77659994
+		}
+		td.speed: {
+			base: 1.2941991
+		}
+		g3d: {
+			modelInstance: td/tower.g3dj
+			origin: {}
+			blended: false
+			culling: false
+		}
+		spline: {
+			path: {
+				class: com.badlogic.gdx.math.CatmullRomSpline
+				controlPoints: [
+					{
+						x: 1.864531
+						y: 6.659359
+					}
+					{
+						x: 1.864531
+						y: 6.659359
+					}
+					{
+						x: 1.8580788
+						y: 6.6722627
+					}
+					{
+						x: 1.4838742
+						y: 5.717395
+					}
+					{
+						x: 1.4709705
+						y: 4.9173717
+					}
+					{
+						x: 1.4709705
+						y: 4.9173717
+					}
+				]
+				continuous: false
+			}
+		}
+	}
+]
+assets: [
+	{
+		type: com.badlogic.gdx.graphics.g3d.Model
+		name: td/tower.g3dj
+	}
+]
+}

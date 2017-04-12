@@ -6,6 +6,7 @@ import net.mgsx.game.examples.td.components.Attachement;
 import net.mgsx.game.examples.td.storage.AttachementSerializer;
 import net.mgsx.game.examples.td.systems.ActiveRenderer;
 import net.mgsx.game.examples.td.systems.AttachementSystem;
+import net.mgsx.game.examples.td.systems.EmissiveSystem;
 import net.mgsx.game.examples.td.systems.EnemyAnalysisSystem;
 import net.mgsx.game.examples.td.systems.EnemyLogicSystem;
 import net.mgsx.game.examples.td.systems.EnemyModelSystem;
@@ -41,6 +42,7 @@ import net.mgsx.game.examples.td.systems.TargetSystem;
 import net.mgsx.game.examples.td.systems.TileRenderer;
 import net.mgsx.game.examples.td.systems.TowerDefenseHUD;
 import net.mgsx.game.examples.td.systems.TowerLogicSystem;
+import net.mgsx.game.examples.td.systems.TowerModelSystem;
 import net.mgsx.game.examples.td.systems.TowerRangeRenderer;
 import net.mgsx.game.examples.td.systems.TowerRender;
 import net.mgsx.game.examples.td.systems.WaveSystem;
@@ -52,6 +54,7 @@ import net.mgsx.game.examples.td.tools.PlatformTool;
 import net.mgsx.game.examples.td.tools.RoadTool;
 import net.mgsx.game.examples.td.tools.TileSelector;
 import net.mgsx.game.plugins.DefaultEditorPlugin;
+import net.mgsx.game.plugins.g3d.systems.G3DTransformSystem;
 
 public class TowerDefenseEditorPlugin extends EditorPlugin implements DefaultEditorPlugin
 {
@@ -59,6 +62,9 @@ public class TowerDefenseEditorPlugin extends EditorPlugin implements DefaultEdi
 	@Override
 	public void initialize(EditorScreen editor) 
 	{
+		// XXX disable confliting unused systems
+		editor.entityEngine.removeSystem(editor.entityEngine.getSystem(G3DTransformSystem.class));
+		
 		editor.registry.addSerializer(Attachement.class, new AttachementSerializer());
 		
 		editor.addSelector(new TileSelector(editor));
@@ -97,6 +103,7 @@ public class TowerDefenseEditorPlugin extends EditorPlugin implements DefaultEdi
 		editor.entityEngine.addSystem(new ShooterSystem());
 		editor.entityEngine.addSystem(new LazerSystem());
 		
+		editor.addSystem(new TowerModelSystem());
 		editor.addSystem(new EnemyModelSystem());
 		
 		editor.entityEngine.addSystem(new ShotSystem());
@@ -114,6 +121,8 @@ public class TowerDefenseEditorPlugin extends EditorPlugin implements DefaultEdi
 		
 		editor.entityEngine.addSystem(new PathFollowerSystem());
 		editor.entityEngine.addSystem(new FollowSystem());
+		
+		editor.entityEngine.addSystem(new EmissiveSystem());
 
 		
 		// render ground

@@ -75,7 +75,7 @@ public class ShooterSystem extends IteratingSystem
 		Entity shotEntity = getEngine().createEntity();
 		Shot shot = getEngine().createComponent(Shot.class);
 		shot.start
-			.set(.5f, 0).rotate(angle) // XXX offset from tower center
+			.set(0.2f, 0).rotate(angle) // XXX offset from tower center
 			.add(source.position); // position
 		shot.end.set(target.position);
 		shotEntity.add(shot);

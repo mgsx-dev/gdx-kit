@@ -32,6 +32,7 @@ public class ShotRender extends AbstractShapeSystem
 	public void update(float deltaTime) {
 		batch.setProjectionMatrix(game.camera.combined);
 		batch.begin();
+		batch.disableBlending();
 		super.update(deltaTime);
 		batch.end();
 	}
@@ -39,7 +40,7 @@ public class ShotRender extends AbstractShapeSystem
 	@Override
 	protected void processEntity(Entity entity, float deltaTime) {
 		Shot shot = Shot.components.get(entity);
-		final float s = .1f;
+		final float s = .03f;
 		
 		pos.set(shot.start).lerp(shot.end, shot.t);
 		
