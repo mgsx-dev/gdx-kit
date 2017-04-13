@@ -12,6 +12,7 @@ import net.mgsx.game.examples.td.systems.EnemyLogicSystem;
 import net.mgsx.game.examples.td.systems.EnemyModelSystem;
 import net.mgsx.game.examples.td.systems.EnemyRenderer;
 import net.mgsx.game.examples.td.systems.EntryRenderer;
+import net.mgsx.game.examples.td.systems.FollowRenderDebugSystem;
 import net.mgsx.game.examples.td.systems.FollowRenderSystem;
 import net.mgsx.game.examples.td.systems.FollowSystem;
 import net.mgsx.game.examples.td.systems.FreezeSystem;
@@ -135,6 +136,9 @@ public class TowerDefenseEditorPlugin extends EditorPlugin implements DefaultEdi
 		editor.entityEngine.addSystem(new HomeRenderer(editor.game));
 		editor.entityEngine.addSystem(new EntryRenderer(editor.game));
 		
+		// Render links
+		editor.entityEngine.addSystem(new FollowRenderSystem(editor.game));
+
 		// render dynamics
 		editor.entityEngine.addSystem(new ShotRenderDebug(editor.game));
 		editor.entityEngine.addSystem(new LazerRender(editor.game));
@@ -142,7 +146,6 @@ public class TowerDefenseEditorPlugin extends EditorPlugin implements DefaultEdi
 		editor.entityEngine.addSystem(new EnemyRenderer(editor.game));
 		editor.entityEngine.addSystem(new ShotRender(editor.game));
 		
-		editor.entityEngine.addSystem(new FollowRenderSystem(editor.game));
 		editor.entityEngine.addSystem(new ActiveRenderer(editor.game));
 		
 		// render status
@@ -152,6 +155,16 @@ public class TowerDefenseEditorPlugin extends EditorPlugin implements DefaultEdi
 		editor.entityEngine.addSystem(new TowerRangeRenderer(editor.game));
 		
 		editor.entityEngine.addSystem(new TowerDefenseHUD(editor.game));
+		
+		editor.entityEngine.addSystem(new FollowRenderDebugSystem(editor.game));
+		
+		// XXX default disable some systems
+		editor.entityEngine.getSystem(ShotRenderDebug.class).setProcessing(false);
+		editor.entityEngine.getSystem(TowerRender.class).setProcessing(false);
+		editor.entityEngine.getSystem(EnemyRenderer.class).setProcessing(false);
+		editor.entityEngine.getSystem(LifeSystem.class).setProcessing(false);
+		editor.entityEngine.getSystem(FollowRenderDebugSystem.class).setProcessing(false);
+		
 	}
 
 }

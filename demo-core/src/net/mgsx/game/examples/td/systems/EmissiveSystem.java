@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Pixmap.Format;
+import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.math.Vector2;
@@ -44,6 +45,15 @@ public class EmissiveSystem extends TransactionSystem
 
 	@Editable
 	public float blurSize = 2;
+
+	@Editable
+	public float boost = 8;
+
+	@Editable
+	public float decimate = 256;
+	
+	@Editable
+	public int resolution = 0;
 	
 	
 	
@@ -72,9 +82,16 @@ public class EmissiveSystem extends TransactionSystem
 	
 	private FrameBuffer ensureBuffer(FrameBuffer fbo)
 	{
-		if(fbo == null || Gdx.graphics.getWidth() != fbo.getWidth() || Gdx.graphics.getHeight() != fbo.getHeight()){
+		int w = 1 << resolution;
+		int h = w;
+		if(fbo == back || resolution < 1){
+			w = Gdx.graphics.getWidth();
+			h = Gdx.graphics.getHeight();
+		}
+		if(fbo == null || w != fbo.getWidth() || h != fbo.getHeight()){
 			if(fbo != null) fbo.dispose();
-			fbo = new FrameBuffer(Format.RGBA8888, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);
+			fbo = new FrameBuffer(Format.RGBA8888, w, h, true);
+			fbo.getColorBufferTexture().setFilter(TextureFilter.Linear, TextureFilter.Linear);
 		}
 		return fbo;
 	}
@@ -121,7 +138,7 @@ public class EmissiveSystem extends TransactionSystem
 		// Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 		batch.setShader(blurProgram.program());
 		batch.begin();
-		blurProgram.program().setUniformf("dir", new Vector2(blurSize / (float)Gdx.graphics.getWidth(),0));
+		blurProgram.program().setUniformf("dir", new Vector2(blurSize / (float)blurB.getColorBufferTexture().getWidth(),0));
 		batch.draw(blurB.getColorBufferTexture(), -.5f, -.5f, 1, 1);
 		batch.end();
 		blurA.end();
@@ -129,7 +146,7 @@ public class EmissiveSystem extends TransactionSystem
 		blurB.begin();
 		batch.setShader(blurProgram.program());
 		batch.begin();
-		blurProgram.program().setUniformf("dir", new Vector2(0, blurSize / (float)Gdx.graphics.getHeight()));
+		blurProgram.program().setUniformf("dir", new Vector2(0, blurSize / (float)blurA.getColorBufferTexture().getHeight()));
 		batch.draw(blurA.getColorBufferTexture(), -.5f, -.5f, 1, 1);
 		batch.end();
 		blurB.end();
@@ -143,6 +160,8 @@ public class EmissiveSystem extends TransactionSystem
 		
 		batch.setShader(compose.program());
 		batch.begin();
+		compose.program().setUniformf("u_boost", boost);
+		compose.program().setUniformf("u_decimate", decimate);
 		compose.program().setUniformi("u_textureOver", 1);
 		Gdx.gl.glActiveTexture(GL20.GL_TEXTURE0);
 		back.getColorBufferTexture().bind(GL20.GL_TEXTURE0);

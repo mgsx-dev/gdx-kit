@@ -14,7 +14,7 @@ public class TowerRangeRenderer extends AbstractShapeSystem
 {
 
 	public TowerRangeRenderer(GameScreen game) {
-		super(game, Family.all(Transform2DComponent.class, Range.class).get(), GamePipeline.RENDER);
+		super(game, Family.all(Transform2DComponent.class, Range.class).get(), GamePipeline.RENDER_TRANSPARENT);
 	}
 	
 	@Override

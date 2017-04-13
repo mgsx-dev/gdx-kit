@@ -1,0 +1,241 @@
+{
+entities: [
+	{
+		id: 0
+		g3d.light.dir: {
+			light: {
+				color: {
+					r: 1
+					g: 1
+					b: 1
+				}
+				direction: {
+					x: 1.3762423
+					y: 4.644346
+					z: 0.92415565
+				}
+			}
+			shadow: false
+		}
+	}
+	{
+		id: 1
+		g3d.light.point: {
+			light: {
+				color: {
+					r: 1
+					g: 1
+					b: 1
+					a: 1
+				}
+				position: {
+					x: 6.646292
+					y: 9.840894
+					z: 0.08437841
+				}
+				intensity: 6.5547667
+			}
+		}
+	}
+	{
+		id: 2
+		proxy: {
+			ref: td/monster1.json
+		}
+		2d: {
+			position: {
+				x: 9.516078
+				y: 7.8304534
+			}
+		}
+	}
+	{
+		id: 3
+		proxy: {
+			ref: td/monster1.json
+		}
+		2d: {
+			position: {
+				x: 0.90122074
+				y: 6.5275946
+			}
+		}
+	}
+	{
+		id: 4
+		proxy: {
+			ref: td/monster1.json
+		}
+		2d: {
+			position: {
+				x: 6.564693
+				y: 7.989992
+			}
+		}
+	}
+	{
+		id: 5
+		proxy: {
+			ref: td/monster1.json
+		}
+		2d: {
+			position: {
+				x: 4.3578014
+				y: 7.9634023
+			}
+		}
+	}
+	{
+		id: 6
+		g3d: {
+			modelInstance: td/land.g3dj
+			origin: {}
+			blended: false
+			culling: false
+		}
+	}
+	{
+		id: 7
+		td.shooter: {}
+		td.aim: {
+			angle: -228.95912
+			inSights: true
+		}
+		td.target: {}
+		td.load: {
+			reload: 1
+		}
+		td.range: {
+			distance: 2.0056357
+		}
+		2d: {
+			position: {
+				x: 7.140515
+				y: 11.647236
+			}
+			angle: 269.07596
+		}
+		td.life: {
+			current: 0.77659994
+		}
+		td.speed: {
+			base: 1.2941991
+		}
+		g3d: {
+			modelInstance: td/tower.g3dj
+			origin: {}
+			blended: false
+			culling: true
+		}
+		spline: {
+			path: {
+				class: com.badlogic.gdx.math.CatmullRomSpline
+				controlPoints: [
+					{
+						x: 1.864531
+						y: 6.659359
+					}
+					{
+						x: 1.864531
+						y: 6.659359
+					}
+					{
+						x: 1.8580788
+						y: 6.6722627
+					}
+					{
+						x: 1.4838742
+						y: 5.717395
+					}
+					{
+						x: 1.4709705
+						y: 4.9173717
+					}
+					{
+						x: 1.4709705
+						y: 4.9173717
+					}
+				]
+				continuous: false
+			}
+		}
+		td.tower: {}
+	}
+]
+systems: [
+	{
+		type: core.bindings
+		enabled: true
+		bindings: [
+			net.mgsx.game.examples.td.tools.GameTool#activate:kc:36
+			net.mgsx.game.plugins.core.tools.OpenTool#activate:kc:247
+			net.mgsx.game.core.tools.NoTool#activate:kc:51
+			net.mgsx.game.examples.td.tools.FollowPathTool#activate:kc:44
+		]
+	}
+	{
+		type: box2d.world
+		enabled: true
+		runSimulation: true
+		gravity: {
+			y: -9.807
+		}
+		timeStep: 0.033333335
+		velocityIterations: 8
+		positionIterations: 3
+	}
+	{
+		type: core.clearScreen
+		enabled: true
+		color: {
+			r: 0.2
+			g: 0.2
+			b: 0.2
+			a: 1
+		}
+		clearColor: true
+		clearDepth: true
+	}
+	{
+		type: g3d.rendering
+		enabled: true
+		shadowQuality: 10
+		shadowSize: {
+			x: 50
+			y: 50
+		}
+		shadowNear: 0.1
+		shadowFar: 100
+		ambient: {
+			r: 0.24555199
+			g: 0.25735378
+			b: 0.26767212
+			a: 1
+		}
+	}
+	{
+		type: g2d.render
+		enabled: true
+		culling: false
+	}
+]
+views: [
+	net.mgsx.game.plugins.g3d.systems.G3DCullingSystem
+	net.mgsx.game.examples.td.systems.EmissiveSystem
+	g3d.rendering
+]
+assets: [
+	{
+		type: net.mgsx.game.core.storage.EntityGroup
+		name: td/monster1.json
+	}
+	{
+		type: com.badlogic.gdx.graphics.g3d.Model
+		name: td/land.g3dj
+	}
+	{
+		type: com.badlogic.gdx.graphics.g3d.Model
+		name: td/tower.g3dj
+	}
+]
+}
