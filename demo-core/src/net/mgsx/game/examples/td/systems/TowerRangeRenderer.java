@@ -4,14 +4,27 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Texture;
 
 import net.mgsx.game.core.GamePipeline;
 import net.mgsx.game.core.GameScreen;
+import net.mgsx.game.core.annotations.Asset;
+import net.mgsx.game.core.annotations.Editable;
+import net.mgsx.game.core.annotations.EditableSystem;
+import net.mgsx.game.core.helpers.FilesShaderProgram;
 import net.mgsx.game.examples.td.components.Range;
 import net.mgsx.game.plugins.core.components.Transform2DComponent;
 
-public class TowerRangeRenderer extends AbstractShapeSystem
+@EditableSystem
+public class TowerRangeRenderer extends AbstractSpriteSystem
 {
+	@Asset("perlin.png")
+	public Texture texture;
+	
+	@Editable
+	public FilesShaderProgram shader = new FilesShaderProgram(
+			Gdx.files.internal("shaders/range-vertex.glsl"),
+			Gdx.files.internal("shaders/range-fragment.glsl"));
 
 	public TowerRangeRenderer(GameScreen game) {
 		super(game, Family.all(Transform2DComponent.class, Range.class).get(), GamePipeline.RENDER_TRANSPARENT);
@@ -19,18 +32,23 @@ public class TowerRangeRenderer extends AbstractShapeSystem
 	
 	@Override
 	public void update(float deltaTime) {
-		Gdx.gl.glEnable(GL20.GL_BLEND);
+		batch.enableBlending();
+		batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE); //_MINUS_SRC_ALPHA);
+		batch.setShader(shader.program());
+		sprite.setTexture(texture);
+		sprite.setU(-1);
+		sprite.setU2(1);
+		sprite.setV(-1);
+		sprite.setV2(1);
+		//sprite.setRegion(0, 0, 1, 1);
 		super.update(deltaTime);
-		Gdx.gl.glDisable(GL20.GL_BLEND);
 	}
 
 	@Override
 	protected void processEntity(Entity entity, float deltaTime) {
 		Transform2DComponent transform = Transform2DComponent.components.get(entity);
 		Range range = Range.components.get(entity);
-		renderer.setColor(0,0,1.01f,1);
-		renderer.getColor().a = 0.1f;
-		renderer.identity();
-		renderer.circle(transform.position.x, transform.position.y, range.distance, 16);
+		sprite.setBounds(transform.position.x - range.distance, transform.position.y - range.distance, range.distance * 2, range.distance * 2);
+		sprite.draw(batch);
 	}
 }

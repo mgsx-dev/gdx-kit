@@ -45,6 +45,7 @@ import net.mgsx.game.examples.td.systems.TowerDefenseHUD;
 import net.mgsx.game.examples.td.systems.TowerLogicSystem;
 import net.mgsx.game.examples.td.systems.TowerModelSystem;
 import net.mgsx.game.examples.td.systems.TowerRangeRenderer;
+import net.mgsx.game.examples.td.systems.TowerRangeRendererDebug;
 import net.mgsx.game.examples.td.systems.TowerRender;
 import net.mgsx.game.examples.td.systems.WaveSystem;
 import net.mgsx.game.examples.td.tools.AttachTool;
@@ -157,6 +158,7 @@ public class TowerDefenseEditorPlugin extends EditorPlugin implements DefaultEdi
 		editor.entityEngine.addSystem(new TowerDefenseHUD(editor.game));
 		
 		editor.entityEngine.addSystem(new FollowRenderDebugSystem(editor.game));
+		editor.entityEngine.addSystem(new TowerRangeRendererDebug(editor.game));
 		
 		// XXX default disable some systems
 		editor.entityEngine.getSystem(ShotRenderDebug.class).setProcessing(false);
@@ -164,6 +166,7 @@ public class TowerDefenseEditorPlugin extends EditorPlugin implements DefaultEdi
 		editor.entityEngine.getSystem(EnemyRenderer.class).setProcessing(false);
 		editor.entityEngine.getSystem(LifeSystem.class).setProcessing(false);
 		editor.entityEngine.getSystem(FollowRenderDebugSystem.class).setProcessing(false);
+		editor.entityEngine.getSystem(TowerRangeRendererDebug.class).setProcessing(false);
 		
 	}
 
