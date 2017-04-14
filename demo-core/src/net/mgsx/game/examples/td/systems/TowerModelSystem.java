@@ -27,7 +27,7 @@ public class TowerModelSystem extends IteratingSystem
 		Transform2DComponent transform = Transform2DComponent.components.get(entity);
 //		Speed speed = Speed.components.get(entity);
 		model.modelInstance.transform.idt();
-		model.modelInstance.transform.translate(transform.position.x, transform.position.y, 0);
+		model.modelInstance.transform.translate(transform.position.x, transform.position.y, transform.depth);
 	//	model.modelInstance.transform.rotate(Vector3.Z, transform.angle);
 		model.modelInstance.transform.rotate(Vector3.X, 90);
 		float s = 0.2f;
