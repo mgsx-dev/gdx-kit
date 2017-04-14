@@ -52,6 +52,7 @@ import net.mgsx.game.examples.td.tools.AttachTool;
 import net.mgsx.game.examples.td.tools.FollowPathTool;
 import net.mgsx.game.examples.td.tools.FollowTool;
 import net.mgsx.game.examples.td.tools.GameTool;
+import net.mgsx.game.examples.td.tools.NavMeshDebugTool;
 import net.mgsx.game.examples.td.tools.PlatformTool;
 import net.mgsx.game.examples.td.tools.RoadTool;
 import net.mgsx.game.examples.td.tools.TileSelector;
@@ -77,6 +78,7 @@ public class TowerDefenseEditorPlugin extends EditorPlugin implements DefaultEdi
 		editor.addTool(new AttachTool(editor));
 		editor.addTool(new FollowTool(editor));
 		editor.addTool(new GameTool(editor));
+		editor.addTool(new NavMeshDebugTool(editor));
 		
 		editor.entityEngine.addSystem(new WaveSystem());
 		editor.entityEngine.addSystem(new MapSystem());
