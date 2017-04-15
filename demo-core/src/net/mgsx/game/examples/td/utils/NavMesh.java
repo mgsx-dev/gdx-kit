@@ -85,6 +85,18 @@ public class NavMesh {
 	float [] vertices;
 	short [] indices;
 	int vertexSize = 0;
+	
+	private IndexedAStarPathFinder<TriNode> apf;
+	
+	Heuristic<TriNode> heuristic = new Heuristic<NavMesh.TriNode>() {
+		
+		@Override
+		public float estimate(TriNode node, TriNode endNode) {
+			return node.position.dst(endNode.position);
+		}
+	};
+
+	GraphPath<Connection<TriNode>> outPath = new DefaultGraphPath<Connection<TriNode>>();
 
 	
 	public NavMesh(ModelData model) {
@@ -171,26 +183,18 @@ public class NavMesh {
 		
 		graph = new DefaultIndexedGraph<TriNode>(new Array<TriNode>(triNodes));
 
+		apf = new IndexedAStarPathFinder<TriNode>(graph);
 	}
 	
 	public boolean pathFind(Vector3 origin, Vector3 destination, Vector3 up, Array<Vector3> path){
 		
-		IndexedAStarPathFinder<TriNode> apf = new IndexedAStarPathFinder<TriNode>(graph);
+		outPath.clear();
 		
 		TriNode a = triCast(origin, up);
 		TriNode b = triCast(destination, up);
 		
 		if(a == null || b == null) return false;
 		
-		Heuristic<TriNode> heuristic = new Heuristic<NavMesh.TriNode>() {
-			
-			@Override
-			public float estimate(TriNode node, TriNode endNode) {
-				return node.position.dst(endNode.position);
-			}
-		};
-		
-		GraphPath<Connection<TriNode>> outPath = new DefaultGraphPath<Connection<TriNode>>();
 		if(apf.searchConnectionPath(a, b, heuristic, outPath )){
 			for(Connection<TriNode> cnx : outPath){
 				path.add(cnx.getToNode().position);
@@ -200,10 +204,14 @@ public class NavMesh {
 		return false;
 	}
 	
+	private static Ray ray = new Ray();
+	private static Vector3 normal = new Vector3();
+	private static Vector3 nearest = new Vector3();
+	
 	private TriNode triCast(Vector3 origin, Vector3 direction) 
 	{
 		// TODO Auto-generated method stub
-		int i = triRayCast(new Ray(origin, direction), new Vector3(), new Vector3());
+		int i = triRayCast(ray.set(origin, direction), nearest, normal);
 		if(i < 0) return null;
 		return triNodes[i];
 	}
@@ -223,8 +231,7 @@ public class NavMesh {
 
 	public float rayCast(Ray ray){
 		
-		Vector3 intersection = new Vector3();
-		boolean intersect = Intersector.intersectRayTriangles(ray, vertices, indices, vertexSize, new Vector3());
+		boolean intersect = Intersector.intersectRayTriangles(ray, vertices, indices, vertexSize, intersection);
 		
 		if(intersect){
 			return ray.origin.dst(intersection);
@@ -237,12 +244,15 @@ public class NavMesh {
 	public boolean rayCast(Ray ray, Vector3 nearest, Vector3 normal){
 		return triRayCast(ray, nearest, normal) >= 0;
 	}
+	
+	Vector3 t1 = new Vector3();
+	Vector3 t2 = new Vector3();
+	Vector3 t3 = new Vector3();
+	Vector3 tmp = new Vector3();
+	Vector3 intersection = new Vector3();
+
 	private int triRayCast(Ray ray, Vector3 nearest, Vector3 normal){
 		
-		Vector3 t1 = new Vector3();
-		Vector3 t2 = new Vector3();
-		Vector3 t3 = new Vector3();
-		Vector3 tmp = new Vector3();
 		float distance = -1;
 		int triangle = -1;
 		for(int i=0, tri=0 ; i<indices.length ; i+=3, tri++)
@@ -254,7 +264,7 @@ public class NavMesh {
 			t2.set(vertices[i2+0], vertices[i2+1], vertices[i2+2]);
 			t3.set(vertices[i3+0], vertices[i3+1], vertices[i3+2]);
 			
-			Vector3 intersection = new Vector3();
+			
 			if(Intersector.intersectRayTriangle(ray, t1, t2, t3, intersection)){
 				float dst = intersection.dst2(ray.origin);
 				if(triangle < 0 || distance > intersection.dst2(ray.origin)){

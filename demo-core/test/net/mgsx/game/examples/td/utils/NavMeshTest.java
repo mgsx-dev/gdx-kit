@@ -34,7 +34,7 @@ public class NavMeshTest
 	{
 		float d = navMesh.rayCast(new Ray(new Vector3(0,0,1), Vector3.Z.cpy().scl(-1)));
 		
-		Assert.assertEquals(1, d, 1e-10f);
+		Assert.assertEquals(2, d, 1e-10f);
 		
 	}
 	@Test
