@@ -4,6 +4,7 @@ import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Pool.Poolable;
 
 import net.mgsx.game.core.annotations.Editable;
@@ -27,6 +28,11 @@ public class Transform2DComponent implements Component, Duplicable, Poolable
 	@Editable public boolean rotation = true;
 	@Editable public boolean enabled = true;
 	@Editable public Vector2 origin = new Vector2();
+
+	@Editable
+	public transient Vector3 normal = new Vector3(0,0,1);
+	@Editable
+	public transient Vector3 derivative = new Vector3(1,0,0);
 
 	@Override
 	public Component duplicate(Engine engine) {
