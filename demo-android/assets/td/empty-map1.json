@@ -1,0 +1,50 @@
+{
+entities: [
+	{
+		id: 0
+		g3d: {
+			modelInstance: td/navmesh2.g3dj
+			origin: {}
+			blended: false
+			culling: false
+		}
+		td.navMesh: {}
+	}
+	{
+		id: 1
+		g3d: {
+			modelInstance: td/backmesh.g3dj
+			origin: {}
+			blended: false
+			culling: false
+		}
+	}
+	{
+		id: 2
+		g3d.light.dir: {
+			light: {
+				color: {
+					r: 1
+					g: 1
+					b: 1
+					a: 1
+				}
+				direction: {
+					z: -1
+				}
+			}
+			shadow: false
+		}
+	}
+]
+assets: [
+	{
+		type: com.badlogic.gdx.graphics.g3d.Model
+		name: td/navmesh2.g3dj
+	}
+	{
+		type: com.badlogic.gdx.graphics.g3d.Model
+		name: td/backmesh.g3dj
+	}
+]
+}

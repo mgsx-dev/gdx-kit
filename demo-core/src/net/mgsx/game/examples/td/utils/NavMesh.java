@@ -187,13 +187,16 @@ public class NavMesh {
 	}
 	
 	public boolean pathFind(Vector3 origin, Vector3 destination, Vector3 up, Array<Vector3> path){
-		
-		outPath.clear();
-		
-		TriNode a = triCast(origin, up);
-		TriNode b = triCast(destination, up);
+		return pathFind(triNodeCast(origin, up), triNodeCast(destination, up), path);
+	}
+	public boolean pathFind(int srcIndex, int dstIndex, Array<Vector3> path){
+		return pathFind(triNodes[srcIndex], triNodes[dstIndex], path);
+	}
+	private boolean pathFind(TriNode a, TriNode b, Array<Vector3> path){
 		
 		if(a == null || b == null) return false;
+		
+		outPath.clear();
 		
 		if(apf.searchConnectionPath(a, b, heuristic, outPath )){
 			for(Connection<TriNode> cnx : outPath){
@@ -208,7 +211,11 @@ public class NavMesh {
 	private static Vector3 normal = new Vector3();
 	private static Vector3 nearest = new Vector3();
 	
-	private TriNode triCast(Vector3 origin, Vector3 direction) 
+	public int triCast(Vector3 origin, Vector3 direction) {
+		TriNode tn = triNodeCast(origin, direction);
+		return tn == null ? -1 : tn.index;
+	}
+	private TriNode triNodeCast(Vector3 origin, Vector3 direction) 
 	{
 		// TODO Auto-generated method stub
 		int i = triRayCast(ray.set(origin, direction), nearest, normal);
@@ -280,5 +287,6 @@ public class NavMesh {
 		
 		return triangle;
 	}
+	
 	
 }

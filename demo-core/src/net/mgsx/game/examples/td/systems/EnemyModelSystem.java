@@ -5,6 +5,7 @@ import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
+import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
 
 import net.mgsx.game.core.GamePipeline;
@@ -25,9 +26,18 @@ public class EnemyModelSystem extends IteratingSystem
 		Transform2DComponent transform = Transform2DComponent.components.get(entity);
 		Speed speed = Speed.components.get(entity);
 		model.modelInstance.transform.idt();
+		model.modelInstance.transform.rotate(Vector3.X, -90);
 		model.modelInstance.transform.translate(transform.position.x, transform.position.y, transform.depth);
-		model.modelInstance.transform.rotate(Vector3.Z, transform.angle);
+//		model.modelInstance.transform.rotate(Vector3.X, 90);
+//		model.modelInstance.transform.mul(new Matrix4().setToLookAt(Vector3.Z.cpy().scl(-1), transform.normal));
 		model.modelInstance.transform.rotate(Vector3.X, 90);
+
+		
+		model.modelInstance.transform.rotate(new Quaternion().setFromCross(transform.normal, Vector3.Z));
+//		model.modelInstance.transform.rotate(Vector3.Y, transform.angle);
+//		model.modelInstance.transform.rotate(Vector3.Z, 90 - MathUtils.radiansToDegrees * (float)Math.acos(transform.normal.z));
+		//model.modelInstance.transform.rotate(Vector3.X, 90);
+		
 		float s = 0.15f;
 		model.modelInstance.transform.scale(s, s, s);
 		if(model.animationController.current == null){

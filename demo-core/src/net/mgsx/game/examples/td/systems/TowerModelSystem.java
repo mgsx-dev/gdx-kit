@@ -27,9 +27,34 @@ public class TowerModelSystem extends IteratingSystem
 		Transform2DComponent transform = Transform2DComponent.components.get(entity);
 //		Speed speed = Speed.components.get(entity);
 		model.modelInstance.transform.idt();
+		
+		model.modelInstance.transform.rotate(Vector3.X, -90);
 		model.modelInstance.transform.translate(transform.position.x, transform.position.y, transform.depth);
-	//	model.modelInstance.transform.rotate(Vector3.Z, transform.angle);
+		//model.modelInstance.transform.rotate(Vector3.X, 90);
+		
+//		model.modelInstance.transform.rotateRad(Vector3.Y, (float)( - Math.atan2(transform.derivative.y,- transform.derivative.x)) );
+//		model.modelInstance.transform.rotate(Vector3.Y, 90);
+		
+		model.modelInstance.transform.rotateRad(Vector3.Z, -(float)( Math.atan2(transform.normal.x, -transform.normal.y)) );
+		model.modelInstance.transform.rotateRad(Vector3.Y, -(float)( Math.acos(transform.normal.z)) );
+		
 		model.modelInstance.transform.rotate(Vector3.X, 90);
+		
+		
+//		model.modelInstance.transform.rotate(Vector3.Y, -90);
+//			model.modelInstance.transform.rotate(Vector3.Y, 90);
+//		if(transform.derivative.len2() > 0 && transform.normal.len2() > 0)
+//			model.modelInstance.transform.mul(new Matrix4().setToLookAt(transform.derivative, Vector3.Z));
+		
+		// model.modelInstance.transform.rotate(Vector3.X, -90);
+		
+		
+//		model.modelInstance.transform.rotate(Vector3.Z,  90 - MathUtils.radiansToDegrees * (float)Math.acos(transform.normal.z));
+//
+//		model.modelInstance.transform.rotate(Vector3.X, -90);
+		
+		
+		
 		float s = 0.2f;
 		model.modelInstance.transform.scale(s, s, s);
 //		if(model.animationController.current == null){

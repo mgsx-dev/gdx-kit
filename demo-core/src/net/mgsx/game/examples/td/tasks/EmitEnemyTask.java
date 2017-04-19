@@ -2,109 +2,82 @@ package net.mgsx.game.examples.td.tasks;
 
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.ai.btree.annotation.TaskAttribute;
-import com.badlogic.gdx.graphics.g3d.ModelInstance;
-import com.badlogic.gdx.graphics.g3d.utils.AnimationController;
+import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Vector3;
 
+import net.mgsx.game.core.annotations.TaskAsset;
+import net.mgsx.game.core.storage.EntityGroup;
 import net.mgsx.game.examples.td.components.Damage;
-import net.mgsx.game.examples.td.components.Enemy;
-import net.mgsx.game.examples.td.components.Enemy.Type;
 import net.mgsx.game.examples.td.components.Life;
-import net.mgsx.game.examples.td.components.PathFollower;
-import net.mgsx.game.examples.td.components.Speed;
-import net.mgsx.game.examples.td.components.TileComponent;
-import net.mgsx.game.examples.td.systems.MapSystem;
+import net.mgsx.game.examples.td.systems.NavSystem;
 import net.mgsx.game.examples.td.systems.WaveSystem;
+import net.mgsx.game.plugins.btree.BTreeModel;
 import net.mgsx.game.plugins.btree.BTreePlugin.EntityLeafTask;
 import net.mgsx.game.plugins.btree.annotations.TaskAlias;
 import net.mgsx.game.plugins.core.components.Transform2DComponent;
-import net.mgsx.game.plugins.g3d.components.G3DModel;
 
+// TODO json file by type !
 @TaskAlias("enemy")
 public class EmitEnemyTask extends EntityLeafTask
 {
+	@TaskAsset(EntityGroup.class)
 	@TaskAttribute
-	public float speed = 2;
+	public String enemy;
+
+//	private MeshEmitter meshEmitter;
 	
-	@TaskAttribute
-	public float life = 5;
+//	@Override
+//	public void start() {
+//		G3DModel model = G3DModel.components.get(getEntity());
+//		ModelMesh mesh = new ModelMesh();
+//		// mesh.vertices
+//		// model.modelInstance.model.meshes.get(0).
+//		meshEmitter = new MeshEmitter(mesh );
+//	}
 	
-	@TaskAttribute
-	public float damage = 1;
-	
-	@TaskAttribute
-	public boolean direct = false;
-	
-	@TaskAttribute
-	public Enemy.Type type = Type.SQUARE;
 	
 	@Override
 	public com.badlogic.gdx.ai.btree.Task.Status execute() 
 	{
-		// TODO create entity from template ... ? or create sub tasks for each kind of enemy
-		MapSystem map = getEngine().getSystem(MapSystem.class);
+		// find emitter (mesh emitter)
 		WaveSystem wave = getEngine().getSystem(WaveSystem.class);
 		
-		Entity entity = getEngine().createEntity();
+		Transform2DComponent emitterTransform = Transform2DComponent.components.get(getEntity());
 		
-		Enemy enemy = getEngine().createComponent(Enemy.class);
-		Life life = getEngine().createComponent(Life.class);
-		PathFollower path = getEngine().createComponent(PathFollower.class);
-		Transform2DComponent transform = getEngine().createComponent(Transform2DComponent.class);
-		Damage damage = getEngine().createComponent(Damage.class);
-		
-		TileComponent tile = TileComponent.components.get(getEntity());
-		
-		Speed speed = getEngine().createComponent(Speed.class);
-		speed.base = this.speed;
-
-		enemy.type = this.type;
-		
-		if(direct){
-			enemy.homeTarget = map.findDirectPathToHome(path, tile.x, tile.y);
-		}else{
-			enemy.homeTarget = map.findPathToHome(path, tile.x, tile.y);
+		EntityGroup template = getObject().assets.get(enemy, EntityGroup.class);
+		for(Entity entity : template.create(getObject().assets, getEngine())){
+			Transform2DComponent t = Transform2DComponent.components.get(entity);
+			if(t != null){
+				t.position.set(emitterTransform.position);
+				t.depth = emitterTransform.depth;
+				t.rotation = true;
+				t.angle = MathUtils.random(360);
+			}
+			BTreeModel btree = BTreeModel.components.get(entity);
+			if(btree!=null){
+				btree.enabled = true;
+				btree.remove = false;
+			}
+			
+			NavSystem nav = getEngine().getSystem(NavSystem.class);
+			Vector3 p = new Vector3(t.position, t.depth+1);
+			nav.navMesh.triCast(p, new Vector3(0,0,-1));
+			t.depth = -p.z;
+			nav.randomPath(entity, new Vector3(t.position, t.depth), new Vector3(0,0,-1));
+			
+			Damage damage = Damage.components.get(entity);
+			if(damage != null){
+				damage.amount *= wave.waveFactor;
+			}
+			Life life = Life.components.get(entity);
+			if(life != null){
+				life.current = life.max *= wave.waveFactor;
+			}else{
+				life = getEngine().createComponent(Life.class);
+				life.current = life.max = wave.waveFactor;
+				entity.add(life);
+			}
 		}
-		path.path.valueAt(transform.position, 0); // init position
-		
-		damage.amount = this.damage * wave.waveFactor;
-		
-		life.max = life.current = this.life * wave.waveFactor;
-		
-		entity.add(transform);
-		entity.add(path);
-		entity.add(enemy);
-		entity.add(life);
-		entity.add(damage);
-		entity.add(speed);
-		
-		// getEngine().getSystem(EditorSystem.class).
-		G3DModel model = new G3DModel();
-		model.modelInstance = new ModelInstance(map.monsterModel);
-		
-//		Node node;
-//		
-//		node = model.modelInstance.getNode("leg2.r");
-//		node.getParent().removeChild(node);
-//		
-//		node = model.modelInstance.getNode("leg2.l");
-//		node.getParent().removeChild(node);
-//		
-//		node = model.modelInstance.getNode("mesh");
-//		
-//		for(NodePart part : node.parts){
-//			if("Cube_part1".equals(part.meshPart.id)){
-//				part.enabled = false;
-//				
-//			}
-//		}
-		
-		model.animationController = new AnimationController(model.modelInstance);
-		
-		
-		
-		entity.add(model);
-		
-		getEngine().addEntity(entity);
 		
 		return Status.SUCCEEDED;
 	}

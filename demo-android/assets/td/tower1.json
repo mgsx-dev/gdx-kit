@@ -4,22 +4,20 @@ entities: [
 		id: 0
 		td.shooter: {}
 		td.aim: {
-			angle: -301.27972
+			angle: -498.44482
 			inSights: true
 		}
 		td.target: {}
 		td.load: {
-			reload: 1
+			reload: 0.10097663
+			reloadRequired: 0.10097663
 		}
 		td.range: {
 			distance: 2.0056357
 		}
 		2d: {
-			position: {
-				x: 1.4709705
-				y: 4.9173717
-			}
-			angle: 269.07596
+			depth: -1
+			angle: 107.208755
 		}
 		td.tower: {}
 		td.life: {
@@ -34,37 +32,41 @@ entities: [
 			blended: false
 			culling: false
 		}
+		td.nav: {}
 		spline: {
 			path: {
 				class: com.badlogic.gdx.math.CatmullRomSpline
 				controlPoints: [
 					{
-						x: 1.864531
-						y: 6.659359
+						x: 2.9753594
+						y: -7.9373536
 					}
 					{
-						x: 1.864531
-						y: 6.659359
+						x: 2.9753594
+						y: -7.9373536
 					}
 					{
-						x: 1.8580788
-						y: 6.6722627
+						x: 3.020601
+						y: -7.955136
 					}
 					{
-						x: 1.4838742
-						y: 5.717395
+						x: 2.5924768
+						y: -7.023369
 					}
 					{
-						x: 1.4709705
-						y: 4.9173717
+						x: 2.342739
+						y: -6.217033
 					}
 					{
-						x: 1.4709705
-						y: 4.9173717
+						x: 2.342739
+						y: -6.217033
 					}
 				]
 				continuous: false
 			}
+		}
+		td.damage: {
+			amount: 0.98109555
 		}
 	}
 ]

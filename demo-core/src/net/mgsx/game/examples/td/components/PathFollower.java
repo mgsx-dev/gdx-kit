@@ -4,6 +4,7 @@ import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.gdx.math.Path;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Pool.Poolable;
 
 import net.mgsx.game.core.annotations.Editable;
@@ -24,6 +25,7 @@ public class PathFollower implements Component, Poolable
 	
 	public transient float length;
 	public transient Path<Vector2> path;
+	public transient Path<Vector3> path3d;
 
 	public float speed = 1;
 	
@@ -31,6 +33,7 @@ public class PathFollower implements Component, Poolable
 	public void reset() {
 		t = 0;
 		path = null; // OPTIM give back to pool ?
+		path3d = null;
 		loop = false;
 		wrap = false;
 		speed = 1;

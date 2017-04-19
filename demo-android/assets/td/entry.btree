@@ -10,34 +10,34 @@ sequence
     repeat times:4
       sequence
         wait seconds:1.0085958
-        enemy speed:2.0469863 life:1.0424918 type:"TRIANGLE"
+        enemy enemy:"td/monster1.json"
     wait seconds:3.0
     nextWave
   sequence
     repeat times:4
       sequence
         wait seconds:2.0
-        enemy speed:1.00477 life:2.0399165
+        enemy enemy:"td/monster1.json"
     wait seconds:3.0
     nextWave
   sequence
     repeat times:4
       sequence
         wait seconds:2.9703572
-        enemy speed:0.43616936 life:5.2367096 type:"PENTAGON"
+        enemy enemy:"td/monster1.json"
     wait seconds:3.0
     nextWave
   sequence
     repeat times:4
       sequence
         wait seconds:4.1698804
-        enemy speed:0.25455964 life:10.021998 type:"HEXAGON"
+        enemy enemy:"td/monster1.json"
     wait seconds:3.0
     nextWave
   sequence
     repeat times:4
       sequence
         wait seconds:5.3056927
-        enemy speed:0.12430953 life:20.253439 type:"CIRCLE"
+        enemy enemy:"td/monster1.json"
     wait seconds:3.0
     nextWave
