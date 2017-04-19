@@ -119,5 +119,13 @@ public class SelectionSystem extends EntitySystem
 		selection.add(entity);
 		invalidate();
 	}
+
+	public <T extends SelectorPlugin> T findSelector(Class<T> type) {
+		for(SelectorPlugin p : selectors){
+			if(p.getClass() == type)
+				return (T)p;
+		}
+		return null;
+	}
 	
 }

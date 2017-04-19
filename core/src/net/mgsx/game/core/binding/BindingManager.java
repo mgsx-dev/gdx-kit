@@ -42,6 +42,15 @@ public class BindingManager {
 		}
 	}
 
+	public static void applyBindings(String key) {
+		Binding b = bindings.get(key);
+		if(b != null){
+			for(Learner learner : BindingManager.learners){
+				learner.bind(b);
+			}
+		}
+	}
+
 	private static void bindActor(Actor actor) {
 		if(actor instanceof Learnable)
 		{
