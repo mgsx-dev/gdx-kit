@@ -21,7 +21,6 @@ import net.mgsx.game.core.storage.LoadConfiguration;
 
 public class EntityBehaviorTreeLoader extends BehaviorTreeLoader {
 
-	private BehaviorTree tree;
 	private LoadConfiguration config;
 	
 	public EntityBehaviorTreeLoader(FileHandleResolver resolver, LoadConfiguration config) {
@@ -41,7 +40,9 @@ public class EntityBehaviorTreeLoader extends BehaviorTreeLoader {
 		}
 		// register in library manager
 		super.loadAsync(null, fileName, file, parameter);
-		tree = super.loadSync(null, fileName, file, parameter);
+		BehaviorTree tree = super.loadSync(null, fileName, file, parameter);
+		
+		BehaviorTreeLibraryManager.getInstance().getLibrary().registerArchetypeTree(fileName, tree);
 		
 		Array<AssetDescriptor> deps = new Array<AssetDescriptor>();
 		findReferences(deps, tree);
@@ -74,10 +75,7 @@ public class EntityBehaviorTreeLoader extends BehaviorTreeLoader {
 	public BehaviorTree loadSync(AssetManager manager, String fileName, FileHandle file,
 			BehaviorTreeParameter parameter) {
 		// register in library manager (make it available to render thread)
-		BehaviorTreeLibraryManager.getInstance().getLibrary().registerArchetypeTree(fileName, tree);
-		BehaviorTree bundle = tree;
-		tree = null;
-		return bundle;
+		return BehaviorTreeLibraryManager.getInstance().getLibrary().createBehaviorTree(fileName);
 	}
 
 }
