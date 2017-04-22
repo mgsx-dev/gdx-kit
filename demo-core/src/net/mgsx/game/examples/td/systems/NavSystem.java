@@ -17,6 +17,7 @@ import net.mgsx.game.examples.td.components.NavComponent;
 import net.mgsx.game.examples.td.components.NavMeshComponent;
 import net.mgsx.game.examples.td.components.PathFollower;
 import net.mgsx.game.examples.td.utils.NavMesh;
+import net.mgsx.game.plugins.core.components.Orientation3D;
 import net.mgsx.game.plugins.core.components.Transform2DComponent;
 import net.mgsx.game.plugins.g3d.components.G3DModel;
 import net.mgsx.game.plugins.spline.components.PathComponent;
@@ -121,7 +122,10 @@ public class NavSystem extends IteratingSystem
 			// TODO set triangle
 			if(navMesh.rayCast(new Ray(new Vector3(transform.position, transform.depth+1), new Vector3(0,0,-1)), nav.position, nav.normal)){
 				transform.depth = nav.position.z;
-				transform.normal.set(nav.normal.x, nav.normal.y, nav.normal.z);
+				Orientation3D orientation = Orientation3D.components.get(entity);
+				if(orientation != null){
+					orientation.normal.set(nav.normal);
+				}
 			}
 		}
 		else{

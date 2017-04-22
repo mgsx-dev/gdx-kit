@@ -11,6 +11,7 @@ import com.badlogic.gdx.math.Vector3;
 import net.mgsx.game.core.GamePipeline;
 import net.mgsx.game.examples.td.components.Enemy;
 import net.mgsx.game.examples.td.components.Speed;
+import net.mgsx.game.plugins.core.components.Orientation3D;
 import net.mgsx.game.plugins.core.components.Transform2DComponent;
 import net.mgsx.game.plugins.g3d.components.G3DModel;
 
@@ -32,8 +33,10 @@ public class EnemyModelSystem extends IteratingSystem
 //		model.modelInstance.transform.mul(new Matrix4().setToLookAt(Vector3.Z.cpy().scl(-1), transform.normal));
 		model.modelInstance.transform.rotate(Vector3.X, 90);
 
-		
-		model.modelInstance.transform.rotate(new Quaternion().setFromCross(transform.normal, Vector3.Z));
+		Orientation3D orientation = Orientation3D.components.get(entity);
+		if(orientation != null){
+			model.modelInstance.transform.rotate(new Quaternion().setFromCross(orientation.normal, orientation.direction));
+		}
 //		model.modelInstance.transform.rotate(Vector3.Y, transform.angle);
 //		model.modelInstance.transform.rotate(Vector3.Z, 90 - MathUtils.radiansToDegrees * (float)Math.acos(transform.normal.z));
 		//model.modelInstance.transform.rotate(Vector3.X, 90);

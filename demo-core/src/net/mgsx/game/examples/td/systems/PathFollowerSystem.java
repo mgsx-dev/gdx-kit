@@ -9,6 +9,7 @@ import com.badlogic.gdx.math.Vector3;
 import net.mgsx.game.core.GamePipeline;
 import net.mgsx.game.examples.td.components.PathFollower;
 import net.mgsx.game.examples.td.components.Speed;
+import net.mgsx.game.plugins.core.components.Orientation3D;
 import net.mgsx.game.plugins.core.components.Transform2DComponent;
 
 public class PathFollowerSystem extends IteratingSystem
@@ -65,12 +66,12 @@ public class PathFollowerSystem extends IteratingSystem
 		if(pathFollower.path3d != null){
 			pathFollower.path3d.valueAt(position3d, pathFollower.t);
 			pathFollower.path3d.derivativeAt(derivative3d, pathFollower.t);
-			Vector3 ppos = new Vector3(transform.position, transform.depth);
 			transform.position.set(position3d.x, position3d.y);
 			transform.depth = position3d.z;
-			// transform.angle = derivative.set(derivative3d.x, derivative3d.y).angle();
-			// transform.normal.set(derivative3d.crs(ppos.sub(position3d).scl(-1).nor())).nor();
-			transform.derivative.set(derivative3d).nor();
+			Orientation3D orientation = Orientation3D.components.get(entity);
+			if(orientation != null && derivative3d.len2() > 1e-30f){
+				orientation.direction.set(derivative3d).nor();
+			}
 		}else{
 			
 			pathFollower.path.valueAt(transform.position, pathFollower.t);

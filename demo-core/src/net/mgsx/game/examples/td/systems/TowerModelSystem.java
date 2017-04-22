@@ -7,11 +7,13 @@ import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.model.Node;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 
 import net.mgsx.game.core.GamePipeline;
 import net.mgsx.game.examples.td.components.Aiming;
 import net.mgsx.game.examples.td.components.Tower;
+import net.mgsx.game.plugins.core.components.Orientation3D;
 import net.mgsx.game.plugins.core.components.Transform2DComponent;
 import net.mgsx.game.plugins.g3d.components.G3DModel;
 
@@ -28,17 +30,26 @@ public class TowerModelSystem extends IteratingSystem
 //		Speed speed = Speed.components.get(entity);
 		model.modelInstance.transform.idt();
 		
-		model.modelInstance.transform.rotate(Vector3.X, -90);
-		model.modelInstance.transform.translate(transform.position.x, transform.position.y, transform.depth);
+// XXX		model.modelInstance.transform.rotate(Vector3.X, -90);
+		model.modelInstance.transform.translate(transform.position.x, transform.depth, -transform.position.y);
 		//model.modelInstance.transform.rotate(Vector3.X, 90);
 		
 //		model.modelInstance.transform.rotateRad(Vector3.Y, (float)( - Math.atan2(transform.derivative.y,- transform.derivative.x)) );
 //		model.modelInstance.transform.rotate(Vector3.Y, 90);
 		
-		model.modelInstance.transform.rotateRad(Vector3.Z, -(float)( Math.atan2(transform.normal.x, -transform.normal.y)) );
-		model.modelInstance.transform.rotateRad(Vector3.Y, -(float)( Math.acos(transform.normal.z)) );
+		Orientation3D orientation = Orientation3D.components.get(entity);
+		if(orientation != null){
+			if(orientation.direction.len2() > 0 && orientation.normal.len2() > 0){
+				model.modelInstance.transform.mul(new Matrix4().setToLookAt(
+						new Vector3(orientation.direction.x, -orientation.direction.y, orientation.direction.z), 
+						new Vector3(orientation.normal.x, -orientation.normal.y, orientation.normal.z)).mul(new Matrix4().rotate(Vector3.X, 90)));
+			}
+			
+//			model.modelInstance.transform.rotateRad(Vector3.Z, -(float)( Math.atan2(orientation.normal.x, -orientation.normal.y)) );
+//			model.modelInstance.transform.rotateRad(Vector3.Y, -(float)( Math.acos(orientation.normal.z)) );
+		}
 		
-		model.modelInstance.transform.rotate(Vector3.X, 90);
+// XXX		model.modelInstance.transform.rotate(Vector3.X, 90);
 		
 		
 //		model.modelInstance.transform.rotate(Vector3.Y, -90);
