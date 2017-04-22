@@ -16,6 +16,7 @@ import net.mgsx.game.plugins.camera.CameraEditorPlugin;
 import net.mgsx.game.plugins.core.editors.ShaderProgramEditor;
 import net.mgsx.game.plugins.core.math.Signal;
 import net.mgsx.game.plugins.core.systems.GridDebugSystem;
+import net.mgsx.game.plugins.core.systems.OrientationDebugSystem;
 import net.mgsx.game.plugins.core.systems.PolygonRenderSystem;
 import net.mgsx.game.plugins.core.systems.SelectionRenderSystem;
 import net.mgsx.game.plugins.core.tools.ClipPlaneTool;
@@ -58,6 +59,7 @@ public class CoreEditorPlugin extends EditorPlugin
 		editor.entityEngine.addSystem(new SelectionRenderSystem(editor));
 		editor.entityEngine.addSystem(new PolygonRenderSystem());
 		editor.entityEngine.addSystem(new GridDebugSystem(editor));
+		editor.entityEngine.addSystem(new OrientationDebugSystem());
 		
 		editor.addTool(new EntityEmitterTool(editor));
 		editor.addTool(new ResetProxyTool(editor));
