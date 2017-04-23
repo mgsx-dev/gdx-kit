@@ -60,13 +60,37 @@ public class WorldProvider implements RayCastCallback, QueryCallback
 		queryResults.clear();
 	}
 
+	/** see {@link #rayCastAny(RayCast)} */
+	public RayCastResult rayCastAny(Vector2 start, Vector2 direction, float length){
+		return rayCastFirst(rayCast.set(start, direction, length));
+	}
+	/** see {@link #rayCastFirst(RayCast)} */
 	public RayCastResult rayCastFirst(Vector2 start, Vector2 direction, float length){
 		return rayCastFirst(rayCast.set(start, direction, length));
 	}
-	public RayCastResult rayCastFirst(RayCast rayCast)
+	
+	/**
+	 * ray cast any fixture
+	 * @param rayCast
+	 * @return
+	 */
+	public boolean rayCastAny(RayCast rayCast)
 	{
 		firstResult = true;
 		rayCast(rayCast);
+		return rayCastResults.size > 0;
+	}
+	
+	/**
+	 * ray cast closest fixture
+	 * @param rayCast
+	 * @return
+	 */
+	public RayCastResult rayCastFirst(RayCast rayCast)
+	{
+		firstResult = false;
+		rayCast(rayCast);
+		rayCastResults.sort();
 		return rayCastResults.size > 0 ? rayCastResults.first() : null;
 	}
 	

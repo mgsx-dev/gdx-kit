@@ -3,7 +3,7 @@ package net.mgsx.game.plugins.box2d.helper;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Fixture;
 
-public class RayCastResult{
+public class RayCastResult implements Comparable<RayCastResult>{
 	public Fixture fixture;
 	public final Vector2 point = new Vector2();
 	public final Vector2 normal = new Vector2();
@@ -13,5 +13,9 @@ public class RayCastResult{
 	}
 	public void reset() {
 		fixture = null;
+	}
+	@Override
+	public int compareTo(RayCastResult o) {
+		return Float.compare(fraction, o.fraction);
 	}
 }
