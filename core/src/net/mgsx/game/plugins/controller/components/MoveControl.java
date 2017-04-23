@@ -7,7 +7,9 @@ import com.badlogic.gdx.Input;
 import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.core.annotations.EditableComponent;
 import net.mgsx.game.core.annotations.EnumType;
+import net.mgsx.game.core.annotations.Storable;
 
+@Storable("control.move")
 @EditableComponent
 public class MoveControl implements Component
 {
