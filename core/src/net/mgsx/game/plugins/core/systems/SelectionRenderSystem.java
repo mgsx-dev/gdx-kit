@@ -4,6 +4,7 @@ import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -27,7 +28,7 @@ public class SelectionRenderSystem extends IteratingSystem {
 	private SelectionSystem selection;
 	
 	public SelectionRenderSystem(EditorScreen editor) {
-		super(Family.one(Movable.class, Transform2DComponent.class).get(), GamePipeline.RENDER_OVER);
+		super(Family.one(Movable.class, Transform2DComponent.class).get(), GamePipeline.RENDER_TOOLS);
 		this.editor = editor;
 	}
 	
@@ -61,6 +62,7 @@ public class SelectionRenderSystem extends IteratingSystem {
 		Vector2 s = Tool.pixelSize(editor.getGameCamera()).scl(5);
 		boolean inSelection = selection.contains(entity);
 		if(inSelection) render.shapeRenderer.setColor(1, 1, 0, 1);
+		else render.shapeRenderer.setColor(Color.WHITE);
 		render.shapeRenderer.rect(pos.x-s.x, pos.y-s.y, 2*s.x, 2*s.y);
 		if(inSelection) render.shapeRenderer.setColor(1, 1, 1, 1);
 	}
