@@ -1,0 +1,666 @@
+{
+entities: [
+	{
+		id: 0
+		2d: {
+			position: {
+				x: 708
+				y: -527.7484
+			}
+			angle: 1090.0308
+		}
+		raycast.caster: {
+			maxLength: 475.08392
+		}
+		spline: {
+			path: {
+				class: com.badlogic.gdx.math.CatmullRomSpline
+				controlPoints: [
+					{
+						x: -135.79787
+						y: 0.4123279
+					}
+					{
+						x: -37
+						y: 52
+					}
+					{
+						x: 10.421611
+						y: 85.36678
+					}
+					{
+						x: 58
+						y: 20.425611
+					}
+					{
+						x: 102
+						y: -28
+					}
+					{
+						x: 167.25908
+						y: -9
+					}
+					{
+						x: 207.28627
+						y: 57
+					}
+					{
+						x: 121
+						y: 123.35129
+					}
+					{
+						x: -48
+						y: 103.338005
+					}
+					{
+						x: -98
+						y: -180
+					}
+					{
+						x: -243.62456
+						y: -179
+					}
+					{
+						x: -234
+						y: -21
+					}
+				]
+				continuous: false
+			}
+		}
+	}
+	{
+		id: 1
+		box2d: {
+			id: Circle
+			def: {
+				position: {
+					x: -150.17592
+					y: 101.62953
+				}
+			}
+			fixtures: [
+				{
+					def: {
+						shape: {
+							type: Circle
+							position: {}
+							radius: 73.29261
+						}
+						density: 1
+						filter: {}
+					}
+				}
+			]
+		}
+	}
+	{
+		id: 2
+		box2d: {
+			id: Circle
+			def: {
+				position: {
+					x: 208.24988
+					y: 118.8687
+				}
+			}
+			fixtures: [
+				{
+					def: {
+						shape: {
+							type: Circle
+							position: {}
+							radius: 39.938774
+						}
+						density: 1
+						filter: {}
+					}
+				}
+			]
+		}
+	}
+	{
+		id: 3
+		box2d: {
+			id: Circle
+			def: {
+				position: {
+					x: -151.72157
+					y: -105
+				}
+			}
+			fixtures: [
+				{
+					def: {
+						shape: {
+							type: Circle
+							position: {}
+							radius: 41.49799
+						}
+						density: 1
+						filter: {}
+					}
+				}
+			]
+		}
+	}
+	{
+		id: 4
+		box2d: {
+			id: Circle
+			def: {
+				position: {
+					x: -2.5229836
+					y: 20.394753
+				}
+			}
+			fixtures: [
+				{
+					def: {
+						shape: {
+							type: Circle
+							position: {}
+							radius: 12.373115
+						}
+						density: 1
+						filter: {}
+					}
+				}
+			]
+		}
+	}
+	{
+		id: 5
+		box2d: {
+			id: Rectangle
+			def: {
+				type: KinematicBody
+				position: {
+					x: 1.3333778
+					y: -106
+				}
+			}
+			fixtures: [
+				{
+					def: {
+						shape: {
+							type: Polygon
+							vertex: [
+								{
+									x: 25.861086
+									y: -74.40739
+								}
+								{
+									x: 25.861086
+									y: 74.40739
+								}
+								{
+									x: -25.861086
+									y: 74.40739
+								}
+								{
+									x: -25.861086
+									y: -74.40739
+								}
+							]
+						}
+						density: 1
+						filter: {}
+					}
+				}
+			]
+		}
+	}
+	{
+		id: 6
+		box2d: {
+			id: Polygon
+			def: {
+				type: KinematicBody
+				position: {
+					x: 63.97206
+					y: 44.4581
+				}
+			}
+			fixtures: [
+				{
+					def: {
+						shape: {
+							type: Polygon
+							vertex: [
+								{
+									x: 124.31477
+									y: -5.4444427
+								}
+								{
+									x: 74.407364
+									y: 52.62963
+								}
+								{
+									x: 16.333267
+									y: 48.092598
+								}
+								{}
+								{
+									x: 55.35176
+									y: -34.481476
+								}
+							]
+						}
+						density: 1
+						filter: {}
+					}
+				}
+			]
+		}
+	}
+	{
+		id: 7
+		box2d: {
+			id: Rectangle
+			def: {
+				type: KinematicBody
+				position: {
+					x: -177.39795
+					y: -293.0838
+				}
+			}
+			fixtures: [
+				{
+					def: {
+						shape: {
+							type: Polygon
+							vertex: [
+								{
+									x: 15.425934
+									y: -15.42594
+								}
+								{
+									x: 15.425934
+									y: 15.42594
+								}
+								{
+									x: -15.425934
+									y: 15.42594
+								}
+								{
+									x: -15.425934
+									y: -15.42594
+								}
+							]
+						}
+						density: 1
+						filter: {}
+					}
+				}
+			]
+		}
+	}
+	{
+		id: 8
+		2d: {
+			position: {
+				x: -71.73828
+				y: -133.63269
+			}
+			angle: 2277.1323
+		}
+		raycast.caster: {
+			maxLength: 607.54596
+		}
+		control.move: {
+			speed: 97.76787
+		}
+		control.orientation: {}
+	}
+	{
+		id: 9
+		box2d: {
+			id: Circle
+			def: {
+				position: {
+					x: 20
+					y: -296
+				}
+			}
+			fixtures: [
+				{
+					def: {
+						shape: {
+							type: Circle
+							position: {}
+							radius: 48.64768
+						}
+						density: 1
+						filter: {}
+					}
+				}
+			]
+		}
+	}
+	{
+		id: 10
+		box2d: {
+			id: Circle
+			def: {
+				position: {
+					x: -130.7894
+					y: -213
+				}
+			}
+			fixtures: [
+				{
+					def: {
+						shape: {
+							type: Circle
+							position: {}
+							radius: 32.259583
+						}
+						density: 1
+						filter: {}
+					}
+				}
+			]
+		}
+	}
+	{
+		id: 11
+		box2d: {
+			id: Circle
+			def: {
+				position: {
+					x: -283.56467
+					y: -181
+				}
+			}
+			fixtures: [
+				{
+					def: {
+						shape: {
+							type: Circle
+							position: {}
+							radius: 19.059351
+						}
+						density: 1
+						filter: {}
+					}
+				}
+			]
+		}
+	}
+	{
+		id: 12
+		box2d: {
+			id: Circle
+			def: {
+				position: {
+					x: -326.5328
+					y: -68
+				}
+			}
+			fixtures: [
+				{
+					def: {
+						shape: {
+							type: Circle
+							position: {}
+							radius: 26.711103
+						}
+						density: 1
+						filter: {}
+					}
+				}
+			]
+		}
+	}
+	{
+		id: 13
+		box2d: {
+			id: Circle
+			def: {
+				position: {
+					x: -222
+					y: -19.709816
+				}
+			}
+			fixtures: [
+				{
+					def: {
+						shape: {
+							type: Circle
+							position: {}
+							radius: 51.27826
+						}
+						density: 1
+						filter: {}
+					}
+				}
+			]
+		}
+	}
+	{
+		id: 14
+		box2d: {
+			id: Rectangle
+			def: {
+				position: {
+					x: 247.71384
+					y: -152.5
+				}
+			}
+			fixtures: [
+				{
+					def: {
+						shape: {
+							type: Polygon
+							vertex: [
+								{
+									x: 25.713837
+									y: -19.5
+								}
+								{
+									x: 25.713837
+									y: 19.5
+								}
+								{
+									x: -25.713837
+									y: 19.5
+								}
+								{
+									x: -25.713837
+									y: -19.5
+								}
+							]
+						}
+						density: 1
+						filter: {}
+					}
+				}
+			]
+		}
+	}
+	{
+		id: 15
+		box2d: {
+			id: Rectangle
+			def: {
+				position: {
+					x: 225.74103
+					y: -246.5
+				}
+			}
+			fixtures: [
+				{
+					def: {
+						shape: {
+							type: Polygon
+							vertex: [
+								{
+									x: 74.74103
+									y: -40.5
+								}
+								{
+									x: 74.74103
+									y: 40.5
+								}
+								{
+									x: -74.74103
+									y: 40.5
+								}
+								{
+									x: -74.74103
+									y: -40.5
+								}
+							]
+						}
+						density: 1
+						filter: {}
+					}
+				}
+			]
+		}
+	}
+	{
+		id: 16
+		box2d: {
+			id: Rectangle
+			def: {
+				position: {
+					x: -8.8727
+					y: -436.5
+				}
+			}
+			fixtures: [
+				{
+					def: {
+						shape: {
+							type: Polygon
+							vertex: [
+								{
+									x: 92.127304
+									y: -24.5
+								}
+								{
+									x: 92.127304
+									y: 24.5
+								}
+								{
+									x: -92.127304
+									y: 24.5
+								}
+								{
+									x: -92.127304
+									y: -24.5
+								}
+							]
+						}
+						density: 1
+						filter: {}
+					}
+				}
+			]
+		}
+	}
+	{
+		id: 17
+		box2d: {
+			id: Polygon
+			def: {
+				position: {
+					x: 202.49423
+					y: -48
+				}
+			}
+			fixtures: [
+				{
+					def: {
+						shape: {
+							type: Polygon
+							vertex: [
+								{
+									x: 62
+									y: -47
+								}
+								{
+									x: 50
+									y: 32.273224
+								}
+								{}
+								{
+									x: -48
+									y: -32
+								}
+								{
+									x: -52.596375
+									y: -70
+								}
+								{
+									x: 25
+									y: -68.77954
+								}
+							]
+						}
+						density: 1
+						filter: {}
+					}
+				}
+			]
+		}
+	}
+]
+systems: [
+	{
+		type: core.bindings
+		enabled: true
+		bindings: []
+	}
+	{
+		type: box2d.world
+		enabled: true
+		runSimulation: true
+		gravity: {
+			y: -9.807
+		}
+		timeStep: 0.033333335
+		velocityIterations: 8
+		positionIterations: 3
+	}
+	{
+		type: core.clearScreen
+		enabled: true
+		color: {
+			r: 0.2
+			g: 0.2
+			b: 0.2
+			a: 1
+		}
+		clearColor: true
+		clearDepth: true
+	}
+	{
+		type: g3d.rendering
+		enabled: true
+		shadowQuality: 10
+		shadowSize: {
+			x: 50
+			y: 50
+		}
+		shadowNear: 0.1
+		shadowFar: 100
+		ambient: {
+			r: 0.4
+			g: 0.4
+			b: 0.4
+			a: 1
+		}
+	}
+	{
+		type: g2d.render
+		enabled: true
+		culling: false
+	}
+]
+views: [
+	net.mgsx.game.examples.raycast.systems.RayCasterBox2DSystem
+]
+}
