@@ -170,6 +170,14 @@ default-window
   orig: 27, 29
   offset: 0, 0
   index: -1
+invert-window
+  rotate: false
+  xy: 135, 1
+  size: 27, 29
+  split: 4, 3, 20, 3
+  orig: 27, 29
+  offset: 0, 0
+  index: -1
 default-window-header
   rotate: false
   xy: 1, 20

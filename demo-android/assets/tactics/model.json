@@ -2,9 +2,12 @@
     teams: {
         heroes: ["warrior", "dwarf", "elfe", "wizard"]
         "warrior-only": ["warrior"]
+        "warrior-elfe": ["warrior", "elfe"]
         "monsters-1.1": ["bat", "bat", "bat"]
         "monsters-1.2": ["bat", "bat", "bat", "skeleton", "skeleton"]
         "monsters-1.3": ["bat", "skeleton", "skeleton", "ork"]
+        "monsters-1.4": ["dragon"]
+        "monsters-1.5": ["dragon", "skeleton", "skeleton", "ork", "bat", "bat", "bat"]
     }
     cards: [
         {
@@ -51,7 +54,7 @@
         }
         {
             id: "earthquake"
-            dmg: {min: 3, max: 12}
+            dmg: {min: 30, max: 60}
             at: {min: -3, max: -5}
             wait: 12
         }
@@ -59,11 +62,11 @@
             id: "heal"
             team: true
             self: true
-            dmg: {min: 5, max: 7}
+            dmg: {min: -5, max: -7}
             poison: null
             heal: null
             protection: null
-            wait: 8
+            wait: 6
 
         }
         {
@@ -85,6 +88,21 @@
             wait: 6
         }
         {
+            id: "tail"
+            dmg: {min: 2, max: 46}
+            wait: 3
+        }
+        {
+            id: "head"
+            dmg: {min: 30, max: 30}
+            wait: 6
+        }
+        {
+            id: "claws"
+            dmg: {min: 3, max: 4}
+            wait: 1
+        }
+        {
             id: "poison-feng"
             dmg: {min: 1, max: 1}
             turns: {min: 3, max: 3}
@@ -92,6 +110,17 @@
         }
     ]
     characters: [
+        {
+            id: "dragon"
+            name: "Dragon"
+            life: 120
+            at: 10
+            prd: 10
+            speed: 1
+            cards: [
+                "tail", "poison-feng", "poison-feng", "head", "claws"
+            ]
+        }
         {
             id: "warrior"
             name: "Warrior"

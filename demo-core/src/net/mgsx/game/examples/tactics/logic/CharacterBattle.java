@@ -23,4 +23,5 @@ public class CharacterBattle
 	public transient Array<CardBattle> cards = new Array<CardBattle>();
 	
 	public Array<EffectBattle> effects = new Array<EffectBattle>();
+
 }

@@ -132,9 +132,9 @@ public class BattleLogic {
 		
 		current = characters.size > 0 ? characters.first() : null;
 		
-		if(old != current){
+		// if(old != current){
 			listener.onPlayerChange(old, current);
-		}
+		// }
 
 		if(teamA.characters.size <= 0 || teamB.characters.size <= 0){
 			listener.onEnd(teamA.characters.size > 0, teamB.characters.size > 0);
@@ -149,7 +149,10 @@ public class BattleLogic {
 		for(CharacterBattle target : targets){
 			EffectBattle fx = new EffectBattle();
 			if(card.def.dmg != null){
-				fx.life = -MathUtils.random(card.def.dmg.min, card.def.dmg.max);
+				if(card.def.dmg.min < 0)
+					fx.life = MathUtils.random(-card.def.dmg.min, -card.def.dmg.max);
+				else
+					fx.life = -MathUtils.random(card.def.dmg.min, card.def.dmg.max);
 			}
 			if(card.def.turns != null){
 				fx.turns = MathUtils.random(card.def.turns.min, card.def.turns.max);
