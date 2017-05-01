@@ -1,0 +1,174 @@
+{
+    teams: {
+        heroes: ["warrior", "dwarf", "elfe", "wizard"]
+        "warrior-only": ["warrior"]
+        "monsters-1.1": ["bat", "bat", "bat"]
+        "monsters-1.2": ["bat", "bat", "bat", "skeleton", "skeleton"]
+        "monsters-1.3": ["bat", "skeleton", "skeleton", "ork"]
+    }
+    cards: [
+        {
+            id: "sword"
+            dmg: {min: 3, max: 12}
+            at: {min: -3, max: -5}
+            wait: 3
+        }
+        {
+            id: "battle-axe"
+            dmg: {min: 3, max: 12}
+            at: {min: -3, max: -5}
+            wait: 5
+        }
+        {
+            id: "double-sword"
+            dmg: {min: 3, max: 12}
+            at: {min: -3, max: -5}
+            wait: 5
+        }
+        {
+            id: "axe"
+            dmg: {min: 3, max: 12}
+            at: {min: -3, max: -5}
+            wait: 6
+        }
+        {
+            id: "long-bow"
+            dmg: {min: 3, max: 12}
+            at: {min: -3, max: -5}
+            wait: 4
+        }
+        {
+            id: "stick"
+            dmg: {min: 3, max: 12}
+            at: {min: -3, max: -5}
+            wait: 2
+        }
+        {
+            id: "fire-ball"
+            dmg: {min: 3, max: 12}
+            at: {min: -3, max: -5}
+            wait: 8
+        }
+        {
+            id: "earthquake"
+            dmg: {min: 3, max: 12}
+            at: {min: -3, max: -5}
+            wait: 12
+        }
+        {
+            id: "heal"
+            team: true
+            self: true
+            dmg: {min: 5, max: 7}
+            poison: null
+            heal: null
+            protection: null
+            wait: 8
+
+        }
+        {
+            id: "spell-protect"
+            team: true
+            self: true
+            pr: {min: 3, max: 3}
+            turns: {min: 4, max: 5}
+            wait: 8
+        }
+        {
+            id: "feng"
+            dmg: {min: 1, max: 2}
+            wait: 2
+        }
+        {
+            id: "club"
+            dmg: {min: 2, max: 12}
+            wait: 6
+        }
+        {
+            id: "poison-feng"
+            dmg: {min: 1, max: 1}
+            turns: {min: 3, max: 3}
+            wait: 5
+        }
+    ]
+    characters: [
+        {
+            id: "warrior"
+            name: "Warrior"
+            life: 30
+            at: 10
+            prd: 10
+            speed: 1
+            cards: [
+                "sword", "battle-axe", "double-sword"
+            ]
+        }
+        {
+            id: "dwarf"
+            name: "Dwarf"
+            life: 35
+            at: 10
+            prd: 10
+            speed: 1
+            cards: [
+                "sword", "axe", "battle-axe"
+            ]
+        }
+        {
+            id: "elfe"
+            name: "Elfe"
+            life: 25
+            at: 10
+            prd: 10
+            speed: 1
+            cards: [
+                "sword", "long-bow", "heal"
+            ]
+        }
+        {
+            id: "wizard"
+            name: "Wizard"
+            life: 20
+            at: 10
+            prd: 10
+            speed: 1
+            cards: [
+                "stick", "heal", "fire-ball", "earthquake"
+            ]
+        }
+        {
+            id: "bat"
+            name: "Bat"
+            life: 5
+            at: 10
+            prd: 10
+            speed: 2
+            cards: [
+                "feng", "poison-feng"
+            ]
+        }
+        {
+            id: "skeleton"
+            name: "Skeleton"
+            life: 15
+            at: 10
+            prd: 10
+            speed: 2
+            cards: [
+                "sword"
+            ]
+        }
+        {
+            id: "ork"
+            name: "Ork"
+            life: 40
+            at: 10
+            prd: 10
+            speed: 2
+            cards: [
+                "club"
+            ]
+        }
+
+    ]
+}
