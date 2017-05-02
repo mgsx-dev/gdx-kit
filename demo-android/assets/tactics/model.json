@@ -78,6 +78,20 @@
 
         }
         {
+            id: "mushroom"
+            team: true
+            self: true
+            dmg: {min: -2, max: -2}
+            wait: 6
+            turns: {min: 4, max: 6}
+        }
+        {
+            id: "poison-arrows"
+            dmg: {min: 2, max: 2}
+            wait: 3
+            turns: {min: 4, max: 6}
+        }
+        {
             id: "spell-protect"
             team: true
             self: true
@@ -162,7 +176,7 @@
             prd: 10
             speed: 1
             cards: [
-                "sword", "long-bow", "heal"
+                "sword", "long-bow", "heal", "poison-arrows", "mushroom"
             ]
             faction: "holy"
         }

@@ -233,6 +233,8 @@ public class TacticsGameScreen extends StageScreen
 				sequence.addAction(Actions.run(new Runnable() {
 					@Override
 					public void run() {
+						
+						// TODO in UI
 						float x = ui.getX();
 						float y = ui.getY();
 						ui.addAction(Actions.sequence(
@@ -244,9 +246,9 @@ public class TacticsGameScreen extends StageScreen
 								));
 						ui.update();
 						
+						ui.onEffectApply(fx);
+						
 						Vector2 p = ui.getLifePosition();
-						
-						
 						
 						Label lbl = new Label((fx.life < 0 ? "" : "+") + String.valueOf(fx.life), getSkin());
 						lbl.setColor(fx.life < 0 ? Color.RED : Color.GREEN);
