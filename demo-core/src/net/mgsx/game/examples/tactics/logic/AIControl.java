@@ -40,6 +40,7 @@ public class AIControl implements CharacterControl
 		// simple AI :
 		// get first card from deck
 		CardBattle card = logic.current.cards.first();
+		if(card.turns > 0) return;
 		
 		float minDamage = 0;
 		float maxDamage = 0;
