@@ -234,7 +234,7 @@ public class TacticsGameScreen extends StageScreen
 					@Override
 					public void run() {
 						
-						// TODO in UI
+						// TODO all this in character UI
 						float x = ui.getX();
 						float y = ui.getY();
 						ui.addAction(Actions.sequence(
@@ -271,6 +271,7 @@ public class TacticsGameScreen extends StageScreen
 				sequence.addAction(Actions.run(new Runnable() {
 					@Override
 					public void run() {
+						
 						// animation for characters list :
 						for(Cell<Actor> cell : tableCharacters.getCells()){
 							if(cell.getActor() != null && cell.getActor().getUserObject() == target){
@@ -284,6 +285,9 @@ public class TacticsGameScreen extends StageScreen
 								
 							}
 						}
+						
+						// TODO in GUI
+						characterWidgets.get(target).onDie();
 						
 						// animation for teams
 						for(Cell<Actor> cell : tableTeamA.getCells()){

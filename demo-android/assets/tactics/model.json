@@ -12,9 +12,15 @@
     factions: {
         "evil": {
             icon: "ra-broken-skull"
+            color: "#000000"
         }
         "holy": {
             icon: "ra-helmet"
+            color: "#ffffff"
+        }
+        "dragon": {
+            icon: "ra-two-dragons"
+            color: "#ff7f00"
         }
     }
     cards: [
@@ -142,7 +148,7 @@
             cards: [
                 "tail", "poison-feng", "poison-feng", "head", "claws"
             ]
-            faction: "evil"
+            faction: "dragon"
         }
         {
             id: "warrior"

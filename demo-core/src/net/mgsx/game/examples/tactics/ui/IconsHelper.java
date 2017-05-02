@@ -69,6 +69,7 @@ public class IconsHelper {
 		return null;
 	}
 
+	/** @see https://nagoshiashumari.github.io/Rpg-Awesome/ */
 	public static Image image(String id) 
 	{
 		if(font12 == null) load();
@@ -78,7 +79,7 @@ public class IconsHelper {
 		TextureRegion region = font12.getRegion(glyph.page);
 		region = new TextureRegion(region.getTexture(), glyph.u, glyph.v2, glyph.u2, glyph.v);
 		Image img = new Image(region);
-		img.setScaling(Scaling.fit);
+		img.setScaling(Scaling.none);
 		return img;
 	}
 }

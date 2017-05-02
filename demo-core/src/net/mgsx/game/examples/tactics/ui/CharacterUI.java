@@ -38,7 +38,7 @@ public class CharacterUI extends Table
 		FactionDef faction = character.def.model.factions.get(character.def.faction);
 		
 		Image img = IconsHelper.image(faction.icon);
-		img.setColor(Color.BLACK);
+		img.setColor(Color.valueOf(faction.color));
 		
 		table.add(img).row();
 		
@@ -102,6 +102,16 @@ public class CharacterUI extends Table
 			}
 		}
 		
+	}
+
+	public void onDie() 
+	{
+		// effectWidgets.clear();
+		// fxTable.clear();
+		Image img = IconsHelper.image("ra-death-skull");
+		img.setBounds(0, 0, getWidth(), getHeight());
+		img.setColor(1,1,1, .5f);
+		this.addActor(img);
 	}
 	
 }
