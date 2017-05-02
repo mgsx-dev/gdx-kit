@@ -40,6 +40,9 @@ public class BattleLogicTest
 				System.out.println(victoryA ? "team A win" : "team A loose");
 				System.out.println(victoryB ? "team B win" : "team B loose");
 			}
+			@Override
+			public void onTarget(CardBattle card, CharacterBattle target) {
+			}
 		};
 	}
 	

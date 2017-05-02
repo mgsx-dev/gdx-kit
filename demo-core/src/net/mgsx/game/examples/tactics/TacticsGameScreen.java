@@ -26,10 +26,12 @@ import com.badlogic.gdx.utils.ObjectMap;
 
 import net.mgsx.game.core.screen.StageScreen;
 import net.mgsx.game.examples.tactics.actions.JoinAction;
+import net.mgsx.game.examples.tactics.logic.AIControl;
 import net.mgsx.game.examples.tactics.logic.BattleLogic;
 import net.mgsx.game.examples.tactics.logic.BattleLogic.BattleListener;
 import net.mgsx.game.examples.tactics.logic.CardBattle;
 import net.mgsx.game.examples.tactics.logic.CharacterBattle;
+import net.mgsx.game.examples.tactics.logic.CharacterControl;
 import net.mgsx.game.examples.tactics.logic.EffectBattle;
 import net.mgsx.game.examples.tactics.model.Model;
 import net.mgsx.game.examples.tactics.ui.CharacterUI;
@@ -198,8 +200,6 @@ public class TacticsGameScreen extends StageScreen
 							sequence.addAction(Actions.run(new Runnable() {
 								@Override
 								public void run() {
-									iaPlay();
-									
 									sequence.addAction(Actions.run(new Runnable() {
 										
 										@Override
@@ -209,6 +209,7 @@ public class TacticsGameScreen extends StageScreen
 												ui.update();
 											}
 											
+											// iaPlay();
 											
 										}
 									}));
@@ -311,41 +312,52 @@ public class TacticsGameScreen extends StageScreen
 					}
 				}));
 			}
+
+			@Override
+			public void onTarget(CardBattle card, CharacterBattle target) {
+				CharacterUI ui = characterWidgets.get(target);
+				ui.setTarget(true);
+			}
+		};
+		
+		final CharacterControl humanControl = new CharacterControl() {
+
+			@Override
+			public void enable(CharacterBattle character) {
+				// TODO show turn buttons and allow selection ...
+				
+			}
+
+			@Override
+			public void disable(CharacterBattle character) {
+				// TODO disable buttons and hide turns button
+				
+			}
+			
 		};
 		
 		reset.addListener(new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
 				logic = BattleLogic.create(model, model.getTeam(teamABox.getSelected()), model.getTeam(teamBBox.getSelected()));
+				for(CharacterBattle c : logic.teamA.characters){
+					c.control = humanControl;
+				}
+				for(CharacterBattle c : logic.teamB.characters){
+					c.control = new AIControl(logic){
+						@Override
+						public void enable(CharacterBattle character) {
+							sequence.addAction(Actions.delay(1)); // simulate reflexion ...
+							super.enable(character);
+						}
+					};
+				}
 				logic.listener = logicListener;
 				turnButton.setDisabled(false);
 				stage.getRoot().clearActions();
 				updateAll();
 			}
 		});
-	}
-	
-	private void iaPlay(){
-		
-		// TODO in IA class controller ...
-// XXX		sequence = new SequenceAction();
-		sequence.addAction(Actions.delay(1));
-// XXX		stage.addAction(sequence);
-		
-		// take first action
-		if(logic.current == null) return;
-		CardBattle card = logic.current.cards.first();
-		
-		for(CharacterBattle target : logic.teamA.characters){
-			if(target.life > 0){
-				logic.selectAction(card, target);
-				characterWidgets.get(target).setTarget(true);
-				logic.nextTurn();
-				return;
-			}
-		}
-		
-		
 	}
 	
 	@Override

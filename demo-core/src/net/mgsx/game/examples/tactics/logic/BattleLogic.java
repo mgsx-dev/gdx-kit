@@ -16,6 +16,7 @@ public class BattleLogic {
 		public void onDie(CharacterBattle target);
 		public void onPlayerChange(CharacterBattle old, CharacterBattle current);
 		public void onEnd(boolean victoryA, boolean victoryB);
+		public void onTarget(CardBattle card, CharacterBattle target);
 	}
 	
 	public BattleListener listener = new BattleListener() {
@@ -30,6 +31,9 @@ public class BattleLogic {
 		}
 		@Override
 		public void onEnd(boolean victoryA, boolean victoryB) {
+		}
+		@Override
+		public void onTarget(CardBattle card, CharacterBattle target) {
 		}
 	};
 	
@@ -135,6 +139,13 @@ public class BattleLogic {
 		// if(old != current){
 			listener.onPlayerChange(old, current);
 		// }
+		
+		if(old != null){
+			old.control.disable(old);
+		}
+		if(current != null){
+			current.control.enable(current);
+		}
 
 		if(teamA.characters.size <= 0 || teamB.characters.size <= 0){
 			listener.onEnd(teamA.characters.size > 0, teamB.characters.size > 0);
@@ -147,6 +158,7 @@ public class BattleLogic {
 	public void selectAction(CardBattle card, Array<CharacterBattle> targets)
 	{
 		for(CharacterBattle target : targets){
+			listener.onTarget(card, target);
 			EffectBattle fx = new EffectBattle();
 			if(card.def.dmg != null){
 				if(card.def.dmg.min < 0)
