@@ -184,4 +184,8 @@ public class BattleLogic {
 //		}
 //		characters.sort(characterComparator);
 	}
+
+	public boolean isOver() {
+		return teamA.characters.size <= 0 || teamB.characters.size <= 0;
+	}
 }

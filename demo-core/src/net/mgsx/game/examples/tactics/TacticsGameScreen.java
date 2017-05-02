@@ -349,6 +349,14 @@ public class TacticsGameScreen extends StageScreen
 						public void enable(CharacterBattle character) {
 							sequence.addAction(Actions.delay(1)); // simulate reflexion ...
 							super.enable(character);
+							if(!logic.isOver()){
+								sequence.addAction(Actions.run(new Runnable() {
+									@Override
+									public void run() {
+										logic.nextTurn();
+									}
+								}));
+							}
 						}
 					};
 				}

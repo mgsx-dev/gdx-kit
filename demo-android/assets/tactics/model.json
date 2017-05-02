@@ -8,6 +8,8 @@
         "monsters-1.3": ["bat", "skeleton", "skeleton", "ork"]
         "monsters-1.4": ["dragon"]
         "monsters-1.5": ["dragon", "skeleton", "skeleton", "ork", "bat", "bat", "bat"]
+        "test-ai": ["dark-wizard", "bat", "bat", "bat"]
+        "test-ai2": ["dark-wizard", "dark-wizard"]
     }
     factions: {
         "evil": {
@@ -138,6 +140,16 @@
         }
     ]
     characters: [
+
+        {
+            id: "dark-wizard"
+            name: "Dark Wizard"
+            life: 30
+            cards: [
+                "heal", "poison-feng", "mushroom", "stick"
+            ]
+            faction: "evil"
+        }
         {
             id: "dragon"
             name: "Dragon"
