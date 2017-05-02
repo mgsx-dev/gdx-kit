@@ -9,6 +9,14 @@
         "monsters-1.4": ["dragon"]
         "monsters-1.5": ["dragon", "skeleton", "skeleton", "ork", "bat", "bat", "bat"]
     }
+    factions: {
+        "evil": {
+            icon: "ra-broken-skull"
+        }
+        "holy": {
+            icon: "ra-helmet"
+        }
+    }
     cards: [
         {
             id: "sword"
@@ -120,6 +128,7 @@
             cards: [
                 "tail", "poison-feng", "poison-feng", "head", "claws"
             ]
+            faction: "evil"
         }
         {
             id: "warrior"
@@ -131,6 +140,7 @@
             cards: [
                 "sword", "battle-axe", "double-sword"
             ]
+            faction: "holy"
         }
         {
             id: "dwarf"
@@ -142,6 +152,7 @@
             cards: [
                 "sword", "axe", "battle-axe"
             ]
+            faction: "holy"
         }
         {
             id: "elfe"
@@ -153,6 +164,7 @@
             cards: [
                 "sword", "long-bow", "heal"
             ]
+            faction: "holy"
         }
         {
             id: "wizard"
@@ -164,6 +176,7 @@
             cards: [
                 "stick", "heal", "fire-ball", "earthquake"
             ]
+            faction: "holy"
         }
         {
             id: "bat"
@@ -175,6 +188,7 @@
             cards: [
                 "feng", "poison-feng"
             ]
+            faction: "evil"
         }
         {
             id: "skeleton"
@@ -186,6 +200,7 @@
             cards: [
                 "sword"
             ]
+            faction: "evil"
         }
         {
             id: "ork"
@@ -197,6 +212,7 @@
             cards: [
                 "club"
             ]
+            faction: "evil"
         }
 
     ]

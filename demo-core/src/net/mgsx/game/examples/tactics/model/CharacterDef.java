@@ -7,6 +7,9 @@ public class CharacterDef {
 	public String id;
 	public int life;
 	public int protection;
+	public String faction;
+	
+	public transient Model model;
 	
 	public Array<String> cards = new Array<String>();
 }

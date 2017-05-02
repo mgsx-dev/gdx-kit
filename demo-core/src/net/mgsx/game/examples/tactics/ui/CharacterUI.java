@@ -1,12 +1,15 @@
 package net.mgsx.game.examples.tactics.ui;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 
 import net.mgsx.game.examples.tactics.logic.CharacterBattle;
+import net.mgsx.game.examples.tactics.model.FactionDef;
 
 public class CharacterUI extends Table
 {
@@ -24,7 +27,14 @@ public class CharacterUI extends Table
 		table.setBackground("default-window");
 		
 		table.defaults().pad(5);
-		table.add(character.def.id).row();
+		table.add(character.def.id);
+		
+		FactionDef faction = character.def.model.factions.get(character.def.faction);
+		
+		Image img = IconsHelper.image(faction.icon);
+		img.setColor(Color.BLACK);
+		
+		table.add(img).row();
 		
 		life = new Label("", skin);
 		turns = new Label("", skin);

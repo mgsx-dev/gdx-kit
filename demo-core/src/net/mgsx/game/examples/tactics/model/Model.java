@@ -9,11 +9,15 @@ public class Model {
 	public Array<CharacterDef> characters;
 	public Array<CardDef> cards;
 	public ObjectMap<String, Array<String>> teams;
+	public ObjectMap<String, FactionDef> factions;
 	
 	public static Model load(FileHandle file){
 		Json json = new Json();
 		json.setIgnoreUnknownFields(true);
 		Model model = json.fromJson(Model.class, file);
+		for(CharacterDef c : model.characters){
+			c.model = model;
+		}
 		return model;
 	}
 
