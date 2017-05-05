@@ -31,12 +31,14 @@
             dmg: {min: 3, max: 12}
             at: {min: -3, max: -5}
             wait: 3
+            critical: 5
         }
         {
             id: "battle-axe"
             dmg: {min: 3, max: 12}
             at: {min: -3, max: -5}
             wait: 5
+            critical: 10
         }
         {
             id: "double-sword"
@@ -119,13 +121,15 @@
         }
         {
             id: "tail"
-            dmg: {min: 2, max: 46}
+            dmg: {min: 2, max: 12}
             wait: 3
+            critical: 5
         }
         {
             id: "head"
-            dmg: {min: 30, max: 30}
+            dmg: {min: 10, max: 10}
             wait: 6
+            critical: 20
         }
         {
             id: "claws"
@@ -137,6 +141,12 @@
             dmg: {min: 1, max: 1}
             turns: {min: 3, max: 3}
             wait: 5
+        }
+        {
+            id: "armor"
+            protection: {min: 1, max: 1}
+            turns: {min: 8, max: 8}
+            wait: 10
         }
     ]
     characters: [
@@ -170,7 +180,7 @@
             prd: 10
             speed: 1
             cards: [
-                "sword", "battle-axe", "double-sword"
+                "sword", "double-sword", "armor"
             ]
             faction: "holy"
         }
@@ -182,7 +192,7 @@
             prd: 10
             speed: 1
             cards: [
-                "sword", "axe", "battle-axe"
+                "axe", "battle-axe", "armor"
             ]
             faction: "holy"
         }

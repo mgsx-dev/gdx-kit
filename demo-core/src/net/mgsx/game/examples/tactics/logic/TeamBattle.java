@@ -7,6 +7,7 @@ import net.mgsx.game.examples.tactics.model.TeamDef;
 
 public class TeamBattle {
 	public Array<CharacterBattle> characters = new Array<CharacterBattle>();
+	public boolean surprise;
 	
 	public TeamBattle(TeamDef def) {
 		for(CharacterDef c : def.characters){

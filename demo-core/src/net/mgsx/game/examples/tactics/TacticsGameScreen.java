@@ -93,8 +93,12 @@ public class TacticsGameScreen extends StageScreen
 		final SelectBox<String> teamBBox = new SelectBox<String>(skin);
 		teamBBox.setItems(model.teams.keys().toArray());
 		TextButton reset = new TextButton("Reset", skin);
+		final TextButton tglSurpriseA = new TextButton("Surprise", skin, "toggle");
+		final TextButton tglSurpriseB = new TextButton("Surprise", skin, "toggle");
 		header.add(teamABox);
+		header.add(tglSurpriseA);
 		header.add(teamBBox);
+		header.add(tglSurpriseB);
 		header.add(reset);
 		
 		teamABox.setSelected("heroes");
@@ -235,24 +239,40 @@ public class TacticsGameScreen extends StageScreen
 					@Override
 					public void run() {
 						
+						ui.update();
+						ui.onEffectApply(fx);
+						
+						if(fx.protection != 0 && !fx.isNew) return;
+						
+						Color color = fx.life < 0 ? Color.RED : (fx.life > 0 ? Color.GREEN : Color.LIGHT_GRAY);
+						if(fx.protection != 0){
+							color = Color.YELLOW;
+						}
+						
 						// TODO all this in character UI
 						float x = ui.getX();
 						float y = ui.getY();
 						ui.addAction(Actions.sequence(
 								
-								Actions.color(fx.life < 0 ? Color.RED : Color.GREEN, .01f),
+								Actions.color(color, .01f),
 								Actions.moveBy(20, 20, .1f, noiseInterpolation),
 								Actions.moveTo(x, y, .1f),
 								Actions.color(Color.WHITE, .2f)
 								));
-						ui.update();
-						
-						ui.onEffectApply(fx);
 						
 						Vector2 p = ui.getLifePosition();
 						
-						Label lbl = new Label((fx.life < 0 ? "" : "+") + String.valueOf(fx.life), getSkin());
-						lbl.setColor(fx.life < 0 ? Color.RED : Color.GREEN);
+						Label lbl = new Label("", getSkin());
+						if(fx.protection != 0){
+							lbl.setText(String.valueOf(fx.protection));
+						}
+						else if((int)fx.life == 0){
+							lbl.setText("Missed!");
+						}else{
+							lbl.setText((fx.life < 0 ? "" : "+") + String.valueOf(fx.life) + (fx.critical ? "!!" : ""));
+						}
+						lbl.setFontScale(fx.critical ? 2 : 1);
+						lbl.setColor(color);
 						lbl.setPosition(p.x, p.y, Align.center);
 						stage.addActor(lbl);
 						lbl.addAction(Actions.sequence(
@@ -318,6 +338,24 @@ public class TacticsGameScreen extends StageScreen
 				CharacterUI ui = characterWidgets.get(target);
 				ui.setTarget(true);
 			}
+
+			@Override
+			public void onEffectBegin(CharacterBattle target, final EffectBattle fx) {
+				// TODO ?
+				final CharacterUI ui = characterWidgets.get(target);
+				
+				sequence.addAction(Actions.run(new Runnable() {
+					@Override
+					public void run() {
+						ui.removeEffect(fx);
+					}
+				}));
+			}
+
+			@Override
+			public void onEffectEnd(CharacterBattle target, EffectBattle fx) {
+				
+			}
 		};
 		
 		final CharacterControl humanControl = new CharacterControl() {
@@ -340,6 +378,9 @@ public class TacticsGameScreen extends StageScreen
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
 				logic = BattleLogic.create(model, model.getTeam(teamABox.getSelected()), model.getTeam(teamBBox.getSelected()));
+				logic.teamA.surprise = tglSurpriseA.isChecked();
+				logic.teamB.surprise = tglSurpriseB.isChecked();
+				
 				for(CharacterBattle c : logic.teamA.characters){
 					c.control = humanControl;
 				}
@@ -438,7 +479,7 @@ public class TacticsGameScreen extends StageScreen
 	}
 
 	private CardBattle currentCard;
-	private Array<CharacterBattle> targets = new Array<CharacterBattle>();
+	private Array<CharacterBattle> targets = new Array<CharacterBattle>(true, 10);
 	
 	private Actor createCard(final CardBattle card) 
 	{

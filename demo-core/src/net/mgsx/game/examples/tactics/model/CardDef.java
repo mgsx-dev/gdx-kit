@@ -13,4 +13,7 @@ public class CardDef {
 	
 	/** angle : 0 : 1 cell, 1 : 3 cells, 2 : 5 cells, 3 : 6 cells */
 	public int range;
+	
+	/** change in percent to do a critical hit (from 0 to 100, default is 0) */
+	public int critical;
 }

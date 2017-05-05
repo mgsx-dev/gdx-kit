@@ -17,6 +17,8 @@ public class BattleLogic {
 		public void onPlayerChange(CharacterBattle old, CharacterBattle current);
 		public void onEnd(boolean victoryA, boolean victoryB);
 		public void onTarget(CardBattle card, CharacterBattle target);
+		public void onEffectBegin(CharacterBattle target, EffectBattle fx);
+		public void onEffectEnd(CharacterBattle target, EffectBattle fx);
 	}
 	
 	public BattleListener listener = new BattleListener() {
@@ -34,6 +36,12 @@ public class BattleLogic {
 		}
 		@Override
 		public void onTarget(CardBattle card, CharacterBattle target) {
+		}
+		@Override
+		public void onEffectBegin(CharacterBattle character, EffectBattle fx) {
+		}
+		@Override
+		public void onEffectEnd(CharacterBattle character, EffectBattle fx) {
 		}
 	};
 	
@@ -58,6 +66,8 @@ public class BattleLogic {
 	public CharacterBattle current;
 	public Model model;
 	
+	private int turn = -1;
+	
 	public static BattleLogic create(Model model, TeamDef a, TeamDef b){
 		BattleLogic battle = new BattleLogic();
 		battle.model = model;
@@ -65,6 +75,13 @@ public class BattleLogic {
 		battle.teamB = new TeamBattle(b);
 		battle.characters.addAll(battle.teamA.characters);
 		battle.characters.addAll(battle.teamB.characters);
+		for(CharacterBattle character : battle.characters){
+			for(String id : character.def.cards){
+				CardBattle card = new CardBattle(model.getCards(id));
+				card.turns = card.def.wait;
+				character.cards.add(card);
+			}
+		}
 		return battle;
 	}
 	
@@ -72,17 +89,28 @@ public class BattleLogic {
 	{
 		if(characters.size <= 0) return;
 		
-		// random cards (XXX all cards for now !) :
-		for(CharacterBattle character : characters)
-		{
-			if(character.cards.size <= 0){
-				for(String id : character.def.cards){
-					CardBattle card = new CardBattle(model.getCards(id));
-					card.turns = card.def.wait;
-					character.cards.add(card);
+		if(turn < 0){
+			
+			if(!teamA.surprise){
+				for(CharacterBattle character : teamA.characters)
+				{
+					for(CardBattle card : character.cards){
+						card.turns = 0;
+					}
 				}
 			}
+			if(!teamB.surprise){
+				for(CharacterBattle character : teamB.characters)
+				{
+					for(CardBattle card : character.cards){
+						card.turns = 0;
+					}
+				}
+			}
+			
+			turn = 0;
 		}
+		
 		for(CharacterBattle character : characters)
 		{
 			character.cards.sort(cardComparator);
@@ -102,26 +130,40 @@ public class BattleLogic {
 			for(CardBattle card : character.cards){
 				card.turns -= turns;
 			}
+			character.protection = character.def.protection;
 		}
 		
 		// resolve pending effects
+		// TODO ordering is based on sorted list !
 		for(int i=0 ; i<characters.size ; )
 		{
 			CharacterBattle character = characters.get(i);
 			for(int j=0 ; j<character.effects.size ; ){
 				EffectBattle fx = character.effects.get(j);
-				int consumedTurns = Math.max(1, (int)Math.min(turns, fx.turns));
+				if(fx.isNew){
+					listener.onEffectBegin(character, fx);
+				}
+				
+				int consumedTurns = Math.max(0, (int)Math.min(turns, fx.turns));
+				if(fx.turns == 0)
+				consumedTurns = 1;
 				fx.turns -= consumedTurns;
 				if(fx.life != 0){
 					character.life = MathUtils.clamp(character.life + fx.life * consumedTurns, 0, character.def.life);
 				}
+				if(fx.protection != 0){
+					character.protection += fx.protection;
+				}
 				listener.onEffectApply(character, fx);
 				if(fx.turns <= 0){
 					character.effects.removeIndex(j);
+					listener.onEffectEnd(character, fx);
 				}else{
 					j++;
 				}
+				fx.isNew = false;
 			}
+			character.protection = Math.max(0, character.protection);
 			if(character.life <= 0){
 				characters.removeIndex(i);
 				teamA.characters.removeValue(character, true);
@@ -157,20 +199,46 @@ public class BattleLogic {
 	}
 	public void selectAction(CardBattle card, Array<CharacterBattle> targets)
 	{
+		float falloff = 1;
 		for(CharacterBattle target : targets){
 			listener.onTarget(card, target);
 			EffectBattle fx = new EffectBattle();
+			
 			if(card.def.dmg != null){
 				if(card.def.dmg.min < 0)
 					fx.life = MathUtils.random(-card.def.dmg.min, -card.def.dmg.max);
 				else
 					fx.life = -MathUtils.random(card.def.dmg.min, card.def.dmg.max);
 			}
+			if(fx.life < 0 && card.def.turns == null){ // only for attack
+				fx.life = -Math.max(0, -fx.life - target.protection);
+			}
+			
+			// protection
+			if(card.def.protection != null){
+				if(card.def.protection.min < 0)
+					fx.protection = -MathUtils.random(-card.def.protection.min, -card.def.protection.max);
+				else
+					fx.protection = MathUtils.random(card.def.protection.min, card.def.protection.max);
+			}
+			// critical
+			if(targets.size <= 1){
+				fx.critical = MathUtils.randomBoolean(card.def.critical/100f);
+				if(fx.critical){
+					fx.life *= 2;
+					fx.protection *= 2;
+				}
+			}else{
+				// targets influence
+				fx.life *= falloff;
+				falloff /= 2;
+			}
+			
+			
 			if(card.def.turns != null){
 				fx.turns = MathUtils.random(card.def.turns.min, card.def.turns.max);
-			}
-			if(card.def.protection != null){
-				fx.protection = MathUtils.random(card.def.protection.min, card.def.protection.max);
+			}else{
+				fx.turns = 0;
 			}
 			target.effects.add(fx);
 		}

@@ -43,6 +43,16 @@ public class BattleLogicTest
 			@Override
 			public void onTarget(CardBattle card, CharacterBattle target) {
 			}
+			@Override
+			public void onEffectBegin(CharacterBattle character, EffectBattle fx) {
+				// TODO Auto-generated method stub
+				
+			}
+			@Override
+			public void onEffectEnd(CharacterBattle character, EffectBattle fx) {
+				// TODO Auto-generated method stub
+				
+			}
 		};
 	}
 	
