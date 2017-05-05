@@ -1,0 +1,104 @@
+#N canvas 458 151 1128 885 10;
+#X obj 312 741 dac~;
+#X obj 55 401 noise~;
+#X obj 55 544 *~;
+#X obj 788 507 hsl 128 15 1 250 1 1 empty empty empty -2 -8 0 10 -262144
+-1 -1 8800 1;
+#X obj 785 549 s early-time;
+#X floatatom 798 529 5 0 0 0 - - -, f 5;
+#X obj 790 596 hsl 128 15 0 1 0 1 empty empty empty -2 -8 0 10 -262144
+-1 -1 3400 1;
+#X floatatom 800 618 5 0 0 0 - - -, f 5;
+#X obj 787 638 s early-level;
+#X obj 792 695 hsl 128 15 0 1 0 1 empty empty empty -2 -8 0 10 -262144
+-1 -1 12700 1;
+#X floatatom 802 717 5 0 0 0 - - -, f 5;
+#X obj 789 737 s direct-level;
+#X obj 72 515 clip~ 0 1;
+#X obj 954 511 hsl 128 15 1 250 1 1 empty empty empty -2 -8 0 10 -262144
+-1 -1 8800 1;
+#X floatatom 964 533 5 0 0 0 - - -, f 5;
+#X obj 956 600 hsl 128 15 0 1 0 1 empty empty empty -2 -8 0 10 -262144
+-1 -1 12700 1;
+#X floatatom 966 622 5 0 0 0 - - -, f 5;
+#X obj 953 642 s rev-level;
+#X obj 960 689 hsl 128 15 0 1 0 1 empty empty empty -2 -8 0 10 -262144
+-1 -1 8900 1;
+#X floatatom 970 711 5 0 0 0 - - -, f 5;
+#X obj 951 553 s reverb;
+#X obj 957 731 s rev-feed;
+#X obj 795 790 hsl 128 15 1 100 0 1 empty empty empty -2 -8 0 10 -262144
+-1 -1 0 1;
+#X floatatom 805 812 5 0 0 0 - - -, f 5;
+#X obj 791 832 s scale;
+#X obj 74 450 phasor~ -1;
+#X obj 73 472 *~ 14;
+#X obj 73 493 -~ 13;
+#X text 156 14 source messages : id \, intensity \, azimuth \, distance
+;
+#X text 186 37 id : from 0 to max id (0 to 3);
+#X text 186 77 azimuth : angle relative to head in degrees;
+#X text 186 97 distance : distance relative to head in meters (or world
+units), f 64;
+#X text 186 57 intensity : from 0 to 1 (0 is disabled) \, at 1 meter
+(or 1 world unit), f 71;
+#X obj 261 179 r source;
+#X obj 261 201 route 0 1 2 3;
+#X obj 56 572 source~;
+#X obj 231 412 noise~;
+#X obj 232 583 source~;
+#X obj 367 551 *~;
+#X obj 385 496 clip~ 0 1;
+#X obj 368 579 source~;
+#X obj 386 453 *~ 7;
+#X obj 386 474 -~ 6;
+#X obj 231 464 bp~ 1000 5;
+#X obj 385 518 lop~ 50;
+#X obj 231 508 *~ 1;
+#X obj 55 424 bp~ 3000 3.5;
+#X obj 387 431 phasor~ -2;
+#X obj 366 404 osc~ 740;
+#X connect 1 0 46 0;
+#X connect 2 0 35 0;
+#X connect 3 0 4 0;
+#X connect 3 0 5 0;
+#X connect 6 0 7 0;
+#X connect 6 0 8 0;
+#X connect 7 0 8 0;
+#X connect 9 0 10 0;
+#X connect 9 0 11 0;
+#X connect 12 0 2 1;
+#X connect 13 0 14 0;
+#X connect 13 0 20 0;
+#X connect 15 0 16 0;
+#X connect 15 0 17 0;
+#X connect 16 0 17 0;
+#X connect 18 0 19 0;
+#X connect 18 0 21 0;
+#X connect 19 0 21 0;
+#X connect 22 0 23 0;
+#X connect 22 0 24 0;
+#X connect 25 0 26 0;
+#X connect 26 0 27 0;
+#X connect 27 0 12 0;
+#X connect 33 0 34 0;
+#X connect 34 0 35 1;
+#X connect 34 1 37 1;
+#X connect 34 2 40 1;
+#X connect 35 0 0 0;
+#X connect 35 1 0 1;
+#X connect 36 0 43 0;
+#X connect 37 0 0 0;
+#X connect 37 1 0 1;
+#X connect 38 0 40 0;
+#X connect 39 0 44 0;
+#X connect 40 0 0 0;
+#X connect 40 1 0 1;
+#X connect 41 0 42 0;
+#X connect 42 0 39 0;
+#X connect 43 0 45 0;
+#X connect 44 0 38 1;
+#X connect 45 0 37 0;
+#X connect 46 0 2 0;
+#X connect 47 0 41 0;
+#X connect 48 0 38 0;
