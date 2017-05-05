@@ -1,0 +1,83 @@
+#!/usr/bin/ruby
+
+require 'json'
+require 'erb'
+
+config_file = File.expand_path('~/.kit-cli')
+config = File.exists?(config_file) ? JSON.parse(File.read(config_file)) : {}
+
+# TODO something more general :
+# - template files (with some ${token})
+# - config vars (key/value pair : token=value)
+# - just generate ...
+# with java utils like : package name (for package and path)
+
+puts "Hello KIT scaffolding"
+
+puts "kit command [options]"
+puts "kit --help"
+puts "kit command --help"
+
+case cmd = ARGV.shift
+when 'initialize', 'i'
+
+    case type = ARGV.shift
+    when 'desktop-only', 'd' then
+
+        name = ARGV.shift
+
+        # TODO ERB template for build.gradle ??
+        template = ERB.new File.read("#{File.dirname(__FILE__)}/templates/desktop-only/build.gradle.erb"), nil, "%"
+        versions = {
+                libgdx: '1.9.6', 
+                pd: '0.0.7', 
+                kit: '1.0.0'
+            }
+        extensions = {
+            box2d: true
+        }
+        id = {
+            name: name
+        }
+        puts template.result(binding)
+
+    else
+    end
+
+    # gen git, gradle libgdx, ...etc !?
+    # download setup ?
+
+    # launchers (game and editor) for core, android, ...etc ?
+
+when 'plugin', 'p'
+
+    # gen Plugin and EditorPlugin with dependencies
+    # subpackages (components tools systems)
+    
+
+when 'generate', 'g'
+    
+    subpackage = case type = ARGV.shift
+    when 'component', 'c' then 'components'
+    when 'system', 's' then 'systems'
+    when 'tool', 't' then 'tools'
+    end
+
+    folder, package, name = ARGV
+
+    template = File.read("#{File.dirname(__FILE__)}/templates/#{type}.java")
+
+    template.gsub!("${name}", name)
+    template.gsub!("${classname}", name)
+    template.gsub!("${package}", package)
+    template.gsub!("${plugin}", package)
+
+    puts template
+
+    File.write("#{folder}/#{package.gsub('.', '/')}/#{subpackage}/#{name}.java", template)
+
+else
+end
+
+puts "saving config to #{config_file}"
+File.write(config_file, JSON.pretty_generate(config))

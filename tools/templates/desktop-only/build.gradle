@@ -1,0 +1,57 @@
+buildscript {
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:1.5.0'
+    }
+}
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+    maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+    maven { url "https://oss.sonatype.org/content/repositories/releases/" }
+}
+
+version = '0.0.1-SNAPSHOT'
+
+ext {
+    appName = "appname"
+    gdxVersion = '1.9.6'
+    kitVersion = '0.0.2'
+}
+
+
+apply plugin: "eclipse"
+apply plugin: "idea"
+apply plugin: "java"
+
+
+dependencies {
+
+    // core deps
+    compile "com.badlogicgames.gdx:gdx:$gdxVersion"
+    // compile "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
+    // compile "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
+    
+    compile "net.mgsx.gdx:gdx-kit:$kitVersion"
+    
+    // Desktop deps
+    compile "net.mgsx.gdx:gdx-kit-desktop:$kitVersion"
+    compile "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
+    compile "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
+    // compile "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-desktop"
+    // compile "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-desktop"
+    
+    
+    // compile "net.mgsx.gdx:gdx-pd-platform:$pdVersion:desktop"
+    // compile "net.mgsx.gdx:gdx-pd-platform:$pdVersion:natives-desktop"
+    
+}
+
+
+
