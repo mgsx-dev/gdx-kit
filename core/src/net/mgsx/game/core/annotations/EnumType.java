@@ -1,7 +1,5 @@
 package net.mgsx.game.core.annotations;
 
-import com.badlogic.gdx.Input;
-
 public enum EnumType {
 	
 	/** default : handle some predefnied types : 
@@ -21,5 +19,13 @@ public enum EnumType {
 	 *  */
 	UNIT,
 	
-	BLEND_MODE
+	BLEND_MODE, 
+	
+	/**
+	 * typically used as a seed : value can be generated manually.
+	 * supported types : 
+	 * int and long : 0 (inclusive) to max positive (inclusive)
+	 * float and double : 0 (inclusive) to 1 (exclusive)
+	 */
+	RANDOM
 }
