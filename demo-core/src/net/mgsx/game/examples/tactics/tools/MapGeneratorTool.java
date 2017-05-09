@@ -1,25 +1,51 @@
 package net.mgsx.game.examples.tactics.tools;
 
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.ai.pfa.Connection;
+import com.badlogic.gdx.ai.pfa.DefaultConnection;
+import com.badlogic.gdx.ai.pfa.DefaultGraphPath;
+import com.badlogic.gdx.ai.pfa.GraphPath;
+import com.badlogic.gdx.ai.pfa.Heuristic;
+import com.badlogic.gdx.ai.pfa.PathFinder;
+import com.badlogic.gdx.ai.pfa.indexed.DefaultIndexedGraph;
+import com.badlogic.gdx.ai.pfa.indexed.IndexedAStarPathFinder;
+import com.badlogic.gdx.ai.pfa.indexed.IndexedGraph;
+import com.badlogic.gdx.ai.pfa.indexed.IndexedNode;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
-import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
+import com.badlogic.gdx.maps.tiled.TiledMapTileSet;
+import com.badlogic.gdx.maps.tiled.TmxMapLoader;
+import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.RandomXS128;
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.ObjectMap;
 
 import net.mgsx.game.core.EditorScreen;
+import net.mgsx.game.core.annotations.Asset;
 import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.core.annotations.EnumType;
-import net.mgsx.game.core.storage.EntityGroup;
+import net.mgsx.game.core.annotations.Inject;
 import net.mgsx.game.core.tools.Tool;
-import net.mgsx.game.plugins.tiles.components.TileMapComponent;
+import net.mgsx.game.core.ui.widgets.IntegerWidget;
+import net.mgsx.game.examples.tactics.util.TiledMapHelper;
+import net.mgsx.game.examples.tactics.util.Voronoi2D;
+import net.mgsx.game.examples.tactics.util.Voronoi2D.VoronoiResult;
+import net.mgsx.game.plugins.editor.systems.DebugRenderSystem;
 
 public class MapGeneratorTool extends Tool
 {
-	@Editable(type=EnumType.RANDOM)
+	@Editable(type=EnumType.RANDOM, editor=IntegerWidget.class)
 	public long seed = MathUtils.random(Long.MAX_VALUE);
+	
+	@Asset("tactics/base.tmx")
+	public TiledMap tileTemplate;
 	
 	@Editable public int tileHeight = 32;
 	@Editable public int tileWidth = 32;
@@ -27,7 +53,100 @@ public class MapGeneratorTool extends Tool
 	@Editable public int width = 32;
 	@Editable public long xOffset = 0;
 	@Editable public long yOffset = 0;
+	
+	OrthogonalTiledMapRenderer renderer;
+	TiledMap map;
+	
+	@Inject
+	public DebugRenderSystem renderSystem;
 
+	@Editable
+	public float mapFreq = .2f;
+	@Editable
+	public float islandFreq = .2f;
+	@Editable
+	public float waterRate = .5f;
+	
+	@Editable
+	public float rndRate = 1;
+	@Editable
+	public float opacity = .5f;
+
+	@Editable
+	public float zoneOpacity = .5f;
+
+	@Editable
+	public float levelFreq = .2f;
+	
+	@Editable
+	public float zoneFreq = .2f;
+	
+	@Editable
+	public float scale = 1f;
+	
+	@Editable
+	public boolean genMissions = true;
+	
+	@Editable
+	public void moveLeft(){
+		xOffset -= 8;
+		generate();
+	}
+	
+	@Editable
+	public void moveRight(){
+		xOffset += 8;
+		generate();
+	}
+	
+	@Editable
+	public void moveTop(){
+		yOffset += 8;
+		generate();
+	}
+	
+	@Editable
+	public void moveDown(){
+		yOffset -= 8;
+		generate();
+	}
+	
+	public static class Mission
+	{
+		public GraphPath<Connection<Node>> path;
+		public float difficulty;
+		public Color color;
+		public float[] vertices;
+	}
+	
+	private static Array<Connection<Node>> cache = new Array<Connection<Node>>();
+	public static class Node implements IndexedNode<Node>
+	{
+		private int id;
+		private int x, y;
+		private Array<Connection<Node>> cnx = new Array<Connection<Node>>();
+		private TiledMapTile tile;
+		private float difficulty;
+		public Node(TiledMapTile tile, int id, int x, int y, float difficulty) {
+			this.tile = tile;
+			this.id = id;
+			this.x = x;
+			this.y = y;
+			this.difficulty = difficulty;
+		}
+
+		@Override
+		public int getIndex() {
+			return id;
+		}
+
+		@Override
+		public Array<Connection<Node>> getConnections() {
+			return cnx;
+		}
+		
+	}
+	
 	public MapGeneratorTool(EditorScreen editor) {
 		super(editor);
 	}
@@ -36,39 +155,301 @@ public class MapGeneratorTool extends Tool
 	protected void activate() 
 	{
 		super.activate();
+		renderer = new OrthogonalTiledMapRenderer(null, 1f / 32f);
+		if(tileTemplate == null){
+			tileTemplate = new TmxMapLoader().load("tactics/base.tmx");
+		}
+		if(map == null)
+			map = new TiledMap();
+	}
+	
+	@Editable
+	public void generate()
+	{
 		
-		currentEntity();
+		// XXX assume first tileset
+		TiledMapTileSet tileset = tileTemplate.getTileSets().getTileSet(0);
+		ObjectMap<String, TiledMapTile> tilesByName = TiledMapHelper.groupBy(tileset, "name");
 		
-		TileMapComponent tmc = new TileMapComponent();
-		tmc.entityMap = new EntityGroup[]{};
-		tmc.map = new TiledMap();
 		TiledMapTileLayer layer = new TiledMapTileLayer(width, height, tileWidth, tileHeight);
-		tmc.map.getLayers().add(layer);
+		TiledMapTileLayer layerDifficulty = new TiledMapTileLayer(width, height, tileWidth, tileHeight);
+		TiledMapTileLayer layerZone = new TiledMapTileLayer(width, height, tileWidth, tileHeight);
+		
+		while(map.getLayers().getCount() > 0) map.getLayers().remove(0);
+		map.getLayers().add(layer);
+		map.getLayers().add(layerDifficulty);
+		map.getLayers().add(layerZone);
 		// TODO gen map
 		
 		build();
 		
 		// TODO ... get region from a tileset !
-		StaticTiledMapTile groundTile = new StaticTiledMapTile(new TextureRegion());
-		StaticTiledMapTile waterTile = new StaticTiledMapTile(new TextureRegion());
+		TiledMapTile groundTile = tilesByName.get("forest");
+		TiledMapTile waterTile = tilesByName.get("water");
+		TiledMapTile sandTile = tilesByName.get("sand");
+		TiledMapTile mountainTile = tilesByName.get("mountain");
+		TiledMapTile cityTile = tilesByName.get("city");
+		TiledMapTile lavaTile = tilesByName.get("lava");
+		TiledMapTile water2Tile = tilesByName.get("water2");
+		TiledMapTile redTile = tilesByName.get("red");
+		TiledMapTile zodiacTile = tilesByName.get("zodiac");
 		
 		// rasterization
+		Array<Node> nodes = new Array<Node>();
+		Array<Node> cells = new Array<Node>();
+		for(int y=0 ; y<height ; y++)
+		{
+			float ty = 2 * (float)y / (float)(height - 1) - 1;
+			for(int x=0 ; x<width ; x++)
+			{
+				float tx = 2 * (float)x / (float)(width - 1) - 1;
+				
+				float d = (float)Math.sqrt(tx*tx+ty*ty);
+				d = 0f;
+				
+				int ax = x + (int)xOffset;
+				int ay = y + (int)yOffset;
+				
+				float rndWater = lookupVoro(ax, ay, mapFreq * scale);
+				float rndIsland = lookup(1, ax, ay, islandFreq * scale);
+				
+//				float difficulty = lookup(2, ax, ay, levelFreq * scale );
+				float difficulty = lookupVoro(ax, ay, levelFreq * scale );
+				
+//				rndWater = (rndWater + rndIsland * .5f) / 1.5f;
+//				
+//				rndWater = Math.abs(rndRate * rndWater * 2 - 1) * (1 - d) * 2;
+				
+				if(rndWater >= 0)
+					rndWater = (rndWater + Math.abs(rndRate * rndIsland * 2 - 1) * .5f)
+						* (1 - d) * 2 / 1.5f;
+				
+				
+				
+				TiledMapTile tile;
+				if(rndWater < waterRate){
+					tile = waterTile;
+				}else if(rndWater < waterRate + .025f){
+					tile = water2Tile;
+				}else if(rndWater < waterRate + .05f){
+					tile = sandTile;
+				}else if(rndWater < waterRate + .3f){
+					tile = groundTile;
+				}else if(rndWater < waterRate + .8f){
+					tile = mountainTile;
+				}else{
+					tile = lavaTile;
+				}
+				Cell cell = new Cell().setTile(tile);
+				layer.setCell(x, y, cell);
+				
+				Node node =new Node(tile, y*width+x, x, y, difficulty);
+				
+				if(tile == sandTile || tile == groundTile){
+					cells.add(node);
+				}
+				
+				int z = (int)(lookupVoroID(ax, ay, zoneFreq * scale ) * 12);
+				layerZone.setCell(x, y, new Cell().setTile(tileset.getTile(zodiacTile.getId() + z)));
+				
+				int id = redTile.getId() + Math.min(9, (int)((1 - difficulty) * 10));
+				layerDifficulty.setCell(x, y, new Cell().setTile(tileset.getTile(id)));
+				
+				nodes.add(node);
+			}
+		}
+		
+		int[][] m = {{1,0},{0,1},{-1,0},{0,-1}};
 		for(int y=0 ; y<height ; y++)
 		{
 			for(int x=0 ; x<width ; x++)
 			{
-				float rndWater = lookup(0, x, y);
-				
-				TiledMapTile tile;
-				if(rndWater < 0.5f){
-					tile = new StaticTiledMapTile(waterTile);
-				}else{
-					tile = new StaticTiledMapTile(groundTile);
+				final Node current = nodes.get(y * width + x);
+				for(int i=0 ; i<4 ; i++){
+					int dx = x + m[i][0];
+					int dy = y + m[i][1];
+					
+					if(dx>=0 && dx<width && dy>=0 && dy<height){
+						final Node n = nodes.get(dy * width + dx);
+						n.cnx.add(new DefaultConnection<Node>(n, current){
+							@Override
+							public float getCost() {
+								return current.difficulty;
+							}
+						});
+						current.cnx.add(new DefaultConnection<Node>(current, n){
+							@Override
+							public float getCost() {
+								return n.difficulty;
+							}
+						});
+					}
 				}
-				layer.setCell(x, y, new Cell().setTile(tile));
+			}
+		}
+
+		
+		// place village
+		Node village = null;
+		
+		Array<Node> remains = new Array<Node>();
+		remains.clear();
+		for(Node node : nodes)
+			if(node.tile != waterTile && node.tile != water2Tile && node.difficulty < 1.f/10f)
+				remains.add(node);
+		
+		while(remains.size > 0){
+			Node cold = null;
+			
+			float max = 1e30f;
+			for(Node node : remains){
+				if(max > node.difficulty && (node.tile == groundTile || node.tile == sandTile || node.tile == mountainTile)){
+					cold = node;
+					max = node.difficulty;
+				}
+			}
+			if(cold == null) break;
+			
+			layer.getCell(cold.x, cold.y).setTile(cityTile);
+			village = cold;
+			
+			if(cold != null){
+				Array<Node> heads = new Array<Node>();
+				heads.add(cold);
+				while(heads.size > 0){
+					Node head = heads.pop();
+					if(remains.removeValue(head, true))
+						for(Connection<Node> cnx : head.cnx){
+							Node adj = cnx.getToNode();
+							if((int)(adj.difficulty*10) <= (int)(head.difficulty*10)){
+								heads.add(adj);
+							}
+						}
+				}
 			}
 		}
 		
+		missions.clear();
+		if(!genMissions) return;
+		
+		IndexedGraph<Node> graph = new DefaultIndexedGraph<Node>(nodes);
+		PathFinder<Node> pf = new IndexedAStarPathFinder<Node>(graph);
+		
+		// find all hot spots :
+		remains.clear();
+		for(Node node : nodes)
+			if(node.tile != waterTile && node.tile != water2Tile)
+				remains.add(node);
+		
+		if(village != null)
+		while(remains.size > 0){
+			Node hot = null;
+			
+			float max = 0;
+			for(Node node : remains){
+				if(max < node.difficulty && (node.tile == groundTile || node.tile == sandTile || node.tile == mountainTile)){
+					hot = node;
+					max = node.difficulty;
+				}
+			}
+			if(hot == null) break;
+			
+			if(hot != null && village != null){
+				GraphPath<Connection<Node>> outPath = new DefaultGraphPath<Connection<Node>>();
+				Heuristic<Node> distanceHeuristic = new Heuristic<MapGeneratorTool.Node>() {
+					@Override
+					public float estimate(Node node, Node endNode) {
+						float dx = Math.abs(endNode.x - node.x);
+						float dy = Math.abs(endNode.y - node.y);
+						return (dx*dx+dy*dy) * 0.001f; // XXX
+					}
+				};
+				if(pf.searchConnectionPath(village, hot, distanceHeuristic , outPath)){
+					Mission mission = new Mission();
+					mission.color = new Color(hot.difficulty / 10, 1 - hot.difficulty / 10, 0, 1);
+					mission.difficulty = hot.difficulty;
+					mission.path = outPath;
+					mission.vertices = new float [(outPath.getCount()+1)*2];
+					int v = 0;
+					float s = 1;
+					mission.vertices[v++] = (village.x + .5f) * s;
+					mission.vertices[v++] = (village.y + .5f) * s;
+					for(Connection<Node> cnx : outPath){
+						float x = cnx.getToNode().x;
+						float y = cnx.getToNode().y;
+						mission.vertices[v++] = (x + .5f) * s;
+						mission.vertices[v++] = (y + .5f) * s;
+					}
+					missions.add(mission);
+				}
+				Array<Node> heads = new Array<Node>();
+				heads.add(hot);
+				while(heads.size > 0){
+					Node head = heads.pop();
+					if(remains.removeValue(head, true))
+						for(Connection<Node> cnx : head.cnx){
+							Node adj = cnx.getToNode();
+							if((int)(adj.difficulty*10) <= (int)(head.difficulty*10)){
+								heads.add(adj);
+							}
+						}
+				}
+			}
+		}
+
+	}
+	
+	private Voronoi2D voro = new Voronoi2D();
+	
+	private float lookupVoro(int x, int y, float freq) 
+	{
+		voro.setSeed(seed);
+		VoronoiResult r = voro.generate(x * freq, y * freq, 3);
+		if(r.id * 100  - ((int)(r.id * 100)) < .9f) return -1f;
+//		return Math.min(.5f, r.f[0]); //r.f[1] - r.f[0];
+		return r.f[1]-r.f[0];
+	}
+	private float lookupVoroID(int x, int y, float freq) 
+	{
+		voro.setSeed(seed);
+		VoronoiResult r = voro.generate(x * freq, y * freq, 3);
+		return r.id; //r.f[1] - r.f[0];
+	}
+
+	@Override
+	public void render(Batch batch) 
+	{
+		batch.end();
+	
+		if(map.getLayers().getCount() >= 2){
+			TiledMapTileLayer layer = (TiledMapTileLayer)map.getLayers().get(1);
+			layer.setOpacity(MathUtils.clamp(opacity, 0, 1));
+		}
+		if(map.getLayers().getCount() >= 3){
+			TiledMapTileLayer layer = (TiledMapTileLayer)map.getLayers().get(2);
+			layer.setOpacity(MathUtils.clamp(zoneOpacity, 0, 1));
+		}
+		
+		renderer.setMap(map);
+		renderer.setView(editor.getGameCamera().combined, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		renderer.render();
+		
+		batch.begin();
+	}
+	
+	private Array<Mission> missions = new Array<Mission>();
+	
+	@Override
+	public void render(ShapeRenderer renderer) 
+	{
+		renderer.begin(ShapeType.Line);
+		for(Mission mission : missions){
+			if(mission.vertices.length < 4) continue;
+			renderer.setColor(mission.color);
+			renderer.polyline(mission.vertices);
+		}
+		
+		renderer.end();
 	}
 	
 	private float[][][] tables;
@@ -89,9 +470,6 @@ public class MapGeneratorTool extends Tool
 				
 				float[] cell  = cols[x] = new float[layers];
 				
-				float fx = x / (float)width;
-				float fy = y / (float)height;
-				
 				for(int i=0 ; i<layers ; i++){
 					cell[i] = random.nextFloat();
 				}
@@ -100,9 +478,30 @@ public class MapGeneratorTool extends Tool
 		}
 	}
 
-	private float lookup(int i, int x, int y) 
+	protected float lookup(int i, int x, int y) 
 	{
 		return tables[y][x][i];
+	}
+	protected float lookup(int i, float fx, float fy, float frequency) 
+	{
+		float ax = fx * frequency;
+		int x = MathUtils.floor(ax);
+		float tx = ax - x;
+		float ay = fy * frequency;
+		int y = MathUtils.floor(ay);
+		float ty = ay - y;
+		
+		int ix1 = ((x%width)+width)%width;
+		int ix2 = (((x+1)%width)+width)%width;
+		int iy1 = ((y%height)+height)%height;
+		int iy2 = (((y+1)%height)+height)%height;
+		
+		float a = tables[iy1][ix1][i];
+		float b = tables[iy1][ix2][i];
+		float c = tables[iy2][ix1][i];
+		float d = tables[iy2][ix2][i];
+		
+		return MathUtils.lerp(MathUtils.lerp(a, b, tx), MathUtils.lerp(c, d, tx), ty);
 	}
 	
 }
