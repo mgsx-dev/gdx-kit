@@ -1,0 +1,92 @@
+{
+entities: [
+	{
+		id: 0
+		2d: {
+			position: {
+				x: -2
+				y: 4
+			}
+		}
+		raycast.audio.source: {}
+	}
+	{
+		id: 1
+		2d: {
+			position: {
+				x: 6
+			}
+		}
+		raycast.audio.source: {
+			id: 1
+		}
+	}
+	{
+		id: 2
+		2d: {
+			position: {
+				x: -2
+				y: -4
+			}
+		}
+		raycast.audio.source: {
+			id: 2
+		}
+	}
+]
+systems: [
+	{
+		type: core.bindings
+		enabled: true
+		bindings: []
+	}
+	{
+		type: box2d.world
+		enabled: true
+		runSimulation: true
+		gravity: {
+			y: -9.807
+		}
+		timeStep: 0.033333335
+		velocityIterations: 8
+		positionIterations: 3
+	}
+	{
+		type: core.clearScreen
+		enabled: true
+		color: {
+			r: 0.2
+			g: 0.2
+			b: 0.2
+			a: 1
+		}
+		clearColor: true
+		clearDepth: true
+	}
+	{
+		type: g3d.rendering
+		enabled: true
+		shadowQuality: 10
+		shadowSize: {
+			x: 50
+			y: 50
+		}
+		shadowNear: 0.1
+		shadowFar: 100
+		ambient: {
+			r: 0.4
+			g: 0.4
+			b: 0.4
+			a: 1
+		}
+	}
+	{
+		type: g2d.render
+		enabled: true
+		culling: false
+	}
+]
+views: [
+	net.mgsx.game.examples.raycast.systems.CompassLocalSystem
+]
+}
