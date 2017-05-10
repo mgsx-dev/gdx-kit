@@ -115,6 +115,10 @@ public class EditorScreen extends ScreenDelegate implements EditorContext // TOD
 	final public EditorAssetManager assets;
 	final public Engine entityEngine;
 	
+	/**
+	 * Set non null value to spawn a tool at editor startup.
+	 */
+	public Tool defaultTool;
 
 	private Label status;
 
@@ -318,6 +322,10 @@ public class EditorScreen extends ScreenDelegate implements EditorContext // TOD
 		// prepend tools and stage: order is first editor stage then tools then others
 		Kit.inputs.addProcessor(0, toolDelegator);
 		Kit.inputs.addProcessor(0, stage);
+		
+		if(defaultTool != null){
+			mainToolGroup.setActiveTool(defaultTool);
+		}
 	}
 	
 	private ToolGroupHandler toolGroupHandler = new ToolGroupHandler() {
