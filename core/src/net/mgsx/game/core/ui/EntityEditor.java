@@ -219,6 +219,12 @@ public class EntityEditor extends Table
 			table.add(IntegerWidget.unlimited.create(accessor, skin)).fill();
 			
 			
+		}else if(accessor.getType() == long.class){
+			// TODO slider
+			
+			table.add(IntegerWidget.unlimited.create(accessor, skin)).fill();
+			
+			
 		}else if(accessor.getType() == short.class){
 			// TODO slider
 			
