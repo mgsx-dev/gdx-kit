@@ -1,6 +1,7 @@
 package net.mgsx.game.examples.tactics.tools;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.ai.pfa.Connection;
 import com.badlogic.gdx.ai.pfa.DefaultConnection;
 import com.badlogic.gdx.ai.pfa.DefaultGraphPath;
@@ -34,6 +35,7 @@ import net.mgsx.game.core.annotations.EnumType;
 import net.mgsx.game.core.annotations.Inject;
 import net.mgsx.game.core.tools.Tool;
 import net.mgsx.game.core.ui.widgets.IntegerWidget;
+import net.mgsx.game.examples.tactics.util.Perlin3D;
 import net.mgsx.game.examples.tactics.util.TiledMapHelper;
 import net.mgsx.game.examples.tactics.util.Voronoi2D;
 import net.mgsx.game.examples.tactics.util.Voronoi2D.VoronoiResult;
@@ -65,15 +67,22 @@ public class MapGeneratorTool extends Tool
 	@Editable
 	public float islandFreq = .2f;
 	@Editable
-	public float waterRate = .5f;
+	public float timeScale = .1f;
+	@Editable
+	public float waterRate = .67f;
+	@Editable
+	public float seaRate = .75f;
 	
 	@Editable
 	public float rndRate = 1;
 	@Editable
-	public float opacity = .5f;
+	public float opacity = .33f;
 
 	@Editable
-	public float zoneOpacity = .5f;
+	public float zoneOpacity = .05f;
+
+	@Editable
+	public float timeOpacity = .05f;
 
 	@Editable
 	public float levelFreq = .2f;
@@ -82,10 +91,29 @@ public class MapGeneratorTool extends Tool
 	public float zoneFreq = .2f;
 	
 	@Editable
-	public float scale = 1f;
+	public float innerDotsFreq = .3f;
 	
 	@Editable
-	public boolean genMissions = true;
+	public float villageRate = .3f;
+	
+	@Editable
+	public float missionRate = .3f;
+	
+	@Editable
+	public float bonusRate = .3f;
+	
+	@Editable
+	public float scale = .5f;
+	
+	@Editable
+	public float time = 0;
+	
+	@Editable
+	public boolean genMissions = false;
+	
+	private int heroX, heroY;
+	
+	private Perlin3D perlin = new Perlin3D();
 	
 	@Editable
 	public void moveLeft(){
@@ -164,6 +192,20 @@ public class MapGeneratorTool extends Tool
 	}
 	
 	@Editable
+	public void generateHero()
+	{
+		seed = (long)(Math.random() * Long.MAX_VALUE);
+		RandomXS128 random = new RandomXS128(seed);
+		heroX = random.nextInt() % 100;
+		heroY = random.nextInt() % 100;
+		
+		xOffset = heroX - width/2;
+		yOffset = heroY - height/2;
+		
+		generate();
+	}
+
+	@Editable
 	public void generate()
 	{
 		
@@ -174,11 +216,15 @@ public class MapGeneratorTool extends Tool
 		TiledMapTileLayer layer = new TiledMapTileLayer(width, height, tileWidth, tileHeight);
 		TiledMapTileLayer layerDifficulty = new TiledMapTileLayer(width, height, tileWidth, tileHeight);
 		TiledMapTileLayer layerZone = new TiledMapTileLayer(width, height, tileWidth, tileHeight);
+		TiledMapTileLayer layerTime = new TiledMapTileLayer(width, height, tileWidth, tileHeight);
+		TiledMapTileLayer layerBonus = new TiledMapTileLayer(width, height, tileWidth, tileHeight);
 		
 		while(map.getLayers().getCount() > 0) map.getLayers().remove(0);
 		map.getLayers().add(layer);
+		map.getLayers().add(layerBonus);
 		map.getLayers().add(layerDifficulty);
 		map.getLayers().add(layerZone);
+		map.getLayers().add(layerTime);
 		// TODO gen map
 		
 		build();
@@ -193,7 +239,15 @@ public class MapGeneratorTool extends Tool
 		TiledMapTile water2Tile = tilesByName.get("water2");
 		TiledMapTile redTile = tilesByName.get("red");
 		TiledMapTile zodiacTile = tilesByName.get("zodiac");
+		TiledMapTile missionTile = tilesByName.get("mission");
+		TiledMapTile heroTile = tilesByName.get("hero");
+		TiledMapTile grayTile = tilesByName.get("gray");
+		TiledMapTile bonusTile = tilesByName.get("bonus");
 		
+		// place village
+		Node village = null;		
+		perlin.setSeed(seed);
+
 		// rasterization
 		Array<Node> nodes = new Array<Node>();
 		Array<Node> cells = new Array<Node>();
@@ -214,14 +268,13 @@ public class MapGeneratorTool extends Tool
 				float rndIsland = lookup(1, ax, ay, islandFreq * scale);
 				
 //				float difficulty = lookup(2, ax, ay, levelFreq * scale );
-				float difficulty = lookupVoro(ax, ay, levelFreq * scale );
+				float difficulty = lookupVoroID(ax, ay, mapFreq * scale ) + (lookup(2, ax, ay, levelFreq * scale )*2-1)*.1f;
 				
 //				rndWater = (rndWater + rndIsland * .5f) / 1.5f;
 //				
-//				rndWater = Math.abs(rndRate * rndWater * 2 - 1) * (1 - d) * 2;
 				
 				if(rndWater >= 0)
-					rndWater = (rndWater + Math.abs(rndRate * rndIsland * 2 - 1) * .5f)
+					rndWater = (rndWater + Math.abs(rndRate * rndIsland * 2 - 1) * 1.5f)
 						* (1 - d) * 2 / 1.5f;
 				
 				
@@ -229,13 +282,13 @@ public class MapGeneratorTool extends Tool
 				TiledMapTile tile;
 				if(rndWater < waterRate){
 					tile = waterTile;
-				}else if(rndWater < waterRate + .025f){
+				}else if(rndWater < waterRate + .9f){
 					tile = water2Tile;
-				}else if(rndWater < waterRate + .05f){
+				}else if(rndWater < waterRate + 1.1f){
 					tile = sandTile;
-				}else if(rndWater < waterRate + .3f){
+				}else if(rndWater < waterRate + 2.7f){
 					tile = groundTile;
-				}else if(rndWater < waterRate + .8f){
+				}else if(rndWater < waterRate + 8f){
 					tile = mountainTile;
 				}else{
 					tile = lavaTile;
@@ -256,6 +309,47 @@ public class MapGeneratorTool extends Tool
 				layerDifficulty.setCell(x, y, new Cell().setTile(tileset.getTile(id)));
 				
 				nodes.add(node);
+				
+				voro.setSeed(seed);
+				VoronoiResult r = voro.generate(ax * zoneFreq * scale, ay * zoneFreq * scale, 3);
+				voro.setSeed(seed);
+				VoronoiResult r2 = voro.generate(ax * innerDotsFreq * scale, ay * innerDotsFreq * scale, 3);
+				float r2x = r2.x;
+				float r2y = r2.y;
+				float r2id = r2.id;
+				
+				
+				if(ax == 0 && ay == 0){ // XXX origin
+					village = node;
+					cell.setTile(cityTile);
+				}
+				// XXX 
+				float threshold = .1f;
+				if(lookupVoro(ax, ay, zoneFreq * scale) > -1 && 
+					Math.abs(r2x - ax * innerDotsFreq * scale ) < threshold && 
+					Math.abs(r2y - ay * innerDotsFreq * scale ) < threshold){
+					
+					if(r2id < villageRate){
+						village = node;
+						cell.setTile(cityTile);
+					}else if(r2id < missionRate){
+						cell.setTile(missionTile);
+					}
+				}
+				
+				if(ax == heroX && ay == heroY){
+					cell.setTile(heroTile);
+				}
+				
+				perlin.setSeed(seed);
+				float f = perlin.generate(ax * scale * timeScale, ay * scale * timeScale, time);
+				float steps = 10;
+				int tid = grayTile.getId() + Math.max(0, Math.min(9, (int)((int)((1 - f) * steps)/steps * 10)));
+				layerTime.setCell(x, y, new Cell().setTile(tileset.getTile(tid)));
+				
+				perlin.setSeed(seed);
+				if(perlin.generate(ax * scale, ay * scale, 0) < bonusRate)
+					layerBonus.setCell(x, y, new Cell().setTile(bonusTile));
 			}
 		}
 		
@@ -289,45 +383,7 @@ public class MapGeneratorTool extends Tool
 		}
 
 		
-		// place village
-		Node village = null;
-		
 		Array<Node> remains = new Array<Node>();
-		remains.clear();
-		for(Node node : nodes)
-			if(node.tile != waterTile && node.tile != water2Tile && node.difficulty < 1.f/10f)
-				remains.add(node);
-		
-		while(remains.size > 0){
-			Node cold = null;
-			
-			float max = 1e30f;
-			for(Node node : remains){
-				if(max > node.difficulty && (node.tile == groundTile || node.tile == sandTile || node.tile == mountainTile)){
-					cold = node;
-					max = node.difficulty;
-				}
-			}
-			if(cold == null) break;
-			
-			layer.getCell(cold.x, cold.y).setTile(cityTile);
-			village = cold;
-			
-			if(cold != null){
-				Array<Node> heads = new Array<Node>();
-				heads.add(cold);
-				while(heads.size > 0){
-					Node head = heads.pop();
-					if(remains.removeValue(head, true))
-						for(Connection<Node> cnx : head.cnx){
-							Node adj = cnx.getToNode();
-							if((int)(adj.difficulty*10) <= (int)(head.difficulty*10)){
-								heads.add(adj);
-							}
-						}
-				}
-			}
-		}
 		
 		missions.clear();
 		if(!genMissions) return;
@@ -405,9 +461,9 @@ public class MapGeneratorTool extends Tool
 	{
 		voro.setSeed(seed);
 		VoronoiResult r = voro.generate(x * freq, y * freq, 3);
-		if(r.id * 100  - ((int)(r.id * 100)) < .9f) return -1f;
+		if(r.id * 100  - ((int)(r.id * 100)) < seaRate) return -1f;
 //		return Math.min(.5f, r.f[0]); //r.f[1] - r.f[0];
-		return r.f[1]-r.f[0];
+		return (r.f[1]-r.f[0]) * 4;
 	}
 	private float lookupVoroID(int x, int y, float freq) 
 	{
@@ -423,11 +479,19 @@ public class MapGeneratorTool extends Tool
 	
 		if(map.getLayers().getCount() >= 2){
 			TiledMapTileLayer layer = (TiledMapTileLayer)map.getLayers().get(1);
-			layer.setOpacity(MathUtils.clamp(opacity, 0, 1));
+			layer.setOpacity(MathUtils.clamp(.1f, 0, 1));
 		}
 		if(map.getLayers().getCount() >= 3){
 			TiledMapTileLayer layer = (TiledMapTileLayer)map.getLayers().get(2);
+			layer.setOpacity(MathUtils.clamp(opacity, 0, 1));
+		}
+		if(map.getLayers().getCount() >= 4){
+			TiledMapTileLayer layer = (TiledMapTileLayer)map.getLayers().get(3);
 			layer.setOpacity(MathUtils.clamp(zoneOpacity, 0, 1));
+		}
+		if(map.getLayers().getCount() >= 5){
+			TiledMapTileLayer layer = (TiledMapTileLayer)map.getLayers().get(4);
+			layer.setOpacity(MathUtils.clamp(timeOpacity, 0, 1));
 		}
 		
 		renderer.setMap(map);
@@ -502,6 +566,35 @@ public class MapGeneratorTool extends Tool
 		float d = tables[iy2][ix2][i];
 		
 		return MathUtils.lerp(MathUtils.lerp(a, b, tx), MathUtils.lerp(c, d, tx), ty);
+	}
+	
+	@Override
+	public boolean keyDown(int keycode) {
+		
+		if(keycode == Input.Keys.LEFT){
+			heroX--;
+		}else if(keycode == Input.Keys.RIGHT){
+			heroX++;
+		}else if(keycode == Input.Keys.UP){
+			heroY++;
+		}else if(keycode == Input.Keys.DOWN){
+			heroY--;
+		}else if(keycode == Input.Keys.SPACE){
+			// next turn
+		}else{
+			return false;
+		}
+		
+		time += .01f;
+
+		if(heroX < xOffset + width/4) xOffset--;
+		if(heroX > xOffset + 3*width/4) xOffset++;
+		if(heroY < yOffset + height/4) yOffset--;
+		if(heroY > yOffset + 3*height/4) yOffset++;
+		
+		generate();
+		
+		return true;
 	}
 	
 }

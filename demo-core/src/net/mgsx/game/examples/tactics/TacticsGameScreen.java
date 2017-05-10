@@ -35,6 +35,7 @@ import net.mgsx.game.examples.tactics.logic.CharacterControl;
 import net.mgsx.game.examples.tactics.logic.EffectBattle;
 import net.mgsx.game.examples.tactics.model.Model;
 import net.mgsx.game.examples.tactics.ui.CharacterUI;
+import net.mgsx.game.examples.tactics.ui.IconsHelper;
 import net.mgsx.game.examples.tactics.ui.SmoothTable;
 
 public class TacticsGameScreen extends StageScreen
@@ -86,6 +87,29 @@ public class TacticsGameScreen extends StageScreen
 		tableCharacters = new SmoothTable(skin);
 		tableCurrentPlayer = new SmoothTable(skin);
 		tableCurrentPlayer.setBackground("default-pane");
+		
+		String [] names = {
+				"ra-aries", 
+				"ra-taurus", 
+				"ra-gemini", 
+				"ra-cancer", 
+				"ra-leo", 
+				"ra-virgo",
+				"ra-libra", 
+				"ra-scorpio", 
+				"ra-sagittarius", 
+				"ra-capricorn", 
+				"ra-aquarius", 
+				"ra-pisces"
+				};
+		
+		Table zodiac = new Table(skin);
+		for(String name : names){
+			
+			zodiac.add(IconsHelper.image(name)).width(32).height(32).center();
+		}
+		table.add(zodiac).row();
+		
 		
 		Table header = new Table(skin);
 		final SelectBox<String> teamABox = new SelectBox<String>(skin);

@@ -12,7 +12,6 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeBitmapFontData;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.Scaling;
@@ -64,11 +63,6 @@ public class IconsHelper {
 		generator.dispose(); // don't forget to dispose to avoid memory leaks!
 	}
 	
-	public static Drawable find(String id){
-		// font12.getData().
-		return null;
-	}
-
 	/** @see https://nagoshiashumari.github.io/Rpg-Awesome/ */
 	public static Image image(String id) 
 	{

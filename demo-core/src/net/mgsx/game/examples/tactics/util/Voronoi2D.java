@@ -12,6 +12,7 @@ public class Voronoi2D
 	{
 		public float id;
 		public float[] f = new float[9];
+		public float x, y;
 	}
 	private static class Node
 	{
@@ -65,6 +66,8 @@ public class Voronoi2D
 		Arrays.sort(nodes, comparator);
 		
 		result.id = nodes[0].index;
+		result.x = nodes[0].x;
+		result.y = nodes[0].y;
 		for(int i=0 ; i<nodes.length ; i++){
 			result.f[i] = nodes[i].distance * 1f;
 		}
