@@ -1,6 +1,7 @@
 package net.mgsx.game.core.ui.widgets;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -9,6 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
 
+import net.mgsx.game.core.annotations.EnumType;
 import net.mgsx.game.core.ui.FieldEditor;
 import net.mgsx.game.core.ui.accessors.Accessor;
 import net.mgsx.game.core.ui.accessors.AccessorHelper;
@@ -82,54 +84,72 @@ public class IntegerWidget implements FieldEditor
 		final TextButton btMinus = new TextButton("-", skin);
 		final TextButton btDiv = new TextButton("/", skin);
 		final TextButton btMul = new TextButton("*", skin);
-		sub.add(btDiv);
-		sub.add(btMinus);
-		sub.add(label).pad(4);
-		sub.add(btPlus);
-		sub.add(btMul);
-		label.setText(String.valueOf(accessor.get()));
+		
 		label.setAlignment(Align.center);
 		
-		btPlus.addListener(new ChangeListener() {
-			@Override
-			public void changed(ChangeEvent event, Actor actor) {
-				long value = 1 + AccessorHelper.asLong(accessor);
-				if(max == null || value <= max){
+		if(accessor.config().type() == EnumType.RANDOM){
+			label.setText(String.format("0x%x", accessor.get()));
+			final TextButton btRnd = new TextButton("randomize", skin);
+			sub.add(label).pad(4);
+			sub.add(btRnd);
+			btRnd.addListener(new ChangeListener() {
+				@Override
+				public void changed(ChangeEvent event, Actor actor) {
+					long value = MathUtils.random(Long.MAX_VALUE);
 					AccessorHelper.fromLong(accessor, value);
-					label.setText(String.valueOf(value));
+					label.setText(String.format("0x%x", value));
 				}
-			}
-		});
-		btMinus.addListener(new ChangeListener() {
-			@Override
-			public void changed(ChangeEvent event, Actor actor) {
-				long value = -1 + AccessorHelper.asLong(accessor);
-				if(min == null || value >= min){
-					AccessorHelper.fromLong(accessor, value);
-					label.setText(String.valueOf(value));
+			});
+		}else{
+			label.setText(String.valueOf(accessor.get()));
+			sub.add(btDiv);
+			sub.add(btMinus);
+			sub.add(label).pad(4);
+			sub.add(btPlus);
+			sub.add(btMul);
+			
+			btPlus.addListener(new ChangeListener() {
+				@Override
+				public void changed(ChangeEvent event, Actor actor) {
+					long value = 1 + AccessorHelper.asLong(accessor);
+					if(max == null || value <= max){
+						AccessorHelper.fromLong(accessor, value);
+						label.setText(String.valueOf(value));
+					}
 				}
-			}
-		});
-		btDiv.addListener(new ChangeListener() {
-			@Override
-			public void changed(ChangeEvent event, Actor actor) {
-				long value = AccessorHelper.asLong(accessor) / 2;
-				if(max == null || value <= max){
-					AccessorHelper.fromLong(accessor, value);
-					label.setText(String.valueOf(value));
+			});
+			btMinus.addListener(new ChangeListener() {
+				@Override
+				public void changed(ChangeEvent event, Actor actor) {
+					long value = -1 + AccessorHelper.asLong(accessor);
+					if(min == null || value >= min){
+						AccessorHelper.fromLong(accessor, value);
+						label.setText(String.valueOf(value));
+					}
 				}
-			}
-		});
-		btMul.addListener(new ChangeListener() {
-			@Override
-			public void changed(ChangeEvent event, Actor actor) {
-				long value = 2 * AccessorHelper.asLong(accessor);
-				if(min == null || value >= min){
-					AccessorHelper.fromLong(accessor, value);
-					label.setText(String.valueOf(value));
+			});
+			btDiv.addListener(new ChangeListener() {
+				@Override
+				public void changed(ChangeEvent event, Actor actor) {
+					long value = AccessorHelper.asLong(accessor) / 2;
+					if(max == null || value <= max){
+						AccessorHelper.fromLong(accessor, value);
+						label.setText(String.valueOf(value));
+					}
 				}
-			}
-		});
+			});
+			btMul.addListener(new ChangeListener() {
+				@Override
+				public void changed(ChangeEvent event, Actor actor) {
+					long value = 2 * AccessorHelper.asLong(accessor);
+					if(min == null || value >= min){
+						AccessorHelper.fromLong(accessor, value);
+						label.setText(String.valueOf(value));
+					}
+				}
+			});
+		}
+		
 		
 		return sub;
 	}
