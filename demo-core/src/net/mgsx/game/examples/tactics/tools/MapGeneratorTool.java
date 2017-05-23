@@ -13,6 +13,7 @@ import com.badlogic.gdx.ai.pfa.indexed.IndexedAStarPathFinder;
 import com.badlogic.gdx.ai.pfa.indexed.IndexedGraph;
 import com.badlogic.gdx.ai.pfa.indexed.IndexedNode;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
@@ -35,6 +36,7 @@ import net.mgsx.game.core.annotations.EnumType;
 import net.mgsx.game.core.annotations.Inject;
 import net.mgsx.game.core.tools.Tool;
 import net.mgsx.game.core.ui.widgets.IntegerWidget;
+import net.mgsx.game.examples.tactics.systems.TacticMapHUD;
 import net.mgsx.game.examples.tactics.util.Perlin3D;
 import net.mgsx.game.examples.tactics.util.TiledMapHelper;
 import net.mgsx.game.examples.tactics.util.Voronoi2D;
@@ -43,6 +45,9 @@ import net.mgsx.game.plugins.editor.systems.DebugRenderSystem;
 
 public class MapGeneratorTool extends Tool
 {
+	@Inject
+	public TacticMapHUD hud;
+	
 	@Editable(type=EnumType.RANDOM, editor=IntegerWidget.class)
 	public long seed = MathUtils.random(Long.MAX_VALUE);
 	
@@ -111,9 +116,9 @@ public class MapGeneratorTool extends Tool
 	@Editable
 	public boolean genMissions = false;
 	
-	private int heroX, heroY;
-	
 	private Perlin3D perlin = new Perlin3D();
+	
+	private WorldMap worldMap = new WorldMap();
 	
 	@Editable
 	public void moveLeft(){
@@ -150,11 +155,15 @@ public class MapGeneratorTool extends Tool
 	private static Array<Connection<Node>> cache = new Array<Connection<Node>>();
 	public static class Node implements IndexedNode<Node>
 	{
-		private int id;
-		private int x, y;
+		public int id;
+		public int x, y;
 		private Array<Connection<Node>> cnx = new Array<Connection<Node>>();
-		private TiledMapTile tile;
-		private float difficulty;
+		public TiledMapTile tile;
+		public float difficulty;
+		public int ax, ay;
+		public boolean isSea;
+		public boolean isCity, isMission;
+		public boolean isDiscovered;
 		public Node(TiledMapTile tile, int id, int x, int y, float difficulty) {
 			this.tile = tile;
 			this.id = id;
@@ -196,11 +205,11 @@ public class MapGeneratorTool extends Tool
 	{
 		seed = (long)(Math.random() * Long.MAX_VALUE);
 		RandomXS128 random = new RandomXS128(seed);
-		heroX = random.nextInt() % 100;
-		heroY = random.nextInt() % 100;
+		worldMap.originX = worldMap.heroX = random.nextInt() % 32768;
+		worldMap.originY = worldMap.heroY = random.nextInt() % 32768;
 		
-		xOffset = heroX - width/2;
-		yOffset = heroY - height/2;
+		xOffset = worldMap.heroX - width/2;
+		yOffset = worldMap.heroY - height/2;
 		
 		generate();
 	}
@@ -208,7 +217,8 @@ public class MapGeneratorTool extends Tool
 	@Editable
 	public void generate()
 	{
-		
+		worldMap.seed = seed;
+				
 		// XXX assume first tileset
 		TiledMapTileSet tileset = tileTemplate.getTileSets().getTileSet(0);
 		ObjectMap<String, TiledMapTile> tilesByName = TiledMapHelper.groupBy(tileset, "name");
@@ -218,6 +228,7 @@ public class MapGeneratorTool extends Tool
 		TiledMapTileLayer layerZone = new TiledMapTileLayer(width, height, tileWidth, tileHeight);
 		TiledMapTileLayer layerTime = new TiledMapTileLayer(width, height, tileWidth, tileHeight);
 		TiledMapTileLayer layerBonus = new TiledMapTileLayer(width, height, tileWidth, tileHeight);
+		TiledMapTileLayer layerDisco = new TiledMapTileLayer(width, height, tileWidth, tileHeight);
 		
 		while(map.getLayers().getCount() > 0) map.getLayers().remove(0);
 		map.getLayers().add(layer);
@@ -225,6 +236,7 @@ public class MapGeneratorTool extends Tool
 		map.getLayers().add(layerDifficulty);
 		map.getLayers().add(layerZone);
 		map.getLayers().add(layerTime);
+		map.getLayers().add(layerDisco);
 		// TODO gen map
 		
 		build();
@@ -243,6 +255,7 @@ public class MapGeneratorTool extends Tool
 		TiledMapTile heroTile = tilesByName.get("hero");
 		TiledMapTile grayTile = tilesByName.get("gray");
 		TiledMapTile bonusTile = tilesByName.get("bonus");
+		TiledMapTile discoTile = tilesByName.get("discovered");
 		
 		// place village
 		Node village = null;		
@@ -268,7 +281,14 @@ public class MapGeneratorTool extends Tool
 				float rndIsland = lookup(1, ax, ay, islandFreq * scale);
 				
 //				float difficulty = lookup(2, ax, ay, levelFreq * scale );
-				float difficulty = lookupVoroID(ax, ay, mapFreq * scale ) + (lookup(2, ax, ay, levelFreq * scale )*2-1)*.1f;
+				float difficulty = rndWater <= -1 ? .5f : MathUtils.clamp(rndWater * lookupVoroID(ax, ay, mapFreq * scale ) * .7f + lookup(2, ax, ay, 1 )* .3f, 0, 1);
+				
+				float radius = 10 / scale;
+				float dx = (ax - worldMap.originX) / radius;
+				float dy = (ay - worldMap.originY) / radius;
+				
+				float falloff = Math.min(1, (float)Math.sqrt(dx*dx+dy*dy));
+				difficulty *= falloff;
 				
 //				rndWater = (rndWater + rndIsland * .5f) / 1.5f;
 //				
@@ -278,12 +298,14 @@ public class MapGeneratorTool extends Tool
 						* (1 - d) * 2 / 1.5f;
 				
 				
-				
+				boolean isSea = false;
 				TiledMapTile tile;
 				if(rndWater < waterRate){
 					tile = waterTile;
+					isSea = true;
 				}else if(rndWater < waterRate + .9f){
 					tile = water2Tile;
+					isSea = true;
 				}else if(rndWater < waterRate + 1.1f){
 					tile = sandTile;
 				}else if(rndWater < waterRate + 2.7f){
@@ -296,7 +318,11 @@ public class MapGeneratorTool extends Tool
 				Cell cell = new Cell().setTile(tile);
 				layer.setCell(x, y, cell);
 				
-				Node node =new Node(tile, y*width+x, x, y, difficulty);
+				// FIXME difficulty should be stricktly positive (for path finding)
+				Node node =new Node(tile, y*width+x, x, y, Math.max(1e-30f, difficulty));
+				node.ax = ax;
+				node.ay = ay;
+				node.isSea = isSea;
 				
 				if(tile == sandTile || tile == groundTile){
 					cells.add(node);
@@ -325,19 +351,20 @@ public class MapGeneratorTool extends Tool
 				}
 				// XXX 
 				float threshold = .1f;
+				voro.setSeed(seed);
 				if(lookupVoro(ax, ay, zoneFreq * scale) > -1 && 
 					Math.abs(r2x - ax * innerDotsFreq * scale ) < threshold && 
 					Math.abs(r2y - ay * innerDotsFreq * scale ) < threshold){
 					
 					if(r2id < villageRate){
 						village = node;
-						cell.setTile(cityTile);
+						// cell.setTile(cityTile);
 					}else if(r2id < missionRate){
-						cell.setTile(missionTile);
+						// cell.setTile(missionTile);
 					}
 				}
 				
-				if(ax == heroX && ay == heroY){
+				if(ax == worldMap.heroX && ay == worldMap.heroY){
 					cell.setTile(heroTile);
 				}
 				
@@ -352,6 +379,49 @@ public class MapGeneratorTool extends Tool
 					layerBonus.setCell(x, y, new Cell().setTile(bonusTile));
 			}
 		}
+		
+		int ax = (int)xOffset;
+		int ay = (int)yOffset;
+		int bx = ax + width;
+		int by = ay + height;
+		
+		for(WorldCell cell : worldMap.discovered){
+			int mx = cell.x - (int)xOffset;
+			int my = cell.y - (int)yOffset;
+			if(mx >= 0 && mx<width && my>=0 && my<height){
+				layerDisco.setCell(mx, my, new Cell().setTile(discoTile));
+				nodes.get(my*width+mx).isDiscovered = true;
+			}
+		}
+		
+		
+		
+		Array<Voronoi2D.Node> spots = new Array<Voronoi2D.Node>();
+		voro.setSeed(seed);
+		voro.query(spots, ax * zoneFreq * scale, ay * zoneFreq * scale, bx * zoneFreq * scale, by * zoneFreq * scale);
+
+		for(Voronoi2D.Node spot : spots){
+			int ix = MathUtils.floor((spot.x / (zoneFreq * scale) )) - (int)xOffset;
+			int iy = MathUtils.floor((spot.y / (zoneFreq * scale) )) - (int)yOffset;
+			if(spot.index * 100  - ((int)(spot.index * 100)) < seaRate) continue;
+			if(ix>=0 && ix<width && iy>=0 && iy<height){
+				Cell cell = layer.getCell(ix, iy);
+				Node node = nodes.get(iy * width + ix);
+				if(spot.index < villageRate){
+					node.isCity = true;
+					cell.setTile(cityTile);
+//				}else if(spot.index < missionRate){
+//					node.isMission = true;
+//					cell.setTile(missionTile);
+				}else{
+					// XXX
+					node.isMission = true;
+					cell.setTile(missionTile); 
+				}
+			}
+			
+		}
+		
 		
 		int[][] m = {{1,0},{0,1},{-1,0},{0,-1}};
 		for(int y=0 ; y<height ; y++)
@@ -383,34 +453,38 @@ public class MapGeneratorTool extends Tool
 		}
 
 		
-		Array<Node> remains = new Array<Node>();
+		IndexedGraph<Node> graph = new DefaultIndexedGraph<Node>(nodes);
+		PathFinder<Node> pf = new IndexedAStarPathFinder<Node>(graph);
+		village = null;
+		int hx = worldMap.heroX -(int)xOffset;
+		int hy = worldMap.heroY -(int)yOffset;
+		if(hx>=0 && hx<width && hy>=0 && hy<height)
+			village = nodes.get(hy * width+hx);
+		
+		
+		// update hud :
+		if(village != null){
+			Node current = village;
+			
+			hud.setCellInfo(worldMap, current);
+		}
+		
+		
+		
 		
 		missions.clear();
 		if(!genMissions) return;
 		
-		IndexedGraph<Node> graph = new DefaultIndexedGraph<Node>(nodes);
-		PathFinder<Node> pf = new IndexedAStarPathFinder<Node>(graph);
-		
-		// find all hot spots :
-		remains.clear();
-		for(Node node : nodes)
-			if(node.tile != waterTile && node.tile != water2Tile)
-				remains.add(node);
-		
-		if(village != null)
-		while(remains.size > 0){
-			Node hot = null;
+		for(Voronoi2D.Node spot : spots){
+			int ix = MathUtils.floor((spot.x / (zoneFreq * scale) )) - (int)xOffset;
+			int iy = MathUtils.floor((spot.y / (zoneFreq * scale) )) - (int)yOffset;
+			if(ix<0 || ix>=width || iy<0 || iy>=height) continue;
+			if(spot.index * 100  - ((int)(spot.index * 100)) < seaRate) continue;
 			
-			float max = 0;
-			for(Node node : remains){
-				if(max < node.difficulty && (node.tile == groundTile || node.tile == sandTile || node.tile == mountainTile)){
-					hot = node;
-					max = node.difficulty;
-				}
-			}
-			if(hot == null) break;
+			Node hot = nodes.get(iy * width+ix);
 			
 			if(hot != null && village != null){
+				if(hot.isDiscovered) continue;
 				GraphPath<Connection<Node>> outPath = new DefaultGraphPath<Connection<Node>>();
 				Heuristic<Node> distanceHeuristic = new Heuristic<MapGeneratorTool.Node>() {
 					@Override
@@ -437,18 +511,6 @@ public class MapGeneratorTool extends Tool
 						mission.vertices[v++] = (y + .5f) * s;
 					}
 					missions.add(mission);
-				}
-				Array<Node> heads = new Array<Node>();
-				heads.add(hot);
-				while(heads.size > 0){
-					Node head = heads.pop();
-					if(remains.removeValue(head, true))
-						for(Connection<Node> cnx : head.cnx){
-							Node adj = cnx.getToNode();
-							if((int)(adj.difficulty*10) <= (int)(head.difficulty*10)){
-								heads.add(adj);
-							}
-						}
 				}
 			}
 		}
@@ -496,7 +558,17 @@ public class MapGeneratorTool extends Tool
 		
 		renderer.setMap(map);
 		renderer.setView(editor.getGameCamera().combined, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		renderer.getBatch().setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 		renderer.render();
+		
+		if(map.getLayers().getCount() >= 6){
+			renderer.getBatch().enableBlending();
+			renderer.getBatch().setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE);
+			renderer.getBatch().begin();
+			renderer.renderTileLayer((TiledMapTileLayer)map.getLayers().get(4));
+			renderer.getBatch().flush();
+			renderer.getBatch().end();
+		}
 		
 		batch.begin();
 	}
@@ -572,13 +644,13 @@ public class MapGeneratorTool extends Tool
 	public boolean keyDown(int keycode) {
 		
 		if(keycode == Input.Keys.LEFT){
-			heroX--;
+			worldMap.heroX--;
 		}else if(keycode == Input.Keys.RIGHT){
-			heroX++;
+			worldMap.heroX++;
 		}else if(keycode == Input.Keys.UP){
-			heroY++;
+			worldMap.heroY++;
 		}else if(keycode == Input.Keys.DOWN){
-			heroY--;
+			worldMap.heroY--;
 		}else if(keycode == Input.Keys.SPACE){
 			// next turn
 		}else{
@@ -587,10 +659,10 @@ public class MapGeneratorTool extends Tool
 		
 		time += .01f;
 
-		if(heroX < xOffset + width/4) xOffset--;
-		if(heroX > xOffset + 3*width/4) xOffset++;
-		if(heroY < yOffset + height/4) yOffset--;
-		if(heroY > yOffset + 3*height/4) yOffset++;
+		if(worldMap.heroX < xOffset + width/4) xOffset--;
+		if(worldMap.heroX > xOffset + 3*width/4) xOffset++;
+		if(worldMap.heroY < yOffset + height/4) yOffset--;
+		if(worldMap.heroY > yOffset + 3*height/4) yOffset++;
 		
 		generate();
 		

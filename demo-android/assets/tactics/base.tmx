@@ -52,6 +52,11 @@
     <property name="name" value="mission"/>
    </properties>
   </tile>
+  <tile id="947">
+   <properties>
+    <property name="name" value="discovered"/>
+   </properties>
+  </tile>
   <tile id="966">
    <properties>
     <property name="name" value="gray"/>

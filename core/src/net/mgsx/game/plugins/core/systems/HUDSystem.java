@@ -12,6 +12,7 @@ import net.mgsx.game.core.Kit;
 abstract public class HUDSystem extends EntitySystem
 {
 	private Stage stage;
+	private boolean created;
 	
 	public HUDSystem() {
 		super(GamePipeline.HUD);
@@ -36,6 +37,10 @@ abstract public class HUDSystem extends EntitySystem
 	@Override
 	public void update(float deltaTime) 
 	{
+		if(!created){
+			create();
+			created = true;
+		}
 		// check screen size changes (same as screen.resize)
 		if(stage.getViewport().getScreenWidth() != Gdx.graphics.getWidth() || stage.getViewport().getScreenHeight() != Gdx.graphics.getHeight()){
 			stage.getViewport().update(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);
@@ -44,6 +49,8 @@ abstract public class HUDSystem extends EntitySystem
 		stage.draw();
 	}
 	
+	protected void create(){}
+
 	public Stage getStage() {
 		return stage;
 	}
