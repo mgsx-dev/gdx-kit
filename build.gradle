@@ -24,6 +24,7 @@ allprojects {
         aiVersion = '1.8.0'
         pdVersion = '0.6.0'
         junitVersion = '4.12'
+        gdxVideoVersion = '0.0.1-SNAPSHOT'
     }
 
     repositories {
@@ -80,6 +81,8 @@ project(":demo-core") {
         compile "net.mgsx.gdx:gdx-pd:$pdVersion"
         
         testCompile "junit:junit:$junitVersion"
+        
+        compile "com.badlogicgames.gdxvideo:gdx-video:$gdxVideoVersion"
     }
 }
 
@@ -102,6 +105,9 @@ project(":demo-desktop") {
         
         compile "com.badlogicgames.gdx:gdx-bullet:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-bullet-platform:$gdxVersion:natives-desktop"
+        
+        compile "com.badlogicgames.gdxvideo:gdx-video-desktop:$gdxVideoVersion"
+		compile "com.badlogicgames.gdxvideo:gdx-video-platform:$gdxVideoVersion:natives-desktop"
     }
 }
 
