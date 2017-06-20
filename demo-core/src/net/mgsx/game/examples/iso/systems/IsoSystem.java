@@ -2,6 +2,7 @@ package net.mgsx.game.examples.iso.systems;
 
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
@@ -48,9 +49,32 @@ public class IsoSystem extends EntitySystem
 		loadShader();
 	}
 	
+	private static String prepareCode(FileHandle file)
+	{
+		String content = file.readString();
+		String [] lines = content.split("\n");
+		
+		String result = ""; 
+		
+		for(String line : lines){
+			if(line.startsWith("#include")){
+				String inclusion = line.substring(8).trim();
+				FileHandle dep = file.parent().child(inclusion + ".glsl");
+				result += prepareCode(dep);
+			}else{
+				result += line + "\n";
+			}
+		}
+		
+		return result;
+		
+	}
+	
 	@Editable
 	public void loadShader(){
-		ShaderProgram shader = new ShaderProgram(Gdx.files.internal("shaders/iso.vs"), Gdx.files.internal("shaders/iso.fs"));
+		ShaderProgram shader = new ShaderProgram(
+				prepareCode(Gdx.files.internal("shaders/iso.vs")), 
+				prepareCode(Gdx.files.internal("shaders/iso.fs")));
 		if(shader.isCompiled()){
 			if(this.shader != null){
 				this.shader.dispose();

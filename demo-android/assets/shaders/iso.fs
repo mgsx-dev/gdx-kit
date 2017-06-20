@@ -4,6 +4,8 @@ uniform vec3 u_camPosition;
 uniform vec3 u_camDirection;
 uniform vec3 u_light;
 
+#include noise3dg
+
 vec4 iso(vec3 p) {
 	float s = 0.0;
 	float r = 1.2;
@@ -11,7 +13,15 @@ vec4 iso(vec3 p) {
 	float dist = length(delta);
 	float e = dist - r;
 	vec3 n = delta / dist;
-	return vec4(e, n.x, n.y, n.z);
+	
+	vec3 nor;
+	float nz = -abs(snoise(p * 0.5, nor));
+	n += nor * 0.1;
+	
+	nz += -abs(snoise(p * 4.0, nor)) * 0.05;
+	n += nor * 0.05;
+	
+	return vec4(max(e, nz + 0.2), n.x, n.y, n.z);
 }
 
 // raymarch
@@ -51,14 +61,22 @@ void main() {
 	vec3  rd = normalize( p.x*cu + p.y*cv + 1.7*cw );
 
 	// render
+	float ambient = 0.1;
 	vec3 col = vec3(0.0);
 	vec4 tnor = interesect( ro, rd );
 	float t = tnor.x;
 	
 	if( t>0.0 )
 	{
-		vec3 normal = tnor.yzw;
-		col = vec3(dot(normal, u_light));
+		vec3 normal = normalize(tnor.yzw);
+		
+		float diffuse = dot(normal, u_light);
+		if(diffuse > 0){
+			float spec = pow(abs(diffuse), 100.0);
+			col = vec3(spec + abs(diffuse) + ambient);
+		}else{
+			col = vec3(ambient);
+		}
 	}
 	
     gl_FragColor = vec4(col, 1.0);
