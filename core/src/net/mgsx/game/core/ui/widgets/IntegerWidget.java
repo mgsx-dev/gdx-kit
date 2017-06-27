@@ -87,7 +87,7 @@ public class IntegerWidget implements FieldEditor
 		
 		label.setAlignment(Align.center);
 		
-		if(accessor.config().type() == EnumType.RANDOM){
+		if(accessor.config() != null && accessor.config().type() == EnumType.RANDOM){
 			label.setText(String.format("0x%x", accessor.get()));
 			final TextButton btRnd = new TextButton("randomize", skin);
 			sub.add(label).pad(4);
