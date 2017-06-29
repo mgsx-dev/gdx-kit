@@ -201,12 +201,9 @@ public class PlatformerPostProcessing extends EntitySystem
 		batch.begin();
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 		
-		Gdx.gl.glActiveTexture(GL20.GL_TEXTURE0);
-		blurA.getColorBufferTexture().bind(GL20.GL_TEXTURE0);
-		Gdx.gl.glActiveTexture(GL20.GL_TEXTURE1);
-		fbo2.getColorBufferTexture().bind(GL20.GL_TEXTURE1);
-		Gdx.gl.glActiveTexture(GL20.GL_TEXTURE2);
-		blurB.getColorBufferTexture().bind(GL20.GL_TEXTURE2);
+		blurA.getColorBufferTexture().bind(0);
+		fbo2.getColorBufferTexture().bind(1);
+		blurB.getColorBufferTexture().bind(2);
 		Gdx.gl.glActiveTexture(GL20.GL_TEXTURE0);
 		
 		PerspectiveCamera perspective = (PerspectiveCamera)engine.camera;
