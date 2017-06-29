@@ -15,6 +15,7 @@ import net.mgsx.game.plugins.g3d.systems.G3DAnimationSystem;
 import net.mgsx.game.plugins.g3d.systems.G3DCullingSystem;
 import net.mgsx.game.plugins.g3d.systems.G3DLightCullingSystem;
 import net.mgsx.game.plugins.g3d.systems.G3DLightNoiseSystem;
+import net.mgsx.game.plugins.g3d.systems.G3DRendererDeferredSystem;
 import net.mgsx.game.plugins.g3d.systems.G3DRendererSystem;
 import net.mgsx.game.plugins.g3d.systems.G3DTextureAnimationSystem;
 import net.mgsx.game.plugins.g3d.systems.G3DTransformSystem;
@@ -29,6 +30,8 @@ import net.mgsx.game.plugins.g3d.systems.G3DTransformSystem;
 
 public class G3DPlugin implements Plugin
 {
+	public static boolean defferedRendering = false;
+	
 	@Override
 	public void initialize(final GameScreen engine) 
 	{
@@ -40,7 +43,12 @@ public class G3DPlugin implements Plugin
 		engine.entityEngine.addSystem(new G3DAnimationSystem());
 		engine.entityEngine.addSystem(new G3DTransformSystem());
 		engine.entityEngine.addSystem(new G3DCullingSystem(engine));
-		engine.entityEngine.addSystem(new G3DRendererSystem(engine));
+		
+		if(defferedRendering)
+			engine.entityEngine.addSystem(new G3DRendererDeferredSystem(engine));
+		else
+			engine.entityEngine.addSystem(new G3DRendererSystem(engine));
+		
 		engine.entityEngine.addSystem(new G3DTextureAnimationSystem());
 		engine.entityEngine.addSystem(new G3DLightCullingSystem(engine));
 		engine.entityEngine.addSystem(new G3DLightNoiseSystem());
