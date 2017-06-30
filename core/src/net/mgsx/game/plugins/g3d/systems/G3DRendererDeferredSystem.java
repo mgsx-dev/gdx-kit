@@ -36,6 +36,7 @@ public class G3DRendererDeferredSystem extends IteratingSystem
 	private Batch batch;
 	@Editable public float radius = 2;
 	@Editable public float exponent = 2;
+	@Editable public float rad = 2;
 	
 	public G3DRendererDeferredSystem(GameScreen screen) {
 		super(Family.all(G3DModel.class).get(), GamePipeline.RENDER);
@@ -72,6 +73,7 @@ public class G3DRendererDeferredSystem extends IteratingSystem
 				colorBuffer.dispose();
 			}
 			normalDepthBuffer = new FrameBuffer(Format.RGBA8888, width, height, true);
+			
 			colorBuffer = new FrameBuffer(Format.RGBA8888, width, height, true);
 			batch.dispose();
 			batch = new SpriteBatch(4, pixelShader);
@@ -98,6 +100,8 @@ public class G3DRendererDeferredSystem extends IteratingSystem
 		Gdx.gl.glActiveTexture(GL20.GL_TEXTURE0);
 		pixelShader.setUniformi("u_texture1", 1);
 		pixelShader.setUniformf("u_expo", exponent);
+		pixelShader.setUniformf("u_rad", rad);
+		pixelShader.setUniformf("u_screen", new Vector2(width, height));
 		pixelShader.setUniformf("dir", new Vector2(radius / width, radius / height));
 		batch.draw(normalDepthBuffer.getColorBufferTexture(), 0, 0, width, height, 0, 0, width, height, false, true);
 		batch.end();

@@ -182,7 +182,7 @@ void main() {
 				discard;
 		#endif
 	#else
-		gl_FragColor.a = 1.0;
+		gl_FragColor.a = gl_FragCoord.z;
 	#endif
 
 }

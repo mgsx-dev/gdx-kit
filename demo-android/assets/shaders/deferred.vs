@@ -252,7 +252,7 @@ void main() {
 		#else
 			vec3 normal = normalize(u_normalMatrix * a_normal);
 		#endif
-		v_normal = normal; //normalize((u_projViewTrans * vec4(a_normal, 0.0)).xyz);
+		v_normal = normal; //normalize((u_worldTrans * vec4(a_normal, 0.0)).xyz);
 	#endif // normalFlag
 
     #ifdef fogFlag

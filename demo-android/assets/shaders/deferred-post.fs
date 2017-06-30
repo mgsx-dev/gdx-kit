@@ -10,6 +10,8 @@ uniform sampler2D u_texture;
 uniform sampler2D u_texture1;
 uniform vec2 dir;
 uniform float u_expo;
+uniform float u_rad;
+uniform vec2 u_screen;
 
 // from https://github.com/mattdesl/lwjgl-basics/wiki/ShaderLesson5
 
@@ -183,9 +185,38 @@ void main() {
     vec3 gradnz;
     float nz = snoise(c.xyz * 400.0, gradnz);
     
-    float light = pow(normalize(c.xyz + gradnz * 0.01).y, u_expo);
+    float light = pow(normalize(c.xyz + gradnz * 0.0).y, u_expo);
+    
+    float zVal = fract(c.a * 1.0);
+    
+    float gi = clamp(d * light, 0.0, 1.0);
+    
+    vec2 ncoord = gl_FragCoord.xy / u_screen;
+    
+    vec3 colScreen = vec3(ncoord.x, ncoord.y, 0);
+    
+    vec3 fakeColor = clamp(col.rgb * gi * zVal, 1.0, 1.0);
+    
+    float ao = 0.0;
+    for(int i=0 ; i<16 ; i++)
+    {
+    	float t = float(i) / 16.0;
+    	float angle = t * 3.1415;
+    	vec2 delta = vec2(cos(angle), sin(angle));
+    	vec3 ray = normalize(c.xyz + vec3(delta.x, delta.y, 0) * u_expo);
+    	vec2 sray = ray.xy;
+    	float dp = texture2D(u_texture, tc + u_rad * sray / u_screen).z;
+    	ao += clamp(c.a - dp, 0.0, 1.0);
+    	//if(dp < c.a) ao += 1.0;
+    }
+    ao /= 16.0;
+    
+    float lgt = 1.0 - ao;
+    
+    lgt = lgt * lgt;
+    
     
     
     //discard alpha for our simple demo, multiply by vertex color and return
-    gl_FragColor = vec4(col.rgb * d * light, 1.0);
+    gl_FragColor = vec4(fakeColor * lgt * col.rgb * light * 2.0, 1.0);
 }
