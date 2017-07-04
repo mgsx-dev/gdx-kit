@@ -15,6 +15,7 @@ import net.mgsx.game.plugins.g3d.G3DEditorPlugin;
 import net.mgsx.game.plugins.graphics.GraphicsEditorPlugin;
 import net.mgsx.game.plugins.particle2d.Particle2DEditorPlugin;
 import net.mgsx.game.plugins.pd.PdEditorPlugin;
+import net.mgsx.game.plugins.procedural.ProceduralEditorPlugin;
 import net.mgsx.game.plugins.spline.SplineEditorPlugin;
 import net.mgsx.game.plugins.tiles.TilesEditorPlugin;
 import net.mgsx.game.plugins.ui.UIEditorPlugin;
@@ -42,7 +43,8 @@ import net.mgsx.game.plugins.ui.UIEditorPlugin;
 	TilesEditorPlugin.class,
 	PdEditorPlugin.class,
 	UIEditorPlugin.class,
-	BulletEditorPlugin.class
+	BulletEditorPlugin.class,
+	ProceduralEditorPlugin.class
 })
 public interface DefaultEditorPlugin extends DefaultPlugin {
 

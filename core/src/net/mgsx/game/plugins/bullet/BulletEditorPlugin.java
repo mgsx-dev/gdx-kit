@@ -5,7 +5,10 @@ import net.mgsx.game.core.annotations.PluginDef;
 import net.mgsx.game.core.plugins.EditorPlugin;
 import net.mgsx.game.plugins.bullet.system.BulletWorldDebugSystem;
 import net.mgsx.game.plugins.bullet.tools.BulletBoundaryTool;
+import net.mgsx.game.plugins.bullet.tools.BulletEmitterTool;
+import net.mgsx.game.plugins.bullet.tools.BulletHeightFieldTool;
 import net.mgsx.game.plugins.bullet.tools.BulletMeshTool;
+import net.mgsx.game.plugins.bullet.tools.BulletShooterTool;
 import net.mgsx.game.plugins.bullet.tools.BulletSphereTool;
 import net.mgsx.game.plugins.bullet.tools.BulletThirdPersonTool;
 
@@ -19,6 +22,9 @@ public class BulletEditorPlugin extends EditorPlugin
 		editor.addTool(new BulletSphereTool(editor));
 		editor.addTool(new BulletBoundaryTool(editor));
 		editor.addTool(new BulletThirdPersonTool(editor));
+		editor.addTool(new BulletHeightFieldTool(editor));
+		editor.addTool(new BulletShooterTool(editor));
+		editor.addTool(new BulletEmitterTool(editor));
 		editor.entityEngine.addSystem(new BulletWorldDebugSystem(editor));
 	}
 
