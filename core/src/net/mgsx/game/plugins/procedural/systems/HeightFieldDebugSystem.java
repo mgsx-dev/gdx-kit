@@ -34,7 +34,10 @@ public class HeightFieldDebugSystem extends IteratingSystem
 		HeightFieldComponent hfc = HeightFieldComponent.components.get(entity);
 		for(int y=0 ; y<hfc.height ; y++){
 			for(int x=0 ; x<hfc.width ; x++){
-				debug.shapeRenderer.point(x - (hfc.width-1)/2f, hfc.values[y*hfc.width+x], y - (hfc.height-1)/2f);
+				debug.shapeRenderer.point(
+						hfc.position.x + x - (hfc.width-1)/2f, 
+						hfc.position.y + hfc.values[y*hfc.width+x], 
+						hfc.position.z + y - (hfc.height-1)/2f);
 			}
 		}
 		

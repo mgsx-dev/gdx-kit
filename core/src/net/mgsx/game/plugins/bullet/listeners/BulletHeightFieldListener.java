@@ -1,44 +1,57 @@
-package net.mgsx.game.plugins.bullet.tools;
+package net.mgsx.game.plugins.bullet.listeners;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 
+import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
+import com.badlogic.ashley.core.EntityListener;
+import com.badlogic.ashley.core.EntitySystem;
+import com.badlogic.ashley.core.Family;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionObject;
 import com.badlogic.gdx.physics.bullet.collision.btHeightfieldTerrainShape;
-import com.badlogic.gdx.utils.Array;
 
-import net.mgsx.game.core.EditorScreen;
-import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.core.annotations.Inject;
-import net.mgsx.game.core.tools.Tool;
 import net.mgsx.game.plugins.bullet.components.BulletComponent;
 import net.mgsx.game.plugins.bullet.components.BulletHeightFieldComponent;
 import net.mgsx.game.plugins.bullet.system.BulletWorldSystem;
 import net.mgsx.game.plugins.core.components.HeightFieldComponent;
 
-@Editable
-public class BulletHeightFieldTool extends Tool
+public class BulletHeightFieldListener extends EntitySystem
 {
 	@Inject public BulletWorldSystem bulletWorldSystem;
 	
-	public BulletHeightFieldTool(EditorScreen editor) {
-		super("Height Field", editor);
-	}
+	private EntityListener listener;
 	
 	@Override
-	public boolean allowed(Array<Entity> selection) {
-		return selection.size == 1 && HeightFieldComponent.components.has(selection.first());
-	}
-	
-	@Override
-	protected void activate() 
-	{
-		super.activate();
+	public void addedToEngine(Engine engine) {
+		super.addedToEngine(engine);
 		
-		HeightFieldComponent hfc = HeightFieldComponent.components.get(currentEntity());
+		engine.addEntityListener(Family.all(HeightFieldComponent.class, BulletHeightFieldComponent.class).get(), listener = new EntityListener() {
+			
+			@Override
+			public void entityAdded(Entity entity) {
+				createBullet(entity);
+			}
+			
+			@Override
+			public void entityRemoved(Entity entity) {
+				entity.remove(BulletComponent.class);
+			}
+			
+		});
+	}
+	
+	@Override
+	public void removedFromEngine(Engine engine) {
+		engine.removeEntityListener(listener);
+		super.removedFromEngine(engine);
+	}
+	
+	private void createBullet(Entity entity) {
+		HeightFieldComponent hfc = HeightFieldComponent.components.get(entity);
 		
 		int width = hfc.width;
 		int height = hfc.height;
@@ -68,14 +81,12 @@ public class BulletHeightFieldTool extends Tool
 		bullet.object.setCollisionShape(bullet.shape);
 		
 		// keep reference on buffer to prevent from GC
-		BulletHeightFieldComponent bhfc = getEngine().createComponent(BulletHeightFieldComponent.class);
+		BulletHeightFieldComponent bhfc = BulletHeightFieldComponent.components.get(entity);
 		bhfc.data = heightfieldData;
-		currentEntity().add(bhfc);
 		
-		currentEntity().remove(BulletComponent.class);
-		currentEntity().add(bullet);
+		entity.add(bullet);
 		bulletWorldSystem.collisionWorld.addCollisionObject(bullet.object);
-		bullet.object.setWorldTransform(new Matrix4().setToTranslation(0, (max+min)/2, 0));
+		bullet.object.setWorldTransform(new Matrix4().setToTranslation(hfc.position.x, hfc.position.y + (max+min)/2, hfc.position.z));
 	}
-	
+
 }
