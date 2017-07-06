@@ -78,6 +78,7 @@ project(":demo-core") {
     dependencies {
         compile project(":core")
         compile "net.mgsx.gdx:gdx-pd:$pdVersion"
+        compile "com.badlogicgames.gdx:gdx-bullet:$gdxVersion"
         
         testCompile "junit:junit:$junitVersion"
     }
