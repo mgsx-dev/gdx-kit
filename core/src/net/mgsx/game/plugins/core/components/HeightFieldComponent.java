@@ -16,12 +16,14 @@ public class HeightFieldComponent implements Component, Poolable
 	
 	public int width, height;
 	public float[] values;
+	public Vector3 [] normals;
 
 	public Vector3 position = new Vector3();
 	
 	@Override
 	public void reset() {
 		values = null;
+		normals = null;
 		width = height = 0;
 	}
 }
