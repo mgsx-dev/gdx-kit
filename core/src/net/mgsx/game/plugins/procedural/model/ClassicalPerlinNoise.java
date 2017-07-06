@@ -12,6 +12,11 @@ public class ClassicalPerlinNoise
 		this.seed = seed;
 	}
 	
+	/**
+	 * @param x
+	 * @param y
+	 * @return a normalized distributed float between -1 and 1
+	 */
 	public float get(float x, float y)
 	{
 		int ix = MathUtils.floor(x);
@@ -35,6 +40,6 @@ public class ClassicalPerlinNoise
 	{
 		random.setSeed(seed + ix);
 		random.setSeed(random.nextInt() + iy);
-		return random.nextFloat();
+		return random.nextFloat() * 2 - 1;
 	}
 }
