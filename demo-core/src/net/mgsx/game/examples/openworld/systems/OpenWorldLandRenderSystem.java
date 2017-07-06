@@ -11,13 +11,16 @@ import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.math.Vector3;
 
 import net.mgsx.game.core.GamePipeline;
 import net.mgsx.game.core.GameScreen;
 import net.mgsx.game.core.annotations.Editable;
+import net.mgsx.game.core.annotations.EditableSystem;
 import net.mgsx.game.examples.openworld.components.LandMeshComponent;
 import net.mgsx.game.plugins.core.components.HeightFieldComponent;
 
+@EditableSystem
 public class OpenWorldLandRenderSystem extends IteratingSystem
 {
 	private VertexAttributes attributes = new VertexAttributes(VertexAttribute.Position(), VertexAttribute.Normal());
@@ -83,10 +86,11 @@ public class OpenWorldLandRenderSystem extends IteratingSystem
 				vertices[index + 1] = hfc.position.y + hfc.values[hIndex];
 				vertices[index + 2] = hfc.position.z + y; // TODO * worldHeight;
 				
-				// TODO normals
-				vertices[index + 3] = 0;
-				vertices[index + 4] = 1;
-				vertices[index + 5] = 0;
+				// normals
+				Vector3 normal = hfc.normals[hIndex];
+				vertices[index + 3] = normal.x;
+				vertices[index + 4] = normal.z;
+				vertices[index + 5] = normal.y;
 			}
 		}
 		
@@ -113,6 +117,7 @@ public class OpenWorldLandRenderSystem extends IteratingSystem
 	
 	@Override
 	public void update(float deltaTime) {
+		Gdx.gl.glEnable(GL20.GL_DEPTH_TEST);
 		shader.begin();
 		shader.setUniformMatrix("u_projTrans", screen.camera.combined);
 		super.update(deltaTime);

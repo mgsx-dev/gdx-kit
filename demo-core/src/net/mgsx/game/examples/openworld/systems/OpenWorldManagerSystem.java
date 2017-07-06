@@ -5,6 +5,7 @@ import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.RandomXS128;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 
 import net.mgsx.game.core.GamePipeline;
 import net.mgsx.game.core.annotations.Editable;
@@ -123,7 +124,11 @@ public class OpenWorldManagerSystem extends EntitySystem
 		int width = verticesPerCell;
 		int height = verticesPerCell;
 		
+		int eWidth = width+2;
+		int eHeight = height+2;
+		
 		float [] values = new float[width * height];
+		float [] extraValues = new float[eWidth * eHeight];
 		
 		long seed = this.seed;
 		float amplitude = 1;
@@ -131,12 +136,17 @@ public class OpenWorldManagerSystem extends EntitySystem
 		float frequency = this.frequency;
 		for(int i=0 ; i<octaves ; i++){
 			noise.seed(seed);
-			for(int y=0 ; y<height ; y++){
-				for(int x=0 ; x<width ; x++){
+			for(int ey=0 ; ey<eHeight ; ey++){
+				for(int ex=0 ; ex<eWidth ; ex++){
+					int x = ex - 1;
+					int y = ey - 1;
+					
 					float fy = worldCellScale * (float)y / (float)(height-1);
 					float fx = worldCellScale * (float)x / (float)(width-1);
 					
-					values[y*width+x] += noise.get((fx + offsetWorldX) * frequency, (fy + offsetWorldY) * frequency) * amplitude;
+					float value = noise.get((fx + offsetWorldX) * frequency, (fy + offsetWorldY) * frequency) * amplitude;
+					
+					extraValues[ey*eWidth+ex] += value;
 				}
 			}
 			sum += amplitude;
@@ -144,11 +154,31 @@ public class OpenWorldManagerSystem extends EntitySystem
 			frequency *= 2;
 			seed = rand.nextLong();
 		}
-		for(int y=0 ; y<height ; y++){
-			for(int x=0 ; x<width ; x++){
-				values[y*width+x] *= scale / sum;
+		// normalized values
+		for(int y=0 ; y<eHeight ; y++){
+			for(int x=0 ; x<eWidth ; x++){
+				extraValues[y*eWidth+x] *= scale / sum;
 			}
 		}
+		// extract inner values and compute normals
+		Vector3 [] normals = new Vector3[width * height];
+		Vector3 dx = new Vector3();
+		Vector3 dy = new Vector3();
+		for(int y=0 ; y<height ; y++){
+			for(int x=0 ; x<width ; x++){
+				values[y*width+x] = extraValues[(y+1)*eWidth+x+1];
+				
+				dx.set(2, 0, extraValues[y*eWidth+x+2] - extraValues[y*eWidth+x]);
+				dy.set(0, 2, extraValues[(y+2)*eWidth+x] - extraValues[(y+2)*eWidth+x]);
+				
+				Vector3 n = dx.crs(dy).nor();
+				
+				normals[y*width+x] = new Vector3(n);
+			}
+		}
+		
+		// compute normals
+		
 		
 		HeightFieldComponent hfc = getEngine().createComponent(HeightFieldComponent.class);
 		
@@ -156,6 +186,7 @@ public class OpenWorldManagerSystem extends EntitySystem
 		hfc.width = width;
 		hfc.height = height;
 		hfc.values = values;
+		hfc.normals = normals;
 		
 		entity.add(hfc);
 		
