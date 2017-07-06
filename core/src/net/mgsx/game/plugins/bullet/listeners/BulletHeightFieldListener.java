@@ -86,7 +86,12 @@ public class BulletHeightFieldListener extends EntitySystem
 		
 		entity.add(bullet);
 		bulletWorldSystem.collisionWorld.addCollisionObject(bullet.object);
-		bullet.object.setWorldTransform(new Matrix4().setToTranslation(hfc.position.x, hfc.position.y + (max+min)/2, hfc.position.z));
+		
+		// compensate bullet central coordinates
+		bullet.object.setWorldTransform(new Matrix4().setToTranslation(
+				hfc.position.x + (hfc.width-1)/2f, 
+				hfc.position.y + (max+min)/2, 
+				hfc.position.z + (hfc.height-1)/2f));
 	}
 
 }

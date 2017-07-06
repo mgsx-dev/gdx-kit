@@ -12,7 +12,7 @@ import net.mgsx.game.core.annotations.Inject;
 import net.mgsx.game.plugins.core.components.HeightFieldComponent;
 import net.mgsx.game.plugins.editor.systems.DebugRenderSystem;
 
-@EditableSystem
+@EditableSystem(isDebug=true)
 public class HeightFieldDebugSystem extends IteratingSystem
 {
 	@Inject public DebugRenderSystem debug;
@@ -35,9 +35,9 @@ public class HeightFieldDebugSystem extends IteratingSystem
 		for(int y=0 ; y<hfc.height ; y++){
 			for(int x=0 ; x<hfc.width ; x++){
 				debug.shapeRenderer.point(
-						hfc.position.x + x - (hfc.width-1)/2f, 
+						hfc.position.x + x, 
 						hfc.position.y + hfc.values[y*hfc.width+x], 
-						hfc.position.z + y - (hfc.height-1)/2f);
+						hfc.position.z + y);
 			}
 		}
 		
