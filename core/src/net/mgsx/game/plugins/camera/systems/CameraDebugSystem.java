@@ -35,6 +35,8 @@ public class CameraDebugSystem extends IteratingSystem
 	{
 		CameraComponent camera = CameraComponent.components.get(entity);
 		RenderDebugHelper.frustum(editor.shapeRenderer, camera.camera.frustum);
+		
+		editor.shapeRenderer.line(camera.camera.position, camera.camera.position.cpy().mulAdd(camera.camera.up, 2));
 	}
 
 }
