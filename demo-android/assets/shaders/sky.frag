@@ -1,5 +1,7 @@
 varying vec4 v_position;
 
+uniform vec3 u_sunDirection;
+uniform vec4 u_fogColor;
 
 //
 // Description : Array and textureless GLSL 2D simplex noise function.
@@ -87,10 +89,10 @@ float pnoise(vec2 v) {
 void main() {
 	float f = v_position.y; // give horizon !
 	vec3 color;
-	float day = 0.1;
+	float day = (-u_sunDirection.y + 1.0) * 0.5;
 	if(f<0){
 		// land
-		color = vec3(1.0, 0.5, 0.0) * day;
+		color = u_fogColor * day;
 	} else{
 		// sky
 		vec3 colorDay = vec3(0.5, 0.7, 1.0); // day sky
@@ -120,22 +122,24 @@ void main() {
 
 
 		float pattern = pnoise(dir2);
-		float cloudLum = 0.9;
+		float cloudLum = mix(0.1, 0.9, day);
 
 		color = mix(color, vec3(cloudLum, cloudLum, cloudLum), pow(clamp(pattern - 0.1, 0.0, 1.0), 2.0));
 	}
 
 	// smooth with fog.
-	vec3 fogColor = vec3(1.0, 0.8, 0.7) * day;
+	vec3 fogColor = u_fogColor * day * day; // XXX
 
 	color = mix(color, fogColor, pow(1.0 - clamp(abs(f * 0.01), 0.0, 1.0), 2.0));
 
 	// sun
-	vec3 sunDir = normalize(vec3(50, -100, 50));
-	vec3 viewDir = normalize(v_position);
-	float sunRate = -dot(sunDir, viewDir);
+	if(f>0.0) {
+		vec3 sunDir = u_sunDirection;
+		vec3 viewDir = normalize(v_position);
+		float sunRate = -dot(sunDir, viewDir);
 
-	color = mix(color, vec3(1.0, 1.0, 0.99), clamp(pow(sunRate * 2.0 - 0.99, 40.0), 0, 1));
+		color = mix(color, vec3(1.0, 1.0, 0.99), clamp(pow(sunRate * 2.0 - 0.99, 40.0), 0, 1));
+	}
 
     gl_FragColor = vec4(color, 1.0);
 }

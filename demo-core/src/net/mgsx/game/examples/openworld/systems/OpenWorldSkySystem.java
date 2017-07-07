@@ -26,6 +26,7 @@ import net.mgsx.game.core.annotations.Inject;
 public class OpenWorldSkySystem extends EntitySystem
 {
 	@Inject OpenWorldLandRenderSystem landRenderer;
+	@Inject OpenWorldEnvSystem environment;
 	
 	@Editable public boolean debugFaces = false;
 	
@@ -101,6 +102,8 @@ public class OpenWorldSkySystem extends EntitySystem
 	{
 		if(cubeMapDirty) {
 			
+			prepareSky();
+			
 			fboCubeMap.begin();
 			
 			Color [] colors = {Color.RED, Color.GREEN, Color.BLUE, Color.YELLOW, Color.CYAN, Color.PURPLE};
@@ -163,6 +166,13 @@ public class OpenWorldSkySystem extends EntitySystem
 		
 		Gdx.gl.glCullFace(GL20.GL_CCW);
 		
+	}
+	
+	private void prepareSky() {
+		skyShader.begin();
+		skyShader.setUniformf("u_sunDirection", environment.sunDirection);
+		skyShader.setUniformf("u_fogColor", environment.fogColor);
+		skyShader.end();
 	}
 	
 	private void renderSky() {

@@ -17,12 +17,15 @@ import net.mgsx.game.core.GamePipeline;
 import net.mgsx.game.core.GameScreen;
 import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.core.annotations.EditableSystem;
+import net.mgsx.game.core.annotations.Inject;
 import net.mgsx.game.examples.openworld.components.LandMeshComponent;
 import net.mgsx.game.plugins.core.components.HeightFieldComponent;
 
 @EditableSystem
 public class OpenWorldLandRenderSystem extends IteratingSystem
 {
+	@Inject OpenWorldEnvSystem environment;
+	
 	private VertexAttributes attributes = new VertexAttributes(VertexAttribute.Position(), VertexAttribute.Normal());
 	private ShaderProgram shader;
 	
@@ -120,6 +123,8 @@ public class OpenWorldLandRenderSystem extends IteratingSystem
 		Gdx.gl.glEnable(GL20.GL_DEPTH_TEST);
 		shader.begin();
 		shader.setUniformMatrix("u_projTrans", screen.camera.combined);
+		shader.setUniformf("u_sunDirection", environment.sunDirection);
+		shader.setUniformf("u_fogColor", environment.fogColor);
 		super.update(deltaTime);
 		shader.end();
 	}
