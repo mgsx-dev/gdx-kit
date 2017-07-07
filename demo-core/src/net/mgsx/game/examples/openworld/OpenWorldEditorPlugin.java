@@ -6,6 +6,7 @@ import net.mgsx.game.examples.openworld.systems.OpenWorldCameraSystem;
 import net.mgsx.game.examples.openworld.systems.OpenWorldDebugSystem;
 import net.mgsx.game.examples.openworld.systems.OpenWorldLandRenderSystem;
 import net.mgsx.game.examples.openworld.systems.OpenWorldManagerSystem;
+import net.mgsx.game.examples.openworld.systems.OpenWorldSkySystem;
 import net.mgsx.game.plugins.DefaultEditorPlugin;
 
 public class OpenWorldEditorPlugin extends EditorPlugin implements DefaultEditorPlugin
@@ -19,6 +20,7 @@ public class OpenWorldEditorPlugin extends EditorPlugin implements DefaultEditor
 		// TODO non edit part
 		editor.entityEngine.addSystem(new OpenWorldLandRenderSystem(editor.game));
 		editor.entityEngine.addSystem(new OpenWorldCameraSystem(editor.game));
+		editor.entityEngine.addSystem(new OpenWorldSkySystem(editor.game));
 	}
 
 }
