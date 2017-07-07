@@ -14,6 +14,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 
 import net.mgsx.game.core.GamePipeline;
 import net.mgsx.game.core.GameScreen;
@@ -26,11 +27,16 @@ public class OpenWorldSkySystem extends EntitySystem
 {
 	@Inject OpenWorldLandRenderSystem landRenderer;
 	
+	@Editable public boolean debugFaces = false;
+	
 	private final int cubeMapSize = 1024;
 	private boolean cubeMapDirty;
 	private FrameBufferCubemap fboCubeMap;
 	private ShaderProgram bgShader;
 	private PerspectiveCamera fboCam;
+	
+	private ShaderProgram skyShader;
+	private ShapeRenderer skyRenderer;
 	
 	private ShapeRenderer renderer;
 	private GameScreen screen;
@@ -47,6 +53,19 @@ public class OpenWorldSkySystem extends EntitySystem
 	@Editable
 	public void genEnv(){
 		cubeMapDirty = true;
+		
+		// XXX
+		if(skyShader != null) skyShader.dispose();
+		skyShader = new ShaderProgram(
+				Gdx.files.internal("shaders/sky.vert"),
+				Gdx.files.internal("shaders/sky.frag"));
+		
+		if(!skyShader.isCompiled()){
+			throw new GdxRuntimeException(skyShader.getLog());
+		}
+		
+		if(skyRenderer != null) skyRenderer.dispose();
+		skyRenderer = new ShapeRenderer(36, skyShader);
 	}
 	
 	@Override
@@ -64,8 +83,15 @@ public class OpenWorldSkySystem extends EntitySystem
 		bgShader = new ShaderProgram(
 			Gdx.files.internal("shaders/sky-bg.vert"),
 			Gdx.files.internal("shaders/sky-bg.frag"));
+		
+//		skyShader = new ShaderProgram(
+//				Gdx.files.internal("shaders/sky.vert"),
+//				Gdx.files.internal("shaders/sky.frag"));
 	
 		renderer = new ShapeRenderer(36, bgShader);
+		// skyRenderer = new ShapeRenderer(36, skyShader);
+		
+		genEnv();
 	}
 	
 	private Matrix4 backup = new Matrix4();
@@ -82,9 +108,15 @@ public class OpenWorldSkySystem extends EntitySystem
 			backup.set(screen.camera.combined);
 			
 			while(fboCubeMap.nextSide()) {
-				Color color = colors[fboCubeMap.getSide().index];
-				Gdx.gl.glClearColor(color.r, color.g, color.b, color.a);
-				Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
+				
+				if(debugFaces){
+					
+					Color color = colors[fboCubeMap.getSide().index];
+					Gdx.gl.glClearColor(color.r, color.g, color.b, color.a);
+					Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
+				} else{
+					Gdx.gl.glClear(GL20.GL_DEPTH_BUFFER_BIT);
+				}
 				
 				// TODO render geometries
 				fboCam.position.set(screen.camera.position);
@@ -99,6 +131,10 @@ public class OpenWorldSkySystem extends EntitySystem
 				screen.camera.combined.set(fboCam.combined);
 				
 				landRenderer.update(0);
+				
+				if(!debugFaces) {
+					renderSky();
+				}
 				
 			}
 			
@@ -126,6 +162,25 @@ public class OpenWorldSkySystem extends EntitySystem
 		renderer.end();
 		
 		Gdx.gl.glCullFace(GL20.GL_CCW);
+		
+	}
+	
+	private void renderSky() {
+		
+		// simple "infinite" quad
+		Vector3 vOffset = Vector3.Zero;
+		float s = screen.camera.far / 2; // TODO not really that ...
+		
+		skyRenderer.setProjectionMatrix(screen.camera.combined);
+		skyRenderer.begin(ShapeType.Filled);
+		
+		// bgShader.setUniformi("u_texture", 0);
+		
+		skyRenderer.box(
+				vOffset.x-s, 
+				vOffset.y-s, 
+				vOffset.z-s, s*2, s*2, -s*2);
+		skyRenderer.end();
 		
 	}
 }
