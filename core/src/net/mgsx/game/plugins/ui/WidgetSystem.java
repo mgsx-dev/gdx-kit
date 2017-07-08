@@ -7,6 +7,7 @@ import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.math.Vector3;
@@ -121,6 +122,7 @@ public class WidgetSystem extends IteratingSystem
 		super.update(deltaTime);
 		stage.act();
 		stage.draw();
+		Gdx.gl.glDisable(GL20.GL_BLEND);
 	}
 
 	@Override
