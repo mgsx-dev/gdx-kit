@@ -28,8 +28,10 @@ public class OpenWorldManagerSystem extends EntitySystem
 	private transient Entity [] lands;
 	private transient Entity [] oldLands;
 	
-	private int logicWidth = 3;
-	private int logicHeight = 3;
+	@Editable public int logicSize = 3;
+	
+	private int logicWidth;
+	private int logicHeight;
 	
 	private int verticesPerCell = 16;
 	private float worldCellScale = verticesPerCell-1;
@@ -42,19 +44,23 @@ public class OpenWorldManagerSystem extends EntitySystem
 	public OpenWorldManagerSystem() {
 		super(GamePipeline.LOGIC);
 		
-		lands = new Entity[logicWidth * logicHeight];
-		oldLands = new Entity[logicWidth * logicHeight];
+		clear();
 	}
 	
 	@Editable
 	public void clear() {
-		for(int i=0 ; i<lands.length ; i++) {
-			Entity entity = lands[i];
-			if(entity != null) {
-				getEngine().removeEntity(entity);
-				lands[i] = null;
+		if(lands != null){
+			for(int i=0 ; i<lands.length ; i++) {
+				Entity entity = lands[i];
+				if(entity != null) {
+					getEngine().removeEntity(entity);
+					lands[i] = null;
+				}
 			}
 		}
+		logicWidth = logicHeight = logicSize;
+		lands = new Entity[logicWidth * logicHeight];
+		oldLands = new Entity[logicWidth * logicHeight];
 	}
 	
 	@Override
