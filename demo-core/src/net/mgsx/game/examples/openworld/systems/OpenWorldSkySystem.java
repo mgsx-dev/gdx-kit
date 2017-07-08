@@ -37,6 +37,10 @@ public class OpenWorldSkySystem extends EntitySystem
 	
 	@Editable public boolean realtime = false;
 	
+	@Editable public float cloudSpeed = 0.1f;
+	@Editable public float cloudRate = 2f;
+	@Editable public float cloudDarkness = 3f;
+	
 	private boolean cubeMapDirty;
 	private FrameBufferCubemap fboCubeMap;
 	private ShaderProgram bgShader;
@@ -190,7 +194,9 @@ public class OpenWorldSkySystem extends EntitySystem
 		skyShader.begin();
 		skyShader.setUniformf("u_sunDirection", environment.sunDirection);
 		skyShader.setUniformf("u_fogColor", environment.fogColor);
-		skyShader.setUniformf("u_time", environment.time);
+		skyShader.setUniformf("u_cloudTime", environment.time * cloudSpeed);
+		skyShader.setUniformf("u_cloudRate", cloudRate);
+		skyShader.setUniformf("u_cloudDarkness", cloudDarkness);
 		skyShader.end();
 	}
 	

@@ -16,12 +16,15 @@ public class OpenWorldEnvSystem extends EntitySystem
 	
 	@Editable(type=EnumType.UNIT) public Vector3 sunDirection = new Vector3(.5f, -1f, .5f).nor();
 	
+	public float time;
+	
 	public OpenWorldEnvSystem() {
 		super(GamePipeline.LOGIC);
 	}
 	
 	@Override
 	public void update(float deltaTime) {
+		time += deltaTime;
 		sunDirection.nor();
 	}
 	
