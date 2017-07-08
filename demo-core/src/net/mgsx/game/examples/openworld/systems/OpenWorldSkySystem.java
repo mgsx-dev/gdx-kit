@@ -1,5 +1,7 @@
 package net.mgsx.game.examples.openworld.systems;
 
+import java.nio.IntBuffer;
+
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.gdx.Gdx;
@@ -14,6 +16,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.BufferUtils;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 import net.mgsx.game.core.GamePipeline;
@@ -30,7 +33,8 @@ public class OpenWorldSkySystem extends EntitySystem
 	
 	@Editable public boolean debugFaces = false;
 	
-	private final int cubeMapSize = 1024;
+	@Editable public int cubeMapSize = 2048;
+	
 	private boolean cubeMapDirty;
 	private FrameBufferCubemap fboCubeMap;
 	private ShaderProgram bgShader;
@@ -67,16 +71,28 @@ public class OpenWorldSkySystem extends EntitySystem
 		
 		if(skyRenderer != null) skyRenderer.dispose();
 		skyRenderer = new ShapeRenderer(36, skyShader);
+		
+		// TODO utils in libGDX ?
+		IntBuffer params = BufferUtils.newIntBuffer(16);
+		Gdx.gl.glGetIntegerv(GL20.GL_MAX_CUBE_MAP_TEXTURE_SIZE, params);
+		int maxCubeMapSize = params.get() / 4; // TODO why : because it is the max size for 1 byte format, we use 4 bytes format ... ?
+		
+		if(cubeMapSize > maxCubeMapSize) {
+			cubeMapSize = maxCubeMapSize;
+			Gdx.app.log("WARNING", "cubemap size too big : max " + maxCubeMapSize);
+		}
+		
+		if(fboCubeMap == null || fboCubeMap.getWidth() != cubeMapSize || fboCubeMap.getHeight() != cubeMapSize){
+			if(fboCubeMap != null) fboCubeMap.dispose();
+			fboCubeMap = new FrameBufferCubemap(Format.RGBA8888, cubeMapSize, cubeMapSize, true);
+			fboCam = new PerspectiveCamera(90, cubeMapSize, cubeMapSize);
+		}
 	}
 	
 	@Override
 	public void addedToEngine(Engine engine) {
 		super.addedToEngine(engine);
 		
-		fboCam = new PerspectiveCamera(90, cubeMapSize, cubeMapSize);
-		
-		fboCubeMap = new FrameBufferCubemap(Format.RGBA8888, cubeMapSize, cubeMapSize, true);
-
 		cubeMapDirty = true;
 //		for(int i=0 ; i<6 ; i++)
 //			Gdx.gl30.glFramebufferTextureLayer(GL30.GL_DRAW_FRAMEBUFFER, GL30.GL_COLOR_ATTACHMENT0 + i, cubeMap.glTarget, 0, 1);
