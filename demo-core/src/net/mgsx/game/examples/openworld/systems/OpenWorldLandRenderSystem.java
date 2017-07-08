@@ -159,6 +159,9 @@ public class OpenWorldLandRenderSystem extends IteratingSystem
 		shaderHigh.setUniformMatrix("u_projTrans", screen.camera.combined);
 		shaderHigh.setUniformf("u_sunDirection", environment.sunDirection);
 		shaderHigh.setUniformf("u_fogColor", environment.fogColor);
+		shaderHigh.setUniformf("u_camDirection", screen.camera.direction);
+		shaderHigh.setUniformf("u_camPosition", screen.camera.position);
+		// u_camPosition
 		for(Entity entity : getEntities()){
 			LandMeshComponent lmc = LandMeshComponent.components.get(entity);
 			lmc.mesh.render(shaderHigh, GL20.GL_TRIANGLES);

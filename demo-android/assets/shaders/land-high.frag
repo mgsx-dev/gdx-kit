@@ -3,6 +3,8 @@ varying vec3 v_normal;
 
 uniform vec3 u_sunDirection;
 uniform vec4 u_fogColor;
+uniform vec3 u_camDirection;
+uniform vec3 u_camPosition;
 
 //
 // Description : Array and textureless GLSL 2D simplex noise function.
@@ -98,11 +100,22 @@ float ptnoise(vec2 v) {
 	return sum * 0.5;
 }
 
+float ptxnoise(vec2 v) {
+	float sum = 1.0;
+	float amp = 1.0;
+	for(int i=0 ; i<3 ; i++) {
+		float value = snoise(v);
+		sum += value * value * amp;
+		amp *= 0.5;
+		v *= 2.0;
+	}
+	return sum * 0.5;
+}
 
 void main() {
 	float day = (-u_sunDirection.y + 1.0) * 0.5;
 
-    vec3 N = normalize(v_normal);
+    vec3 N = normalize(v_normal + vec3(0,(pnoise(v_position.xz * 20)*0.5+0.5) * 0.9,0));
     float lum = pow(clamp(-dot(N, u_sunDirection), 0.03, 1.0), 0.5) * 0.5;
     float fog = clamp(gl_FragCoord.z * gl_FragCoord.w, 0.0, 1.0);
     float fogFact = 1.0 - pow(1.0 - fog, 10.0);
@@ -116,12 +129,14 @@ void main() {
 
     vec3 grass = mix(vec3(amb,1,amb), vec3(dif,1,dif), grassPattern);
 
-    vec3 earth = vec3(dif, dif*0.9, amb) * (pow(1.0 - ptnoise(v_position.xz * 1.0), 2.0)*0.1+0.9);
+    vec3 earth = vec3(1, 0.8, 0.6) * (-pow(1.0 - ptnoise(v_position.xz * 0.3), 5.0)*0.3+1);
 
     color = mix(grass, earth, clamp(v_position.y * 20 * abs(pnoise(v_position.xz * 13.2)) + pnoise(v_position.xz * 0.2) * 12.3 - 8.0, 0, 1)) * color;
 
     // add fog
     color = mix(u_fogColor * day, color, fogFact);
+
+    color = mix(color, vec3(1,1,1), pow(clamp(-dot(N, u_sunDirection) * dot(normalize(v_position - u_camPosition), u_camDirection), 0, 1), 30));
 
     gl_FragColor = vec4(color, 1.0);
 }
