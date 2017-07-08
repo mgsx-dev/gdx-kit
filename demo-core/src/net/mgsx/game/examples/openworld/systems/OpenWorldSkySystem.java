@@ -148,7 +148,7 @@ public class OpenWorldSkySystem extends EntitySystem
 			cubeMapDirty = false;
 		}
 		
-		Vector3 vOffset = screen.camera.position.cpy().scl(1);
+		Vector3 vOffset = screen.camera.position;
 		
 		// render background
 		Gdx.gl.glCullFace(GL20.GL_CCW);
