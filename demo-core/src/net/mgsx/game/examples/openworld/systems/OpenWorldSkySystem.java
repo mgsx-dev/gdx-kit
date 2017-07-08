@@ -35,6 +35,8 @@ public class OpenWorldSkySystem extends EntitySystem
 	
 	@Editable public int cubeMapSize = 2048;
 	
+	@Editable public boolean realtime = false;
+	
 	private boolean cubeMapDirty;
 	private FrameBufferCubemap fboCubeMap;
 	private ShaderProgram bgShader;
@@ -116,7 +118,7 @@ public class OpenWorldSkySystem extends EntitySystem
 	@Override
 	public void update(float deltaTime) 
 	{
-		if(cubeMapDirty) {
+		if(cubeMapDirty || realtime) {
 			
 			prepareSky();
 			
