@@ -151,7 +151,7 @@ public class OpenWorldSkySystem extends EntitySystem
 				
 				screen.camera.combined.set(fboCam.combined);
 				
-				landRenderer.update(0);
+				landRenderer.renderLow();
 				
 				if(!debugFaces) {
 					renderSky();

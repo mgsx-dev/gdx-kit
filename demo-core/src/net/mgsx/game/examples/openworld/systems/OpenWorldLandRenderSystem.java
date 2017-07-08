@@ -28,6 +28,7 @@ public class OpenWorldLandRenderSystem extends IteratingSystem
 	
 	private VertexAttributes attributes = new VertexAttributes(VertexAttribute.Position(), VertexAttribute.Normal());
 	private ShaderProgram shader;
+	private ShaderProgram shaderHigh;
 	
 	private GameScreen screen;
 	
@@ -44,6 +45,17 @@ public class OpenWorldLandRenderSystem extends IteratingSystem
 		shader = new ShaderProgram(
 				Gdx.files.internal("shaders/land.vert"), 
 				Gdx.files.internal("shaders/land.frag"));
+		
+		ShaderProgram shaderHigh = new ShaderProgram(
+				Gdx.files.internal("shaders/land-high.vert"), 
+				Gdx.files.internal("shaders/land-high.frag"));
+		if(!shaderHigh.isCompiled()){
+			Gdx.app.error("Shader", shaderHigh.getLog());
+		}else{
+			if(this.shaderHigh != null) this.shaderHigh.dispose();
+			this.shaderHigh = shaderHigh;
+		}
+		
 	}
 	
 	@Override
@@ -120,19 +132,38 @@ public class OpenWorldLandRenderSystem extends IteratingSystem
 	
 	@Override
 	public void update(float deltaTime) {
+		renderHigh();
+	}
+
+	@Override
+	protected void processEntity(Entity entity, float deltaTime) {
+		// NOOP
+	}
+	
+	public void renderLow() {
 		Gdx.gl.glEnable(GL20.GL_DEPTH_TEST);
 		shader.begin();
 		shader.setUniformMatrix("u_projTrans", screen.camera.combined);
 		shader.setUniformf("u_sunDirection", environment.sunDirection);
 		shader.setUniformf("u_fogColor", environment.fogColor);
-		super.update(deltaTime);
+		for(Entity entity : getEntities()){
+			LandMeshComponent lmc = LandMeshComponent.components.get(entity);
+			lmc.mesh.render(shader, GL20.GL_TRIANGLES);
+		}
 		shader.end();
 	}
-
-	@Override
-	protected void processEntity(Entity entity, float deltaTime) {
-		LandMeshComponent lmc = LandMeshComponent.components.get(entity);
-		lmc.mesh.render(shader, GL20.GL_TRIANGLES);
+	
+	public void renderHigh() {
+		Gdx.gl.glEnable(GL20.GL_DEPTH_TEST);
+		shaderHigh.begin();
+		shaderHigh.setUniformMatrix("u_projTrans", screen.camera.combined);
+		shaderHigh.setUniformf("u_sunDirection", environment.sunDirection);
+		shaderHigh.setUniformf("u_fogColor", environment.fogColor);
+		for(Entity entity : getEntities()){
+			LandMeshComponent lmc = LandMeshComponent.components.get(entity);
+			lmc.mesh.render(shaderHigh, GL20.GL_TRIANGLES);
+		}
+		shaderHigh.end();
 	}
 
 }
