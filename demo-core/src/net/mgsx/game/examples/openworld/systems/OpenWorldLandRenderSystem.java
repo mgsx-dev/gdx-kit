@@ -25,6 +25,7 @@ import net.mgsx.game.plugins.core.components.HeightFieldComponent;
 public class OpenWorldLandRenderSystem extends IteratingSystem
 {
 	@Inject OpenWorldEnvSystem environment;
+	@Inject OpenWorldSkySystem sky;
 	
 	private VertexAttributes attributes = new VertexAttributes(VertexAttribute.Position(), VertexAttribute.Normal());
 	private ShaderProgram shader;
@@ -161,6 +162,9 @@ public class OpenWorldLandRenderSystem extends IteratingSystem
 		shaderHigh.setUniformf("u_fogColor", environment.fogColor);
 		shaderHigh.setUniformf("u_camDirection", screen.camera.direction);
 		shaderHigh.setUniformf("u_camPosition", screen.camera.position);
+		shaderHigh.setUniformi("u_skyBox", 0);
+		sky.getCubeMap().bind();
+		
 		// u_camPosition
 		for(Entity entity : getEntities()){
 			LandMeshComponent lmc = LandMeshComponent.components.get(entity);

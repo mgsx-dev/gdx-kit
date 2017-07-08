@@ -6,6 +6,9 @@ uniform vec4 u_fogColor;
 uniform vec3 u_camDirection;
 uniform vec3 u_camPosition;
 
+uniform samplerCube u_skyBox;
+uniform mat4 u_projTrans;
+
 //
 // Description : Array and textureless GLSL 2D simplex noise function.
 //      Author : Ian McEwan, Ashima Arts.
@@ -120,7 +123,17 @@ void main() {
     float fog = clamp(gl_FragCoord.z * gl_FragCoord.w, 0.0, 1.0);
     float fogFact = 1.0 - pow(1.0 - fog, 10.0);
 
-    vec3 color = vec3(lum, lum, lum);
+    // TODO simple sky flat prjection ???
+    vec3 P = (vec4(v_position, 1) * u_projTrans).xyz;
+    vec3 I = normalize(u_camPosition - vec3(v_position.x, 0, v_position.z));
+    vec3 N1 = vec3(0,1,0);
+    I.z = -I.z;
+    I.x = -I.x;
+
+	vec3 R = reflect(I, N1);
+	R = reflect(R, N1);
+    vec4 skyProjColor = textureCube(u_skyBox, R);
+    vec3 color = skyProjColor.a * lum;
 
     // select materials
     float amb = 0.4;

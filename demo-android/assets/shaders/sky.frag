@@ -144,16 +144,17 @@ void main() {
 	color = mix(color, fogColor, pow(1.0 - clamp(abs(f * 0.01), 0.0, 1.0), 2.0));
 
 	// sun
+	float sunRate = 0.9;
 	if(f>0){
 		vec3 sunDir = u_sunDirection;
 		vec3 viewDir = normalize(v_position);
 		float sunRate = -dot(sunDir, viewDir);
-
-		color = mix(color, vec3(1.0, 1.0, 0.99), clamp(pow(sunRate * 2.0 - 0.99, 40.0), 0, 1));
+		sunRate = clamp(pow(sunRate * 2.0 - 0.99, 40.0), 0, 1);
+		color = mix(color, vec3(1.0, 1.0, 0.99), sunRate);
 
 	}
 
 	color = mix(color, cloudColor.rgb, cloudColor.a);
 
-    gl_FragColor = vec4(color, 1.0);
+    gl_FragColor = vec4(color, sunRate * (1.0 - cloudColor.a * (1.0 - cloudColor.r)));
 }
