@@ -168,21 +168,21 @@ public class OpenWorldSkySystem extends EntitySystem
 		
 		Vector3 vOffset = screen.camera.position;
 		
+		bgShader.begin();
+		bgShader.setUniformi("u_texture", 0);
+		bgShader.end();
+		
 		// render background
-		Gdx.gl.glCullFace(GL20.GL_CCW);
 		float s = screen.camera.far / 2; // TODO not really that ...
 		renderer.setTransformMatrix(renderer.getTransformMatrix().idt());
 		renderer.setProjectionMatrix(screen.camera.combined);
 		renderer.begin(ShapeType.Filled);
 		fboCubeMap.getColorBufferTexture().bind();
-		bgShader.setUniformi("u_texture", 0);
 		renderer.box(
 				vOffset.x-s, 
 				vOffset.y-s, 
 				vOffset.z-s, s*2, s*2, -s*2);
 		renderer.end();
-		
-		Gdx.gl.glCullFace(GL20.GL_CCW);
 		
 	}
 	
@@ -190,6 +190,7 @@ public class OpenWorldSkySystem extends EntitySystem
 		skyShader.begin();
 		skyShader.setUniformf("u_sunDirection", environment.sunDirection);
 		skyShader.setUniformf("u_fogColor", environment.fogColor);
+		skyShader.setUniformf("u_time", environment.time);
 		skyShader.end();
 	}
 	
