@@ -210,6 +210,7 @@ public class OpenWorldManagerSystem extends EntitySystem
 		hfc.width = width;
 		hfc.height = height;
 		hfc.values = values;
+		hfc.extraValues = extraValues;
 		hfc.normals = normals;
 		
 		entity.add(hfc);

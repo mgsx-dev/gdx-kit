@@ -13,6 +13,7 @@ import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.g3d.utils.MeshBuilder;
 import com.badlogic.gdx.graphics.g3d.utils.MeshPartBuilder.VertexInfo;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.RandomXS128;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.GdxRuntimeException;
@@ -80,12 +81,31 @@ public class OpenWorldTreeSystem extends IteratingSystem
 		Vector3 p = new Vector3();
 		for(int y=0 ; y<hfc.height ; y++){
 			for(int x=0 ; x<hfc.width ; x++) {
-				float base = hfc.values[y*hfc.width+x];
 				
 				float dx = rnd.get(x, y) * 0.5f;
 				float dy = rnd.get(x + 7, y + 3) * 0.5f;
 				
-				buildTree(builder, p.set(hfc.position).add(x + dx, base - .1f, y + dy));
+				// lerp position
+				float fx = x + dx;
+				float fy = y + dy;
+				
+				int ix = MathUtils.floor(fx);
+				int iy = MathUtils.floor(fy);
+				float rx = fx - ix;
+				float ry = fy - iy;
+				
+				float base00 = hfc.extraValues[(iy+1)*(hfc.width+2)+ix+1];
+				float base10 = hfc.extraValues[(iy+1)*(hfc.width+2)+ix+2];
+				float base01 = hfc.extraValues[(iy+2)*(hfc.width+2)+ix+1];
+				float base11 = hfc.extraValues[(iy+2)*(hfc.width+2)+ix+2];
+				
+				float base = MathUtils.lerp(
+						MathUtils.lerp(base00, base10, rx),
+						MathUtils.lerp(base01, base11, rx), ry);
+				
+				if(base > 0){
+					buildTree(builder, p.set(hfc.position).add(fx, base - .1f, fy));
+				}
 				
 			}
 		}
@@ -104,9 +124,9 @@ public class OpenWorldTreeSystem extends IteratingSystem
 		
 		float s = .1f * (1 + .8f * rnd.getSigned((int)(pos.x * 500), (int)(pos.z * 500)));
 		
-		float r1 = 0.3f * s;
-		float r2 = 0.2f * s;
-		float h = 10f * s;
+		float r1 = 0.7f * s;
+		float r2 = 0.4f * s;
+		float h = 7f * s;
 		float r3 = 1.5f * s;
 		
 		builder.box(

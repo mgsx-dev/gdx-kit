@@ -15,7 +15,11 @@ public class HeightFieldComponent implements Component, Poolable
 			.getFor(HeightFieldComponent.class);
 	
 	public int width, height;
+	// values
 	public float[] values;
+	/** extra values : contains values and extra lines and rows
+		this array is width+2 and height+2. */
+	public float[] extraValues;
 	public Vector3 [] normals;
 
 	public Vector3 position = new Vector3();
