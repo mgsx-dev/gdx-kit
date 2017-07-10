@@ -67,7 +67,7 @@ public class OpenWorldWaterRenderSystem extends EntitySystem
 		
 		waterRenderer.box(
 				vOffset.x-s, 
-				vOffset.y-2, 
+				vOffset.y, 
 				vOffset.z-s, s*2, 0, -s*2);
 		waterRenderer.end();
 		
