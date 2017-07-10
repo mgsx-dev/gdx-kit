@@ -133,6 +133,7 @@ public class OpenWorldTreeSystem extends IteratingSystem
 
 	@Override
 	public void update(float deltaTime) {
+		Gdx.gl.glEnable(GL20.GL_DEPTH_TEST);
 		shader.begin();
 		shader.setUniformMatrix("u_projTrans", screen.camera.combined);
 		shader.setUniformf("u_sunDirection", environment.sunDirection);
