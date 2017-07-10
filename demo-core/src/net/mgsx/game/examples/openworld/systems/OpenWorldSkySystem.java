@@ -15,7 +15,6 @@ import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Matrix4;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.BufferUtils;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
@@ -201,18 +200,18 @@ public class OpenWorldSkySystem extends EntitySystem
 	private void renderSky() {
 		
 		// simple "infinite" quad
-		Vector3 vOffset = Vector3.Zero;
 		float s = screen.camera.far / 2; // TODO not really that ...
 		
+		skyRenderer.setTransformMatrix(skyRenderer.getTransformMatrix().setToTranslation(screen.camera.position));
 		skyRenderer.setProjectionMatrix(screen.camera.combined);
 		skyRenderer.begin(ShapeType.Filled);
 		
 		// bgShader.setUniformi("u_texture", 0);
 		
 		skyRenderer.box(
-				vOffset.x-s, 
-				vOffset.y-s, 
-				vOffset.z-s, s*2, s*2, -s*2);
+				-s, 
+				-s, 
+				-s, s*2, s*2, -s*2);
 		skyRenderer.end();
 		
 	}
