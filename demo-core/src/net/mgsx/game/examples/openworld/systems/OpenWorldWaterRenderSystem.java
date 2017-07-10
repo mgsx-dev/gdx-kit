@@ -20,6 +20,11 @@ public class OpenWorldWaterRenderSystem extends EntitySystem
 	@Inject OpenWorldLandRenderSystem landerRendering;
 	@Inject OpenWorldEnvSystem environment;
 	@Inject OpenWorldSkySystem sky;
+	
+	@Editable public float frequency = 10;
+	@Editable public float amplitude = 0.005f;
+	@Editable public float transparency = 0.3f;
+	@Editable public float speed = 1f;
 
 	private ShaderProgram waterShader;
 	private ShapeRenderer waterRenderer;
@@ -51,13 +56,17 @@ public class OpenWorldWaterRenderSystem extends EntitySystem
 	@Override
 	public void update(float deltaTime) {
 		
+		time += deltaTime * speed;
+
 		waterShader.begin();
 		waterShader.setUniformf("u_time", time);
+		waterShader.setUniformf("u_frequency", frequency);
+		waterShader.setUniformf("u_amplitude", amplitude);
+		waterShader.setUniformf("u_transparency", transparency);
 		waterShader.setUniformi("u_texture", 0);
 		waterShader.setUniformf("u_camPos", screen.camera.position);
 		waterShader.end();
 		
-		time += deltaTime;
 		waterRenderer.setProjectionMatrix(screen.camera.combined);
 		waterRenderer.begin(ShapeType.Filled);
 		//sky.getCubeMap().bind();

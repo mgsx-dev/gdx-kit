@@ -7,6 +7,9 @@ precision mediump float;
 
 uniform vec3 u_camPos;
 uniform float u_time;
+uniform float u_transparency;
+uniform float u_frequency;
+uniform float u_amplitude;
 uniform samplerCube u_texture;
 
 varying vec4 v_position;
@@ -125,15 +128,13 @@ float snoise(vec3 v, out vec3 gradient)
 
 void main() {
 	vec3 grad;
-	float nzv = snoise(vec3(v_position.xz * 0.1, u_time * 1.0), grad);
+	float nzv = snoise(vec3(v_position.xz * u_frequency, u_time), grad);
 
 	// project view vector on the plane
-	vec3 I = vec3(v_position.x,v_position.y,v_position.z) - vec3(0,0,0) - u_camPos;
-	vec3 R = reflect(I, vec3(0,1,0) + grad * 0.005);
+	vec3 I = v_position - u_camPos;
+	vec3 R = reflect(I, vec3(0,1,0) + grad * u_amplitude);
 
 	vec3 F = reflect(R, vec3(0,1,0));
 
-	float transparency = 0.3;
-
-    gl_FragColor = mix(textureCube(u_texture, R), textureCube(u_texture, F), transparency);
+    gl_FragColor = mix(textureCube(u_texture, R), textureCube(u_texture, F), u_transparency);
 }
