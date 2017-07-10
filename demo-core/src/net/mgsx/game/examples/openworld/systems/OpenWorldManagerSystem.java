@@ -12,6 +12,7 @@ import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.core.annotations.EditableSystem;
 import net.mgsx.game.core.annotations.EnumType;
 import net.mgsx.game.examples.openworld.components.LandMeshComponent;
+import net.mgsx.game.examples.openworld.components.TreesComponent;
 import net.mgsx.game.plugins.bullet.components.BulletHeightFieldComponent;
 import net.mgsx.game.plugins.core.components.HeightFieldComponent;
 import net.mgsx.game.plugins.procedural.model.ClassicalPerlinNoise;
@@ -203,6 +204,11 @@ public class OpenWorldManagerSystem extends EntitySystem
 		// add mesh
 		LandMeshComponent lmc = getEngine().createComponent(LandMeshComponent.class);
 		entity.add(lmc);
+		
+		// TODO not all ?!
+		// add trees
+		TreesComponent tc = getEngine().createComponent(TreesComponent.class);
+		entity.add(tc);
 		
 	}
 }

@@ -9,6 +9,7 @@ import net.mgsx.game.examples.openworld.systems.OpenWorldLandRenderSystem;
 import net.mgsx.game.examples.openworld.systems.OpenWorldLensFlareSystem;
 import net.mgsx.game.examples.openworld.systems.OpenWorldManagerSystem;
 import net.mgsx.game.examples.openworld.systems.OpenWorldSkySystem;
+import net.mgsx.game.examples.openworld.systems.OpenWorldTreeSystem;
 import net.mgsx.game.examples.openworld.systems.OpenWorldWaterRenderSystem;
 import net.mgsx.game.plugins.DefaultEditorPlugin;
 import net.mgsx.game.plugins.bullet.system.BulletWorldDebugSystem;
@@ -29,6 +30,7 @@ public class OpenWorldEditorPlugin extends EditorPlugin implements DefaultEditor
 		editor.entityEngine.addSystem(new OpenWorldEnvSystem());
 		editor.entityEngine.addSystem(new OpenWorldWaterRenderSystem(editor.game));
 		editor.entityEngine.addSystem(new OpenWorldLensFlareSystem(editor.game));
+		editor.entityEngine.addSystem(new OpenWorldTreeSystem(editor.game));
 		
 		// XXX
 		editor.entityEngine.getSystem(BulletWorldDebugSystem.class).setProcessing(false);
