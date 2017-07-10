@@ -68,8 +68,8 @@ public class OpenWorldManagerSystem extends EntitySystem
 	public void update(float deltaTime) 
 	{
 		// compute logic offset based on POV position
-		int logicCenterX = MathUtils.round(viewPoint.x / worldCellScale);
-		int logicCenterY = MathUtils.round(viewPoint.y / worldCellScale);
+		int logicCenterX = MathUtils.floor(viewPoint.x / worldCellScale);
+		int logicCenterY = MathUtils.floor(viewPoint.y / worldCellScale);
 		
 		int newLogicOffsetX = logicCenterX - logicWidth / 2;
 		int newLogicOffsetY = logicCenterY - logicHeight / 2;
