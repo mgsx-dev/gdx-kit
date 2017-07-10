@@ -170,22 +170,20 @@ public class OpenWorldSkySystem extends EntitySystem
 			cubeMapDirty = false;
 		}
 		
-		Vector3 vOffset = screen.camera.position;
-		
 		bgShader.begin();
 		bgShader.setUniformi("u_texture", 0);
 		bgShader.end();
 		
 		// render background
 		float s = screen.camera.far / 2; // TODO not really that ...
-		renderer.setTransformMatrix(renderer.getTransformMatrix().idt());
+		renderer.setTransformMatrix(renderer.getTransformMatrix().setToTranslation(screen.camera.position));
 		renderer.setProjectionMatrix(screen.camera.combined);
 		renderer.begin(ShapeType.Filled);
 		fboCubeMap.getColorBufferTexture().bind();
 		renderer.box(
-				vOffset.x-s, 
-				vOffset.y-s, 
-				vOffset.z-s, s*2, s*2, -s*2);
+				-s, 
+				-s, 
+				-s, s*2, s*2, -s*2);
 		renderer.end();
 		
 	}

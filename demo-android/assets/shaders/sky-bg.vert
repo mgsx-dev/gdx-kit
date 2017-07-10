@@ -2,10 +2,10 @@ attribute vec3 a_position;
 
 uniform mat4 u_projModelView;
 
-varying vec4 v_position;
+varying vec3 v_position;
 
 void main()
 {
-	v_position = vec4(a_position, 1.0);
+	v_position = a_position;
 	gl_Position =  u_projModelView * v_position;
 }
