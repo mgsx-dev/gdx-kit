@@ -106,8 +106,6 @@ public class OpenWorldMapSystem extends EntitySystem {
 				batch.draw(heightTexture, 0, 0, 1, 1);
 				batch.end();
 				
-				System.out.println(fx + " " + fy);
-				
 				heightMapTextures.add(heightTexture);
 			}
 			
