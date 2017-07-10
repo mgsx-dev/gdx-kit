@@ -35,7 +35,7 @@ public class OpenWorldManagerSystem extends EntitySystem
 	private int logicHeight;
 	
 	private int verticesPerCell = 16;
-	private float worldCellScale = verticesPerCell-1;
+	public float worldCellScale = verticesPerCell-1;
 	
 	/** aka camera in a 2D plan */
 	@Editable public Vector2 viewPoint = new Vector2();
@@ -46,6 +46,23 @@ public class OpenWorldManagerSystem extends EntitySystem
 		super(GamePipeline.LOGIC);
 		
 		clear();
+	}
+	
+	public int getLogicOffsetX() {
+		return logicOffsetX;
+	}
+	public int getLogicOffsetY() {
+		return logicOffsetY;
+	}
+	
+	public Entity[] getHeightMaps() {
+		return lands;
+	}
+	public int getLogicWidth() {
+		return logicWidth;
+	}
+	public int getLogicHeight() {
+		return logicHeight;
 	}
 	
 	@Editable
