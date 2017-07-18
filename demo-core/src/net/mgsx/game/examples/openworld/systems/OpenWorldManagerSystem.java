@@ -11,12 +11,14 @@ import net.mgsx.game.core.GamePipeline;
 import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.core.annotations.EditableSystem;
 import net.mgsx.game.core.annotations.EnumType;
+import net.mgsx.game.core.annotations.Storable;
 import net.mgsx.game.examples.openworld.components.LandMeshComponent;
 import net.mgsx.game.examples.openworld.components.TreesComponent;
 import net.mgsx.game.plugins.bullet.components.BulletHeightFieldComponent;
 import net.mgsx.game.plugins.core.components.HeightFieldComponent;
 import net.mgsx.game.plugins.procedural.model.ClassicalPerlinNoise;
 
+@Storable(value="ow.manager")
 @EditableSystem
 public class OpenWorldManagerSystem extends EntitySystem
 {
