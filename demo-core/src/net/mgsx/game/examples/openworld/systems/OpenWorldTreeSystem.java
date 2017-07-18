@@ -103,7 +103,7 @@ public class OpenWorldTreeSystem extends IteratingSystem
 						MathUtils.lerp(base00, base10, rx),
 						MathUtils.lerp(base01, base11, rx), ry);
 				
-				if(base > 0){
+				if(base > 0 && base < .5f){
 					buildTree(builder, p.set(hfc.position).add(fx, base - .1f, fy));
 				}
 				
@@ -122,7 +122,7 @@ public class OpenWorldTreeSystem extends IteratingSystem
 	@SuppressWarnings("deprecation")
 	private void buildTree(MeshBuilder builder, Vector3 pos) {
 		
-		float s = .1f * (1 + .8f * rnd.getSigned((int)(pos.x * 500), (int)(pos.z * 500)));
+		float s = .2f * (1 + .8f * rnd.getSigned((int)(pos.x * 500), (int)(pos.z * 500)));
 		
 		float r1 = 0.7f * s;
 		float r2 = 0.4f * s;
