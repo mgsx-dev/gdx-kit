@@ -23,6 +23,10 @@ public class MoveElementTool extends Tool
 	@Editable public float angle;
 	private Entity pickedEntity;
 	
+	public static enum Axis{X,Y,Z}
+	@Editable
+	public Axis axis = Axis.Z;
+	
 	public MoveElementTool(EditorScreen editor) {
 		super("Move element", editor);
 	}
@@ -58,11 +62,25 @@ public class MoveElementTool extends Tool
 				ObjectMeshComponent omc = ObjectMeshComponent.components.get(pickedEntity);
 				rayResult.direction.nor();
 				
-				Vector3 position = rayResult.origin.cpy().mulAdd(rayResult.direction, new Vector3(omc.userObject.element.geo_x, omc.userObject.element.geo_x, 1).scl(.5f * omc.userObject.element.size));
+				Vector3 position = rayResult.origin.cpy().mulAdd(rayResult.direction, new Vector3(omc.userObject.element.geo_x, omc.userObject.element.geo_y, 1).scl(.5f * omc.userObject.element.size));
+				
+				Vector3 axis;
+				switch (this.axis) {
+				case X:
+					axis = Vector3.X;
+					break;
+				case Y:
+					axis = Vector3.Y;
+					break;
+				default:
+				case Z:
+					axis = Vector3.Z;
+					break;
+				}
 				
 				omc.transform.idt();
-				if(Math.abs(rayResult.direction.dot(Vector3.Z)) < .9f)
-					omc.transform.setToLookAt(Vector3.Z, rayResult.direction);
+				if(Math.abs(rayResult.direction.dot(axis)) < .9f)
+					omc.transform.setToLookAt(axis, rayResult.direction);
 				omc.transform.mulLeft(new Matrix4().idt().translate(position));
 				
 				omc.userObject.element.position.set(position);

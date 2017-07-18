@@ -30,6 +30,11 @@ public class AddElementTool extends Tool
 	@Editable public boolean dynamic;
 	@Editable public float size = 1;
 	
+	@Editable public boolean forceShape = false;
+	@Editable public float sx = 1;
+	@Editable public float sy = 1;
+	@Editable public float sz = 1;
+	
 	public AddElementTool(EditorScreen editor) {
 		super("Add Element", editor);
 	}
@@ -48,6 +53,13 @@ public class AddElementTool extends Tool
 			lmc.transform.idt().translate(rayResult.origin);
 			RandomXS128 rnd = new RandomXS128();
 			OpenWorldElement e = OpenWorldModel.generateNewElement(rnd.nextLong());
+			
+			if(forceShape){
+				e.geo_x = sx;
+				e.geo_y = sy;
+				e.size = sz;
+			}
+			
 			e.size *= size;
 			lmc.mesh = createMesh(e);
 			newEntity.add(lmc);
