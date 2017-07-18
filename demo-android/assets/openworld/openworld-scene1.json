@@ -1,0 +1,180 @@
+{
+entities: [
+	{
+		id: 0
+		camera: {
+			camera: {
+				fieldOfView: 67
+				position: {
+					x: 6.938863
+					y: -0.51658285
+					z: -41.188198
+				}
+				direction: {
+					x: -0.7722242
+					y: 0.0059497645
+					z: -0.63532215
+				}
+				up: {
+					y: 1
+				}
+				near: 1
+				far: 3000
+				viewportWidth: 1855
+				viewportHeight: 1056
+			}
+		}
+		active: {}
+		ow.camera: {}
+	}
+]
+systems: [
+	{
+		type: core.bindings
+		enabled: true
+		bindings: []
+	}
+	{
+		type: ow.camera
+		enabled: true
+		speed: 2
+		offset: 1.1227757
+		totalMove: 2982
+	}
+	{
+		type: box2d.world
+		enabled: true
+		runSimulation: true
+		gravity: {
+			y: -9.807
+		}
+		timeStep: 0.033333335
+		velocityIterations: 8
+		positionIterations: 3
+	}
+	{
+		type: ow.manager
+		enabled: true
+		scale: 7.908058
+		frequency: 0.064657524
+		persistence: 0.5
+		octaves: 5
+		seed: -559038737
+		logicSize: 5
+		viewPoint: {
+			x: 6.938863
+			y: -41.188198
+		}
+	}
+	{
+		type: ow.env
+		enabled: true
+		fogColor: {
+			r: 0.9
+			g: 0.44456387
+			b: 0.28402257
+			a: 1
+		}
+		sunDirection: {
+			x: 0.9882607
+			y: -0.11593082
+			z: 0.09950373
+		}
+		timeOfDay: 0.81012195
+		nightColor: {
+			r: 0.37033415
+			g: 0.09683616
+			b: 0.50989515
+		}
+		dayColor: {
+			r: 0.832557
+			g: 0.9637169
+			b: 0.9818127
+			a: 1
+		}
+		sunsetColor: {
+			r: 0.9
+			g: 0.44456387
+			b: 0.28402257
+			a: 1
+		}
+		sunriseColor: {
+			r: 0.3341804
+			g: 0.6053924
+			b: 0.6542551
+			a: 1
+		}
+		realtime: true
+		autoSun: true
+		autoTime: false
+		time: 425.17615
+	}
+	{
+		type: core.clearScreen
+		enabled: true
+		color: {
+			r: 0.61938274
+			g: 0.78065103
+			b: 0.9495174
+			a: 1
+		}
+		clearColor: true
+		clearDepth: true
+	}
+	{
+		type: g3d.rendering
+		enabled: true
+		shadowQuality: 10
+		shadowSize: {
+			x: 50
+			y: 50
+		}
+		shadowNear: 0.1
+		shadowFar: 100
+		ambient: {
+			r: 0.50216883
+			g: 0.24805126
+			b: 0.15847477
+			a: 0.5579654
+		}
+	}
+	{
+		type: ow.sky
+		enabled: true
+		debugFaces: false
+		cubeMapSize: 256
+		realtime: true
+		cloudSpeed: 0.07158547
+		cloudRate: 2.0359056
+		cloudDarkness: 5.4411383
+		cloudDirection: {
+			x: 0.8660253
+			y: -0.5000002
+		}
+	}
+	{
+		type: ow.water
+		enabled: true
+		frequency: 10
+		amplitude: 0.005
+		transparency: 0.3
+		speed: 1
+	}
+	{
+		type: g2d.render
+		enabled: true
+		culling: false
+	}
+]
+views: [
+	ow.camera
+	ow.sky
+	ow.manager
+	ow.env
+	ow.water
+	net.mgsx.game.examples.openworld.systems.WeatherSystem
+	net.mgsx.game.plugins.g3d.systems.G3DCullingSystem
+	net.mgsx.game.examples.openworld.systems.ScenarioSystem
+	net.mgsx.game.examples.openworld.systems.OpenWorldLandRenderSystem
+]
+}
