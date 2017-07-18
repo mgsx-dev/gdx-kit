@@ -12,6 +12,7 @@ import net.mgsx.game.examples.openworld.systems.OpenWorldMapSystem;
 import net.mgsx.game.examples.openworld.systems.OpenWorldSkySystem;
 import net.mgsx.game.examples.openworld.systems.OpenWorldTreeSystem;
 import net.mgsx.game.examples.openworld.systems.OpenWorldWaterRenderSystem;
+import net.mgsx.game.examples.openworld.systems.WeatherSystem;
 import net.mgsx.game.plugins.DefaultEditorPlugin;
 import net.mgsx.game.plugins.bullet.system.BulletWorldDebugSystem;
 import net.mgsx.game.plugins.procedural.systems.HeightFieldDebugSystem;
@@ -33,6 +34,8 @@ public class OpenWorldEditorPlugin extends EditorPlugin implements DefaultEditor
 		editor.entityEngine.addSystem(new OpenWorldLensFlareSystem(editor.game));
 		editor.entityEngine.addSystem(new OpenWorldTreeSystem(editor.game));
 		editor.entityEngine.addSystem(new OpenWorldMapSystem(editor.game));
+		editor.entityEngine.addSystem(new WeatherSystem());
+
 		// XXX
 		editor.entityEngine.getSystem(BulletWorldDebugSystem.class).setProcessing(false);
 		editor.entityEngine.getSystem(HeightFieldDebugSystem.class).setProcessing(false);
