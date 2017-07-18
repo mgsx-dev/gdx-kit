@@ -17,15 +17,18 @@ import net.mgsx.game.core.GameScreen;
 import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.core.annotations.EditableSystem;
 import net.mgsx.game.core.annotations.Inject;
+import net.mgsx.game.core.annotations.Storable;
 import net.mgsx.game.examples.openworld.components.OpenWorldCamera;
 import net.mgsx.game.plugins.bullet.system.BulletWorldSystem;
 import net.mgsx.game.plugins.camera.components.CameraComponent;
 
+@Storable(value="ow.camera")
 @EditableSystem
 public class OpenWorldCameraSystem extends EntitySystem
 {
 	@Inject BulletWorldSystem bulletWorld;
 	@Inject OpenWorldManagerSystem openWorldManager;
+	@Inject OpenWorldWaterRenderSystem waterRender;
 	
 	private GameScreen screen;
 	
@@ -33,11 +36,13 @@ public class OpenWorldCameraSystem extends EntitySystem
 	
 	@Editable public float speed = 2; 
 	@Editable public float offset = 5; 
+	@Editable public boolean clipToWater = true; 
 	
 	private Vector2 dir = new Vector2();
 	private Vector2 pos = new Vector2();
 
 	private Ray ray = new Ray();
+	@Editable(realtime=true, readonly=true) public float totalMove = 0;
 
 	public OpenWorldCameraSystem(GameScreen screen) {
 		super(GamePipeline.INPUT);
@@ -70,6 +75,7 @@ public class OpenWorldCameraSystem extends EntitySystem
 		} else if(Gdx.input.isKeyPressed(Input.Keys.Q)) {
 			move = -1;
 		}
+		totalMove  += Math.abs(move);
 		
 		CameraComponent camera = CameraComponent.components.get(entity);
 		// rotate camera
@@ -104,10 +110,13 @@ public class OpenWorldCameraSystem extends EntitySystem
 		if(resultCallback.hasHit()){
 			Vector3 p = new Vector3();
 			resultCallback.getHitPointWorld(p);
-			camera.camera.position.y = p.z + offset;
-			Vector3 p2 = ray.origin.cpy().mulAdd(ray.direction, 120 * resultCallback.getClosestHitFraction());
-			//System.out.println(p);
+			Vector3 p2 = ray.origin.cpy().mulAdd(ray.direction, 100 * resultCallback.getClosestHitFraction());
 			camera.camera.position.y = p2.y + offset;
+			if(clipToWater){
+				float waterLimit = -openWorldManager.scale * waterRender.level + camera.camera.near * (float)Math.sqrt(2);
+				camera.camera.position.y = Math.max(camera.camera.position.y, waterLimit);
+			}
+		
 		}
 		resultCallback.release();
 		

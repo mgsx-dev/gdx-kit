@@ -13,18 +13,22 @@ import net.mgsx.game.core.GameScreen;
 import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.core.annotations.EditableSystem;
 import net.mgsx.game.core.annotations.Inject;
+import net.mgsx.game.core.annotations.Storable;
 
+@Storable(value="ow.water")
 @EditableSystem
 public class OpenWorldWaterRenderSystem extends EntitySystem
 {
 	@Inject OpenWorldLandRenderSystem landerRendering;
 	@Inject OpenWorldEnvSystem environment;
 	@Inject OpenWorldSkySystem sky;
+	@Inject OpenWorldManagerSystem openWorldManager;
 	
 	@Editable public float frequency = 10;
 	@Editable public float amplitude = 0.005f;
 	@Editable public float transparency = 0.3f;
 	@Editable public float speed = 1f;
+	@Editable public float level = .3f;
 
 	private ShaderProgram waterShader;
 	private ShapeRenderer waterRenderer;
@@ -71,12 +75,12 @@ public class OpenWorldWaterRenderSystem extends EntitySystem
 		waterRenderer.begin(ShapeType.Filled);
 		//sky.getCubeMap().bind();
 		Vector3 vOffset = Vector3.Zero; //screen.camera.position.cpy().scl(1);
-		float s = screen.camera.far*2; // TODO not really that ...
+		float s = 1e3f; // TODO not really that ... should be clipped to camera space ...
 		
 		
 		waterRenderer.box(
 				vOffset.x-s, 
-				vOffset.y, 
+				vOffset.y-openWorldManager.scale * level,
 				vOffset.z-s, s*2, 0, -s*2);
 		waterRenderer.end();
 		
