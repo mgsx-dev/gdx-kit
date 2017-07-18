@@ -10,6 +10,8 @@ buildscript {
     }
 }
 
+apply from: 'gradle/assets.gradle'
+
 allprojects {
     apply plugin: "eclipse"
     apply plugin: "idea"

@@ -157,6 +157,11 @@ abstract public class Tool extends AbstractInputSystem
 		return new Vector2(v.x, v.y);
 	}
 	
+	/** DRY */
+	protected Camera camera(){
+		return editor.getGameCamera();
+	}
+	
 	final public String name;
 	
 	public void update(float deltaTime){

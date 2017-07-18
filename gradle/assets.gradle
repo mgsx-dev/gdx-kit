@@ -1,0 +1,35 @@
+
+task gdxHieroDownload(type: Exec) {
+	def tmp = "/tmp/runnable-hiero.jar"
+	commandLine 'wget', '-O', tmp, 'https://libgdx.badlogicgames.com/nightlies/runnables/runnable-hiero.jar'
+	outputs.upToDateWhen { new File(tmp).exists() }
+}
+
+task gdxHiero(type: Exec, dependsOn: gdxHieroDownload, group: 'gdx') {
+
+
+	/*
+	TODO pass options :
+		# -b --batch
+		# -s --scale
+		# -i --input
+		# -o --output
+	*/
+	def tmp = "/tmp/runnable-hiero.jar"
+	commandLine 'java', '-jar', tmp
+
+}
+
+// generate hiero task for any *.hiero in asset folder
+fileTree("$projectDir/demo-android/assets") {
+    include '**/*.hiero'
+}.each {File f ->
+    def name = f.name.take(f.name.lastIndexOf('.'))
+	task "gdxHiero_${name}"(type: Exec, dependsOn: gdxHieroDownload) {
+	  group = "assets"
+	  description = "Edit hiero file"
+	  commandLine 'java', '-jar', "/tmp/runnable-hiero.jar", '-i', f.toPath() // TODO path
+   } 
+}
+
+
