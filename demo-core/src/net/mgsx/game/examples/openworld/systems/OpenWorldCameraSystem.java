@@ -75,7 +75,6 @@ public class OpenWorldCameraSystem extends EntitySystem
 		} else if(Gdx.input.isKeyPressed(Input.Keys.Q)) {
 			move = -1;
 		}
-		totalMove  += Math.abs(move);
 		
 		CameraComponent camera = CameraComponent.components.get(entity);
 		// rotate camera
@@ -90,7 +89,10 @@ public class OpenWorldCameraSystem extends EntitySystem
 		
 		pos.set(camera.camera.position.x, camera.camera.position.z);
 		
-		pos.mulAdd(dir, move * speed * deltaTime);
+		float moveLen = move * speed * deltaTime;
+		totalMove += Math.abs(moveLen);
+		
+		pos.mulAdd(dir, moveLen);
 		
 		camera.camera.position.x = pos.x;
 		camera.camera.position.z = pos.y;
