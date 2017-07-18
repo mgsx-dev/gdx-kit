@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 
 import net.mgsx.game.core.GamePipeline;
@@ -19,6 +20,7 @@ import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.core.annotations.EditableSystem;
 import net.mgsx.game.core.annotations.Inject;
 import net.mgsx.game.examples.openworld.components.LandMeshComponent;
+import net.mgsx.game.examples.openworld.components.ObjectMeshComponent;
 import net.mgsx.game.plugins.core.components.HeightFieldComponent;
 
 @EditableSystem
@@ -29,7 +31,7 @@ public class OpenWorldLandRenderSystem extends IteratingSystem
 	
 	private VertexAttributes attributes = new VertexAttributes(VertexAttribute.Position(), VertexAttribute.Normal());
 	private ShaderProgram shader;
-	private ShaderProgram shaderHigh;
+	private ShaderProgram shaderHigh, objectsShader;
 	
 	private GameScreen screen;
 	
@@ -55,6 +57,15 @@ public class OpenWorldLandRenderSystem extends IteratingSystem
 		}else{
 			if(this.shaderHigh != null) this.shaderHigh.dispose();
 			this.shaderHigh = shaderHigh;
+		}
+		ShaderProgram objectsShader = new ShaderProgram(
+				Gdx.files.internal("shaders/object-high.vert"), 
+				Gdx.files.internal("shaders/object-high.frag"));
+		if(!objectsShader.isCompiled()){
+			Gdx.app.error("Shader", objectsShader.getLog());
+		}else{
+			if(this.objectsShader != null) this.objectsShader.dispose();
+			this.objectsShader = objectsShader;
 		}
 		
 	}
@@ -154,6 +165,8 @@ public class OpenWorldLandRenderSystem extends IteratingSystem
 		shader.end();
 	}
 	
+	Matrix4 transform = new Matrix4();
+	
 	public void renderHigh() {
 		Gdx.gl.glEnable(GL20.GL_DEPTH_TEST);
 		shaderHigh.begin();
@@ -171,6 +184,26 @@ public class OpenWorldLandRenderSystem extends IteratingSystem
 			lmc.mesh.render(shaderHigh, GL20.GL_TRIANGLES);
 		}
 		shaderHigh.end();
+		
+		ShaderProgram shader = objectsShader;
+		
+		// render objects
+		shader.begin();
+		shader.setUniformf("u_sunDirection", environment.sunDirection);
+		shader.setUniformf("u_fogColor", environment.fogColor);
+		shader.setUniformf("u_camDirection", screen.camera.direction);
+		shader.setUniformf("u_camPosition", screen.camera.position);
+		shader.setUniformi("u_skyBox", 0);
+		sky.getCubeMap().bind();
+		for(Entity entity : getEngine().getEntitiesFor(Family.all(ObjectMeshComponent.class).get())){
+			ObjectMeshComponent omc = ObjectMeshComponent.components.get(entity);
+			transform.set(screen.camera.combined).mul(omc.transform);
+			shader.setUniformf("u_color", omc.element.color);
+			shader.setUniformMatrix("u_projTrans", transform);
+			omc.mesh.render(shader, GL20.GL_TRIANGLES);
+		}
+		shader.end();
+		
 	}
 
 }
