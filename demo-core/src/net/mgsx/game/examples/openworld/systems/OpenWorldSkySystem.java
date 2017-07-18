@@ -42,6 +42,7 @@ public class OpenWorldSkySystem extends EntitySystem
 	@Editable public float cloudSpeed = 0.1f;
 	@Editable public float cloudRate = 2f;
 	@Editable public float cloudDarkness = 3f;
+	@Editable public float parallax = 1f;
 	
 	private boolean cubeMapDirty;
 	private FrameBufferCubemap fboCubeMap;
@@ -177,6 +178,14 @@ public class OpenWorldSkySystem extends EntitySystem
 		bgShader.setUniformi("u_texture", 0);
 		bgShader.end();
 		
+		boolean parallaxEffect = parallax != 1 && screen.camera instanceof PerspectiveCamera;
+		float oldFOV = 0;
+		if(parallaxEffect){
+			oldFOV = ((PerspectiveCamera)screen.camera).fieldOfView;
+			((PerspectiveCamera)screen.camera).fieldOfView *= parallax;
+			screen.camera.update();
+		}
+		
 		// render background
 		float s = screen.camera.far / 2; // TODO not really that ...
 		renderer.setTransformMatrix(renderer.getTransformMatrix().setToTranslation(screen.camera.position));
@@ -189,6 +198,11 @@ public class OpenWorldSkySystem extends EntitySystem
 				-s, s*2, s*2, -s*2);
 		renderer.end();
 		
+		if(parallaxEffect){
+			((PerspectiveCamera)screen.camera).fieldOfView = oldFOV;
+			screen.camera.update();
+		}
+
 	}
 	
 	private void prepareSky() {
