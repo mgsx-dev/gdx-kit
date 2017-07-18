@@ -8,6 +8,7 @@ uniform vec3 u_camPosition;
 
 uniform samplerCube u_skyBox;
 uniform mat4 u_projTrans;
+uniform mat4 u_worldTrans;
 
 varying vec4 v_color;
 uniform vec4 u_color;
@@ -121,30 +122,39 @@ float ptxnoise(vec2 v) {
 void main() {
 	float day = (-u_sunDirection.y + 1.0) * 0.5;
 
-    vec3 N = normalize(v_normal + vec3(0,(pnoise(v_position.xz * 10)*0.5+0.5) * 0.00001,0));
-    N = normalize((vec4(N,0) * u_projTrans).xyz);
-    float lum = clamp(-dot(N, u_sunDirection), 0,1) + 0.00001 * pow(clamp(-dot(N, u_sunDirection), 0.0, 1.0), 1.8) * 1.0;
+    vec3 N = normalize(v_normal + vec3(0,(pnoise(v_position.xz * 10)*0.5+0.5) * 0.0005,0));
+    N = normalize((vec4(N,0) * u_worldTrans).xyz);
+    float nDotLight = -dot(N, u_sunDirection);
+    float lum = clamp(nDotLight, day*0.5,1);
+
+    float specular;
+
+    if(nDotLight < 0)
+    	specular = 0;
+    else{
+		vec3 camToP = normalize((vec4(v_position, 1) * u_worldTrans).xyz - u_camPosition);
+		vec3 pToLight = normalize(reflect(camToP,N));
+		specular = clamp(dot(pToLight, u_sunDirection),0,1);
+		specular =  pow(specular+0.01, 10);
+    }
+
     float fog = clamp(gl_FragCoord.z * gl_FragCoord.w, 0.0, 1.0);
     float fogFact = 1.0 - pow(1.0 - fog, 10.0);
 
-    // TODO simple sky flat prjection ???
-    vec3 P = (vec4(v_position.xyz, 1) * u_projTrans).xyz;
-    vec3 I = normalize(u_camPosition - P);
-    I.z = -I.z;
-    I.x = -I.x;
-    I.y = I.y;
-	vec3 R = I; //reflect(I, N);
-	//R = reflect(R, N);
-    vec4 skyProjColor = textureCube(u_skyBox, R);
-    vec3 color = mix(vec3(1,1,1), skyProjColor.a * skyProjColor.rgb, 0.01) * lum;
+    // lum = lum + (1-lum) * day;
+
+    vec3 color = vec3(lum,lum,lum);
 
     // select materials
-    color *= v_color * u_color;
+    color *= v_color * u_color * day;
+
+    color += specular * u_color * day;
 
     // add fog
     color = mix(u_fogColor * day, color, fogFact);
 
-    color = mix(color, vec3(1,1,1), pow(clamp(-dot(N, u_sunDirection) * dot(normalize(v_position - u_camPosition), u_camDirection), 0, 1), 30));
+    // add ambient
+    color = mix(color, u_fogColor, (1-day) * day);
 
     gl_FragColor = vec4(color, 1.0);
 }

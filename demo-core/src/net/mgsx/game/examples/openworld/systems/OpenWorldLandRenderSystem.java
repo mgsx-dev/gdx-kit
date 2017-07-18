@@ -191,15 +191,14 @@ public class OpenWorldLandRenderSystem extends IteratingSystem
 		shader.begin();
 		shader.setUniformf("u_sunDirection", environment.sunDirection);
 		shader.setUniformf("u_fogColor", environment.fogColor);
-		shader.setUniformf("u_camDirection", screen.camera.direction);
 		shader.setUniformf("u_camPosition", screen.camera.position);
-		shader.setUniformi("u_skyBox", 0);
 		sky.getCubeMap().bind();
 		for(Entity entity : getEngine().getEntitiesFor(Family.all(ObjectMeshComponent.class).get())){
 			ObjectMeshComponent omc = ObjectMeshComponent.components.get(entity);
 			transform.set(screen.camera.combined).mul(omc.transform);
 			shader.setUniformf("u_color", omc.userObject.element.color);
 			shader.setUniformMatrix("u_projTrans", transform);
+			shader.setUniformMatrix("u_worldTrans", omc.transform);
 			omc.mesh.render(shader, GL20.GL_TRIANGLES);
 		}
 		shader.end();
