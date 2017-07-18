@@ -15,6 +15,7 @@ import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.BufferUtils;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
@@ -23,7 +24,9 @@ import net.mgsx.game.core.GameScreen;
 import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.core.annotations.EditableSystem;
 import net.mgsx.game.core.annotations.Inject;
+import net.mgsx.game.core.annotations.Storable;
 
+@Storable(value="ow.sky")
 @EditableSystem
 public class OpenWorldSkySystem extends EntitySystem
 {
@@ -117,6 +120,7 @@ public class OpenWorldSkySystem extends EntitySystem
 	}
 	
 	private Matrix4 backup = new Matrix4();
+	@Editable public Vector2 cloudDirection = new Vector2(Vector2.X);
 	
 	@Override
 	public void update(float deltaTime) 
@@ -194,6 +198,7 @@ public class OpenWorldSkySystem extends EntitySystem
 		skyShader.setUniformf("u_cloudTime", environment.time * cloudSpeed);
 		skyShader.setUniformf("u_cloudRate", cloudRate);
 		skyShader.setUniformf("u_cloudDarkness", cloudDarkness);
+		skyShader.setUniformf("u_cloudDirection", cloudDirection);
 		skyShader.end();
 	}
 	

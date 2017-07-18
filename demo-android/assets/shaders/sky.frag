@@ -5,6 +5,7 @@ uniform vec4 u_fogColor;
 uniform float u_cloudTime;
 uniform float u_cloudRate;
 uniform float u_cloudDarkness;
+uniform vec2 u_cloudDirection;
 
 //
 // Description : Array and textureless GLSL 2D simplex noise function.
@@ -123,7 +124,7 @@ void main() {
 
 
 		// Clouds
-		float pattern = pnoise(dir2 + vec2(0.5, 0.5) * u_cloudTime);
+		float pattern = pnoise(dir2 + u_cloudDirection * u_cloudTime);
 		float cloudLum = mix(0.1, 0.9, day);
 
 
