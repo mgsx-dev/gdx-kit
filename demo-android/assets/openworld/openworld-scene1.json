@@ -2,18 +2,20 @@
 entities: [
 	{
 		id: 0
+		active: {}
+		ow.camera: {}
 		camera: {
 			camera: {
 				fieldOfView: 67
 				position: {
-					x: 6.938863
-					y: -0.51658285
-					z: -41.188198
+					x: -47.829765
+					y: 4.9723825
+					z: -66.29218
 				}
 				direction: {
-					x: -0.7722242
-					y: 0.0059497645
-					z: -0.63532215
+					x: 0.06381006
+					y: -0.1246249
+					z: 0.99015
 				}
 				up: {
 					y: 1
@@ -24,8 +26,6 @@ entities: [
 				viewportHeight: 1056
 			}
 		}
-		active: {}
-		ow.camera: {}
 	}
 ]
 systems: [
@@ -37,9 +37,10 @@ systems: [
 	{
 		type: ow.camera
 		enabled: true
-		speed: 2
-		offset: 1.1227757
-		totalMove: 2982
+		speed: 6.4115615
+		offset: 1.7565315
+		clipToWater: true
+		totalMove: 8260.426
 	}
 	{
 		type: box2d.world
@@ -60,27 +61,28 @@ systems: [
 		persistence: 0.5
 		octaves: 5
 		seed: -559038737
-		logicSize: 5
+		logicSize: 8
 		viewPoint: {
-			x: 6.938863
-			y: -41.188198
+			x: -47.829765
+			y: -66.29218
 		}
 	}
 	{
 		type: ow.env
 		enabled: true
 		fogColor: {
-			r: 0.9
-			g: 0.44456387
-			b: 0.28402257
+			r: 0.832557
+			g: 0.9637169
+			b: 0.9818127
 			a: 1
 		}
 		sunDirection: {
-			x: 0.9882607
-			y: -0.11593082
+			x: -0.24380961
+			y: -0.9647051
 			z: 0.09950373
 		}
-		timeOfDay: 0.81012195
+		timeOfDay: 0.4715606
+		temperature: 41.13702
 		nightColor: {
 			r: 0.37033415
 			g: 0.09683616
@@ -107,7 +109,208 @@ systems: [
 		realtime: true
 		autoSun: true
 		autoTime: false
-		time: 425.17615
+		time: 12123.12
+	}
+	{
+		type: ow.user-objects
+		enabled: true
+		persistedElements: [
+			{
+				geo_x: 0.72028804
+				geo_y: 0.71296155
+				color: {
+					r: 1
+					g: 0.99215686
+					b: 0.98039216
+					a: 1
+				}
+				size: 1
+				rarity: 1
+				seed: 3907146815460806747
+				position: {
+					x: 9.677939
+					y: -0.6172949
+					z: -4.0185966
+				}
+				rotation: {
+					x: -0.055369075
+					y: 0.99846596
+					w: 0
+				}
+			}
+			{
+				geo_x: 0.42476723
+				geo_y: 0.875635
+				color: {
+					r: 0.6
+					g: 0.3647059
+					b: 0.12156863
+					a: 1
+				}
+				size: 1
+				rarity: 1000
+				seed: -8649097388024373075
+				position: {
+					x: 9.474439
+					y: -0.06755717
+					z: -3.9821322
+				}
+				rotation: {
+					x: -0.05536559
+					y: 0.99846613
+					w: 0
+				}
+			}
+			{
+				geo_x: 0.18821621
+				geo_y: 0.60495985
+				color: {
+					r: 1
+					g: 0.99215686
+					b: 0.98039216
+					a: 1
+				}
+				size: 1
+				rarity: 1
+				seed: 5675517832249734857
+				position: {
+					x: 9.736158
+					y: 0.4170136
+					z: -5.0316405
+				}
+				rotation: {
+					x: 0.70710677
+					y: 0.70710677
+					w: 0
+				}
+			}
+			{
+				geo_x: 0.2211667
+				geo_y: 0.78502285
+				color: {
+					r: 1
+					g: 0.99215686
+					b: 0.98039216
+					a: 1
+				}
+				size: 1
+				rarity: 1
+				seed: 7250909689035463170
+				position: {
+					x: 9.5314665
+					y: 0.17380005
+					z: -4.9879336
+				}
+			}
+			{
+				geo_x: 0.888951
+				geo_y: 0.21718912
+				color: {
+					r: 0.6
+					g: 0.3882353
+					b: 0.12156863
+					a: 1
+				}
+				size: 1
+				rarity: 1000
+				seed: 9013987930627021809
+				position: {
+					x: 9.690126
+					y: 0.4245826
+					z: -6.03164
+				}
+			}
+			{
+				geo_x: 0.25902176
+				geo_y: 0.36718738
+				color: {
+					r: 1
+					g: 0.99215686
+					b: 0.98039216
+					a: 1
+				}
+				size: 1
+				rarity: 1
+				seed: 1922365789532238605
+				position: {
+					x: -8.705035
+					y: -0.55278605
+					z: -97.110176
+				}
+			}
+			{
+				geo_x: 0.43042028
+				geo_y: 0.34591734
+				color: {
+					r: 1
+					g: 0.99215686
+					b: 0.98039216
+					a: 1
+				}
+				size: 1
+				rarity: 1
+				seed: -8628005852589244110
+				position: {
+					x: -11.542617
+					y: -0.5329022
+					z: -99.77197
+				}
+			}
+			{
+				geo_x: 0.5644032
+				geo_y: 0.280376
+				color: {
+					r: 0.6
+					g: 0.43137255
+					b: 0.12156863
+					a: 1
+				}
+				size: 1
+				rarity: 1000
+				seed: -1875971143736930335
+				position: {
+					x: -12.946433
+					y: -0.24819547
+					z: -101.125275
+				}
+			}
+			{
+				geo_x: 0.46623808
+				geo_y: 0.6424614
+				color: {
+					r: 0.6
+					g: 0.38431373
+					b: 0.12156863
+					a: 1
+				}
+				size: 1
+				rarity: 1000
+				seed: 5576885539154812853
+				position: {
+					x: -5.116365
+					y: -0.86401176
+					z: -101.06804
+				}
+			}
+			{
+				geo_x: 0.501462
+				geo_y: 0.6558035
+				color: {
+					r: 1
+					g: 0.99215686
+					b: 0.98039216
+					a: 1
+				}
+				size: 1
+				rarity: 1
+				seed: 8729996788082574747
+				position: {
+					x: -4.042932
+					y: -0.6781901
+					z: -100.88385
+				}
+			}
+		]
 	}
 	{
 		type: core.clearScreen
@@ -142,11 +345,12 @@ systems: [
 		type: ow.sky
 		enabled: true
 		debugFaces: false
-		cubeMapSize: 256
-		realtime: true
+		cubeMapSize: 128
+		realtime: false
 		cloudSpeed: 0.07158547
 		cloudRate: 2.0359056
 		cloudDarkness: 5.4411383
+		parallax: 0.9395143
 		cloudDirection: {
 			x: 0.8660253
 			y: -0.5000002
@@ -157,8 +361,9 @@ systems: [
 		enabled: true
 		frequency: 10
 		amplitude: 0.005
-		transparency: 0.3
+		transparency: 0.38891014
 		speed: 1
+		level: 0.1379576
 	}
 	{
 		type: g2d.render
