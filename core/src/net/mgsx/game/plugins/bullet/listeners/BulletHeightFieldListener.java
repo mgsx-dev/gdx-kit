@@ -77,6 +77,7 @@ public class BulletHeightFieldListener extends EntitySystem
 		BulletComponent bullet = getEngine().createComponent(BulletComponent.class);
 		bullet.world = bulletWorldSystem.collisionWorld;
 		bullet.object = new btCollisionObject();
+		bullet.object.userData = entity;
 		bullet.shape = heightfieldTerrainShape;
 		bullet.object.setCollisionShape(bullet.shape);
 		
