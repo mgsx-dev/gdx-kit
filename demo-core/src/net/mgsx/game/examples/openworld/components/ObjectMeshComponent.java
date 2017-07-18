@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.utils.Pool.Poolable;
 
-import net.mgsx.game.examples.openworld.model.OpenWorldElement;
+import net.mgsx.game.examples.openworld.systems.UserObjectSystem.UserObject;
 
 public class ObjectMeshComponent implements Component, Poolable
 {
@@ -17,7 +17,7 @@ public class ObjectMeshComponent implements Component, Poolable
 	
 	public Mesh mesh;
 
-	public OpenWorldElement element;
+	public UserObject userObject;
 
 	@Override
 	public void reset() {

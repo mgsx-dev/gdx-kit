@@ -17,6 +17,7 @@ import net.mgsx.game.core.tools.Tool;
 import net.mgsx.game.examples.openworld.components.ObjectMeshComponent;
 import net.mgsx.game.examples.openworld.model.OpenWorldElement;
 import net.mgsx.game.examples.openworld.model.OpenWorldModel;
+import net.mgsx.game.examples.openworld.systems.UserObjectSystem;
 import net.mgsx.game.examples.openworld.utils.SmoothBoxShapeBuilder;
 import net.mgsx.game.plugins.bullet.system.BulletWorldSystem;
 
@@ -25,6 +26,7 @@ public class AddElementTool extends Tool
 {
 
 	@Inject BulletWorldSystem bulletWorld;
+	@Inject UserObjectSystem userObjectSystem;
 	@Editable public boolean dynamic;
 	@Editable public float size = 1;
 	
@@ -47,12 +49,17 @@ public class AddElementTool extends Tool
 			RandomXS128 rnd = new RandomXS128();
 			OpenWorldElement e = OpenWorldModel.generateNewElement(rnd.nextLong());
 			e.size *= size;
-			lmc.element = e;
 			lmc.mesh = createMesh(e);
 			newEntity.add(lmc);
 			
 			// physics :
 			bulletWorld.createBox(newEntity, dynamic ? lmc.transform.translate(0,1,0) : lmc.transform, e.size * e.geo_x, e.size * e.geo_y, e.size, dynamic);
+			
+			e.position.set(rayResult.origin);
+			e.rotation.idt();
+			
+			// set persistable
+			lmc.userObject = userObjectSystem.addElement(e, newEntity);
 			
 			getEngine().addEntity(newEntity);
 			

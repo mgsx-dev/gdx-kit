@@ -57,14 +57,17 @@ public class MoveElementTool extends Tool
 				
 				ObjectMeshComponent omc = ObjectMeshComponent.components.get(pickedEntity);
 				rayResult.direction.nor();
-				omc.transform
-				.idt();
+				
+				Vector3 position = rayResult.origin.cpy().mulAdd(rayResult.direction, new Vector3(omc.userObject.element.geo_x, omc.userObject.element.geo_x, 1).scl(.5f * omc.userObject.element.size));
+				
+				omc.transform.idt();
 				if(Math.abs(rayResult.direction.dot(Vector3.Z)) < .9f)
 					omc.transform.setToLookAt(Vector3.Z, rayResult.direction);
-				omc.transform.mulLeft(new Matrix4().idt().translate(rayResult.origin.cpy().mulAdd(rayResult.direction, new Vector3(omc.element.geo_x, omc.element.geo_y, 1).scl(.5f * omc.element.size))))
+				omc.transform.mulLeft(new Matrix4().idt().translate(position));
 				
-						;
-					
+				omc.userObject.element.position.set(position);
+				omc.transform.getRotation(omc.userObject.element.rotation);
+				
 				return true;
 			}
 		}

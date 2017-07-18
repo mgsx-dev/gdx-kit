@@ -1,6 +1,8 @@
 package net.mgsx.game.examples.openworld.model;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.math.Quaternion;
+import com.badlogic.gdx.math.Vector3;
 
 public class OpenWorldElement {
 
@@ -26,5 +28,7 @@ public class OpenWorldElement {
 	 * */
 	public long composition;
 	
+	public Vector3 position = new Vector3();
+	public Quaternion rotation = new Quaternion();
 	
 }

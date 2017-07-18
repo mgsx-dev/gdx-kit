@@ -8,6 +8,7 @@ import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.core.annotations.Inject;
 import net.mgsx.game.core.tools.Tool;
 import net.mgsx.game.examples.openworld.components.ObjectMeshComponent;
+import net.mgsx.game.examples.openworld.systems.UserObjectSystem;
 import net.mgsx.game.plugins.bullet.system.BulletWorldSystem;
 
 @Editable
@@ -15,6 +16,7 @@ public class RemoveElementTool extends Tool
 {
 
 	@Inject BulletWorldSystem bulletWorld;
+	@Inject UserObjectSystem userObject;
 	
 	public RemoveElementTool(EditorScreen editor) {
 		super("Remove Element", editor);
@@ -31,7 +33,10 @@ public class RemoveElementTool extends Tool
 			
 			ObjectMeshComponent omc = ObjectMeshComponent.components.get(entity);
 			if(omc != null){
-				getEngine().removeEntity(entity);
+				if(omc.userObject != null)
+					userObject.removeElement(omc.userObject);
+				else
+					getEngine().removeEntity(entity);
 			}
 			return true;
 		}

@@ -198,7 +198,7 @@ public class OpenWorldLandRenderSystem extends IteratingSystem
 		for(Entity entity : getEngine().getEntitiesFor(Family.all(ObjectMeshComponent.class).get())){
 			ObjectMeshComponent omc = ObjectMeshComponent.components.get(entity);
 			transform.set(screen.camera.combined).mul(omc.transform);
-			shader.setUniformf("u_color", omc.element.color);
+			shader.setUniformf("u_color", omc.userObject.element.color);
 			shader.setUniformMatrix("u_projTrans", transform);
 			omc.mesh.render(shader, GL20.GL_TRIANGLES);
 		}
