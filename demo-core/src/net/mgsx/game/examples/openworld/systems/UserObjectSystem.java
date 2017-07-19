@@ -1,14 +1,19 @@
 package net.mgsx.game.examples.openworld.systems;
 
+import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntitySystem;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes;
+import com.badlogic.gdx.graphics.g3d.Model;
+import com.badlogic.gdx.graphics.g3d.loader.G3dModelLoader;
 import com.badlogic.gdx.graphics.g3d.utils.MeshBuilder;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.JsonReader;
 
 import net.mgsx.game.core.GamePipeline;
 import net.mgsx.game.core.annotations.Editable;
@@ -44,8 +49,20 @@ public class UserObjectSystem extends EntitySystem implements SystemSettingsList
 	
 	private boolean init;
 	
+	private Mesh icosa1;
+
+	
 	public UserObjectSystem() {
 		super(GamePipeline.LOGIC);
+	}
+	
+	@Override
+	public void addedToEngine(Engine engine) {
+		super.addedToEngine(engine);
+		
+		// TODO use asset injection instead
+		Model model = new G3dModelLoader(new JsonReader()).loadModel(Gdx.files.internal("openworld/icosa1.g3dj"));
+		icosa1 = model.meshes.get(0);
 	}
 	
 	@Override
@@ -104,6 +121,15 @@ public class UserObjectSystem extends EntitySystem implements SystemSettingsList
 			// TODO delete all not to keep
 		
 	}
+	
+	public void appendObject(OpenWorldElement e) {
+		
+		UserObject o = new UserObject();
+		o.element = e;
+		o.entity = createEntity(o, e);
+		allUserObjects.add(o);
+		userObjects.add(o);
+	}
 
 
 	private Entity createEntity(UserObject object, OpenWorldElement element) {
@@ -113,20 +139,45 @@ public class UserObjectSystem extends EntitySystem implements SystemSettingsList
 		lmc.transform.setToTranslation(element.position);
 		lmc.transform.rotate(element.rotation);
 		lmc.userObject = object;
-		lmc.mesh = createMesh(element);
-		newEntity.add(lmc);
 		
-		// physics :
-		bulletWorld.createBox(newEntity, lmc.transform, element.size * element.geo_x, element.size * element.geo_y, element.size, false);
+		switch(element.geometryType){
+		default:
+		case BOX:
+			lmc.mesh = createMeshBox(element);
+			// physics :
+			bulletWorld.createBox(newEntity, element.dynamic ? lmc.transform.translate(0,1,0) : lmc.transform, element.size * element.geo_x, element.size * element.geo_y, element.size, element.dynamic);
+			break;
+		case SPHERE:
+			lmc.mesh = createMeshSphere(element);
+			bulletWorld.createSphere(newEntity, element.dynamic ? lmc.transform.translate(0,1,0) : lmc.transform, element.size,element.dynamic);
+			break;
+		}
+		newEntity.add(lmc);
 		
 		getEngine().addEntity(newEntity);
 		
 		return newEntity;
 	}
 	
-	private Mesh createMesh(OpenWorldElement e) 
-	{
+	private Mesh createMeshSphere(OpenWorldElement e) {
+		Mesh mesh = icosa1.copy(true);
 		
+		int stride = mesh.getVertexSize()/4;
+		float[] vertices = new float[stride * mesh.getNumVertices()];
+		mesh.getVertices(vertices);
+		e.color.set(.7f, .7f, .65f, 1); // XXX force color
+		for(int i=0, index=mesh.getVertexAttribute(VertexAttributes.Usage.Position).offset / 4 ; i<mesh.getNumVertices() ; i++, index+=stride){
+			vertices[index+0] *= e.size;
+			vertices[index+1] *= e.size;
+			vertices[index+2] *= e.size;
+		}
+		mesh.updateVertices(0, vertices);
+		return mesh;
+	}
+	
+	private Mesh createMeshBox(OpenWorldElement e) 
+	{
+
 		//e.size = 1;
 		// Matrix4 m = new Matrix4().scale(e.size * e.geo_x, e.size * e.geo_y, e.size);
 		MeshBuilder builder = new MeshBuilder();
@@ -181,7 +232,17 @@ public class UserObjectSystem extends EntitySystem implements SystemSettingsList
 	@Override
 	public void beforeSettingsSaved() {
 		persistedElements = new OpenWorldElement[allUserObjects.size];
-		for(int i=0 ; i<persistedElements.length ; i++) persistedElements[i] = allUserObjects.get(i).element;
+		for(int i=0 ; i<persistedElements.length ; i++){
+			UserObject o = allUserObjects.get(i);
+			ObjectMeshComponent omc = ObjectMeshComponent.components.get(o.entity);
+			if(o.element.dynamic){
+				omc.transform.getTranslation(o.element.position);
+				omc.transform.getRotation(o.element.rotation);
+			}
+			persistedElements[i] = o.element;
+		}
 	}
+
+	
 	
 }

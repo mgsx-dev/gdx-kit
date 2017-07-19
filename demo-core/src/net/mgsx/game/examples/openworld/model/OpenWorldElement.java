@@ -6,6 +6,12 @@ import com.badlogic.gdx.math.Vector3;
 
 public class OpenWorldElement {
 
+	public static enum GeometryType{
+		BOX, SPHERE
+	}
+	
+	public GeometryType geometryType = GeometryType.BOX;
+	
 	// shape
 	public float geo_x;
 	public float geo_y;
@@ -16,7 +22,7 @@ public class OpenWorldElement {
 	// rarity (-1 for fusion only objects)
 	public float rarity;
 	
-	// TODO position ?
+	public boolean dynamic = false;
 	
 	// runtime seed (id for other generators)
 	public long seed;

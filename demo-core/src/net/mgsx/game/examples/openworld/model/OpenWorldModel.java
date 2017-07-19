@@ -8,6 +8,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.RandomXS128;
 import com.badlogic.gdx.utils.Array;
 
+import net.mgsx.game.examples.openworld.model.OpenWorldElement.GeometryType;
 import net.mgsx.game.examples.openworld.utils.FlatTreeReader;
 import net.mgsx.game.examples.openworld.utils.FlatTreeReader.NodeValue;
 
@@ -97,6 +98,8 @@ public class OpenWorldModel {
 		float l = MathUtils.lerp(l1, l2, rnd.nextFloat());
 		
 		owElement.color = HSV_to_RGB(h,s,l);
+		
+		owElement.geometryType = GeometryType.values()[(int)(GeometryType.values().length * rnd.nextFloat())];
 		
 		return owElement;
 	}
