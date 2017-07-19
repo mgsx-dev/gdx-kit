@@ -15,6 +15,7 @@ import com.badlogic.gdx.physics.bullet.collision.btCollisionObject;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionWorld;
 import com.badlogic.gdx.physics.bullet.collision.btDbvtBroadphase;
 import com.badlogic.gdx.physics.bullet.collision.btDefaultCollisionConfiguration;
+import com.badlogic.gdx.physics.bullet.collision.btSphereShape;
 import com.badlogic.gdx.physics.bullet.dynamics.btConstraintSolver;
 import com.badlogic.gdx.physics.bullet.dynamics.btDiscreteDynamicsWorld;
 import com.badlogic.gdx.physics.bullet.dynamics.btDynamicsWorld;
@@ -118,6 +119,43 @@ public class BulletWorldSystem extends EntitySystem
 		
 		entity.add(bullet);
 		
+	}
+
+	public void createSphere(Entity entity, final Matrix4 transform, float r, boolean dynamic) {
+		BulletComponent bullet = getEngine().createComponent(BulletComponent.class);
+		
+		
+		bullet.shape = new btSphereShape(r);
+		
+		if(dynamic)
+			bullet.object = new btRigidBody(new btRigidBodyConstructionInfo(10, new btMotionState(){
+				@Override
+				public void getWorldTransform(Matrix4 worldTrans) {
+					worldTrans.set(transform);
+				}
+				@Override
+				public void setWorldTransform(Matrix4 worldTrans) {
+					transform.set(worldTrans);
+				}
+			}, bullet.shape, new Vector3(1,1,1)));
+		else{
+			bullet.object = new btCollisionObject();
+			bullet.object.setCollisionShape(bullet.shape);
+			bullet.object.setWorldTransform(transform);
+		}
+		
+		bullet.world = collisionWorld;
+		bullet.object.setFriction(.99f);
+		bullet.object.setRestitution(0.01f);
+		bullet.object.userData = entity;
+		
+		if(dynamic){
+			((btDiscreteDynamicsWorld)collisionWorld).addRigidBody((btRigidBody)bullet.object);
+		}else{
+			collisionWorld.addCollisionObject(bullet.object);
+		}
+		
+		entity.add(bullet);
 	}
 
 }
