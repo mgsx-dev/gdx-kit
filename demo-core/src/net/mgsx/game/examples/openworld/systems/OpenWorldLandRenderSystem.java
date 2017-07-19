@@ -228,7 +228,7 @@ public class OpenWorldLandRenderSystem extends IteratingSystem
 			shadowLight.begin(screen.camera.position, screen.camera.direction);
 			
 			// FrameBuffer.unbind();
-			Gdx.gl.glDisable(GL20.GL_DEPTH_TEST); // XXX
+			Gdx.gl.glEnable(GL20.GL_DEPTH_TEST); // XXX
 			depthShader.begin();
 			depthShader.setUniformMatrix("u_projViewWorldTrans", shadowLight.getCamera().combined);
 			

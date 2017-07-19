@@ -178,7 +178,7 @@ void main() {
     color = mix(color, vec3(1,1,1), pow(clamp(-dot(N, u_sunDirection) * dot(normalize(v_position - u_camPosition), u_camDirection), 0, 1), 30));
 
 	#if defined(SHADOWS)
-    color *= getShadow();
+    color *= 0.5 + 0.5 * getShadow();
 	#endif
 
     gl_FragColor = vec4(color, 1.0);
