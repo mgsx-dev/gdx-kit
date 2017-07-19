@@ -234,8 +234,8 @@ public class UserObjectSystem extends EntitySystem implements SystemSettingsList
 		persistedElements = new OpenWorldElement[allUserObjects.size];
 		for(int i=0 ; i<persistedElements.length ; i++){
 			UserObject o = allUserObjects.get(i);
-			ObjectMeshComponent omc = ObjectMeshComponent.components.get(o.entity);
-			if(o.element.dynamic){
+			if(o.element.dynamic && o.entity != null){
+				ObjectMeshComponent omc = ObjectMeshComponent.components.get(o.entity);
 				omc.transform.getTranslation(o.element.position);
 				omc.transform.getRotation(o.element.rotation);
 			}
