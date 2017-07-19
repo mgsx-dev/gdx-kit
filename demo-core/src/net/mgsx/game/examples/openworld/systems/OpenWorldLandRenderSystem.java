@@ -6,23 +6,31 @@ import com.badlogic.ashley.core.EntityListener;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g3d.environment.DirectionalShadowLight;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 
 import net.mgsx.game.core.GamePipeline;
 import net.mgsx.game.core.GameScreen;
 import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.core.annotations.EditableSystem;
 import net.mgsx.game.core.annotations.Inject;
+import net.mgsx.game.core.annotations.Storable;
 import net.mgsx.game.examples.openworld.components.LandMeshComponent;
 import net.mgsx.game.examples.openworld.components.ObjectMeshComponent;
+import net.mgsx.game.examples.openworld.components.TreesComponent;
 import net.mgsx.game.plugins.core.components.HeightFieldComponent;
 
+@Storable("ow.lands")
+@SuppressWarnings("deprecation")
 @EditableSystem
 public class OpenWorldLandRenderSystem extends IteratingSystem
 {
@@ -31,9 +39,20 @@ public class OpenWorldLandRenderSystem extends IteratingSystem
 	
 	private VertexAttributes attributes = new VertexAttributes(VertexAttribute.Position(), VertexAttribute.Normal());
 	private ShaderProgram shader;
-	private ShaderProgram shaderHigh, objectsShader;
+	private ShaderProgram shaderHigh, shaderHighShadows, shaderHighNoShadows, objectsShader, depthShader;
 	
 	private GameScreen screen;
+	
+	
+	private DirectionalShadowLight shadowLight;
+	
+	@Editable public boolean shadowEnabled = false;
+	@Editable public int shadowMapSize = 1024;
+	@Editable public float shadowViewportWidth = 500;
+	@Editable public float shadowViewportHeight = 500;
+	@Editable public float shadowNear = 1;
+	@Editable public float shadowFar = 500;
+	@Editable public float shadowPCFOffset = 0.0001f;
 	
 	public OpenWorldLandRenderSystem(GameScreen screen) {
 		super(Family.all(LandMeshComponent.class).get(), GamePipeline.RENDER);
@@ -45,19 +64,39 @@ public class OpenWorldLandRenderSystem extends IteratingSystem
 		if(shader != null) {
 			shader.dispose();
 		}
+		
 		shader = new ShaderProgram(
 				Gdx.files.internal("shaders/land.vert"), 
 				Gdx.files.internal("shaders/land.frag"));
 		
-		ShaderProgram shaderHigh = new ShaderProgram(
+		
+		ShaderProgram shaderHigh;
+		
+		ShaderProgram.prependVertexCode = ShaderProgram.prependFragmentCode = "";
+		shaderHigh = new ShaderProgram(
 				Gdx.files.internal("shaders/land-high.vert"), 
 				Gdx.files.internal("shaders/land-high.frag"));
 		if(!shaderHigh.isCompiled()){
 			Gdx.app.error("Shader", shaderHigh.getLog());
 		}else{
-			if(this.shaderHigh != null) this.shaderHigh.dispose();
-			this.shaderHigh = shaderHigh;
+			if(this.shaderHighNoShadows != null) this.shaderHighNoShadows.dispose();
+			this.shaderHighNoShadows = shaderHigh;
 		}
+		
+		ShaderProgram.prependVertexCode = ShaderProgram.prependFragmentCode = "#define SHADOWS\n";
+		shaderHigh = new ShaderProgram(
+				Gdx.files.internal("shaders/land-high.vert"), 
+				Gdx.files.internal("shaders/land-high.frag"));
+		if(!shaderHigh.isCompiled()){
+			Gdx.app.error("Shader", shaderHigh.getLog());
+		}else{
+			if(this.shaderHighShadows != null) this.shaderHighShadows.dispose();
+			this.shaderHighShadows = shaderHigh;
+		}
+		
+		
+		
+		
 		ShaderProgram objectsShader = new ShaderProgram(
 				Gdx.files.internal("shaders/object-high.vert"), 
 				Gdx.files.internal("shaders/object-high.frag"));
@@ -66,6 +105,13 @@ public class OpenWorldLandRenderSystem extends IteratingSystem
 		}else{
 			if(this.objectsShader != null) this.objectsShader.dispose();
 			this.objectsShader = objectsShader;
+		}
+		
+		depthShader = new ShaderProgram(
+			Gdx.files.internal("shaders/depth.vert"), 
+			Gdx.files.internal("shaders/depth.frag"));
+		if(!depthShader.isCompiled()){
+			throw new GdxRuntimeException(depthShader.getLog());
 		}
 		
 	}
@@ -88,6 +134,8 @@ public class OpenWorldLandRenderSystem extends IteratingSystem
 		});
 		
 		loadShaders();
+		
+		shadowLight = new DirectionalShadowLight(shadowMapSize, shadowMapSize, shadowViewportWidth, shadowViewportHeight, shadowNear, shadowFar);
 	}
 	
 	private void createMesh(Entity entity) {
@@ -168,6 +216,58 @@ public class OpenWorldLandRenderSystem extends IteratingSystem
 	Matrix4 transform = new Matrix4();
 	
 	public void renderHigh() {
+		
+		if(shadowEnabled){
+			shadowLight.color.set(Color.RED); // XXX debug purpose
+			shadowLight.direction.set(environment.sunDirection);
+			shadowLight.getCamera().near = shadowNear;
+			shadowLight.getCamera().far = shadowFar;
+			shadowLight.getCamera().viewportWidth = shadowViewportWidth;
+			shadowLight.getCamera().viewportHeight = shadowViewportHeight;
+			
+			shadowLight.begin(screen.camera.position, screen.camera.direction);
+			
+			// FrameBuffer.unbind();
+			Gdx.gl.glDisable(GL20.GL_DEPTH_TEST); // XXX
+			depthShader.begin();
+			depthShader.setUniformMatrix("u_projViewWorldTrans", shadowLight.getCamera().combined);
+			
+			for(Entity entity : getEntities()){
+				LandMeshComponent lmc = LandMeshComponent.components.get(entity);
+				lmc.mesh.render(depthShader, GL20.GL_TRIANGLES);
+			}
+			for(Entity entity : getEngine().getEntitiesFor(Family.all(TreesComponent.class).get())){
+				TreesComponent tmc = TreesComponent.components.get(entity);
+				tmc.mesh.render(depthShader, GL20.GL_TRIANGLES);
+			}
+			
+			for(Entity entity : getEngine().getEntitiesFor(Family.all(ObjectMeshComponent.class).get())){
+				ObjectMeshComponent omc = ObjectMeshComponent.components.get(entity);
+				transform.set(shadowLight.getCamera().combined).mul(omc.transform);
+				depthShader.setUniformMatrix("u_projViewWorldTrans", transform);
+				omc.mesh.render(depthShader, GL20.GL_TRIANGLES);
+			}
+			
+			depthShader.end();
+			shadowLight.end();
+		}
+		
+//		if(sb == null) sb = new SpriteBatch();
+//		sb.disableBlending();
+//		sb.begin();
+//		Gdx.gl.glDisable(GL20.GL_DEPTH_TEST);
+//		sb.draw(shadowLight.getFrameBuffer().getColorBufferTexture(), 0, 0);
+//		sb.end();
+		
+		// and the final scene
+		renderHighFinal();
+	}
+	SpriteBatch sb;
+	
+	private void renderHighFinal()
+	{
+		shaderHigh = shadowEnabled ? shaderHighShadows : shaderHighNoShadows;
+		
 		Gdx.gl.glEnable(GL20.GL_DEPTH_TEST);
 		shaderHigh.begin();
 		shaderHigh.setUniformMatrix("u_projTrans", screen.camera.combined);
@@ -178,12 +278,24 @@ public class OpenWorldLandRenderSystem extends IteratingSystem
 		shaderHigh.setUniformi("u_skyBox", 0);
 		sky.getCubeMap().bind();
 		
-		// u_camPosition
+		if(shadowEnabled){
+			shadowLight.getFrameBuffer().getColorBufferTexture().bind(1);
+			shaderHigh.setUniformi("u_shadowTexture", 1);
+			shaderHigh.setUniformMatrix("u_shadowMapProjViewTrans", shadowLight.getCamera().combined);
+			shaderHigh.setUniformf("u_shadowPCFOffset", shadowPCFOffset); // TODO
+		}
+		
 		for(Entity entity : getEntities()){
 			LandMeshComponent lmc = LandMeshComponent.components.get(entity);
 			lmc.mesh.render(shaderHigh, GL20.GL_TRIANGLES);
 		}
 		shaderHigh.end();
+		
+		if(shadowEnabled){
+			Gdx.gl.glActiveTexture(GL20.GL_TEXTURE0 + 1);
+			Gdx.gl.glBindTexture(GL20.GL_TEXTURE_2D, 0);
+			Gdx.gl.glActiveTexture(GL20.GL_TEXTURE0);
+		}
 		
 		ShaderProgram shader = objectsShader;
 		
