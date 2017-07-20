@@ -76,7 +76,7 @@ public class OpenWorldLensFlareSystem extends EntitySystem
 			shader.end();
 			
 			float h = 1; //Gdx.graphics.getWidth() / (float)Gdx.graphics.getHeight();
-			float w = h;
+			float w = -h;
 			
 			renderer.setProjectionMatrix(screen.camera.combined);
 			renderer.begin(ShapeType.Filled);

@@ -73,8 +73,8 @@ public class OpenWorldMapSystem extends EntitySystem {
 			float heightScale = 1.f / (maxHeight - minHeight);
 			
 			OrthographicCamera camera = new OrthographicCamera(manager.logicSize, manager.logicSize);
-			camera.position.set(0,0,-1);
-			camera.direction.set(0, 0, 1);
+			camera.position.set(0,0,1);
+			camera.direction.set(0, 0, -1);
 			camera.up.set(Vector3.Y);
 			camera.near = .1f;
 			camera.far = 3000f; //maxHeight - minHeight + 1;
