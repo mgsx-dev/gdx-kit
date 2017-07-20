@@ -11,6 +11,11 @@ uniform float u_transparency;
 uniform float u_frequency;
 uniform float u_amplitude;
 uniform samplerCube u_texture;
+uniform vec2 u_window;
+
+#if defined(MIRROR)
+uniform sampler2D u_mirrorTexture;
+#endif
 
 varying vec4 v_position;
 
@@ -136,5 +141,13 @@ void main() {
 
 	vec3 F = reflect(R, vec3(0,1,0));
 
-    gl_FragColor = mix(textureCube(u_texture, R), textureCube(u_texture, F), u_transparency);
+    vec3 color = mix(textureCube(u_texture, R).rgb, textureCube(u_texture, F).rgb, u_transparency);
+
+	#if defined(MIRROR)
+    vec2 vr = vec2(gl_FragCoord.x/ u_window.x,1-gl_FragCoord.y/ u_window.y);
+    vec4 mirrorColor = texture2D(u_mirrorTexture, vr + grad.xy * u_amplitude * 1);
+    color = mix(color, mirrorColor.rgb, mirrorColor.a * 0.9);
+	#endif
+
+    gl_FragColor = vec4(color, 1);
 }

@@ -2,9 +2,15 @@ package net.mgsx.game.examples.openworld.systems;
 
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.PerspectiveCamera;
+import com.badlogic.gdx.graphics.Pixmap.Format;
+import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
@@ -29,9 +35,14 @@ public class OpenWorldWaterRenderSystem extends EntitySystem
 	@Editable public float transparency = 0.3f;
 	@Editable public float speed = 1f;
 	@Editable public float level = .3f;
+	
+	@Editable public boolean mirror = true;
+	@Editable public int mirrorSize = 1024;
 
-	private ShaderProgram waterShader;
-	private ShapeRenderer waterRenderer;
+	private ShaderProgram waterShader, waterShaderMirror, waterShaderNoMirror;
+	private ShapeRenderer waterRenderer, waterRendererMirror, waterRendererNoMirror;
+	
+	private FrameBuffer mirrorBuffer;
 
 	private GameScreen screen;
 	
@@ -44,24 +55,91 @@ public class OpenWorldWaterRenderSystem extends EntitySystem
 	
 	@Editable
 	public void loadShader(){
-		if(waterShader != null) waterShader.dispose();
-		waterShader = new ShaderProgram(
+		
+		ShaderProgram.prependVertexCode = ShaderProgram.prependFragmentCode = "#define MIRROR\n";
+		if(waterShaderMirror != null) waterShaderMirror.dispose();
+		waterShaderMirror = new ShaderProgram(
 				Gdx.files.internal("shaders/water.vert"),
 				Gdx.files.internal("shaders/water.frag"));
-		
-		if(!waterShader.isCompiled()){
-			throw new GdxRuntimeException(waterShader.getLog());
+		if(!waterShaderMirror.isCompiled()){
+			throw new GdxRuntimeException(waterShaderMirror.getLog());
 		}
 		
-		if(waterRenderer != null) waterRenderer.dispose();
-		waterRenderer = new ShapeRenderer(36, waterShader);
+		ShaderProgram.prependVertexCode = ShaderProgram.prependFragmentCode = "";
+		if(waterShaderNoMirror != null) waterShaderNoMirror.dispose();
+		waterShaderNoMirror = new ShaderProgram(
+				Gdx.files.internal("shaders/water.vert"),
+				Gdx.files.internal("shaders/water.frag"));
+		if(!waterShaderNoMirror.isCompiled()){
+			throw new GdxRuntimeException(waterShaderNoMirror.getLog());
+		}
+		
+		
+		
+		
+		if(waterRendererMirror != null) waterRendererMirror.dispose();
+		waterRendererMirror = new ShapeRenderer(36, waterShaderMirror);
+		
+		if(waterRendererNoMirror != null) waterRendererNoMirror.dispose();
+		waterRendererNoMirror = new ShapeRenderer(36, waterShaderNoMirror);
+		
+		if(mirrorBuffer != null) mirrorBuffer.dispose();
+		mirrorBuffer = new FrameBuffer(Format.RGBA8888, mirrorSize, mirrorSize, true);
+		
+		mirrorCamera = new PerspectiveCamera();
 	}
 	float time = 0;
+	private Matrix4 backup = new Matrix4();
+	private PerspectiveCamera mirrorCamera;
+	
 	@Override
 	public void update(float deltaTime) {
 		
+		if(mirror){
+			
+			// render lands and trees from a mirrored view
+			
+			Gdx.gl.glEnable(GL20.GL_CULL_FACE);
+			Gdx.gl.glCullFace(GL20.GL_FRONT);
+			 
+			// TODO setup camera
+			backup.set(screen.camera.combined);
+			
+			mirrorCamera.position.set(screen.camera.position);
+			mirrorCamera.position.y = -2*openWorldManager.scale *level - mirrorCamera.position.y;
+
+			mirrorCamera.direction.set(screen.camera.direction);
+			mirrorCamera.direction.y = -screen.camera.direction.y;
+			mirrorCamera.near = screen.camera.near;
+			mirrorCamera.far = screen.camera.far;
+			mirrorCamera.up.set(screen.camera.up);
+
+			mirrorCamera.viewportWidth = screen.camera.viewportWidth;
+			mirrorCamera.viewportHeight = screen.camera.viewportHeight;
+			mirrorCamera.fieldOfView = ((PerspectiveCamera)screen.camera).fieldOfView;
+			
+			mirrorCamera.update();
+			
+			screen.camera.combined.set(mirrorCamera.combined);
+			
+			// bind FBO
+			mirrorBuffer.begin();
+			Gdx.gl.glClearColor(0, 0, 0, 0);
+			Gdx.gl.glClear(GL20.GL_DEPTH_BUFFER_BIT | GL20.GL_COLOR_BUFFER_BIT);
+			
+			landerRendering.renderLow(true, true, true);
+			
+			// unbind FBO
+			mirrorBuffer.end();
+			
+			screen.camera.combined.set(backup);
+		}
+		
 		time += deltaTime * speed;
 
+		waterShader = mirror ? waterShaderMirror : waterShaderNoMirror;
+		waterRenderer = mirror ? waterRendererMirror : waterRendererNoMirror;
+		
 		waterShader.begin();
 		waterShader.setUniformf("u_time", time);
 		waterShader.setUniformf("u_frequency", frequency);
@@ -69,6 +147,13 @@ public class OpenWorldWaterRenderSystem extends EntitySystem
 		waterShader.setUniformf("u_transparency", transparency);
 		waterShader.setUniformi("u_texture", 0);
 		waterShader.setUniformf("u_camPos", screen.camera.position);
+		
+		if(mirror){
+			waterShader.setUniformi("u_mirrorTexture", 1);
+			waterShader.setUniformf("u_window", new Vector2(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
+			mirrorBuffer.getColorBufferTexture().bind(1);
+		}
+		
 		waterShader.end();
 		
 		waterRenderer.setProjectionMatrix(screen.camera.combined);
@@ -84,6 +169,11 @@ public class OpenWorldWaterRenderSystem extends EntitySystem
 				vOffset.z-s, s*2, 0, -s*2);
 		waterRenderer.end();
 		
+		if(mirror){
+			Gdx.gl.glActiveTexture(GL20.GL_TEXTURE0 + 1);
+			Gdx.gl.glBindTexture(GL20.GL_TEXTURE_2D, 0);
+			Gdx.gl.glActiveTexture(GL20.GL_TEXTURE0);
+		}
 
 	}
 }
