@@ -20,7 +20,8 @@ float getShadowness(vec2 offset)
     float z_map = dot(texture2D(u_shadowTexture, v_shadowMapUv.xy + offset), bitShifts);
     //return step(v_shadowMapUv.z, z_map);//+(1.0/255.0));
     float delta = 0.005;
-    return 0.25+smoothstep(v_shadowMapUv.z-delta, v_shadowMapUv.z+delta, z_map+0.002);//+(1.0/255.0));
+    float value = smoothstep(v_shadowMapUv.z-delta, v_shadowMapUv.z+delta, z_map+0.002);//+(1.0/255.0));
+    return 0.25 + clamp(value, 0 , 0.75);
 }
 
 float getShadow()
