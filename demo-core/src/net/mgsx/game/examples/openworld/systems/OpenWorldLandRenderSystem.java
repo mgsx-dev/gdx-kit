@@ -275,8 +275,6 @@ public class OpenWorldLandRenderSystem extends IteratingSystem
 		shaderHigh.setUniformf("u_fogColor", environment.fogColor);
 		shaderHigh.setUniformf("u_camDirection", screen.camera.direction);
 		shaderHigh.setUniformf("u_camPosition", screen.camera.position);
-		shaderHigh.setUniformi("u_skyBox", 0);
-		sky.getCubeMap().bind();
 		
 		if(shadowEnabled){
 			shadowLight.getFrameBuffer().getColorBufferTexture().bind(1);
