@@ -1,11 +1,19 @@
-varying vec3 v_position;
+varying vec4 v_position;
 varying vec3 v_normal;
 
 uniform vec3 u_sunDirection;
 uniform vec4 u_fogColor;
 
+#if defined(CLIP_PLANE)
+uniform float u_clip;
+#endif
 
 void main() {
+	#if defined(CLIP_PLANE)
+	if(v_position.y < u_clip){
+		discard;
+	}
+	#endif
 	float day = (-u_sunDirection.y + 1.0) * 0.5;
 
     vec3 N = normalize(v_normal);

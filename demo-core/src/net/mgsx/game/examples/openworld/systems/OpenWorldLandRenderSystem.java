@@ -201,33 +201,14 @@ public class OpenWorldLandRenderSystem extends IteratingSystem
 	}
 	
 	public void renderLow() {
-		renderLow(true, false, false);
-	}
-	public void renderLow(boolean lands, boolean trees, boolean objects) {
 		Gdx.gl.glEnable(GL20.GL_DEPTH_TEST);
 		shader.begin();
 		shader.setUniformMatrix("u_projTrans", screen.camera.combined);
 		shader.setUniformf("u_sunDirection", environment.sunDirection);
 		shader.setUniformf("u_fogColor", environment.fogColor);
-		if(lands){
-			for(Entity entity : getEntities()){
-				LandMeshComponent lmc = LandMeshComponent.components.get(entity);
-				lmc.mesh.render(shader, GL20.GL_TRIANGLES);
-			}
-		}
-		if(trees){
-			for(Entity entity : getEngine().getEntitiesFor(Family.all(TreesComponent.class).get())){
-				TreesComponent tmc = TreesComponent.components.get(entity);
-				tmc.mesh.render(shader, GL20.GL_TRIANGLES);
-			}
-		}
-		if(objects){
-			for(Entity entity : getEngine().getEntitiesFor(Family.all(ObjectMeshComponent.class).get())){
-				ObjectMeshComponent omc = ObjectMeshComponent.components.get(entity);
-				transform.set(screen.camera.combined).mul(omc.transform);
-				shader.setUniformMatrix("u_projTrans", transform);
-				omc.mesh.render(shader, GL20.GL_TRIANGLES);
-			}
+		for(Entity entity : getEntities()){
+			LandMeshComponent lmc = LandMeshComponent.components.get(entity);
+			lmc.mesh.render(shader, GL20.GL_TRIANGLES);
 		}
 		shader.end();
 	}

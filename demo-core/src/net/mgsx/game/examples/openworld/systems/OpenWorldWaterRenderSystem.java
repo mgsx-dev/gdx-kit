@@ -1,6 +1,8 @@
 package net.mgsx.game.examples.openworld.systems;
 
+import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntitySystem;
+import com.badlogic.ashley.core.Family;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
@@ -20,6 +22,9 @@ import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.core.annotations.EditableSystem;
 import net.mgsx.game.core.annotations.Inject;
 import net.mgsx.game.core.annotations.Storable;
+import net.mgsx.game.examples.openworld.components.LandMeshComponent;
+import net.mgsx.game.examples.openworld.components.ObjectMeshComponent;
+import net.mgsx.game.examples.openworld.components.TreesComponent;
 
 @Storable(value="ow.water")
 @EditableSystem
@@ -39,7 +44,7 @@ public class OpenWorldWaterRenderSystem extends EntitySystem
 	@Editable public boolean mirror = true;
 	@Editable public int mirrorSize = 1024;
 
-	private ShaderProgram waterShader, waterShaderMirror, waterShaderNoMirror;
+	private ShaderProgram waterShader, waterShaderMirror, waterShaderNoMirror, reflectionShader;
 	private ShapeRenderer waterRenderer, waterRendererMirror, waterRendererNoMirror;
 	
 	private FrameBuffer mirrorBuffer;
@@ -55,6 +60,15 @@ public class OpenWorldWaterRenderSystem extends EntitySystem
 	
 	@Editable
 	public void loadShader(){
+		
+		ShaderProgram.prependVertexCode = ShaderProgram.prependFragmentCode = "#define CLIP_PLANE\n";
+		if(reflectionShader != null) reflectionShader.dispose();
+		reflectionShader = new ShaderProgram(
+				Gdx.files.internal("shaders/land.vert"),
+				Gdx.files.internal("shaders/land.frag"));
+		if(!reflectionShader.isCompiled()){
+			throw new GdxRuntimeException(reflectionShader.getLog());
+		}
 		
 		ShaderProgram.prependVertexCode = ShaderProgram.prependFragmentCode = "#define MIRROR\n";
 		if(waterShaderMirror != null) waterShaderMirror.dispose();
@@ -89,8 +103,12 @@ public class OpenWorldWaterRenderSystem extends EntitySystem
 		mirrorCamera = new PerspectiveCamera();
 	}
 	float time = 0;
-	private Matrix4 backup = new Matrix4();
+	private Matrix4 backup = new Matrix4(), transform = new Matrix4();
 	private PerspectiveCamera mirrorCamera;
+	
+	@Editable public boolean lands = true;
+	@Editable public boolean trees = true;
+	@Editable public boolean objects = true;
 	
 	@Override
 	public void update(float deltaTime) {
@@ -127,7 +145,34 @@ public class OpenWorldWaterRenderSystem extends EntitySystem
 			Gdx.gl.glClearColor(0, 0, 0, 0);
 			Gdx.gl.glClear(GL20.GL_DEPTH_BUFFER_BIT | GL20.GL_COLOR_BUFFER_BIT);
 			
-			landerRendering.renderLow(true, true, true);
+			reflectionShader.begin();
+			reflectionShader.setUniformMatrix("u_projTrans", screen.camera.combined);
+			reflectionShader.setUniformMatrix("u_worldTrans", transform.idt());
+			reflectionShader.setUniformf("u_sunDirection", environment.sunDirection);
+			reflectionShader.setUniformf("u_fogColor", environment.fogColor);
+			reflectionShader.setUniformf("u_clip", -openWorldManager.scale * level - 0.1f); // XXX offset for deformations.
+			if(lands){
+				for(Entity entity : getEngine().getEntitiesFor(Family.all(LandMeshComponent.class).get())){
+					LandMeshComponent lmc = LandMeshComponent.components.get(entity);
+					lmc.mesh.render(reflectionShader, GL20.GL_TRIANGLES);
+				}
+			}
+			if(trees){
+				for(Entity entity : getEngine().getEntitiesFor(Family.all(TreesComponent.class).get())){
+					TreesComponent tmc = TreesComponent.components.get(entity);
+					tmc.mesh.render(reflectionShader, GL20.GL_TRIANGLES);
+				}
+			}
+			if(objects){
+				for(Entity entity : getEngine().getEntitiesFor(Family.all(ObjectMeshComponent.class).get())){
+					ObjectMeshComponent omc = ObjectMeshComponent.components.get(entity);
+					transform.set(screen.camera.combined).mul(omc.transform);
+					reflectionShader.setUniformMatrix("u_worldTrans", omc.transform);
+					reflectionShader.setUniformMatrix("u_projTrans", transform);
+					omc.mesh.render(reflectionShader, GL20.GL_TRIANGLES);
+				}
+			}
+			reflectionShader.end();
 			
 			// unbind FBO
 			mirrorBuffer.end();
