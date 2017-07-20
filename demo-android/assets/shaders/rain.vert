@@ -6,19 +6,21 @@ varying vec3 v_position;
 varying float v_alpha;
 
 uniform float u_time;
+uniform float u_size;
+uniform float u_len;
 
 void main()
 {
 	float seed = a_texCoord0.x;
-	v_alpha = (1.0 - a_position.z) * 0.3;
+	v_alpha = 1.0 - a_position.z;
 
-	float time = u_time * 1.1 + seed;
+	float time = u_time + seed;
 	float ftime = fract(time);
 	float itime = (time - ftime) * 0.2;
 
 	float offset = (ftime - 0.5) * 16;
-	float size = 100;
-	float len = 1;
+	float size = u_size;
+	float len = u_len;
 	float mx = fract(a_position.x + itime + a_texCoord0.x) - 0.5;
 	float my = fract(a_position.y + itime + a_texCoord0.y) - 0.5;
 	float near = 0.5;

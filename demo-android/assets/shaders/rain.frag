@@ -1,6 +1,6 @@
 varying vec3 v_position;
 varying float v_alpha;
-
+uniform vec4 u_color;
 
 //
 // Description : Array and textureless GLSL 2D/3D/4D simplex
@@ -116,5 +116,5 @@ float snoise(vec3 v, out vec3 gradient)
 
 
 void main() {
-    gl_FragColor = vec4(1,1,1, v_alpha);
+    gl_FragColor = vec4(u_color.rgb, u_color.a * v_alpha);
 }

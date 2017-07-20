@@ -3,6 +3,7 @@ package net.mgsx.game.examples.openworld.systems;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.VertexAttribute;
@@ -26,8 +27,12 @@ public class OpenWorldRainSystem extends EntitySystem implements SystemSettingsL
 	private ShaderProgram shader;
 	private Mesh mesh;
 	private GameScreen screen;
-	@Editable
-	public int resolution = 64;
+	
+	@Editable public int resolution = 64;
+	@Editable public Color color = new Color(5f, .5f, 1f, .3f);
+	@Editable public float size = 100;
+	@Editable public float length = 1;
+	@Editable public float speed = 1;
 	
 	public OpenWorldRainSystem(GameScreen screen) {
 		super(GamePipeline.RENDER_TRANSPARENT);
@@ -88,6 +93,8 @@ public class OpenWorldRainSystem extends EntitySystem implements SystemSettingsL
 	@Override
 	public void update(float deltaTime) 
 	{
+		if(color.a <= 0) return;
+		
 		Gdx.gl.glEnable(GL20.GL_DEPTH_TEST);
 		Gdx.gl.glEnable(GL20.GL_BLEND);
 		Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
@@ -95,7 +102,10 @@ public class OpenWorldRainSystem extends EntitySystem implements SystemSettingsL
 		
 		shader.setUniformMatrix("u_projTrans", screen.camera.combined);
 		shader.setUniformf("u_camPosition", screen.camera.position);
-		shader.setUniformf("u_time", timeSystem.time);
+		shader.setUniformf("u_time", timeSystem.time * speed);
+		shader.setUniformf("u_size", size);
+		shader.setUniformf("u_len", length);
+		shader.setUniformf("u_color", color);
 		mesh.render(shader, GL20.GL_LINES);
 		
 		shader.end();
