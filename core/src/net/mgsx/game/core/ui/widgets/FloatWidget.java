@@ -12,6 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.FocusListener;
 import com.badlogic.gdx.utils.Align;
 
+import net.mgsx.game.core.annotations.EnumType;
 import net.mgsx.game.core.ui.accessors.Accessor;
 import net.mgsx.game.core.ui.events.SetEvent;
 
@@ -20,6 +21,7 @@ public class FloatWidget extends Label
 	private Accessor accessor;
 	private boolean dynamic;
 	private String typing;
+	private EnumType type;
 	
 	@Override
 	public float getPrefWidth() {
@@ -33,6 +35,7 @@ public class FloatWidget extends Label
 		super("", skin);
 		this.dynamic = accessor.config() != null && accessor.config().realtime();
 		this.accessor = accessor;
+		this.type = accessor.config() != null ? accessor.config().type() : null;
 		setAlignment(Align.center);
 		
 		if(accessor.config() != null && accessor.config().readonly()){
@@ -131,7 +134,31 @@ public class FloatWidget extends Label
 	}
 	
 	private void updateValue(){
-		setText(String.valueOf(getValue()));
+		if(type == EnumType.BYTES){
+			// format bytes
+			float value = getValue();
+			String suffix = "";
+			if(value > 1024){
+				value /= 1024;
+				suffix = " Ko";
+			}
+			if(value > 1024){
+				value /= 1024;
+				suffix = " Mo";
+			}
+			if(value > 1024){
+				value /= 1024;
+				suffix = " Go";
+			}
+			if(value > 1024){
+				value /= 1024;
+				suffix = " To";
+			}
+			String formatted = String.valueOf(Math.round(value * 100) / 100f) + suffix;
+			setText(formatted);
+		}else{
+			setText(String.valueOf(getValue()));
+		}
 	}
 	
 	private float getValue(){

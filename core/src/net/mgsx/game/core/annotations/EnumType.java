@@ -27,5 +27,11 @@ public enum EnumType {
 	 * int and long : 0 (inclusive) to max positive (inclusive)
 	 * float and double : 0 (inclusive) to 1 (exclusive)
 	 */
-	RANDOM
+	RANDOM, 
+	
+	/**
+	 * value is formatted as human readable bytes value.
+	 * Large values are postfixed with Ko, Mo, Go...
+	 */
+	BYTES
 }
