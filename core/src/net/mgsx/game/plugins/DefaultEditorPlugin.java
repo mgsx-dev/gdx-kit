@@ -13,6 +13,7 @@ import net.mgsx.game.plugins.fsm.StateMachineEditorPlugin;
 import net.mgsx.game.plugins.g2d.G2DEditorPlugin;
 import net.mgsx.game.plugins.g3d.G3DEditorPlugin;
 import net.mgsx.game.plugins.graphics.GraphicsEditorPlugin;
+import net.mgsx.game.plugins.p3d.Particle3DEditorPlugin;
 import net.mgsx.game.plugins.particle2d.Particle2DEditorPlugin;
 import net.mgsx.game.plugins.pd.PdEditorPlugin;
 import net.mgsx.game.plugins.procedural.ProceduralEditorPlugin;
@@ -44,7 +45,8 @@ import net.mgsx.game.plugins.ui.UIEditorPlugin;
 	PdEditorPlugin.class,
 	UIEditorPlugin.class,
 	BulletEditorPlugin.class,
-	ProceduralEditorPlugin.class
+	ProceduralEditorPlugin.class,
+	Particle3DEditorPlugin.class
 })
 public interface DefaultEditorPlugin extends DefaultPlugin {
 

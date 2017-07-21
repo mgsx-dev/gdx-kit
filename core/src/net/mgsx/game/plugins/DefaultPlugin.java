@@ -12,6 +12,7 @@ import net.mgsx.game.plugins.fsm.StateMachinePlugin;
 import net.mgsx.game.plugins.g2d.G2DPlugin;
 import net.mgsx.game.plugins.g3d.G3DPlugin;
 import net.mgsx.game.plugins.graphics.GraphicsPlugin;
+import net.mgsx.game.plugins.p3d.Particle3DPlugin;
 import net.mgsx.game.plugins.parallax.ParallaxPlugin;
 import net.mgsx.game.plugins.particle2d.Particle2DPlugin;
 import net.mgsx.game.plugins.pd.PdPlugin;
@@ -42,7 +43,8 @@ import net.mgsx.game.plugins.tiles.TilesPlugin;
 	BTreePlugin.class,
 	ControllerPlugin.class,
 	PdPlugin.class,
-	BulletPlugin.class
+	BulletPlugin.class,
+	Particle3DPlugin.class
 })
 public interface DefaultPlugin {
 
