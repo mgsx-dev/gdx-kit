@@ -7,6 +7,7 @@ import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.utils.ImmutableArray;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
@@ -40,9 +41,14 @@ public class OpenWorldCameraSystem extends EntitySystem
 	
 	private Vector2 dir = new Vector2();
 	private Vector2 pos = new Vector2();
+	
+	private Vector3 focus = new Vector3();
 
 	private Ray ray = new Ray();
 	@Editable(realtime=true, readonly=true) public float totalMove = 0;
+	
+	private boolean enableControl = true, buttonWasPressed;
+	private int prevX, prevY;
 
 	public OpenWorldCameraSystem(GameScreen screen) {
 		super(GamePipeline.INPUT);
@@ -68,34 +74,69 @@ public class OpenWorldCameraSystem extends EntitySystem
 		if(cameras.size() == 0) return;
 		
 		Entity entity = cameras.first();
-		
-		float move = 0;
-		if(Gdx.input.isKeyPressed(Input.Keys.A)) {
-			move = 1;
-		} else if(Gdx.input.isKeyPressed(Input.Keys.Q)) {
-			move = -1;
-		}
-		
 		CameraComponent camera = CameraComponent.components.get(entity);
-		// rotate camera
-		if(Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT)){
-			camera.camera.direction.set(Vector3.Z);
-			camera.camera.direction.rotate(Vector3.X, ((float)Gdx.input.getY() / (float)Gdx.graphics.getHeight() -.5f) * 360);
-			camera.camera.direction.rotate(Vector3.Y, -(float)Gdx.input.getX() / (float)Gdx.graphics.getWidth() * 2 * 360);
+		
+		if(enableControl){
+			
+			float moveFront = 0;
+			float moveSide = 0;
+			if(Gdx.input.isKeyPressed(Input.Keys.Z)) {
+				moveFront = 1;
+			} else if(Gdx.input.isKeyPressed(Input.Keys.S)) {
+				moveFront = -1;
+			}
+			if(Gdx.input.isKeyPressed(Input.Keys.D)) {
+				moveSide = 1;
+			} else if(Gdx.input.isKeyPressed(Input.Keys.Q)) {
+				moveSide = -1;
+			}
+			
+			
+			// rotate camera
+			boolean buttonPressed = Gdx.input.isButtonPressed(Input.Buttons.RIGHT);
+			if(!buttonWasPressed && buttonPressed){
+				buttonWasPressed = true;
+				prevX = Gdx.input.getX();
+				prevY = Gdx.input.getY();
+				
+				focus.set(camera.camera.direction);
+				
+			}else if(!buttonPressed && buttonWasPressed){
+				buttonWasPressed = false;
+			}
+			if(buttonPressed){
+				// camera.camera.direction.set(Vector3.Z);
+				float elevation = (float)(Gdx.input.getY() - prevY) / (float)Gdx.graphics.getHeight();
+				float angle = (float)(Gdx.input.getX() - prevX) / (float)Gdx.graphics.getWidth() * 2 * 360;
+				
+				// focus.set(camera.camera.direction);
+				focus.rotate(Vector3.Y, -angle);
+				focus.y -= elevation * 5;
+				focus.nor();
+				
+				camera.camera.direction.lerp(focus, MathUtils.clamp(deltaTime * 10, 0, 1));
+				
+				prevX = Gdx.input.getX();
+				prevY = Gdx.input.getY();
+			}
+			
+			// move camera (2D plan)
+			dir.set(camera.camera.direction.x, camera.camera.direction.z).nor();
+			
+			pos.set(camera.camera.position.x, camera.camera.position.z);
+			
+			float moveLen = (moveFront + moveSide) * speed * deltaTime;
+			totalMove += Math.abs(moveLen);
+			
+			Vector2 tan = new Vector2(-dir.y, dir.x);
+			
+			pos.mulAdd(dir, moveFront * speed * deltaTime);
+			pos.mulAdd(tan, moveSide * speed * deltaTime);
+			
+			
+			camera.camera.position.x = pos.x;
+			camera.camera.position.z = pos.y;
 		}
-		
-		// move camera (2D plan)
-		dir.set(camera.camera.direction.x, camera.camera.direction.z).nor();
-		
-		pos.set(camera.camera.position.x, camera.camera.position.z);
-		
-		float moveLen = move * speed * deltaTime;
-		totalMove += Math.abs(moveLen);
-		
-		pos.mulAdd(dir, moveLen);
-		
-		camera.camera.position.x = pos.x;
-		camera.camera.position.z = pos.y;
 		
 		camera.camera.position.y = 0;
 		
