@@ -38,6 +38,8 @@ public class OpenWorldCameraSystem extends EntitySystem
 	@Editable public float speed = 2; 
 	@Editable public float offset = 5; 
 	@Editable public boolean clipToWater = true; 
+	@Editable public boolean clipToGround = true; 
+	@Editable public boolean flyingMode = false; 
 	
 	private Vector2 dir = new Vector2();
 	private Vector2 pos = new Vector2();
@@ -120,48 +122,65 @@ public class OpenWorldCameraSystem extends EntitySystem
 				prevY = Gdx.input.getY();
 			}
 			
-			// move camera (2D plan)
-			dir.set(camera.camera.direction.x, camera.camera.direction.z).nor();
+			// move camera 2D plan (walking)
+			if(!flyingMode){
+				dir.set(camera.camera.direction.x, camera.camera.direction.z).nor();
+				
+				pos.set(camera.camera.position.x, camera.camera.position.z);
+				
+				Vector2 tan = new Vector2(-dir.y, dir.x);
+				
+				pos.mulAdd(dir, moveFront * speed * deltaTime);
+				pos.mulAdd(tan, moveSide * speed * deltaTime);
+				
+				camera.camera.position.x = pos.x;
+				camera.camera.position.z = pos.y;
+			}
+			// move camera 3D space (flying)
+			else{
+				
+				Vector3 tan3d = camera.camera.direction.cpy().crs(camera.camera.up).nor();
+				
+				camera.camera.position.mulAdd(camera.camera.direction, moveFront * speed * deltaTime);
+				camera.camera.position.mulAdd(tan3d, moveSide * speed * deltaTime);
+			}
 			
-			pos.set(camera.camera.position.x, camera.camera.position.z);
 			
 			float moveLen = (moveFront + moveSide) * speed * deltaTime;
 			totalMove += Math.abs(moveLen);
-			
-			Vector2 tan = new Vector2(-dir.y, dir.x);
-			
-			pos.mulAdd(dir, moveFront * speed * deltaTime);
-			pos.mulAdd(tan, moveSide * speed * deltaTime);
-			
-			
-			camera.camera.position.x = pos.x;
-			camera.camera.position.z = pos.y;
 		}
 		
-		camera.camera.position.y = 0;
-		
-		// TODO ray cast for Y !
-		ray.origin.set(camera.camera.position);
-		ray.direction.set(0,-1, 0);
-		ray.origin.mulAdd(ray.direction, -20f);
-		
-		
-		resultCallback = new ClosestRayResultCallback(Vector3.Zero, Vector3.Z);
-		//resultCallback.setCollisionObject(null);
-		bulletWorld.collisionWorld.rayTest(ray.origin, ray.origin.cpy().mulAdd(ray.direction, 100), resultCallback);
-		
-		if(resultCallback.hasHit()){
-			Vector3 p = new Vector3();
-			resultCallback.getHitPointWorld(p);
-			Vector3 p2 = ray.origin.cpy().mulAdd(ray.direction, 100 * resultCallback.getClosestHitFraction());
-			camera.camera.position.y = p2.y + offset;
-			if(clipToWater){
-				float waterLimit = -openWorldManager.scale * waterRender.level + camera.camera.near * (float)Math.sqrt(2);
-				camera.camera.position.y = Math.max(camera.camera.position.y, waterLimit);
+		// ray cast for Y
+		if(clipToGround){
+			
+			ray.origin.set(camera.camera.position);
+			ray.origin.y = 0;
+			ray.direction.set(0,-1, 0);
+			ray.origin.mulAdd(ray.direction, -20f);
+			
+			
+			resultCallback = new ClosestRayResultCallback(Vector3.Zero, Vector3.Z);
+			//resultCallback.setCollisionObject(null);
+			bulletWorld.collisionWorld.rayTest(ray.origin, ray.origin.cpy().mulAdd(ray.direction, 100), resultCallback);
+			
+			if(resultCallback.hasHit()){
+				Vector3 p = new Vector3();
+				resultCallback.getHitPointWorld(p);
+				Vector3 p2 = ray.origin.cpy().mulAdd(ray.direction, 100 * resultCallback.getClosestHitFraction());
+				float elevation = p2.y + offset;
+				
+				if(clipToWater){
+					float waterLimit = -openWorldManager.scale * waterRender.level + camera.camera.near * (float)Math.sqrt(2);
+					elevation = Math.max(elevation, waterLimit);
+				}
+				if(!flyingMode || elevation > camera.camera.position.y){
+					camera.camera.position.y = elevation;
+				}
+				
 			}
-		
+			resultCallback.release();
+			
 		}
-		resultCallback.release();
 		
 		// Apply to logic point of view !
 		openWorldManager.viewPoint.set(camera.camera.position.x, camera.camera.position.z);
