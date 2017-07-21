@@ -1,23 +1,35 @@
 
+def gdxNightliesURL = 'https://libgdx.badlogicgames.com/nightlies/runnables/'
+def p3dName = 'runnable-3D-particles.jar'
+
+task gdxP3dDownload() {
+	def f = new File(System.getProperty('java.io.tmpdir'), p3dName)
+	doLast{
+		if (!f.exists()) {
+		    new URL(gdxNightliesURL + '/' + p3dName).withInputStream{ i -> f.withOutputStream{ it << i }}
+		}
+	}
+	outputs.upToDateWhen { f.exists() }
+}
+
+task gdxP3d(dependsOn: gdxP3dDownload, group: 'gdx') << {
+	// ant.java(jar: new File(System.getProperty('java.io.tmpdir'), p3dName), fork:true, dir: "$projectDir/demo-android/assets")
+	// Only way to spawn a process without blocking gradle
+	
+	// TODO Flame doesn't use inputs and working directory ...
+	("java -jar " + new File(System.getProperty('java.io.tmpdir'), p3dName)).execute(null, new File("$projectDir/demo-android/assets"))
+}
+
 task gdxHieroDownload(type: Exec) {
+	def tmpDir = System.getProperty('java.io.tmpdir')
 	def tmp = "/tmp/runnable-hiero.jar"
 	commandLine 'wget', '-O', tmp, 'https://libgdx.badlogicgames.com/nightlies/runnables/runnable-hiero.jar'
 	outputs.upToDateWhen { new File(tmp).exists() }
 }
 
 task gdxHiero(type: Exec, dependsOn: gdxHieroDownload, group: 'gdx') {
-
-
-	/*
-	TODO pass options :
-		# -b --batch
-		# -s --scale
-		# -i --input
-		# -o --output
-	*/
 	def tmp = "/tmp/runnable-hiero.jar"
 	commandLine 'java', '-jar', tmp
-
 }
 
 // generate hiero task for any *.hiero in asset folder
