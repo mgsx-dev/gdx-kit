@@ -811,7 +811,7 @@ public class EditorScreen extends ScreenDelegate implements EditorContext // TOD
 	}
 
 	public <T> T loadAssetNow(String fileName, Class<T> type) {
-		return AssetHelper.loadAssetNow(assets, fileName, type);
+		return AssetHelper.loadAssetNow(assets, fileName, type, registry.getDefaultLoaderParameter(type));
 	}
 	public <T> T loadAssetNow(String fileName, Class<T> type, AssetLoaderParameters<T> parameters) {
 		return AssetHelper.loadAssetNow(assets, fileName, type, parameters);
