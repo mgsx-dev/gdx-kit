@@ -4,6 +4,7 @@ import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetLoaderParameters;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.Json.Serializer;
@@ -206,5 +207,13 @@ public class GameRegistry {
 			inject(screen.entityEngine, system);
 		}
 	}
+
+	private ObjectMap<Class, AssetLoaderParameters> defaultLoaderParameter = new ObjectMap<Class, AssetLoaderParameters>();
 	
+	public <T> AssetLoaderParameters<T> getDefaultLoaderParameter(Class<T> assetType) {
+		return defaultLoaderParameter.get(assetType);
+	}
+	public <T> void putDefaultLoaderParameter(Class<T> assetType, AssetLoaderParameters<T> parameters) {
+		defaultLoaderParameter.put(assetType, parameters);
+	}
 }

@@ -4,6 +4,7 @@ import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetDescriptor;
+import com.badlogic.gdx.assets.AssetLoaderParameters;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.AsynchronousAssetLoader;
 import com.badlogic.gdx.assets.loaders.FileHandleResolver;
@@ -62,7 +63,10 @@ public class EntityGroupLoader extends AsynchronousAssetLoader<EntityGroup, Enti
 					params.config = cfg;
 					assets.add(new AssetDescriptor(name, assetType, params)); 
 				}else{
-					assets.add(new AssetDescriptor(name, assetType)); 
+					// get default params
+					AssetLoaderParameters params = parameter.config.registry.getDefaultLoaderParameter(assetType);
+					
+					assets.add(new AssetDescriptor(name, assetType, params)); 
 				}
 			}
 		}
