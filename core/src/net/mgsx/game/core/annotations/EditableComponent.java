@@ -1,14 +1,12 @@
 package net.mgsx.game.core.annotations;
 
-import static java.lang.annotation.ElementType.TYPE;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
+import static java.lang.annotation.ElementType.*;
+import static java.lang.annotation.RetentionPolicy.*;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 import com.badlogic.ashley.core.Component;
-
-import net.mgsx.game.core.components.Duplicable;
 
 @Retention(RUNTIME)
 @Target(TYPE)
@@ -24,8 +22,8 @@ public @interface EditableComponent
 	/** whether to create a tool to add component (default is true) */
 	boolean autoTool() default true;
 
-	/** whether to automatically clone component when cloning entity. All field are copied by reference.
-	 * Note that by default fields are not copied. 
+	/** Whether to automatically clone component when cloning entity, if true
+	 * all non transient public field are copied by reference. 
 	 * In order to customize cloning, component should implements {@link Duplicable} interface. 
 	 * Default is false.
 	 */
