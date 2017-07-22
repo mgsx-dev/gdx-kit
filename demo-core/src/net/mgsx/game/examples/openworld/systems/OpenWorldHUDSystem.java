@@ -1,6 +1,5 @@
 package net.mgsx.game.examples.openworld.systems;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 
@@ -8,9 +7,9 @@ import net.mgsx.game.core.annotations.Asset;
 import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.core.annotations.EditableSystem;
 import net.mgsx.game.examples.openworld.ui.ConnectionView;
+import net.mgsx.game.examples.openworld.ui.SavedGameView;
 import net.mgsx.game.plugins.core.systems.HUDSystem;
 import net.mgsx.game.services.gapi.GAPI;
-import net.mgsx.game.services.gapi.SavedGame;
 
 @EditableSystem
 public class OpenWorldHUDSystem extends HUDSystem
@@ -20,7 +19,6 @@ public class OpenWorldHUDSystem extends HUDSystem
 	
 	private Table root;
 	private Table view;
-	private boolean hidden = true;
 	
 	@Override
 	public void update(float deltaTime) {
@@ -28,46 +26,33 @@ public class OpenWorldHUDSystem extends HUDSystem
 		if(root == null){
 			root = new Table(skin);
 			root.setFillParent(true);
-			buildUI();
+			getStage().addActor(root);
 		}
 		super.update(deltaTime);
 	}
 	
 	@Editable
-	public void toggle() 
+	public void hide() 
 	{
-		if(hidden){
-			getStage().addActor(root);
-			hidden = false;
-		}else{
-			root.remove();
-			hidden = true;
-		}
+		root.clearChildren();
 	}
 
-	private void buildUI() 
+	@Editable
+	public void showConnection() 
 	{
-		view = new ConnectionView(skin);
-		
 		root.clearChildren();
+		view = new ConnectionView(skin);
 		root.add(view);
 	}
 
 	@Editable
-	public void testSaveGame() {
-		
-		SavedGame game = GAPI.service.createGame();
-		game.name = "slot01.json";
-		GAPI.service.saveGame(game, Gdx.files.local("kit-autosave.json"));
+	public void showSavedGames() 
+	{
+		root.clearChildren();
+		view = new SavedGameView(skin);
+		root.add(view);
 	}
-	
-	@Editable
-	public void testLoadGames() {
-		
-		GAPI.service.listGames();
-		
-	}
-	
+
 	@Editable
 	public void testCompleteAch() {
 		
@@ -85,6 +70,4 @@ public class OpenWorldHUDSystem extends HUDSystem
 		
 		GAPI.service.submitScore("CgkI9ouoooEcEAIQBQ", 500L);
 	}
-	
-
 }
