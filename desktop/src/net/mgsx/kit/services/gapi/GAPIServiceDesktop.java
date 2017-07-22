@@ -175,6 +175,7 @@ public class GAPIServiceDesktop implements GAPIService {
 				SavedGameDrive game = new SavedGameDrive();
 				game.contentDriveId = f.getId();
 				game.name = f.getName();
+				games.add(game);
 			}
 		} catch (IOException e) {
 			throw new GdxRuntimeException(e);
