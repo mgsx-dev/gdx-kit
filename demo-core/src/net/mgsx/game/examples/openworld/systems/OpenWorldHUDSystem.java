@@ -10,6 +10,7 @@ import net.mgsx.game.core.annotations.EditableSystem;
 import net.mgsx.game.examples.openworld.ui.ConnectionView;
 import net.mgsx.game.plugins.core.systems.HUDSystem;
 import net.mgsx.game.services.gapi.GAPI;
+import net.mgsx.game.services.gapi.SavedGame;
 
 @EditableSystem
 public class OpenWorldHUDSystem extends HUDSystem
@@ -55,8 +56,9 @@ public class OpenWorldHUDSystem extends HUDSystem
 	@Editable
 	public void testSaveGame() {
 		
-		GAPI.service.saveGame("slot01.json", Gdx.files.local("kit-autosave.json"));
-		
+		SavedGame game = GAPI.service.createGame();
+		game.name = "slot01.json";
+		GAPI.service.saveGame(game, Gdx.files.local("kit-autosave.json"));
 	}
 	
 	@Editable
