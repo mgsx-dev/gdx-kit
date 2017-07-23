@@ -23,6 +23,7 @@ import com.badlogic.gdx.utils.ObjectMap;
 import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.core.annotations.EditableComponent;
 import net.mgsx.game.core.annotations.EditableSystem;
+import net.mgsx.game.core.helpers.ReflectionHelper;
 import net.mgsx.game.core.ui.accessors.Accessor;
 import net.mgsx.game.core.ui.accessors.AccessorScanner;
 import net.mgsx.game.core.ui.accessors.FieldAccessorWrapper;
@@ -32,6 +33,7 @@ import net.mgsx.game.core.ui.widgets.BlendWidget;
 import net.mgsx.game.core.ui.widgets.BooleanWidget;
 import net.mgsx.game.core.ui.widgets.FloatWidget;
 import net.mgsx.game.core.ui.widgets.IntegerWidget;
+import net.mgsx.game.core.ui.widgets.VoidWidget;
 
 public class EntityEditor extends Table
 {
@@ -195,6 +197,22 @@ public class EntityEditor extends Table
 		
 		Editable accessorConfig = accessor.config();
 		
+		if(accessorConfig != null && accessorConfig.editor() != DefaultFieldEditor.class){
+			// TODO cache factory as singleton ...
+			FieldEditor editor = ReflectionHelper.newInstance(accessorConfig.editor());
+			table.add(editor.create(accessor, skin));
+			return true;
+		}
+		
+		// XXX doesn't support inherited ...
+		Editable typeConfig = (Editable)accessor.getType().getAnnotation(Editable.class);
+		if(typeConfig != null && typeConfig.editor() != DefaultFieldEditor.class){
+			// TODO cache factory as singleton ...
+			FieldEditor editor = ReflectionHelper.newInstance(typeConfig.editor());
+			table.add(editor.create(accessor, skin));
+			return true;
+		}
+		
 		if(accessorConfig != null ){
 			switch(accessorConfig.type()){
 			case BITS: table.add(BitsWidget.instance.create(accessor, skin)); return true;
@@ -205,37 +223,25 @@ public class EntityEditor extends Table
 			
 		}
 		if(accessor.getType() == void.class){
-			TextButton bt = new TextButton(accessor.getName(), skin);
-			table.add(bt);
-			bt.addListener(new ChangeListener() {
-				@Override
-				public void changed(ChangeEvent event, Actor actor) {
-					accessor.get();
-				}
-			});
+			
+			table.add(VoidWidget.instance.create(accessor, skin));
+		
 		}else if(accessor.getType() == int.class){
-			// TODO slider
 			
 			table.add(IntegerWidget.unlimited.create(accessor, skin)).fill();
-			
-			
+		
 		}else if(accessor.getType() == long.class){
-			// TODO slider
 			
 			table.add(IntegerWidget.unlimited.create(accessor, skin)).fill();
-			
-			
+		
 		}else if(accessor.getType() == short.class){
-			// TODO slider
 			
 			table.add(IntegerWidget.unsignedShort.create(accessor, skin)).fill();
-			
-			
+		
 		}else if(accessor.getType() == float.class){
 			
 			createSlider(table, entity, accessor, entity, accessor);
-			
-			
+		
 		}else if(accessor.getType() == String.class){
 			
 			final TextField field = new TextField(String.valueOf(accessor.get()), skin);

@@ -30,6 +30,16 @@ public class ReflectionHelper {
 			throw new ReflectionError(e);
 		}
 	}
+	public static <T> T get(Object object, String field, Class<T> type)
+	{
+		return (T)get(object, field(object.getClass(), field), type);
+	}
+	public static Object get(Object object, String field)
+	{
+		return get(object, field(object.getClass(), field));
+	}
+
+	
 	public static <T> void set(Object object, Field field, T value)
 	{
 		try {
