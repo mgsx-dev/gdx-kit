@@ -12,6 +12,24 @@ abstract public class BooleanWidget implements FieldEditor
 {
 	public static final BooleanWidget instance = labeled("true", "false");
 	
+	public static BooleanWidget labeled(final String labelOnOff){
+		return new BooleanWidget(){
+			@Override
+			public Actor create(final Accessor accessor, Skin skin) {
+				final TextButton button = new TextButton(labelOnOff, skin, "toggle");
+				button.setChecked((Boolean)accessor.get());
+				button.addListener(new ChangeListener() {
+					@Override
+					public void changed(ChangeEvent event, Actor actor) {
+						if((Boolean)accessor.get() != button.isChecked()){
+							accessor.set(button.isChecked());
+						}
+					}
+				});
+				return button;
+			}
+		};
+	}
 	public static BooleanWidget labeled(final String labelOn, final String labelOff){
 		return new BooleanWidget(){
 			@Override
