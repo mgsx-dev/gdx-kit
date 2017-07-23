@@ -1,13 +1,7 @@
 attribute vec3 a_position;
 attribute vec2 a_texCoord0;
-uniform mat4 u_projTrans;
-uniform vec3 u_camPosition;
 varying vec3 v_position;
 varying float v_alpha;
-
-uniform float u_time;
-uniform float u_size;
-uniform float u_len;
 
 void main()
 {

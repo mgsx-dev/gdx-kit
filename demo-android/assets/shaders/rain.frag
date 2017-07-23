@@ -1,6 +1,5 @@
 varying vec3 v_position;
 varying float v_alpha;
-uniform vec4 u_color;
 
 //
 // Description : Array and textureless GLSL 2D/3D/4D simplex
