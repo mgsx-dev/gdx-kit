@@ -87,6 +87,9 @@ project(":demo-core") {
         compile "net.mgsx.gdx:gdx-pd:$pdVersion"
         compile "com.badlogicgames.gdx:gdx-bullet:$gdxVersion"
         
+        // TODO workaround on issue https://github.com/libgdx/libgdx/issues/4831
+        compile 'org.apache.commons:commons-text:1.1'
+        
         testCompile "junit:junit:$junitVersion"
     }
 }
