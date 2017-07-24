@@ -101,6 +101,9 @@ public class OpenWorldRainSystem extends EntitySystem implements SystemSettingsL
 	public void update(float deltaTime) 
 	{
 		if(rainShader.color.a <= 0) return;
+
+		// XXX fix when no settings
+		if(mesh == null) createMesh();
 		
 		Gdx.gl.glEnable(GL20.GL_DEPTH_TEST);
 		Gdx.gl.glEnable(GL20.GL_BLEND);
