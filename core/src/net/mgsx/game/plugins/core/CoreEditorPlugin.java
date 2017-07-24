@@ -4,7 +4,6 @@ import com.badlogic.gdx.math.Interpolation;
 
 import net.mgsx.game.core.EditorScreen;
 import net.mgsx.game.core.annotations.PluginDef;
-import net.mgsx.game.core.helpers.FilesShaderProgram;
 import net.mgsx.game.core.plugins.EditorPlugin;
 import net.mgsx.game.core.storage.EntityGroupRef;
 import net.mgsx.game.core.storage.LoadConfiguration;
@@ -13,7 +12,6 @@ import net.mgsx.game.core.tools.Tool;
 import net.mgsx.game.core.ui.EntityEditor;
 import net.mgsx.game.core.ui.widgets.StaticFieldSelector;
 import net.mgsx.game.plugins.camera.CameraEditorPlugin;
-import net.mgsx.game.plugins.core.editors.ShaderProgramEditor;
 import net.mgsx.game.plugins.core.math.Signal;
 import net.mgsx.game.plugins.core.systems.GridDebugSystem;
 import net.mgsx.game.plugins.core.systems.OrientationDebugSystem;
@@ -52,7 +50,6 @@ public class CoreEditorPlugin extends EditorPlugin
 	{
 		
 		EntityEditor.defaultTypeEditors.put(Interpolation.class, new StaticFieldSelector<Interpolation>(Signal.class, Interpolation.class));
-		EntityEditor.defaultTypeEditors.put(FilesShaderProgram.class, new ShaderProgramEditor());
 		
 		
 		// systems

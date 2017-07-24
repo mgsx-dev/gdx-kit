@@ -7,6 +7,27 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 
 public class ShaderProgramHelper {
 
+	public static boolean verbose = true;
+	public static boolean enableCrossCompilation = true;
+	
+	public static String shaderVersion = "#version 100";
+	
+	private static String prependVert;
+	private static String prependFrag;
+	private static boolean inited = false;
+	
+	private static void init(){
+		if(!inited){
+			
+			prependVert = shaderVersion + "\n" + Gdx.files.classpath("shaders/header.vert").readString() + "\n";
+			prependFrag = shaderVersion + "\n" + Gdx.files.classpath("shaders/header.frag").readString() + "\n";
+			
+			// TODO #line
+			
+			inited = true;
+		}
+	}
+	
 	/**
 	 * Load or reload a shader program, useful for debugging.
 	 * in case of loading, if shader is not compiling a runtime exception is thrown
@@ -20,17 +41,59 @@ public class ShaderProgramHelper {
 	 */
 	public static ShaderProgram reload(ShaderProgram program, FileHandle vertFile, FileHandle fragFile)
 	{
-		ShaderProgram shader = new ShaderProgram(vertFile, fragFile);
-		if(!shader.isCompiled()){
-			if(program == null){
-				throw new GdxRuntimeException(shader.getLog());
-			}else{
-				Gdx.app.error("ShaderProgram", shader.getLog());
-			}
-		} else{
-			if(program != null) program.dispose();
-			program = shader;
+		if(verbose){
+			Gdx.app.log("ShaderProgram", "compiling " + vertFile.path() + " " + fragFile.path() + " ...");
 		}
-		return program;
+
+		String oldVert = ShaderProgram.prependVertexCode;
+		String oldFrag = ShaderProgram.prependFragmentCode;
+		try
+		{
+			init();
+			
+			if(enableCrossCompilation){
+				// prepend code
+				ShaderProgram.prependVertexCode = prependVert;
+				if(oldVert != null) ShaderProgram.prependVertexCode += oldVert;
+				ShaderProgram.prependFragmentCode = prependFrag;
+				if(oldFrag != null) ShaderProgram.prependFragmentCode += oldFrag;
+				
+				ShaderProgram.prependVertexCode += "#line 0\n";
+				ShaderProgram.prependFragmentCode += "#line 0\n";
+			}
+			
+			ShaderProgram shader = new ShaderProgram(vertFile, fragFile);
+			
+			String fullLog = vertFile.path() + " " + fragFile.path() + "\n" + shader.getLog();
+			
+			if(!shader.isCompiled()){
+				if(program == null){
+					throw new GdxRuntimeException(fullLog);
+				}else{
+					Gdx.app.error("ShaderProgram", fullLog);
+				}
+			} else{
+				if(program != null) program.dispose();
+				if(verbose && shader.getLog().length() > 0){
+					Gdx.app.log("ShaderProgram", fullLog);
+				}
+				if(verbose){
+					Gdx.app.log("ShaderProgram", "successfully compiled " + vertFile.path() + " " + fragFile.path());
+				}
+
+				program = shader;
+			}
+			return program;
+		}
+		finally{
+			ShaderProgram.prependVertexCode = oldVert;
+			ShaderProgram.prependFragmentCode = oldFrag;
+		}
 	}
+	
+	public static ShaderProgram reload(FileHandle vertFile, FileHandle fragFile)
+	{
+		return reload(null, vertFile, fragFile);
+	}
+
 }

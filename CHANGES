@@ -1,2 +1,9 @@
+[0.0.4]
+- ShaderProgramFiles replaced by ShaderProgramManaged, migration instructions : 
+-- create a class annotated by @ShaderInfo (can be an inner static class) containing uniforms variable.
+-- enable @Storable option in @ShaderInfo in order to save/load shader file path
+-- replace ShaderProgramFiles field by an @Editable non-transient field.
+-- update non editable fields before shader begin
+
 [0.0.2]
 - use DesktopApplication instead of LwjglApplication in loaders.

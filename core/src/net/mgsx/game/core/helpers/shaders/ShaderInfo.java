@@ -23,4 +23,12 @@ public @interface ShaderInfo {
 	 * @return
 	 */
 	public boolean inject() default true;
+
+	/**
+	 * Whenether to store shader files path. This allow to save shader path within systems
+	 * configurations.
+	 * Default is false.
+	 * @return
+	 */
+	public boolean storable() default false;
 }
