@@ -32,7 +32,9 @@ import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.core.annotations.EditableSystem;
 import net.mgsx.game.core.annotations.Storable;
 import net.mgsx.game.core.components.Hidden;
-import net.mgsx.game.core.helpers.FilesShaderProgram;
+import net.mgsx.game.core.helpers.shaders.ShaderInfo;
+import net.mgsx.game.core.helpers.shaders.ShaderProgramManaged;
+import net.mgsx.game.core.helpers.shaders.Uniform;
 import net.mgsx.game.examples.platformer.sensors.WaterZone;
 import net.mgsx.game.plugins.g3d.components.G3DModel;
 import net.mgsx.game.plugins.g3d.systems.G3DRendererSystem;
@@ -46,8 +48,15 @@ public class PlatformerPostProcessing extends EntitySystem
 	private Sprite screenSprite;
 	private SpriteBatch batch;
 	
-	@Editable
-	transient public FilesShaderProgram blurProgram;
+	@ShaderInfo(vs="shaders/blurx-vertex.glsl", fs="shaders/blurx-fragment.glsl", inject=false)
+	public static class BlurShader extends ShaderProgramManaged 
+	{
+		@Uniform("dir") 
+		transient Vector2 dir = new Vector2();
+		
+		@Editable public float size = 1.5f;
+	}
+	@Editable public BlurShader blurProgram = new BlurShader();
 	
 	@Asset("shaders/flat-vertex.glsl") // -vertex.glsl -fragment.glsl
 	public ShaderProgram flatProgram;
@@ -107,9 +116,6 @@ public class PlatformerPostProcessing extends EntitySystem
 		@Editable public boolean debugDepth;
 		@Editable public boolean debugConfusion;
 		@Editable public boolean debugLimits;
-		
-		@Editable public float blurSize = 1.5f;
-		
 	}
 	
 	@Editable public Settings settings = new Settings();
@@ -172,18 +178,22 @@ public class PlatformerPostProcessing extends EntitySystem
 		Gdx.gl.glEnable(GL20.GL_DEPTH_TEST);
 		if(settings.blur )
 		{
+			blurProgram.dir.set(blurProgram.size / (float)Gdx.graphics.getWidth(),0);
+			
 			blurA.begin();
 			batch.setShader(blurProgram.program());
 			batch.begin();
-			blurProgram.program().setUniformf("dir", new Vector2(settings.blurSize / (float)Gdx.graphics.getWidth(),0));
+			blurProgram.setUniforms();
 			batch.draw(fbo.getColorBufferTexture(), 0, 0);
 			batch.end();
 			blurA.end();
 			
+			blurProgram.dir.set(0, blurProgram.size / (float)Gdx.graphics.getHeight());
+			
 			blurB.begin();
 			batch.setShader(blurProgram.program());
 			batch.begin();
-			blurProgram.program().setUniformf("dir", new Vector2(0, settings.blurSize / (float)Gdx.graphics.getHeight()));
+			blurProgram.setUniforms();
 			batch.draw(blurA.getColorBufferTexture(), 0, 0);
 			batch.end();
 			blurB.end();
@@ -251,8 +261,9 @@ public class PlatformerPostProcessing extends EntitySystem
 			screenSprite = new Sprite(fbo.getColorBufferTexture(), w, h);
 			screenSprite.setFlip(false, true);
 			
-			batch.getProjectionMatrix().setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-			batch.setProjectionMatrix(batch.getProjectionMatrix()); // XXX necessary ?
+			if(batch != null){
+				batch.setProjectionMatrix(batch.getProjectionMatrix().setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
+			}
 		}
 		
 	}
@@ -297,10 +308,6 @@ public class PlatformerPostProcessing extends EntitySystem
 		rateLocation = postProcessShader.getUniformLocation("u_rate");
 		texture1Location = postProcessShader.getUniformLocation("u_texture1");
 		texture2Location = postProcessShader.getUniformLocation("u_texture2");
-		
-		blurProgram = new FilesShaderProgram(
-				Gdx.files.internal("shaders/blurx-vertex.glsl"),
-				Gdx.files.internal("shaders/blurx-fragment.glsl"));
 		
 
 		flatShader = new BaseShader() {

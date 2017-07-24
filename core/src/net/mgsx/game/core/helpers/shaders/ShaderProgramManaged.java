@@ -18,6 +18,7 @@ import com.badlogic.gdx.utils.ObjectMap.Entry;
 
 import net.mgsx.game.core.Kit;
 import net.mgsx.game.core.annotations.Editable;
+import net.mgsx.game.core.annotations.Storable;
 import net.mgsx.game.core.helpers.ShaderProgramHelper;
 import net.mgsx.game.core.ui.accessors.Accessor;
 
@@ -228,6 +229,11 @@ abstract public class ShaderProgramManaged {
 		}
 	}
 
+	@Storable
+	public String vs, fs;
+	
+	private transient ShaderInfo shaderInfo;
+	
 	transient protected FileHandle vertexShader;
 	transient protected FileHandle fragmentShader;
 	
@@ -241,7 +247,8 @@ abstract public class ShaderProgramManaged {
 	transient private Array<UniformAccessor> activeUniformAccessors;
 	
 	public ShaderProgramManaged() {
-		// nothing to do here to prevent JSON serializer
+		// no deep initialization here because of JSON serializer (check default)
+		shaderInfo = this.getClass().getAnnotation(ShaderInfo.class);
 	}
 	
 	public void freeze(boolean frozen){
@@ -262,7 +269,16 @@ abstract public class ShaderProgramManaged {
 		}
 		shaderProgram.begin();
 		
-		// update uniforms
+		setUniforms();
+	}
+	/**
+	 * send uniform to shader (shader must be bound before), called during {@link #begin()}
+	 * useful if shader program is used by a Batch or a ShaderProvider.
+	 */
+	public void setUniforms() {
+		if(shaderProgram == null){
+			reload();
+		}
 		for(UniformAccessor ua : activeUniformAccessors){
 			if(!ua.freezable) ua.init(); // XXX because value could be updated by client code !!!
 			ua.update();
@@ -273,16 +289,23 @@ abstract public class ShaderProgramManaged {
 	}
 	
 	public void dumpVS(){
-		Gdx.app.log("Shader", "\n" + shaderProgram.getVertexShaderSource());
+		if(shaderProgram != null){
+			Gdx.app.log("Shader", "\n" + shaderProgram.getVertexShaderSource());
+		}
 	}
 	
 	public void dumpFS(){
-		Gdx.app.log("Shader", "\n" + shaderProgram.getFragmentShaderSource());
+		if(shaderProgram != null){
+			Gdx.app.log("Shader", "\n" + shaderProgram.getFragmentShaderSource());
+		}
 	}
 	
 	public void reload()
 	{
-		ShaderInfo shaderInfo = this.getClass().getAnnotation(ShaderInfo.class);
+		if(shaderInfo.storable()){
+			if(vs == null) vs = shaderInfo.vs();
+			if(fs == null) fs = shaderInfo.fs();
+		}
 		
 		this.vertexShader = Gdx.files.internal(shaderInfo.vs());
 		this.fragmentShader = Gdx.files.internal(shaderInfo.fs());
@@ -419,6 +442,19 @@ abstract public class ShaderProgramManaged {
 			all.add(ua);
 		}
 		return all;
+	}
+
+	public void changeVS(FileHandle file) {
+		if(shaderInfo.storable()){
+			vs = file.path();
+		}
+		vertexShader = file;
+	}
+	public void changeFS(FileHandle file) {
+		if(shaderInfo.storable()){
+			fs = file.path();
+		}
+		fragmentShader = file;
 	}
 	
 }
