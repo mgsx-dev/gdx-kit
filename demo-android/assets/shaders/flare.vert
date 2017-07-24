@@ -17,7 +17,7 @@ void main()
 
 	v_coord = a_position.xy;
 
-	a_position = vec3(a_position.x, a_position.y * u_ratio, a_position.z);
+	vec3 position = vec3(a_position.x, a_position.y * u_ratio, a_position.z);
 
 	vec3 D = u_sunDirection + u_camDirection; // * dot(u_sunDirection, u_camDirection);
 
@@ -25,7 +25,7 @@ void main()
 	float rate = -dot(u_sunDirection, u_camDirection);
 	float dx = abs(u_sunDirection.x + u_camDirection.x);
 
-	if(rate > 0){
+	if(rate > 0.0){
 		rate = rate;
 	}else{
 		rate = 0.0;
@@ -33,6 +33,6 @@ void main()
 
 	v_rate = -dot(u_sunDirection, u_camDirection) - 0.5;
 
-	gl_Position =  u_projModelView * vec4(0,0,0,0.0000001) + vec4(a_position * u_size * u_size * 0.5 + vec3(D.xy * (u_size - 0.9) * 2.0, 0) / rate
+	gl_Position =  u_projModelView * vec4(0,0,0,0.0000001) + vec4(position * u_size * u_size * 0.5 + vec3(D.xy * (u_size - 0.9) * 2.0, 0) / rate
 			   , 1.0);
 }

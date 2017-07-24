@@ -136,7 +136,7 @@ void main() {
 	float nzv = snoise(vec3(v_position.xz * u_frequency, u_time), grad);
 
 	// project view vector on the plane
-	vec3 I = v_position - u_camPos;
+	vec3 I = v_position.xyz - u_camPos;
 	vec3 R = reflect(I, vec3(0,1,0) + grad * u_amplitude);
 
 	vec3 F = reflect(R, vec3(0,1,0));
@@ -144,8 +144,8 @@ void main() {
     vec3 color = mix(textureCube(u_texture, R).rgb, textureCube(u_texture, F).rgb, u_transparency);
 
 	#if defined(MIRROR)
-    vec2 vr = vec2(gl_FragCoord.x/ u_window.x,1-gl_FragCoord.y/ u_window.y);
-    vec4 mirrorColor = texture2D(u_mirrorTexture, vr + grad.xy * u_amplitude * 1);
+    vec2 vr = vec2(gl_FragCoord.x/ u_window.x,1.0-gl_FragCoord.y/ u_window.y);
+    vec4 mirrorColor = texture2D(u_mirrorTexture, vr + grad.xy * u_amplitude * 1.0);
     color = mix(color, mirrorColor.rgb, mirrorColor.a * 0.9);
 	#endif
 

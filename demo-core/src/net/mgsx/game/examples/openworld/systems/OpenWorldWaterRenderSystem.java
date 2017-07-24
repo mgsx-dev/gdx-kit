@@ -14,7 +14,6 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.utils.GdxRuntimeException;
 
 import net.mgsx.game.core.GamePipeline;
 import net.mgsx.game.core.GameScreen;
@@ -22,6 +21,7 @@ import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.core.annotations.EditableSystem;
 import net.mgsx.game.core.annotations.Inject;
 import net.mgsx.game.core.annotations.Storable;
+import net.mgsx.game.core.helpers.ShaderProgramHelper;
 import net.mgsx.game.examples.openworld.components.LandMeshComponent;
 import net.mgsx.game.examples.openworld.components.ObjectMeshComponent;
 import net.mgsx.game.examples.openworld.components.TreesComponent;
@@ -62,32 +62,19 @@ public class OpenWorldWaterRenderSystem extends EntitySystem
 	public void loadShader(){
 		
 		ShaderProgram.prependVertexCode = ShaderProgram.prependFragmentCode = "#define CLIP_PLANE\n";
-		if(reflectionShader != null) reflectionShader.dispose();
-		reflectionShader = new ShaderProgram(
+		reflectionShader = ShaderProgramHelper.reload(reflectionShader,
 				Gdx.files.internal("shaders/land.vert"),
 				Gdx.files.internal("shaders/land.frag"));
-		if(!reflectionShader.isCompiled()){
-			throw new GdxRuntimeException(reflectionShader.getLog());
-		}
 		
 		ShaderProgram.prependVertexCode = ShaderProgram.prependFragmentCode = "#define MIRROR\n";
-		if(waterShaderMirror != null) waterShaderMirror.dispose();
-		waterShaderMirror = new ShaderProgram(
+		waterShaderMirror = ShaderProgramHelper.reload(waterShaderMirror,
 				Gdx.files.internal("shaders/water.vert"),
 				Gdx.files.internal("shaders/water.frag"));
-		if(!waterShaderMirror.isCompiled()){
-			throw new GdxRuntimeException(waterShaderMirror.getLog());
-		}
 		
 		ShaderProgram.prependVertexCode = ShaderProgram.prependFragmentCode = "";
-		if(waterShaderNoMirror != null) waterShaderNoMirror.dispose();
-		waterShaderNoMirror = new ShaderProgram(
+		waterShaderNoMirror = ShaderProgramHelper.reload(waterShaderNoMirror,
 				Gdx.files.internal("shaders/water.vert"),
 				Gdx.files.internal("shaders/water.frag"));
-		if(!waterShaderNoMirror.isCompiled()){
-			throw new GdxRuntimeException(waterShaderNoMirror.getLog());
-		}
-		
 		
 		
 		

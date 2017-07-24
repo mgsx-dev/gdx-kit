@@ -122,20 +122,20 @@ float ptxnoise(vec2 v) {
 void main() {
 	float day = (-u_sunDirection.y + 1.0) * 0.5;
 
-    vec3 N = normalize(v_normal + vec3(0,(pnoise(v_position.xz * 10)*0.5+0.5) * 0.0005,0));
-    N = normalize((vec4(N,0) * u_worldTrans).xyz);
+    vec3 N = normalize(v_normal + vec3(0.0,(pnoise(v_position.xz * 10.0)*0.5+0.5) * 0.0005,0.0));
+    N = normalize((vec4(N,0.0) * u_worldTrans).xyz);
     float nDotLight = -dot(N, u_sunDirection);
-    float lum = clamp(nDotLight, day*0.5,1);
+    float lum = clamp(nDotLight, day*0.5,1.0);
 
     float specular;
 
-    if(nDotLight < 0)
-    	specular = 0;
+    if(nDotLight < 0.0)
+    	specular = 0.0;
     else{
-		vec3 camToP = normalize((vec4(v_position, 1) * u_worldTrans).xyz - u_camPosition);
+		vec3 camToP = normalize((vec4(v_position, 1.0) * u_worldTrans).xyz - u_camPosition);
 		vec3 pToLight = normalize(reflect(camToP,N));
-		specular = clamp(dot(pToLight, u_sunDirection),0,1);
-		specular =  pow(specular+0.01, 10);
+		specular = clamp(dot(pToLight, u_sunDirection),0.0,1.0);
+		specular =  pow(specular+0.01, 10.0);
     }
 
     float fog = clamp(gl_FragCoord.z * gl_FragCoord.w, 0.0, 1.0);
@@ -146,15 +146,15 @@ void main() {
     vec3 color = vec3(lum,lum,lum);
 
     // select materials
-    color *= v_color * u_color * day;
+    color *= v_color.rgb * u_color.rgb * day;
 
-    color += specular * u_color * day;
+    color += specular * u_color.rgb * day;
 
     // add fog
-    color = mix(u_fogColor * day, color, fogFact);
+    color = mix(u_fogColor.rgb * day, color, fogFact);
 
     // add ambient
-    color = mix(color, u_fogColor, (1-day) * day);
+    color = mix(color, u_fogColor.rgb, (1.0-day) * day);
 
     gl_FragColor = vec4(color, 1.0);
 }

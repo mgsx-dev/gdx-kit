@@ -116,8 +116,8 @@ float snoise(vec3 v, out vec3 gradient)
 
 
 void main() {
-	float dst = 1-length(v_texCoord0);
-	float shape = smoothstep(0,1,dst*20);
+	float dst = 1.0-length(v_texCoord0);
+	float shape = smoothstep(0.0,1.0,dst*20.0);
 	float lum = 0.1;
     gl_FragColor = vec4(lum,lum,lum, shape * v_alpha);
 }

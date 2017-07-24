@@ -22,6 +22,7 @@ import com.badlogic.gdx.utils.Array;
 import net.mgsx.game.core.GamePipeline;
 import net.mgsx.game.core.GameScreen;
 import net.mgsx.game.core.annotations.Inject;
+import net.mgsx.game.core.helpers.ShaderProgramHelper;
 import net.mgsx.game.plugins.core.components.HeightFieldComponent;
 
 public class OpenWorldMapSystem extends EntitySystem {
@@ -52,7 +53,7 @@ public class OpenWorldMapSystem extends EntitySystem {
 	public void addedToEngine(Engine engine) {
 		super.addedToEngine(engine);
 		
-		shader = new ShaderProgram(Gdx.files.internal("shaders/map.vert"), Gdx.files.internal("shaders/map.frag"));
+		shader = ShaderProgramHelper.reload(shader, Gdx.files.internal("shaders/map.vert"), Gdx.files.internal("shaders/map.frag"));
 		batch = new SpriteBatch();
 		renderer = new ShapeRenderer();
 	}

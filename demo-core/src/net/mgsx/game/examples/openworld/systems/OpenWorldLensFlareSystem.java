@@ -8,13 +8,13 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
-import com.badlogic.gdx.utils.GdxRuntimeException;
 
 import net.mgsx.game.core.GamePipeline;
 import net.mgsx.game.core.GameScreen;
 import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.core.annotations.EditableSystem;
 import net.mgsx.game.core.annotations.Inject;
+import net.mgsx.game.core.helpers.ShaderProgramHelper;
 
 @EditableSystem
 public class OpenWorldLensFlareSystem extends EntitySystem
@@ -35,15 +35,9 @@ public class OpenWorldLensFlareSystem extends EntitySystem
 	@Editable
 	public void loadShaders(){
 		
-		// XXX
-		if(shader != null) shader.dispose();
-		shader = new ShaderProgram(
+		shader = ShaderProgramHelper.reload(shader,
 				Gdx.files.internal("shaders/flare.vert"),
 				Gdx.files.internal("shaders/flare.frag"));
-		
-		if(!shader.isCompiled()){
-			throw new GdxRuntimeException(shader.getLog());
-		}
 		
 		if(renderer != null) renderer.dispose();
 		renderer = new ShapeRenderer(36, shader);

@@ -20,7 +20,6 @@ import com.badlogic.gdx.graphics.g3d.model.NodePart;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.utils.GdxRuntimeException;
 
 import net.mgsx.game.core.GamePipeline;
 import net.mgsx.game.core.GameScreen;
@@ -28,6 +27,7 @@ import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.core.annotations.EditableSystem;
 import net.mgsx.game.core.annotations.Inject;
 import net.mgsx.game.core.annotations.Storable;
+import net.mgsx.game.core.helpers.ShaderProgramHelper;
 import net.mgsx.game.examples.openworld.components.LandMeshComponent;
 import net.mgsx.game.examples.openworld.components.ObjectMeshComponent;
 import net.mgsx.game.examples.openworld.components.TreesComponent;
@@ -64,59 +64,28 @@ public class OpenWorldLandRenderSystem extends IteratingSystem
 	
 	@Editable
 	public void loadShaders() {
-		if(shader != null) {
-			shader.dispose();
-		}
-		
-		shader = new ShaderProgram(
+		shader = ShaderProgramHelper.reload(shader,
 				Gdx.files.internal("shaders/land.vert"), 
 				Gdx.files.internal("shaders/land.frag"));
 		
-		
-		ShaderProgram shaderHigh;
-		
 		ShaderProgram.prependVertexCode = ShaderProgram.prependFragmentCode = "";
-		shaderHigh = new ShaderProgram(
+		shaderHighNoShadows = ShaderProgramHelper.reload(shaderHighNoShadows,
 				Gdx.files.internal("shaders/land-high.vert"), 
 				Gdx.files.internal("shaders/land-high.frag"));
-		if(!shaderHigh.isCompiled()){
-			Gdx.app.error("Shader", shaderHigh.getLog());
-		}else{
-			if(this.shaderHighNoShadows != null) this.shaderHighNoShadows.dispose();
-			this.shaderHighNoShadows = shaderHigh;
-		}
 		
 		ShaderProgram.prependVertexCode = ShaderProgram.prependFragmentCode = "#define SHADOWS\n";
-		shaderHigh = new ShaderProgram(
+		shaderHighShadows = ShaderProgramHelper.reload(shaderHighShadows,
 				Gdx.files.internal("shaders/land-high.vert"), 
 				Gdx.files.internal("shaders/land-high.frag"));
-		if(!shaderHigh.isCompiled()){
-			Gdx.app.error("Shader", shaderHigh.getLog());
-		}else{
-			if(this.shaderHighShadows != null) this.shaderHighShadows.dispose();
-			this.shaderHighShadows = shaderHigh;
-		}
 		
 		
-		
-		
-		ShaderProgram objectsShader = new ShaderProgram(
+		objectsShader = ShaderProgramHelper.reload(objectsShader,
 				Gdx.files.internal("shaders/object-high.vert"), 
 				Gdx.files.internal("shaders/object-high.frag"));
-		if(!objectsShader.isCompiled()){
-			Gdx.app.error("Shader", objectsShader.getLog());
-		}else{
-			if(this.objectsShader != null) this.objectsShader.dispose();
-			this.objectsShader = objectsShader;
-		}
 		
-		depthShader = new ShaderProgram(
+		depthShader = ShaderProgramHelper.reload(depthShader,
 			Gdx.files.internal("shaders/depth.vert"), 
 			Gdx.files.internal("shaders/depth.frag"));
-		if(!depthShader.isCompiled()){
-			throw new GdxRuntimeException(depthShader.getLog());
-		}
-		
 	}
 	
 	@Override

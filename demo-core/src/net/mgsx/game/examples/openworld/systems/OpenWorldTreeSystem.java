@@ -16,11 +16,11 @@ import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.RandomXS128;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.utils.GdxRuntimeException;
 
 import net.mgsx.game.core.GamePipeline;
 import net.mgsx.game.core.GameScreen;
 import net.mgsx.game.core.annotations.Inject;
+import net.mgsx.game.core.helpers.ShaderProgramHelper;
 import net.mgsx.game.examples.openworld.components.TreesComponent;
 import net.mgsx.game.examples.openworld.utils.RandomLookup;
 import net.mgsx.game.plugins.core.components.HeightFieldComponent;
@@ -54,12 +54,9 @@ public class OpenWorldTreeSystem extends IteratingSystem
 			}
 		});
 		
-		shader = new ShaderProgram(
+		shader = ShaderProgramHelper.reload(shader, 
 				Gdx.files.internal("shaders/tree.vert"), 
 				Gdx.files.internal("shaders/tree.frag"));
-		if(!shader.isCompiled()){
-			throw new GdxRuntimeException(shader.getLog());
-		}
 		
 		rnd = new RandomLookup(new RandomXS128(0xdeaddead), 16, 16);
 	}

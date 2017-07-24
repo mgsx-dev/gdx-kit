@@ -2,33 +2,6 @@
 entities: [
 	{
 		id: 0
-		active: {}
-		ow.camera: {}
-		camera: {
-			camera: {
-				fieldOfView: 67
-				position: {
-					x: -3.796438
-					y: 5.134944
-					z: 19.373028
-				}
-				direction: {
-					x: 0.12809603
-					y: -0.20038557
-					z: -0.9712946
-				}
-				up: {
-					y: 1
-				}
-				near: 1
-				far: 3000
-				viewportWidth: 1855
-				viewportHeight: 1056
-			}
-		}
-	}
-	{
-		id: 1
 		camera: {
 			camera: {
 				fieldOfView: 67
@@ -53,6 +26,33 @@ entities: [
 		}
 		active: {}
 		ow.camera: {}
+	}
+	{
+		id: 1
+		active: {}
+		ow.camera: {}
+		camera: {
+			camera: {
+				fieldOfView: 67
+				position: {
+					x: -3.796438
+					y: 2.4529045
+					z: 19.373028
+				}
+				direction: {
+					x: -0.8474494
+					y: -0.17626014
+					z: 0.4996866
+				}
+				up: {
+					y: 1
+				}
+				near: 1
+				far: 3000
+				viewportWidth: 1855
+				viewportHeight: 1056
+			}
+		}
 	}
 ]
 systems: [
@@ -85,7 +85,7 @@ systems: [
 	{
 		type: ow.manager
 		enabled: true
-		scale: 10.6024275
+		scale: 2.1854146
 		frequency: 0.13599788
 		persistence: 0.5
 		octaves: 5
@@ -138,14 +138,12 @@ systems: [
 		realtime: true
 		autoSun: true
 		autoTime: false
-		time: 23770.064
+		time: 23910.52
 	}
 	{
 		type: ow.user-objects
 		enabled: true
-		persistedElements: [
-			
-		]
+		persistedElements: []
 	}
 	{
 		type: core.clearScreen
@@ -194,8 +192,8 @@ systems: [
 		cubeMapSize: 1024
 		realtime: false
 		cloudSpeed: 0.07158547
-		cloudRate: 1.4594817
-		cloudDarkness: 0.51172704
+		cloudRate: 1.2550672
+		cloudDarkness: 7.2376075
 		parallax: 0.9395143
 		cloudDirection: {
 			x: 0.8660253
@@ -204,7 +202,7 @@ systems: [
 	}
 	{
 		type: ow.water
-		enabled: true
+		enabled: false
 		frequency: 1.6786423
 		amplitude: 5.380697E-4
 		transparency: 0.38891014
@@ -223,7 +221,7 @@ systems: [
 	}
 	{
 		type: ow.rain
-		enabled: true
+		enabled: false
 		resolution: 64
 		rainShader: {
 			color: {
@@ -244,14 +242,6 @@ systems: [
 	}
 ]
 views: [
-	ow.rain
-	ow.camera
 	ow.sky
-	ow.manager
-	ow.env
-	ow.water
-	net.mgsx.game.examples.openworld.systems.WeatherSystem
-	ow.lands
-	ow.fauna
 ]
 }

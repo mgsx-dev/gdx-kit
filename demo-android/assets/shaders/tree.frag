@@ -128,22 +128,22 @@ void main() {
     vec3 dif = (v_texCoord.x < 0.5 ? vec3(0.4,0.3, 0.1) : vec3(0.6,0.9, 0.5)) * lum;
 
     // high res texturing
-    float distRate = clamp((gl_FragCoord.z * gl_FragCoord.w - 0.1) / 0.1, 0, 1);
-    if(distRate > 0){
+    float distRate = clamp((gl_FragCoord.z * gl_FragCoord.w - 0.1) / 0.1, 0.0, 1.0);
+    if(distRate > 0.0){
     	vec3 grad;
-    	float nz = snoise(v_position * 10, grad);
-    	float plum = mix(0.8, 1.2, (nz+1)*0.5);
+    	float nz = snoise(v_position * 10.0, grad);
+    	float plum = mix(0.8, 1.2, (nz+1.0)*0.5);
     	vec3 ng = normalize(grad);
     	vec3 pcolor;
-    	if(v_texCoord.x < 0.5)
-    		pcolor = ng.r * 0.08;
-    	else
+    	if(v_texCoord.x < 0.5){
+    		pcolor = vec3(ng.r * 0.08);
+    	}else
     		pcolor = ng * 0.08;
 
     	dif += pcolor * distRate;
     }
 
-    vec3 color = mix(u_fogColor * day, dif * day, 1.0 - pow(1.0 - fog, 10.0));
+    vec3 color = mix(u_fogColor.rgb * day, dif * day, 1.0 - pow(1.0 - fog, 10.0));
 
     gl_FragColor = vec4(color, 1.0);
 }

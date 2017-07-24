@@ -17,7 +17,6 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.BufferUtils;
-import com.badlogic.gdx.utils.GdxRuntimeException;
 
 import net.mgsx.game.core.GamePipeline;
 import net.mgsx.game.core.GameScreen;
@@ -25,6 +24,7 @@ import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.core.annotations.EditableSystem;
 import net.mgsx.game.core.annotations.Inject;
 import net.mgsx.game.core.annotations.Storable;
+import net.mgsx.game.core.helpers.ShaderProgramHelper;
 
 @Storable(value="ow.sky")
 @EditableSystem
@@ -68,15 +68,9 @@ public class OpenWorldSkySystem extends EntitySystem
 	public void genEnv(){
 		cubeMapDirty = true;
 		
-		// XXX
-		if(skyShader != null) skyShader.dispose();
-		skyShader = new ShaderProgram(
+		skyShader = ShaderProgramHelper.reload(skyShader,
 				Gdx.files.internal("shaders/sky.vert"),
 				Gdx.files.internal("shaders/sky.frag"));
-		
-		if(!skyShader.isCompiled()){
-			throw new GdxRuntimeException(skyShader.getLog());
-		}
 		
 		if(skyRenderer != null) skyRenderer.dispose();
 		skyRenderer = new ShapeRenderer(36, skyShader);
@@ -85,6 +79,7 @@ public class OpenWorldSkySystem extends EntitySystem
 		IntBuffer params = BufferUtils.newIntBuffer(16);
 		Gdx.gl.glGetIntegerv(GL20.GL_MAX_CUBE_MAP_TEXTURE_SIZE, params);
 		int maxCubeMapSize = params.get() / 4; // TODO why : because it is the max size for 1 byte format, we use 4 bytes format ... ?
+		// TODO it is recommanded to use texture proxy in order to get precise limit, it is due to internal format, just divide by 4 could not be the right way !
 		
 		if(cubeMapSize > maxCubeMapSize) {
 			cubeMapSize = maxCubeMapSize;
@@ -106,7 +101,7 @@ public class OpenWorldSkySystem extends EntitySystem
 //		for(int i=0 ; i<6 ; i++)
 //			Gdx.gl30.glFramebufferTextureLayer(GL30.GL_DRAW_FRAMEBUFFER, GL30.GL_COLOR_ATTACHMENT0 + i, cubeMap.glTarget, 0, 1);
 	
-		bgShader = new ShaderProgram(
+		bgShader = ShaderProgramHelper.reload(bgShader,
 			Gdx.files.internal("shaders/sky-bg.vert"),
 			Gdx.files.internal("shaders/sky-bg.frag"));
 		

@@ -11,7 +11,7 @@ import net.mgsx.game.core.helpers.NativeService.DialogCallback;
 import net.mgsx.game.core.helpers.NativeService.NativeServiceInterface;
 import net.mgsx.game.core.meta.ClassRegistry;
 import net.mgsx.game.core.meta.StaticClassRegistry;
-import net.mgsx.game.examples.platformer.PlatformerEditorPlugin;
+import net.mgsx.game.examples.openworld.OpenWorldEditorPlugin;
 import net.mgsx.kit.KitClass;
 import net.mgsx.pd.Pd;
 import net.mgsx.pd.PdConfiguration;
@@ -37,8 +37,8 @@ public class AndroidLauncher extends AndroidApplication {
 		};
 		
 		EditorConfiguration editConfig = new EditorConfiguration();
-		editConfig.plugins.add(new PlatformerEditorPlugin());
-		editConfig.path = "cake/all-test.json";
+		editConfig.plugins.add(new OpenWorldEditorPlugin());
+		editConfig.path = "openworld/openworld-scene-minimal.json";
 		
 		
 		super.onCreate(savedInstanceState);

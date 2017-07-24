@@ -12,7 +12,7 @@ void main()
 	float ftime = fract(time);
 	float itime = (time - ftime) * 0.2;
 
-	float offset = (ftime - 0.5) * 16;
+	float offset = (ftime - 0.5) * 16.0;
 	float size = u_size;
 	float len = u_len;
 	float mx = fract(a_position.x + itime + a_texCoord0.x) - 0.5;

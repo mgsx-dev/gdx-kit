@@ -11,12 +11,12 @@ void main() {
 //	float dx = cos(PI * v_position.x);
 //	float dy = sin(PI * v_position.y);
 
-	float D = clamp(1.0 - length(v_coord), 0, 1);
+	float D = clamp(1.0 - length(v_coord), 0.0, 1.0);
 
 	// D = D * (1.0 - D) * D * 40.0;
-	D = sin(D) * 4.0 * pow(1 - D, 4.0) * 1.0;
+	D = sin(D) * 4.0 * pow(1.0 - D, 4.0) * 1.0;
 
-	float day_rate = smoothstep(0, 1, -(u_sunDirection.y - 0.1) / 0.1);
+	float day_rate = smoothstep(0.0, 1.0, -(u_sunDirection.y - 0.1) / 0.1);
 
     gl_FragColor = vec4(mix(vec3(1,1,1), u_color.rgb, v_rate * 4.0), v_rate * D * day_rate);
 }

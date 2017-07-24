@@ -94,10 +94,10 @@ void main() {
 	float f = v_position.y; // give horizon !
 	vec3 color;
 	float day = (-u_sunDirection.y + 1.0) * 0.5;
-	vec4 cloudColor = vec4(0,0,0,0);
-	if(f<0){
+	vec4 cloudColor = vec4(0.0,0.0,0.0,0.0);
+	if(f<0.0){
 		// land
-		color = u_fogColor * day;
+		color = u_fogColor.rgb * day;
 	} else{
 		// sky
 		vec3 colorDay = vec3(0.5, 0.7, 1.0); // day sky
@@ -113,7 +113,7 @@ void main() {
 		vec2 dir2 = dir.xz * top / pow(dir.y, deform);
 
 		// add stars
-		float stars = abs(snoise(dir2.xy * 10000));
+		float stars = abs(snoise(dir2.xy * 10000.0));
 		// float starPattern = (sin(dir.x) + sin(dir.z) + 2) / 4.0
 		if(1.0 - stars > 0.99) {
 			color = mix(color, vec3(stars * 0.5 + 0.2, stars * 0.5 + 0.5, stars * 0.3 + 0.7), 1.0 - day);
@@ -140,17 +140,17 @@ void main() {
 	}
 
 	// smooth with fog.
-	vec3 fogColor = u_fogColor * day * day; // XXX
+	vec3 fogColor = u_fogColor.rgb * day * day; // XXX
 
 	color = mix(color, fogColor, pow(1.0 - clamp(abs(f * 0.01), 0.0, 1.0), 2.0));
 
 	// sun
 	float sunRate = 0.9;
-	if(f>0){
+	if(f>0.0){
 		vec3 sunDir = u_sunDirection;
-		vec3 viewDir = normalize(v_position);
+		vec3 viewDir = normalize(v_position).xyz;
 		float sunRate = -dot(sunDir, viewDir);
-		sunRate = clamp(pow(sunRate * 2.0 - 0.99, 40.0), 0, 1);
+		sunRate = clamp(pow(sunRate * 2.0 - 0.99, 40.0), 0.0, 1.0);
 		color = mix(color, vec3(1.0, 1.0, 0.99), sunRate);
 
 	}
