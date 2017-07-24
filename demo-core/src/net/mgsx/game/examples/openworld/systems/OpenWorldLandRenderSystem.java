@@ -12,7 +12,11 @@ import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalShadowLight;
+import com.badlogic.gdx.graphics.g3d.model.MeshPart;
+import com.badlogic.gdx.graphics.g3d.model.Node;
+import com.badlogic.gdx.graphics.g3d.model.NodePart;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
@@ -42,7 +46,6 @@ public class OpenWorldLandRenderSystem extends IteratingSystem
 	private ShaderProgram shaderHigh, shaderHighShadows, shaderHighNoShadows, objectsShader, depthShader;
 	
 	private GameScreen screen;
-	
 	
 	private DirectionalShadowLight shadowLight;
 	
@@ -305,14 +308,38 @@ public class OpenWorldLandRenderSystem extends IteratingSystem
 		sky.getCubeMap().bind();
 		for(Entity entity : getEngine().getEntitiesFor(Family.all(ObjectMeshComponent.class).get())){
 			ObjectMeshComponent omc = ObjectMeshComponent.components.get(entity);
-			transform.set(screen.camera.combined).mul(omc.getWorldTransform());
-			shader.setUniformf("u_color", omc.userObject.element.color);
-			shader.setUniformMatrix("u_projTrans", transform);
-			shader.setUniformMatrix("u_worldTrans", omc.getWorldTransform());
-			omc.getMeshToRender().render(shader, GL20.GL_TRIANGLES);
+			render(omc.getInstance().nodes, omc.getInstance().transform, shader);
+			
+//			transform.set(screen.camera.combined).mul(omc.getWorldTransform());
+//			shader.setUniformf("u_color", omc.userObject.element.color);
+//			shader.setUniformMatrix("u_projTrans", transform);
+//			shader.setUniformMatrix("u_worldTrans", omc.getWorldTransform());
+//			omc.getMeshToRender().render(shader, GL20.GL_TRIANGLES);
 		}
 		shader.end();
 		
 	}
+	
+	private Matrix4 worldTransform = new Matrix4();
+	
+	private void render(Iterable<Node> nodes, Matrix4 rootTransform, ShaderProgram shader) {
+		for(Node node : nodes){
+			worldTransform.set(rootTransform).mul(node.globalTransform);
+			// setup matrices
+			transform.set(screen.camera.combined).mul(worldTransform);
+			shader.setUniformMatrix("u_projTrans", transform);
+			shader.setUniformMatrix("u_worldTrans", worldTransform);
+			
+			for(NodePart part : node.parts){
+				MeshPart meshPart = part.meshPart;
+				// color from material
+				ColorAttribute diffuse = (ColorAttribute)part.material.get(ColorAttribute.Diffuse);
+				shader.setUniformf("u_color", diffuse.color);
+				part.meshPart.mesh.render(shader, meshPart.primitiveType, meshPart.offset, meshPart.size);
+			}
+			render(node.getChildren(), rootTransform, shader);
+		}
+	}
+	
 
 }

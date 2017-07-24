@@ -4,6 +4,7 @@ import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.VertexAttribute;
@@ -11,6 +12,7 @@ import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
+import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.loader.G3dModelLoader;
 import com.badlogic.gdx.graphics.g3d.model.MeshPart;
 import com.badlogic.gdx.graphics.g3d.utils.MeshBuilder;
@@ -59,12 +61,16 @@ public class UserObjectSystem extends EntitySystem implements SystemSettingsList
 
 	private GameScreen screen;
 	
-	private Material defaultMaterial = new Material();
+	private Material defaultMaterial;
 
 	
 	public UserObjectSystem(GameScreen screen) {
 		super(GamePipeline.LOGIC);
 		this.screen = screen;
+		
+		defaultMaterial = new Material();
+		defaultMaterial.set(new ColorAttribute(ColorAttribute.Diffuse, new Color(1,1,1,1)));
+		
 	}
 	
 	@Override

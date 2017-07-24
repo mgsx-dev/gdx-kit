@@ -99,5 +99,9 @@ public class ObjectMeshComponent implements Component, Poolable
 		dirty = true;
 	}
 
+	public ModelInstance getInstance() {
+		return instance;
+	}
+
 	
 }
