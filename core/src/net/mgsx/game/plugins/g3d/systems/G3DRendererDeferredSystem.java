@@ -18,6 +18,7 @@ import net.mgsx.game.core.GamePipeline;
 import net.mgsx.game.core.GameScreen;
 import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.core.annotations.EditableSystem;
+import net.mgsx.game.core.helpers.ShaderProgramHelper;
 import net.mgsx.game.plugins.g3d.components.G3DModel;
 
 /**
@@ -53,7 +54,7 @@ public class G3DRendererDeferredSystem extends IteratingSystem
 		
 		modelBatch = new ModelBatch();
 		
-		batch = new SpriteBatch(4, pixelShader = new ShaderProgram(
+		batch = new SpriteBatch(4, pixelShader = ShaderProgramHelper.reload(pixelShader, 
 				Gdx.files.internal("shaders/deferred-post.vs"), 
 				Gdx.files.internal("shaders/deferred-post.fs")));
 		

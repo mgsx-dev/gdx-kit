@@ -7,10 +7,10 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Interpolation;
 
 import net.mgsx.game.core.Kit;
+import net.mgsx.game.core.helpers.ShaderProgramHelper;
 
 /**
  * Static convenience methods for screen transitions, inspired by scene2D {@link Actions}
@@ -41,7 +41,7 @@ public class Transitions
 
 	private static class FadeTransition extends ShaderTransition{
 		public FadeTransition() {
-			super(new ShaderProgram(
+			super(ShaderProgramHelper.reload(
 					Gdx.files.classpath("shaders/gdx-default.vert"),
 					Gdx.files.classpath("shaders/transition-fade.frag")
 					));
