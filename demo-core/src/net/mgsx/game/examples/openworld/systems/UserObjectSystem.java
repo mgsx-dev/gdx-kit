@@ -3,7 +3,6 @@ package net.mgsx.game.examples.openworld.systems;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntitySystem;
-import com.badlogic.ashley.core.Family;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
@@ -131,15 +130,6 @@ public class UserObjectSystem extends EntitySystem implements SystemSettingsList
 			// TODO mark to keep those actives
 			
 			// TODO delete all not to keep
-		
-		
-		// TODO dedicated system !
-		// update model transform !
-		for(Entity e : getEngine().getEntitiesFor(Family.all(ObjectMeshComponent.class).get())){
-			ObjectMeshComponent omc = ObjectMeshComponent.components.get(e);
-			omc.update();
-		}
-		
 	}
 	
 	public void appendObject(OpenWorldElement e) {
