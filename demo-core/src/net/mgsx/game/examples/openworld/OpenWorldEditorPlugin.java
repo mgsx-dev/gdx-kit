@@ -21,6 +21,7 @@ import net.mgsx.game.examples.openworld.systems.UserObjectSystem;
 import net.mgsx.game.examples.openworld.systems.WeatherSystem;
 import net.mgsx.game.examples.openworld.tools.AddElementTool;
 import net.mgsx.game.examples.openworld.tools.AlignMeshTool;
+import net.mgsx.game.examples.openworld.tools.CraftTransformTool;
 import net.mgsx.game.examples.openworld.tools.MoveElementTool;
 import net.mgsx.game.examples.openworld.tools.RemoveElementTool;
 import net.mgsx.game.plugins.DefaultEditorPlugin;
@@ -38,6 +39,7 @@ public class OpenWorldEditorPlugin extends EditorPlugin implements DefaultEditor
 		editor.addTool(new AddElementTool(editor));
 		editor.addTool(new RemoveElementTool(editor));
 		editor.addTool(new MoveElementTool(editor));
+		editor.addTool(new CraftTransformTool(editor));
 		
 		// TODO non edit part
 		editor.entityEngine.addSystem(new OpenWorldLandRenderSystem(editor.game));
@@ -61,6 +63,7 @@ public class OpenWorldEditorPlugin extends EditorPlugin implements DefaultEditor
 		editor.entityEngine.getSystem(BulletWorldDebugSystem.class).setProcessing(false);
 		editor.entityEngine.getSystem(HeightFieldDebugSystem.class).setProcessing(false);
 		editor.entityEngine.getSystem(ScenarioSystem.class).setProcessing(false);
+		editor.entityEngine.getSystem(OpenWorldMapSystem.class).setProcessing(false);
 	}
 
 }

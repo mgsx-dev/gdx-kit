@@ -35,8 +35,8 @@ public class ScenarioSystem extends EntitySystem
 	@Override
 	public void addedToEngine(Engine engine) {
 		super.addedToEngine(engine);
-		OpenWorldModel.load();
-		introText = OpenWorldModel.root.child("quests").child("intro").child(0).asString();
+		OpenWorldModel.load(); // TODO lazy ?
+		introText = OpenWorldModel.map.root().child("quests").child("intro").child(0).asString();
 		
 		font = new BitmapFont(Gdx.files.internal("openworld/game_font.fnt"));
 		LabelStyle style = new LabelStyle(font, Color.WHITE);

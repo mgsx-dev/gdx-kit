@@ -1,5 +1,6 @@
 package net.mgsx.game.examples.openworld.model;
 
+import java.io.IOException;
 import java.util.Comparator;
 
 import com.badlogic.gdx.Gdx;
@@ -7,46 +8,73 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.RandomXS128;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.ObjectMap;
 
-import net.mgsx.game.examples.openworld.model.OpenWorldElement.GeometryType;
-import net.mgsx.game.examples.openworld.utils.FlatTreeReader;
-import net.mgsx.game.examples.openworld.utils.FlatTreeReader.NodeValue;
+import net.mgsx.game.core.annotations.Incubation;
+import net.mgsx.game.examples.openworld.utils.FreeMindReader;
+import net.mgsx.game.examples.openworld.utils.FreeMindReader.FreemindMap;
+import net.mgsx.game.examples.openworld.utils.FreeMindReader.FreemindNode;
 
 public class OpenWorldModel {
 	
-	public static NodeValue root;
-	static Array<NodeValue> elements;
+	public static FreemindMap map;
+	static Array<FreemindNode> elements;
 	static float maxRarity;
+	private static ObjectMap<Compound, ElementTemplate> fusions = new ObjectMap<Compound, ElementTemplate>();
 	
 	public static void load(){
-		root = new FlatTreeReader().parse(Gdx.files.internal("openworld/openworld-model.txt"));
-		elements = root.child("elements").children;
+		try {
+			map = new FreeMindReader().parse(Gdx.files.internal("openworld/openworld-model.mm"));
+		} catch (IOException e) {
+			throw new GdxRuntimeException(e);
+		}
+		
+		elements = map.root().child("elements").children();
 		float rank = 0;
-		for(NodeValue e : elements){
-			e.rank = rank;
+		for(FreemindNode e : elements){
 			rank += e.property("rarity").asFloat(1);
 		}
 		maxRarity = rank;
-		elements.sort(new Comparator<NodeValue>() {
+		elements.sort(new Comparator<FreemindNode>() {
 
 			@Override
-			public int compare(NodeValue o1, NodeValue o2) {
-				float r1 = o1.rank; //.has("rarity") ? o1.property("rarity").asFloat() : 1;
-				float r2 = o2.rank; //.has("rarity") ? o2.property("rarity").asFloat() : 1;
+			public int compare(FreemindNode o1, FreemindNode o2) {
+				float r1 = o1.property("rarity").asFloat(1);
+				float r2 = o2.property("rarity").asFloat(1);
 				return Float.compare(r1, r2);
 			}
 		});
+		
+		for(FreemindNode recipe : map.root().child("recipes").children()){
+			FreemindNode deps = recipe.child("fusion").child("deps");
+			if(deps.exists()){
+				ElementTemplate template = new ElementTemplate();
+				template.id = recipe.asString();
+				template.compound = new Compound();
+				for(FreemindNode dep : deps.children()){
+					String depName = dep.asString();
+					int required = dep.first().asInt(0);
+					template.compound.add(depName, required);
+				}
+				fusions.put(template.compound, template);
+			}
+		}
 	}
 	
-	private static NodeValue binSearch(Array<NodeValue> array, float v){
+	public static ElementTemplate findFusion(Compound compound){
+		return fusions.get(compound);
+	}
+	
+	private static FreemindNode binSearch(Array<FreemindNode> array, float v){
 		return binSearch(array, v, 0, array.size);
 	}
-	private static NodeValue binSearch(Array<NodeValue> array, float v, int a, int b){
+	private static FreemindNode binSearch(Array<FreemindNode> array, float v, int a, int b){
 		if(a == b) return array.get(a);
-		NodeValue o1 = array.get(a);
-		NodeValue o2 = array.get(b-1);
-		float ra = o1.rank; //.has("rarity") ? o1.property("rarity").asFloat() : 1;
-		float rb = o2.rank; //.has("rarity") ? o2.property("rarity").asFloat() : 1;
+		FreemindNode o1 = array.get(a);
+		FreemindNode o2 = array.get(b-1);
+		float ra = o1.property("rarity").asFloat(1);
+		float rb = o2.property("rarity").asFloat(1);
 		if(v < ra) return o1;
 		if(v > rb) return o2;
 		if(ra == rb){
@@ -54,7 +82,7 @@ public class OpenWorldModel {
 		}else{
 			float nv = (v - ra) / (rb - ra);
 			int index = (int)MathUtils.lerp(a, b-1, nv);
-			float mv = array.get(index).rank; //.has("rarity") ? o2.property("rarity").asFloat() : 1;
+			float mv = array.get(index).property("rarity").asFloat(1);
 			if(v < mv){
 				b = index;
 			}else{
@@ -74,7 +102,7 @@ public class OpenWorldModel {
 		RandomXS128 rnd = new RandomXS128(seed);
 		float rarity = rnd.nextFloat();
 		
-		NodeValue element = binSearch(elements, rarity * maxRarity);
+		FreemindNode element = binSearch(elements, rarity * maxRarity);
 		owElement.seed = rnd.nextLong();
 		owElement.rarity = element.property("rarity").asFloat(1);
 				
@@ -99,12 +127,12 @@ public class OpenWorldModel {
 		
 		owElement.color = HSV_to_RGB(h,s,l);
 		
-		owElement.geometryType = GeometryType.values()[(int)(GeometryType.values().length * rnd.nextFloat())];
+		owElement.type = elements.get((int)(elements.size * rnd.nextFloat())).asString();
 		
 		return owElement;
 	}
 	
-	// TODO pull up to KIT then LIBGDX
+	@Incubation("missing in libgdx")
 	/** Converts HSV color sytem to RGB
 	 * 
 	 * @return RGB values in Libgdx Color class */

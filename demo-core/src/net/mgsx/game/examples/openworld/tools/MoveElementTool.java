@@ -1,6 +1,7 @@
 package net.mgsx.game.examples.openworld.tools;
 
 import com.badlogic.ashley.core.Entity;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
@@ -33,7 +34,7 @@ public class MoveElementTool extends Tool
 
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-		
+		if(button != Input.Buttons.LEFT) return false;
 		Ray ray = camera().getPickRay(screenX, screenY);
 		ray.direction.scl(camera().far);
 		Ray rayResult = new Ray();

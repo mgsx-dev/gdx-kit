@@ -140,17 +140,15 @@ public class UserObjectSystem extends EntitySystem implements SystemSettingsList
 		lmc.transform.rotate(element.rotation);
 		lmc.userObject = object;
 		
-		switch(element.geometryType){
-		default:
-		case BOX:
+		if(element.type == null) element.type = "box"; // XXX migration
+		if(element.type.equals("box")){
 			lmc.mesh = createMeshBox(element);
 			// physics :
 			bulletWorld.createBox(newEntity, element.dynamic ? lmc.transform.translate(0,1,0) : lmc.transform, element.size * element.geo_x, element.size * element.geo_y, element.size, element.dynamic);
-			break;
-		case SPHERE:
+		}
+		else if(element.type.equals("sphere")){
 			lmc.mesh = createMeshSphere(element);
 			bulletWorld.createSphere(newEntity, element.dynamic ? lmc.transform.translate(0,1,0) : lmc.transform, element.size,element.dynamic);
-			break;
 		}
 		newEntity.add(lmc);
 		

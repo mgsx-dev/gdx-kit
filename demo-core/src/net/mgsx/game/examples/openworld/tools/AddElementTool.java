@@ -49,7 +49,7 @@ public class AddElementTool extends Tool
 				e.geo_x = sx;
 				e.geo_y = sy;
 				e.size = sz;
-				e.geometryType = type;
+				e.type = type.toString().toLowerCase(); // XXX TODO list factory for editable selector
 			}
 			
 			e.dynamic = dynamic;

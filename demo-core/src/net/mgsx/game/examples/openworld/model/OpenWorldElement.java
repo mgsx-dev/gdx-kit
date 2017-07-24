@@ -10,7 +10,7 @@ public class OpenWorldElement {
 		BOX, SPHERE
 	}
 	
-	public GeometryType geometryType = GeometryType.BOX;
+	public String type;
 	
 	// shape
 	public float geo_x;
