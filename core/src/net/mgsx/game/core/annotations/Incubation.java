@@ -17,7 +17,8 @@ import java.lang.annotation.Target;
  *
  */
 @Retention(SOURCE)
-@Target(TYPE)
+@Target({TYPE, METHOD})
 public @interface Incubation {
-
+	/** comment for the incubation state */
+	public String value() default "";
 }
