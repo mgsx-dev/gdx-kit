@@ -166,10 +166,10 @@ public class OpenWorldWaterRenderSystem extends EntitySystem
 			if(objects){
 				for(Entity entity : getEngine().getEntitiesFor(Family.all(ObjectMeshComponent.class).get())){
 					ObjectMeshComponent omc = ObjectMeshComponent.components.get(entity);
-					transform.set(screen.camera.combined).mul(omc.transform);
-					reflectionShader.setUniformMatrix("u_worldTrans", omc.transform);
+					transform.set(screen.camera.combined).mul(omc.getWorldTransform());
+					reflectionShader.setUniformMatrix("u_worldTrans", omc.getWorldTransform());
 					reflectionShader.setUniformMatrix("u_projTrans", transform);
-					omc.mesh.render(reflectionShader, GL20.GL_TRIANGLES);
+					omc.getMeshToRender().render(reflectionShader, GL20.GL_TRIANGLES);
 				}
 			}
 			reflectionShader.end();

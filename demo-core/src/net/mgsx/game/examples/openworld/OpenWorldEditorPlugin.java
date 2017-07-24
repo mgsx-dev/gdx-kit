@@ -52,7 +52,7 @@ public class OpenWorldEditorPlugin extends EditorPlugin implements DefaultEditor
 		editor.entityEngine.addSystem(new OpenWorldMapSystem(editor.game));
 		editor.entityEngine.addSystem(new WeatherSystem());
 		editor.entityEngine.addSystem(new ScenarioSystem());
-		editor.entityEngine.addSystem(new UserObjectSystem());
+		editor.entityEngine.addSystem(new UserObjectSystem(editor.game));
 		editor.entityEngine.addSystem(new OpenWorldRainSystem(editor.game));
 		editor.entityEngine.addSystem(new OpenWorldTimeSystem());
 		editor.entityEngine.addSystem(new OpenWorldFaunaSystem(editor.game));

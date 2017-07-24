@@ -2,7 +2,6 @@ package net.mgsx.game.examples.openworld.tools;
 
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.physics.bullet.collision.Collision;
@@ -24,9 +23,9 @@ public class MoveElementTool extends Tool
 	@Editable public float angle;
 	private Entity pickedEntity;
 	
-	public static enum Axis{X,Y,Z}
+	public static enum Axis{None,X,Y,Z}
 	@Editable
-	public Axis axis = Axis.Z;
+	public Axis axis = Axis.Y;
 	
 	public MoveElementTool(EditorScreen editor) {
 		super("Move element", editor);
@@ -65,7 +64,7 @@ public class MoveElementTool extends Tool
 				
 				Vector3 position = rayResult.origin.cpy().mulAdd(rayResult.direction, new Vector3(omc.userObject.element.geo_x, omc.userObject.element.geo_y, 1).scl(.5f * omc.userObject.element.size));
 				
-				Vector3 axis;
+				Vector3 axis = null;
 				switch (this.axis) {
 				case X:
 					axis = Vector3.X;
@@ -73,19 +72,26 @@ public class MoveElementTool extends Tool
 				case Y:
 					axis = Vector3.Y;
 					break;
-				default:
 				case Z:
 					axis = Vector3.Z;
 					break;
+				case None:
+				default:
+					break;
 				}
 				
-				omc.transform.idt();
-				if(Math.abs(rayResult.direction.dot(axis)) < .9f)
-					omc.transform.setToLookAt(axis, rayResult.direction);
-				omc.transform.mulLeft(new Matrix4().idt().translate(position));
+				if(axis != null){
+					omc.userObject.element.rotation.setFromCross(axis, rayResult.direction);
+				}else{
+					omc.userObject.element.rotation.idt();
+				}
 				
 				omc.userObject.element.position.set(position);
-				omc.transform.getRotation(omc.userObject.element.rotation);
+				
+				// force transform init
+				omc.getTransform();
+				
+				omc.invalidate();
 				
 				return true;
 			}
@@ -98,7 +104,7 @@ public class MoveElementTool extends Tool
 		if(pickedEntity != null){
 			BulletComponent bullet = BulletComponent.components.get(pickedEntity);
 			ObjectMeshComponent omc = ObjectMeshComponent.components.get(pickedEntity);
-			bullet.object.setWorldTransform(omc.transform);
+			bullet.object.setWorldTransform(omc.getTransform());
 			if(!bullet.object.isStaticObject()){
 				((btDiscreteDynamicsWorld)bullet.world).addRigidBody((btRigidBody)bullet.object);
 				bullet.object.forceActivationState(Collision.DISABLE_DEACTIVATION);

@@ -1,6 +1,7 @@
 package net.mgsx.game.examples.openworld.tools;
 
 import com.badlogic.ashley.core.Entity;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.RandomXS128;
 import com.badlogic.gdx.math.collision.Ray;
 
@@ -8,8 +9,8 @@ import net.mgsx.game.core.EditorScreen;
 import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.core.annotations.Inject;
 import net.mgsx.game.core.tools.Tool;
+import net.mgsx.game.examples.openworld.editors.OpenWorldTypeSelector;
 import net.mgsx.game.examples.openworld.model.OpenWorldElement;
-import net.mgsx.game.examples.openworld.model.OpenWorldElement.GeometryType;
 import net.mgsx.game.examples.openworld.model.OpenWorldModel;
 import net.mgsx.game.examples.openworld.systems.UserObjectSystem;
 import net.mgsx.game.plugins.bullet.system.BulletWorldSystem;
@@ -27,7 +28,9 @@ public class AddElementTool extends Tool
 	@Editable public float sx = 1;
 	@Editable public float sy = 1;
 	@Editable public float sz = 1;
-	@Editable public GeometryType type = GeometryType.BOX;
+	
+	@Editable(editor=OpenWorldTypeSelector.class)
+	public String type;
 	
 	public AddElementTool(EditorScreen editor) {
 		super("Add Element", editor);
@@ -35,6 +38,8 @@ public class AddElementTool extends Tool
 
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+		
+		if(button != Input.Buttons.LEFT) return false;
 		
 		Ray ray = camera().getPickRay(screenX, screenY);
 		ray.direction.scl(camera().far);
@@ -49,8 +54,8 @@ public class AddElementTool extends Tool
 				e.geo_x = sx;
 				e.geo_y = sy;
 				e.size = sz;
-				e.type = type.toString().toLowerCase(); // XXX TODO list factory for editable selector
 			}
+			e.type = type;
 			
 			e.dynamic = dynamic;
 			

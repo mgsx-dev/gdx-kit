@@ -3,22 +3,29 @@ package net.mgsx.game.examples.openworld.systems;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntitySystem;
+import com.badlogic.ashley.core.Family;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes;
+import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
+import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.loader.G3dModelLoader;
+import com.badlogic.gdx.graphics.g3d.model.MeshPart;
 import com.badlogic.gdx.graphics.g3d.utils.MeshBuilder;
+import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonReader;
 
 import net.mgsx.game.core.GamePipeline;
+import net.mgsx.game.core.GameScreen;
 import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.core.annotations.Inject;
 import net.mgsx.game.core.annotations.Storable;
+import net.mgsx.game.core.helpers.AssetHelper;
 import net.mgsx.game.core.storage.SystemSettingsListener;
 import net.mgsx.game.examples.openworld.components.ObjectMeshComponent;
 import net.mgsx.game.examples.openworld.model.OpenWorldElement;
@@ -51,9 +58,14 @@ public class UserObjectSystem extends EntitySystem implements SystemSettingsList
 	
 	private Mesh icosa1;
 
+	private GameScreen screen;
 	
-	public UserObjectSystem() {
+	private Material defaultMaterial = new Material();
+
+	
+	public UserObjectSystem(GameScreen screen) {
 		super(GamePipeline.LOGIC);
+		this.screen = screen;
 	}
 	
 	@Override
@@ -120,6 +132,14 @@ public class UserObjectSystem extends EntitySystem implements SystemSettingsList
 			
 			// TODO delete all not to keep
 		
+		
+		// TODO dedicated system !
+		// update model transform !
+		for(Entity e : getEngine().getEntitiesFor(Family.all(ObjectMeshComponent.class).get())){
+			ObjectMeshComponent omc = ObjectMeshComponent.components.get(e);
+			omc.update();
+		}
+		
 	}
 	
 	public void appendObject(OpenWorldElement e) {
@@ -136,19 +156,40 @@ public class UserObjectSystem extends EntitySystem implements SystemSettingsList
 		Entity newEntity = getEngine().createEntity();
 		
 		ObjectMeshComponent lmc = getEngine().createComponent(ObjectMeshComponent.class);
-		lmc.transform.setToTranslation(element.position);
-		lmc.transform.rotate(element.rotation);
 		lmc.userObject = object;
 		
-		if(element.type == null) element.type = "box"; // XXX migration
+		// TODO compute boundary ...
+		if(element.dynamic){
+			element.position.add(0,1,0);
+		}
+		
+		// built-in box and sphere objects
 		if(element.type.equals("box")){
-			lmc.mesh = createMeshBox(element);
+			lmc.setInstance(createInstance(createMeshBox(element)));
 			// physics :
-			bulletWorld.createBox(newEntity, element.dynamic ? lmc.transform.translate(0,1,0) : lmc.transform, element.size * element.geo_x, element.size * element.geo_y, element.size, element.dynamic);
+			bulletWorld.createBox(newEntity, lmc.getTransform(), element.size * element.geo_x, element.size * element.geo_y, element.size, element.dynamic);
 		}
 		else if(element.type.equals("sphere")){
-			lmc.mesh = createMeshSphere(element);
-			bulletWorld.createSphere(newEntity, element.dynamic ? lmc.transform.translate(0,1,0) : lmc.transform, element.size,element.dynamic);
+			lmc.setInstance(createInstance(createMeshSphere(element)));
+			bulletWorld.createSphere(newEntity, lmc.getTransform(), element.size,element.dynamic);
+		}
+		// predefined assets
+		else {
+			// mark as shared to not dispose it when entity is removed.
+			lmc.sharedMesh = true;
+			
+			// convention
+			String fileName = "openworld/" + element.type + ".g3dj"; // TODO try g3db first
+			// find model (load it if necessary) TODO pre load ...
+			Model model;
+			if(screen.assets.getAssetType(fileName) == null){
+				model = AssetHelper.loadAssetNow(screen.assets, fileName, Model.class);
+			}else{
+				model = screen.assets.get(fileName, Model.class);
+			}
+			lmc.setInstance(new ModelInstance(model));
+			bulletWorld.createFromModel(newEntity, model, lmc.getTransform(), false);
+			
 		}
 		newEntity.add(lmc);
 		
@@ -157,6 +198,16 @@ public class UserObjectSystem extends EntitySystem implements SystemSettingsList
 		return newEntity;
 	}
 	
+	private ModelInstance createInstance(Mesh mesh) {
+		MeshPart part = new MeshPart("root", mesh, 0, mesh.getNumIndices(), GL20.GL_TRIANGLES);
+		ModelBuilder b = new ModelBuilder();
+		b.begin();
+		b.node();
+		b.part(part, defaultMaterial);
+		Model model = b.end();
+		return new ModelInstance(model);
+	}
+
 	private Mesh createMeshSphere(OpenWorldElement e) {
 		Mesh mesh = icosa1.copy(true);
 		
@@ -232,11 +283,6 @@ public class UserObjectSystem extends EntitySystem implements SystemSettingsList
 		persistedElements = new OpenWorldElement[allUserObjects.size];
 		for(int i=0 ; i<persistedElements.length ; i++){
 			UserObject o = allUserObjects.get(i);
-			if(o.element.dynamic && o.entity != null){
-				ObjectMeshComponent omc = ObjectMeshComponent.components.get(o.entity);
-				omc.transform.getTranslation(o.element.position);
-				omc.transform.getRotation(o.element.rotation);
-			}
 			persistedElements[i] = o.element;
 		}
 	}

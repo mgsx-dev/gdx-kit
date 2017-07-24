@@ -62,6 +62,14 @@ public class OpenWorldModel {
 		}
 	}
 	
+	public static Array<String> getAllTypes() {
+		Array<String> l = new Array<String>();
+		for(FreemindNode c : map.root().child("recipes").children()){
+			l.add(c.asString());
+		}
+		return l;
+	}
+	
 	public static ElementTemplate findFusion(Compound compound){
 		return fusions.get(compound);
 	}
@@ -186,6 +194,6 @@ public class OpenWorldModel {
 
 		return new Color(r / 255.0f, g / 255.0f, b / 255.0f, 1);
 	}
-	
+
 	
 }

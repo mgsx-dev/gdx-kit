@@ -111,6 +111,7 @@ public class CraftTransformTool extends Tool
 				RandomXS128 rnd = new RandomXS128();
 				OpenWorldElement e = OpenWorldModel.generateNewElement(rnd.nextLong());
 				e.dynamic = true;
+				e.type = foundRecipe.id;
 				
 				// TODO ? e.size *= size;
 				
