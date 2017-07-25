@@ -18,7 +18,8 @@ import com.badlogic.gdx.utils.ObjectMap.Entry;
 
 import net.mgsx.game.core.Kit;
 import net.mgsx.game.core.annotations.Editable;
-import net.mgsx.game.core.annotations.Storable;
+import net.mgsx.game.core.annotations.NotEditable;
+import net.mgsx.game.core.helpers.FileHelper;
 import net.mgsx.game.core.helpers.ShaderProgramHelper;
 import net.mgsx.game.core.ui.accessors.Accessor;
 
@@ -229,7 +230,8 @@ abstract public class ShaderProgramManaged {
 		}
 	}
 
-	@Storable
+	// fields used for path persistence
+	@NotEditable
 	public String vs, fs;
 	
 	private transient ShaderInfo shaderInfo;
@@ -302,13 +304,11 @@ abstract public class ShaderProgramManaged {
 	
 	public void reload()
 	{
-		if(shaderInfo.storable()){
-			if(vs == null) vs = shaderInfo.vs();
-			if(fs == null) fs = shaderInfo.fs();
-		}
+		if(vs == null) vs = shaderInfo.vs();
+		if(fs == null) fs = shaderInfo.fs();
 		
-		this.vertexShader = Gdx.files.internal(shaderInfo.vs());
-		this.fragmentShader = Gdx.files.internal(shaderInfo.fs());
+		this.vertexShader = Gdx.files.internal(vs);
+		this.fragmentShader = Gdx.files.internal(fs);
 		
 		// scan once : java code won't change (TODO even with code swap for annotation only ?) 
 		if(allUniformAccessors == null){
@@ -446,13 +446,13 @@ abstract public class ShaderProgramManaged {
 
 	public void changeVS(FileHandle file) {
 		if(shaderInfo.storable()){
-			vs = file.path();
+			vs = FileHelper.stripPath(file.path());
 		}
 		vertexShader = file;
 	}
 	public void changeFS(FileHandle file) {
 		if(shaderInfo.storable()){
-			fs = file.path();
+			fs = FileHelper.stripPath(file.path());
 		}
 		fragmentShader = file;
 	}

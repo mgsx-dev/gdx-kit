@@ -1,9 +1,7 @@
 package net.mgsx.game.core.annotations;
 
-import static java.lang.annotation.ElementType.FIELD;
-import static java.lang.annotation.ElementType.METHOD;
-import static java.lang.annotation.ElementType.TYPE;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
+import static java.lang.annotation.ElementType.*;
+import static java.lang.annotation.RetentionPolicy.*;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
@@ -12,6 +10,14 @@ import net.mgsx.game.core.ui.DefaultFieldEditor;
 import net.mgsx.game.core.ui.FieldEditor;
 
 /**
+ * Mark element as Editable.
+ * 
+ * Editable element generates a GUI control.
+ * 
+ * By default when a property is editable, all accessible fields for its type are
+ * editable as well. Then a full hierarchy editor can be automatically generated.
+ * 
+ * In some case it is wanted to override this default behavior by annotate sub field with {@link NotEditable}.
  * 
  * @author mgsx
  *
