@@ -7,6 +7,7 @@ import java.lang.reflect.Modifier;
 import com.badlogic.gdx.utils.Array;
 
 import net.mgsx.game.core.annotations.Editable;
+import net.mgsx.game.core.annotations.NotEditable;
 import net.mgsx.game.core.helpers.ReflectionHelper;
 
 public class AccessorScanner {
@@ -27,6 +28,8 @@ public class AccessorScanner {
 		}
 		else
 		{
+			if(field.getAnnotation(NotEditable.class) != null) return;
+			
 			accessors.add(new FieldAccessor(entity, field));
 		}
 	}
@@ -39,6 +42,8 @@ public class AccessorScanner {
 		if(editable == null && annotationBasedOnly){
 			return;
 		}
+		
+		if(method.getAnnotation(NotEditable.class) != null) return;
 		
 		if(editable != null && method.getReturnType() == void.class && method.getParameterTypes().length == 0){
 			if(editable.value().isEmpty())

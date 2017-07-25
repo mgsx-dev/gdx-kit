@@ -76,6 +76,7 @@ public class GameScreen extends ScreenClipAdapter implements ScreenManager
 	public void show() {
 		super.show();
 		registry.inject(this);
+		registry.postInitialize(entityEngine);
 	}
 	
 	@Override

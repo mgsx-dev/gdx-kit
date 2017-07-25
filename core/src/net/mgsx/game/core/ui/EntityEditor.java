@@ -310,8 +310,10 @@ public class EntityEditor extends Table
 			table.add(selector);
 		}else{
 			
-			table.add(new EntityEditor(accessor.get(), false, skin, stack, config)).row();
-			// XXX return false;
+			// allow non editable type scan since current accessor has Editable annotation.
+			boolean editableTypeOnly = false;
+			
+			table.add(new EntityEditor(accessor.get(), editableTypeOnly, skin, stack, config)).row();
 		}
 		return true;
 	}
