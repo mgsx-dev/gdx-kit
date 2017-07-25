@@ -9,9 +9,7 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.XmlReader;
 
-import net.mgsx.game.core.annotations.Incubation;
-
-@Incubation
+//TODO pullup in KIT
 public class FreeMindReader
 {
 	private static class FreemindPullParser extends XmlReader {

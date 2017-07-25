@@ -6,9 +6,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Array;
 
-import net.mgsx.game.core.annotations.Incubation;
-
-@Incubation
+// TODO pullup in KIT
 public class FlatTreeReader {
 
 	public static class NodeValue{

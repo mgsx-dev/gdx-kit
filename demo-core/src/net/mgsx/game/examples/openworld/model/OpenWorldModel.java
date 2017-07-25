@@ -11,7 +11,6 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.ObjectMap;
 
-import net.mgsx.game.core.annotations.Incubation;
 import net.mgsx.game.examples.openworld.utils.FreeMindReader;
 import net.mgsx.game.examples.openworld.utils.FreeMindReader.FreemindMap;
 import net.mgsx.game.examples.openworld.utils.FreeMindReader.FreemindNode;
@@ -140,7 +139,7 @@ public class OpenWorldModel {
 		return owElement;
 	}
 	
-	@Incubation("missing in libgdx")
+	// TODO pullup to LibGDX
 	/** Converts HSV color sytem to RGB
 	 * 
 	 * @return RGB values in Libgdx Color class */
