@@ -6,6 +6,8 @@ import static java.lang.annotation.RetentionPolicy.*;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
+import net.mgsx.game.core.annotations.Incubation;
+
 @Retention(RUNTIME)
 @Target(TYPE)
 public @interface ShaderInfo {
@@ -31,4 +33,13 @@ public @interface ShaderInfo {
 	 * @return
 	 */
 	public boolean storable() default false;
+	
+	/**
+	 * Whether to pre-compile all possible configurations based on {@link Uniform#only()}
+	 * When true, different versions of this shader is compiled and switch at runtime.
+	 * When false, shader is recompiled when configuration change.
+	 * Default is false.
+	 */
+	@Incubation("not implements yet")
+	public boolean preCompile() default false;
 }
