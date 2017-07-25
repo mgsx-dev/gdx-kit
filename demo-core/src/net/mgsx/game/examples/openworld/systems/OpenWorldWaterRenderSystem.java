@@ -4,9 +4,11 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Cubemap;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Pixmap.Format;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -22,6 +24,9 @@ import net.mgsx.game.core.annotations.EditableSystem;
 import net.mgsx.game.core.annotations.Inject;
 import net.mgsx.game.core.annotations.Storable;
 import net.mgsx.game.core.helpers.ShaderProgramHelper;
+import net.mgsx.game.core.helpers.shaders.ShaderInfo;
+import net.mgsx.game.core.helpers.shaders.ShaderProgramManaged;
+import net.mgsx.game.core.helpers.shaders.Uniform;
 import net.mgsx.game.examples.openworld.components.LandMeshComponent;
 import net.mgsx.game.examples.openworld.components.ObjectMeshComponent;
 import net.mgsx.game.examples.openworld.components.TreesComponent;
@@ -35,17 +40,31 @@ public class OpenWorldWaterRenderSystem extends EntitySystem
 	@Inject OpenWorldSkySystem sky;
 	@Inject OpenWorldManagerSystem openWorldManager;
 	
-	@Editable public float frequency = 10;
-	@Editable public float amplitude = 0.005f;
-	@Editable public float transparency = 0.3f;
-	@Editable public float speed = 1f;
 	@Editable public float level = .3f;
 	
-	@Editable public boolean mirror = true;
 	@Editable public int mirrorSize = 1024;
 
-	private ShaderProgram waterShader, waterShaderMirror, waterShaderNoMirror, reflectionShader;
-	private ShapeRenderer waterRenderer, waterRendererMirror, waterRendererNoMirror;
+	private ShaderProgram reflectionShader;
+	
+	@ShaderInfo(vs="shaders/water.vert", fs="shaders/water.frag", inject=false)
+	public static class WaterShader extends ShaderProgramManaged
+	{
+		@Uniform transient float time;
+		@Editable public float speed = 1f;
+		@Uniform @Editable public float frequency = 10;
+		@Uniform @Editable public float amplitude = 0.005f;
+		@Uniform @Editable public float transparency = 0.3f;
+		@Uniform transient Cubemap texture;
+		@Uniform transient Vector3 camPos = new Vector3();
+		
+		@Uniform(only="mirror") transient Texture mirrorTexture;
+		@Uniform(only="mirror") transient Vector2 window = new Vector2();
+	}
+	
+	@Editable public WaterShader waterShader = new WaterShader();
+
+	
+	private ShapeRenderer waterRenderer; //, waterRendererMirror, waterRendererNoMirror;
 	
 	private FrameBuffer mirrorBuffer;
 
@@ -65,31 +84,13 @@ public class OpenWorldWaterRenderSystem extends EntitySystem
 		reflectionShader = ShaderProgramHelper.reload(reflectionShader,
 				Gdx.files.internal("shaders/land.vert"),
 				Gdx.files.internal("shaders/land.frag"));
-		
-		ShaderProgram.prependVertexCode = ShaderProgram.prependFragmentCode = "#define MIRROR\n";
-		waterShaderMirror = ShaderProgramHelper.reload(waterShaderMirror,
-				Gdx.files.internal("shaders/water.vert"),
-				Gdx.files.internal("shaders/water.frag"));
-		
 		ShaderProgram.prependVertexCode = ShaderProgram.prependFragmentCode = "";
-		waterShaderNoMirror = ShaderProgramHelper.reload(waterShaderNoMirror,
-				Gdx.files.internal("shaders/water.vert"),
-				Gdx.files.internal("shaders/water.frag"));
-		
-		
-		
-		if(waterRendererMirror != null) waterRendererMirror.dispose();
-		waterRendererMirror = new ShapeRenderer(36, waterShaderMirror);
-		
-		if(waterRendererNoMirror != null) waterRendererNoMirror.dispose();
-		waterRendererNoMirror = new ShapeRenderer(36, waterShaderNoMirror);
-		
+
 		if(mirrorBuffer != null) mirrorBuffer.dispose();
 		mirrorBuffer = new FrameBuffer(Format.RGBA8888, mirrorSize, mirrorSize, true);
 		
 		mirrorCamera = new PerspectiveCamera();
 	}
-	float time = 0;
 	private Matrix4 backup = new Matrix4(), transform = new Matrix4();
 	private PerspectiveCamera mirrorCamera;
 	
@@ -99,6 +100,8 @@ public class OpenWorldWaterRenderSystem extends EntitySystem
 	
 	@Override
 	public void update(float deltaTime) {
+		
+		final boolean mirror = waterShader.isEnabled("mirror");
 		
 		if(mirror){
 			
@@ -167,26 +170,19 @@ public class OpenWorldWaterRenderSystem extends EntitySystem
 			screen.camera.combined.set(backup);
 		}
 		
-		time += deltaTime * speed;
-
-		waterShader = mirror ? waterShaderMirror : waterShaderNoMirror;
-		waterRenderer = mirror ? waterRendererMirror : waterRendererNoMirror;
-		
-		waterShader.begin();
-		waterShader.setUniformf("u_time", time);
-		waterShader.setUniformf("u_frequency", frequency);
-		waterShader.setUniformf("u_amplitude", amplitude);
-		waterShader.setUniformf("u_transparency", transparency);
-		waterShader.setUniformi("u_texture", 0);
-		waterShader.setUniformf("u_camPos", screen.camera.position);
+		waterShader.time += deltaTime * waterShader.speed;
+		waterShader.camPos.set(screen.camera.position);
+		waterShader.texture = sky.getCubeMap();
 		
 		if(mirror){
-			waterShader.setUniformi("u_mirrorTexture", 1);
-			waterShader.setUniformf("u_window", new Vector2(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
-			mirrorBuffer.getColorBufferTexture().bind(1);
+			waterShader.mirrorTexture = mirrorBuffer.getColorBufferTexture();
+			waterShader.window.set(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		}
 		
-		waterShader.end();
+		if(waterShader.begin()){
+			if(waterRenderer != null) waterRenderer.dispose();
+			waterRenderer = new ShapeRenderer(36, waterShader.program());
+		}
 		
 		waterRenderer.setProjectionMatrix(screen.camera.combined);
 		waterRenderer.begin(ShapeType.Filled);
@@ -201,11 +197,6 @@ public class OpenWorldWaterRenderSystem extends EntitySystem
 				vOffset.z-s, s*2, 0, -s*2);
 		waterRenderer.end();
 		
-		if(mirror){
-			Gdx.gl.glActiveTexture(GL20.GL_TEXTURE0 + 1);
-			Gdx.gl.glBindTexture(GL20.GL_TEXTURE_2D, 0);
-			Gdx.gl.glActiveTexture(GL20.GL_TEXTURE0);
-		}
-
+		waterShader.end();
 	}
 }
