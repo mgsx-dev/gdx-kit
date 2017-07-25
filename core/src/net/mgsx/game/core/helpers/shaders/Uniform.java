@@ -14,4 +14,13 @@ public @interface Uniform {
 	 * @see ShaderInfo#inject()
 	 * */
 	public String value() default "";
+	
+	/**
+	 * list all configuration when this uniform is active.
+	 * all configurations for the same {@link ShaderProgramManaged} will be used to
+	 * inject macro (#define) in GLSL code.
+	 * name in camel case will be converted to constant like string.
+	 * eg. highQuality will inject #define HIGH_QUALITY in GLSL code.
+	 */
+	public String [] only() default {};
 }

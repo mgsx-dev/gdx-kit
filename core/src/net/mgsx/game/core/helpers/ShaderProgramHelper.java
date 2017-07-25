@@ -22,8 +22,6 @@ public class ShaderProgramHelper {
 			prependVert = shaderVersion + "\n" + Gdx.files.classpath("shaders/header.vert").readString() + "\n";
 			prependFrag = shaderVersion + "\n" + Gdx.files.classpath("shaders/header.frag").readString() + "\n";
 			
-			// TODO #line
-			
 			inited = true;
 		}
 	}

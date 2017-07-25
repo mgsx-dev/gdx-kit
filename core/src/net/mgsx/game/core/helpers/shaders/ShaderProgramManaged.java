@@ -5,7 +5,10 @@ import java.nio.IntBuffer;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Cubemap;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.GLTexture;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
@@ -15,12 +18,14 @@ import com.badlogic.gdx.utils.BufferUtils;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.ObjectMap.Entry;
+import com.badlogic.gdx.utils.ObjectSet;
 
 import net.mgsx.game.core.Kit;
 import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.core.annotations.NotEditable;
 import net.mgsx.game.core.helpers.FileHelper;
 import net.mgsx.game.core.helpers.ShaderProgramHelper;
+import net.mgsx.game.core.helpers.StringHelper;
 import net.mgsx.game.core.ui.accessors.Accessor;
 
 /**
@@ -50,6 +55,12 @@ import net.mgsx.game.core.ui.accessors.Accessor;
 // TODO allow #include and other features (#define switches, #version injection ...)
 abstract public class ShaderProgramManaged {
 
+	static interface ControlHandler {
+		void loaded();
+	}
+	
+	transient ControlHandler handler;
+	
 	// TODO maybe register an editor globally and allow partial scaning ... ?
 	@Editable(editor=ShaderProgramManagedEditor.class)
 	public final transient ShaderProgramManaged control = this;
@@ -72,6 +83,8 @@ abstract public class ShaderProgramManaged {
 		protected UniformInfo info;
 		protected boolean freezable;
 		protected String name;
+		protected String[] only;
+		protected boolean enabled;
 		
 		public boolean bind(ShaderProgram shader, UniformInfo info) {
 			this.shader = shader;
@@ -229,12 +242,59 @@ abstract public class ShaderProgramManaged {
 			return "mat4";
 		}
 	}
+	abstract private static class UASampler extends UniformAccessor{
+		GLTexture value;
+		int unit; // TODO
+		@Override
+		protected void init() {
+			super.init();
+			value = accessor.get(GLTexture.class);
+		}
+		@Override
+		public void update() {
+			value.bind(unit);
+			shader.setUniformi(info.location, unit);
+		}
+		@Override
+		public String value() {
+			throw new GdxRuntimeException("inline sampler not supported");
+		}
+		public UASampler unit(int unit){
+			this.unit = unit;
+			return this;
+		}
+	}
+	private static class UASampler2D extends UASampler{
+		@Override
+		public boolean check() {
+			return info.type == GL20.GL_SAMPLER_2D && info.size == 1;
+		}
+		@Override
+		public String type() {
+			return "sampler2D";
+		}
+	}
+	private static class UASamplerCube extends UASampler{
+		@Override
+		public boolean check() {
+			return info.type == GL20.GL_SAMPLER_CUBE && info.size == 1;
+		}
+		@Override
+		public String type() {
+			return "samplerCube";
+		}
+	}
 
 	// fields used for path persistence
 	@NotEditable
 	public String vs, fs;
 	
-	private transient ShaderInfo shaderInfo;
+	@NotEditable
+	public String [] config;
+	
+	transient ObjectSet<String> currentConfig = new ObjectSet<String>();
+	
+	transient ShaderInfo shaderInfo;
 	
 	transient protected FileHandle vertexShader;
 	transient protected FileHandle fragmentShader;
@@ -247,10 +307,16 @@ abstract public class ShaderProgramManaged {
 	
 	transient private Array<UniformAccessor> allUniformAccessors;
 	transient private Array<UniformAccessor> activeUniformAccessors;
+
+	transient private int samplerUnits;
+	
+	transient ObjectSet<String> configs;
 	
 	public ShaderProgramManaged() {
 		// no deep initialization here because of JSON serializer (check default)
 		shaderInfo = this.getClass().getAnnotation(ShaderInfo.class);
+		// frozen by default except if injection is not possible.
+		frozen = shaderInfo.inject();
 	}
 	
 	public void freeze(boolean frozen){
@@ -262,16 +328,29 @@ abstract public class ShaderProgramManaged {
 	}
 	
 	public ShaderProgram program() {
+		if(shaderProgram == null){
+			reload();
+		}
 		return shaderProgram;
 	}
 	
-	public void begin(){
+	/**
+	 * Bind shader and send uniform.
+	 * 
+	 * @return true if the program has been reloaded. Usefull to apply changes to dependent objects.
+	 * eg. ShapeRenderer needs to be reconstructed, Batch need to be updated.
+	 */
+	public boolean begin(){
+		boolean hasChanged = false;
 		if(shaderProgram == null){
 			reload();
+			hasChanged = true;
 		}
 		shaderProgram.begin();
 		
 		setUniforms();
+		
+		return hasChanged;
 	}
 	/**
 	 * send uniform to shader (shader must be bound before), called during {@link #begin()}
@@ -288,6 +367,19 @@ abstract public class ShaderProgramManaged {
 	}
 	public void end(){
 		shaderProgram.end();
+		
+		// unbind textures
+		// XXX this is mainly a workaround because LibGDX assume current unit is 0 maybe to avoid some calls....
+		// but it's not necessary if binding is properly made
+//		if(samplerUnits > 1){
+//			Gdx.gl.glActiveTexture(GL20.GL_TEXTURE0);
+//			
+//		}
+		// TODO is it necessary to do this ... seams not
+//		for(int i=0 ; i<samplerUnits ; i++){
+//			Gdx.gl.glActiveTexture(GL20.GL_TEXTURE0 + i);
+//			Gdx.gl.glBindTexture(GL20.GL_TEXTURE_2D, 0);
+//		}
 	}
 	
 	public void dumpVS(){
@@ -313,11 +405,35 @@ abstract public class ShaderProgramManaged {
 		// scan once : java code won't change (TODO even with code swap for annotation only ?) 
 		if(allUniformAccessors == null){
 			allUniformAccessors = findAllUniformAccessors();
+			configs = findConfigs();
 		}
-		
 		
 		String preVertCode = "";
 		String preFragCode = "";
+		
+		config = new String[currentConfig.size];
+		int j=0;
+		for(String cfg : currentConfig){
+			String code = "#define " + StringHelper.camelCaseToUnderScoreUpperCase(cfg) + "\n";
+			preVertCode += code;
+			preFragCode += code;
+			config[j++] = cfg;
+		}
+		
+		for(UniformAccessor ua : allUniformAccessors) {
+			if(ua.only.length == 0){
+				ua.enabled = true;
+			}else{
+				ua.enabled = false;
+				for(String only : ua.only){
+					for(String cfg : config){
+						if(cfg.equals(only)){
+							ua.enabled = true;
+						}
+					}
+				}
+			}
+		}
 		
 		if(shaderInfo.inject()) {
 			// do the injections
@@ -331,9 +447,10 @@ abstract public class ShaderProgramManaged {
 				preVertCode += code;
 				preFragCode += code;
 			}
-			preVertCode += "#line 0\n";
-			preFragCode += "#line 0\n";
 		}
+		preVertCode += "#line 0\n";
+		preFragCode += "#line 0\n";
+		
 		
 		String preVertexCodeBefore = ShaderProgram.prependVertexCode;
 		String preFragmentCodeBefore = ShaderProgram.prependFragmentCode;
@@ -377,6 +494,7 @@ abstract public class ShaderProgramManaged {
 		
 		activeUniformAccessors = new Array<UniformAccessor>();
 		for(UniformAccessor ua : allUniformAccessors) {
+			if(!ua.enabled) continue;
 			UniformInfo i = uniformInfos.get(ua.name);
 			boolean frozenUniform = ua.freezable && frozen;
 			if(!frozenUniform){
@@ -384,7 +502,11 @@ abstract public class ShaderProgramManaged {
 					Gdx.app.error("Shader", "missing uniform variable in GLSL code : " + ua.name);
 				}else if(!ua.bind(shaderProgram, i)){
 					// TODO log only ?
-					throw new GdxRuntimeException("uniform misssmatch for " + ua.name);
+					if(ua instanceof UAUndefined) {
+						throw new GdxRuntimeException("binding not supported for " + ua.name);
+					}else{
+						throw new GdxRuntimeException("uniform missmatch for " + ua.name + " " + ua.type() + " and " + ua.accessor.getType().getName());
+					}
 				}else{
 					i.bound = true;
 					activeUniformAccessors.add(ua);
@@ -399,10 +521,13 @@ abstract public class ShaderProgramManaged {
 			}
 		}
 		
+		if(handler != null) handler.loaded();
 	}
 
 	private Array<UniformAccessor> findAllUniformAccessors() {
 		Array<UniformAccessor> all = new Array<UniformAccessor>();
+		
+		samplerUnits = 0;
 		
 		for(Accessor a : Kit.meta.accessorsFor(this, Uniform.class)) {
 			
@@ -430,6 +555,12 @@ abstract public class ShaderProgramManaged {
 			else if(a.getType() == Matrix4.class){
 				ua = new UAMatrix4();
 			}
+			else if(a.getType() == Texture.class){
+				ua = new UASampler2D().unit(samplerUnits++);
+			}
+			else if(a.getType() == Cubemap.class){
+				ua = new UASamplerCube().unit(samplerUnits++);
+			}
 			else{
 				Gdx.app.error("Shader", "missing Java/GLSL type binding for " + uniformName + " type " + a.getType().getName());
 				ua = new UAUndefined();
@@ -438,12 +569,26 @@ abstract public class ShaderProgramManaged {
 			ua.freezable = edit != null;
 			ua.name = uniformName;
 			ua.accessor = a;
+			ua.only = config.only();
 			
 			all.add(ua);
 		}
+		
 		return all;
 	}
 
+	private ObjectSet<String> findConfigs() 
+	{
+		ObjectSet<String> all = new ObjectSet<String>();
+		for(UniformAccessor ua : allUniformAccessors)
+		{
+			for(String only : ua.only){
+				all.add(only);
+			}
+		}
+		return all;
+	}
+	
 	public void changeVS(FileHandle file) {
 		if(shaderInfo.storable()){
 			vs = FileHelper.stripPath(file.path());
@@ -455,6 +600,15 @@ abstract public class ShaderProgramManaged {
 			fs = FileHelper.stripPath(file.path());
 		}
 		fragmentShader = file;
+	}
+
+	public void invalidate() {
+		if(shaderProgram != null) shaderProgram.dispose();
+		shaderProgram = null;
+	}
+	
+	public boolean isEnabled(String config) {
+		return currentConfig.contains(config);
 	}
 	
 }
