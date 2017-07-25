@@ -208,6 +208,15 @@ public class GameRegistry {
 		}
 	}
 
+	void postInitialize(Engine engine) {
+		for(EntitySystem system : engine.getSystems())
+		{
+			if(system instanceof PostInitializationListener){
+				((PostInitializationListener) system).onPostInitialization();
+			}
+		}
+	}
+
 	private ObjectMap<Class, AssetLoaderParameters> defaultLoaderParameter = new ObjectMap<Class, AssetLoaderParameters>();
 	
 	public <T> AssetLoaderParameters<T> getDefaultLoaderParameter(Class<T> assetType) {
