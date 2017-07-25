@@ -7,11 +7,10 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 /**
- * Types marked with this annotation are candidates to pull-up to a higer level :
- * <ul>
- * <li>Demo code candidate for core</li>
- * <li>Core code candidate for Libgdx core/extension</li>
- * </ul>
+ * Types/methods marked with this annotation indicate this feature is in beta.
+ * It is recommanded to not use it for production.
+ * This indcates this API could change drastically in a near future and won't be
+ * reported in CHANGES file.
  * 
  * @author mgsx
  *
@@ -19,6 +18,6 @@ import java.lang.annotation.Target;
 @Retention(SOURCE)
 @Target({TYPE, METHOD})
 public @interface Incubation {
-	/** comment for the incubation state */
+	/** optional comment for the incubation state */
 	public String value() default "";
 }
