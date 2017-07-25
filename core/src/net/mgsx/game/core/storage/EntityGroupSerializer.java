@@ -1,16 +1,14 @@
 package net.mgsx.game.core.storage;
 
-import java.io.File;
-
 import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.Entity;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.ObjectMap.Entry;
+
+import net.mgsx.game.core.helpers.FileHelper;
 
 public class EntityGroupSerializer implements Json.Serializer<EntityGroup>
 {
@@ -153,14 +151,11 @@ public class EntityGroupSerializer implements Json.Serializer<EntityGroup>
 		String refName = fileName;
 		// change name
 		if(config.stripPaths){
-			String base = new File("").getAbsolutePath();
-			FileHandle file = Gdx.files.internal(fileName);
-			if(file.exists()){
-				if(fileName.startsWith(base)){
-					refName = fileName.substring(base.length() + 1);
-				}else{
-					config.warn("can't strip path : " + fileName);
-				}
+			String stripedPath = FileHelper.stripPath(fileName);
+			if(stripedPath != null){
+				refName = stripedPath;
+			}else{
+				config.warn("can't strip path : " + fileName);
 			}
 		}
 		
