@@ -586,6 +586,9 @@ abstract public class ShaderProgramManaged {
 				all.add(only);
 			}
 		}
+		for(String c : shaderInfo.configs()){
+			all.add(c);
+		}
 		return all;
 	}
 	
@@ -609,6 +612,12 @@ abstract public class ShaderProgramManaged {
 	
 	public boolean isEnabled(String config) {
 		return currentConfig.contains(config);
+	}
+	
+	public void setConfig(String...configs){
+		this.currentConfig.clear();
+		for(String c : configs) this.currentConfig.add(c);
+		invalidate();
 	}
 	
 }

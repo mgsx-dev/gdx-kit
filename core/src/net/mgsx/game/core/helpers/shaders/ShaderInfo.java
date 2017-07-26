@@ -42,4 +42,6 @@ public @interface ShaderInfo {
 	 */
 	@Incubation("not implements yet")
 	public boolean preCompile() default false;
+	
+	public String[] configs() default {};
 }
