@@ -141,6 +141,12 @@ public class OpenWorldTreeSystem extends IteratingSystem implements PostInitiali
 		
 	}
 	
+	// static pool
+	private VertexInfo[] vertexInfo = new VertexInfo[]{
+			new VertexInfo(), new VertexInfo(), new VertexInfo(), new VertexInfo(),
+			new VertexInfo(), new VertexInfo(), new VertexInfo(), new VertexInfo()
+	};
+	
 	@SuppressWarnings("deprecation")
 	private void buildTree(MeshBuilder builder, Vector3 pos) {
 		
@@ -152,24 +158,24 @@ public class OpenWorldTreeSystem extends IteratingSystem implements PostInitiali
 		float r3 = 1.5f * s;
 		
 		builder.box(
-				new VertexInfo().setPos(vp.set(pos).add(-r1, 0, -r1)).setUV(0, 0).setNor(-1, 0, -1),
-				new VertexInfo().setPos(vp.set(pos).add(-r2, h, -r2)).setUV(0, 1).setNor(-1, 0, -1),
-				new VertexInfo().setPos(vp.set(pos).add(r1, 0, -r1)).setUV(0, 0).setNor(1, 0, -1),
-				new VertexInfo().setPos(vp.set(pos).add(r2, h, -r2)).setUV(0, 1).setNor(1, 0, -1),
-				new VertexInfo().setPos(vp.set(pos).add(-r1, 0, r1)).setUV(0, 0).setNor(-1, 0, 1),
-				new VertexInfo().setPos(vp.set(pos).add(-r2, h, r2)).setUV(0, 1).setNor(-1, 0, 1),
-				new VertexInfo().setPos(vp.set(pos).add(r1, 0, r1)).setUV(0, 0).setNor(1, 0, 1),
-				new VertexInfo().setPos(vp.set(pos).add(r2, h, r2)).setUV(0, 1).setNor(1, 0, 1));
+				vertexInfo[0].setPos(vp.set(pos).add(-r1, 0, -r1)).setUV(0, 0).setNor(-1, 0, -1),
+				vertexInfo[1].setPos(vp.set(pos).add(-r2, h, -r2)).setUV(0, 1).setNor(-1, 0, -1),
+				vertexInfo[2].setPos(vp.set(pos).add(r1, 0, -r1)).setUV(0, 0).setNor(1, 0, -1),
+				vertexInfo[3].setPos(vp.set(pos).add(r2, h, -r2)).setUV(0, 1).setNor(1, 0, -1),
+				vertexInfo[4].setPos(vp.set(pos).add(-r1, 0, r1)).setUV(0, 0).setNor(-1, 0, 1),
+				vertexInfo[5].setPos(vp.set(pos).add(-r2, h, r2)).setUV(0, 1).setNor(-1, 0, 1),
+				vertexInfo[6].setPos(vp.set(pos).add(r1, 0, r1)).setUV(0, 0).setNor(1, 0, 1),
+				vertexInfo[7].setPos(vp.set(pos).add(r2, h, r2)).setUV(0, 1).setNor(1, 0, 1));
 		
 		builder.box(
-				new VertexInfo().setPos(vp.set(pos).add(-r3, h-r3, -r3)).setUV(1, 0).setNor(-1, -1, -1),
-				new VertexInfo().setPos(vp.set(pos).add(-r3, h+r3, -r3)).setUV(1, 1).setNor(-1, 1, -1),
-				new VertexInfo().setPos(vp.set(pos).add(r3, h-r3, -r3)).setUV(1, 0).setNor(1, -1, -1),
-				new VertexInfo().setPos(vp.set(pos).add(r3, h+r3, -r3)).setUV(1, 1).setNor(1, 1, -1),
-				new VertexInfo().setPos(vp.set(pos).add(-r3, h-r3, r3)).setUV(1, 0).setNor(-1, -1, 1),
-				new VertexInfo().setPos(vp.set(pos).add(-r3, h+r3, r3)).setUV(1, 1).setNor(-1, 1, 1),
-				new VertexInfo().setPos(vp.set(pos).add(r3, h-r3, r3)).setUV(1, 0).setNor(1, -1, 1),
-				new VertexInfo().setPos(vp.set(pos).add(r3, h+r3, r3)).setUV(1, 1).setNor(1, 1, 1));
+				vertexInfo[0].setPos(vp.set(pos).add(-r3, h-r3, -r3)).setUV(1, 0).setNor(-1, -1, -1),
+				vertexInfo[1].setPos(vp.set(pos).add(-r3, h+r3, -r3)).setUV(1, 1).setNor(-1, 1, -1),
+				vertexInfo[2].setPos(vp.set(pos).add(r3, h-r3, -r3)).setUV(1, 0).setNor(1, -1, -1),
+				vertexInfo[3].setPos(vp.set(pos).add(r3, h+r3, -r3)).setUV(1, 1).setNor(1, 1, -1),
+				vertexInfo[4].setPos(vp.set(pos).add(-r3, h-r3, r3)).setUV(1, 0).setNor(-1, -1, 1),
+				vertexInfo[5].setPos(vp.set(pos).add(-r3, h+r3, r3)).setUV(1, 1).setNor(-1, 1, 1),
+				vertexInfo[6].setPos(vp.set(pos).add(r3, h-r3, r3)).setUV(1, 0).setNor(1, -1, 1),
+				vertexInfo[7].setPos(vp.set(pos).add(r3, h+r3, r3)).setUV(1, 1).setNor(1, 1, 1));
 		
 	}
 
