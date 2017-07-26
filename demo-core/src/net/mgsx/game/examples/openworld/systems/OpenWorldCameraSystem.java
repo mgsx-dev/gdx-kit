@@ -38,7 +38,7 @@ public class OpenWorldCameraSystem extends EntitySystem
 	
 	@Inject BulletWorldSystem bulletWorld;
 	@Inject OpenWorldManagerSystem openWorldManager;
-	@Inject OpenWorldWaterRenderSystem waterRender;
+	@Inject OpenWorldEnvSystem env;
 	
 	private GameScreen screen;
 	
@@ -211,7 +211,7 @@ public class OpenWorldCameraSystem extends EntitySystem
 				float elevation = p2.y + offset;
 				
 				if(clipToWater){
-					float waterLimit = -openWorldManager.scale * waterRender.level + camera.camera.near * (float)Math.sqrt(2);
+					float waterLimit = - env.waterLevel + camera.camera.near * (float)Math.sqrt(2);
 					elevation = Math.max(elevation, waterLimit);
 				}
 				if(!flyingMode || elevation > camera.camera.position.y){

@@ -38,9 +38,6 @@ public class OpenWorldWaterRenderSystem extends EntitySystem
 	@Inject OpenWorldLandRenderSystem landerRendering;
 	@Inject OpenWorldEnvSystem environment;
 	@Inject OpenWorldSkySystem sky;
-	@Inject OpenWorldManagerSystem openWorldManager;
-	
-	@Editable public float level = .3f;
 	
 	@Editable public int mirrorSize = 1024;
 
@@ -114,7 +111,7 @@ public class OpenWorldWaterRenderSystem extends EntitySystem
 			backup.set(screen.camera.combined);
 			
 			mirrorCamera.position.set(screen.camera.position);
-			mirrorCamera.position.y = -2*openWorldManager.scale *level - mirrorCamera.position.y;
+			mirrorCamera.position.y = -2 * environment.waterLevel - mirrorCamera.position.y;
 
 			mirrorCamera.direction.set(screen.camera.direction);
 			mirrorCamera.direction.y = -screen.camera.direction.y;
@@ -140,7 +137,7 @@ public class OpenWorldWaterRenderSystem extends EntitySystem
 			reflectionShader.setUniformMatrix("u_worldTrans", transform.idt());
 			reflectionShader.setUniformf("u_sunDirection", environment.sunDirection);
 			reflectionShader.setUniformf("u_fogColor", environment.fogColor);
-			reflectionShader.setUniformf("u_clip", -openWorldManager.scale * level - 0.1f); // XXX offset for deformations.
+			reflectionShader.setUniformf("u_clip", - environment.waterLevel - 0.1f); // XXX offset for deformations.
 			if(lands){
 				for(Entity entity : getEngine().getEntitiesFor(Family.all(LandMeshComponent.class).get())){
 					LandMeshComponent lmc = LandMeshComponent.components.get(entity);
@@ -193,7 +190,7 @@ public class OpenWorldWaterRenderSystem extends EntitySystem
 		
 		waterRenderer.box(
 				vOffset.x-s, 
-				vOffset.y-openWorldManager.scale * level,
+				vOffset.y-environment.waterLevel,
 				vOffset.z-s, s*2, 0, -s*2);
 		waterRenderer.end();
 		

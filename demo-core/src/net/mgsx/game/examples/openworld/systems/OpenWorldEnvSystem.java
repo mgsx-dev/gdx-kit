@@ -2,10 +2,7 @@ package net.mgsx.game.examples.openworld.systems;
 
 import java.util.Calendar;
 
-import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntitySystem;
-import com.badlogic.ashley.core.Family;
-import com.badlogic.ashley.utils.ImmutableArray;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
@@ -16,17 +13,20 @@ import net.mgsx.game.core.annotations.EditableSystem;
 import net.mgsx.game.core.annotations.EnumType;
 import net.mgsx.game.core.annotations.Inject;
 import net.mgsx.game.core.annotations.Storable;
-import net.mgsx.game.plugins.g3d.components.DirectionalLightComponent;
-import net.mgsx.game.plugins.g3d.systems.G3DRendererSystem;
 
 @Storable(value="ow.env")
 @EditableSystem
 public class OpenWorldEnvSystem extends EntitySystem
 {
+	@Inject OpenWorldManagerSystem manager;
+	
 	@Editable public Color fogColor = new Color(1.0f, 0.8f, 0.7f, 1.0f);
 	
 	@Editable(type=EnumType.UNIT, realtime=true) public Vector3 sunDirection = new Vector3(.5f, -1f, .5f).nor();
 	
+	@Editable public float waterLevelRate = .3f;
+	public transient float waterLevel;
+
 	@Editable(realtime=true) public float timeOfDay;
 	@Editable(realtime=true) public float temperature;
 	
@@ -83,6 +83,8 @@ public class OpenWorldEnvSystem extends EntitySystem
 			float t = MathUtils.clamp((angle - 1.2f) / 0.1f, 0, 1);
 			fogColor.set(sunsetColor).lerp(nightColor, t);
 		}
+		
+		waterLevel = manager.scale * waterLevelRate;
 	}
 	
 }

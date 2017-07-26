@@ -1,5 +1,9 @@
 package net.mgsx.game.examples.openworld;
 
+import com.badlogic.gdx.Application;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.glutils.GLVersion.Type;
+
 import net.mgsx.game.core.EditorScreen;
 import net.mgsx.game.core.annotations.PluginDef;
 import net.mgsx.game.core.plugins.EditorPlugin;
@@ -20,6 +24,7 @@ import net.mgsx.game.examples.openworld.systems.OpenWorldRainSystem;
 import net.mgsx.game.examples.openworld.systems.OpenWorldSkySystem;
 import net.mgsx.game.examples.openworld.systems.OpenWorldTimeSystem;
 import net.mgsx.game.examples.openworld.systems.OpenWorldTreeSystem;
+import net.mgsx.game.examples.openworld.systems.OpenWorldWaterLQRenderSystem;
 import net.mgsx.game.examples.openworld.systems.OpenWorldWaterRenderSystem;
 import net.mgsx.game.examples.openworld.systems.ScenarioSystem;
 import net.mgsx.game.examples.openworld.systems.UserObjectSystem;
@@ -42,9 +47,21 @@ import net.mgsx.game.plugins.procedural.systems.HeightFieldDebugSystem;
 })
 public class OpenWorldEditorPlugin extends EditorPlugin implements DefaultEditorPlugin
 {
-
 	@Override
-	public void initialize(EditorScreen editor) {
+	public void initialize(EditorScreen editor) 
+	{
+		// query hardware capabilities in order to configure systems dynamically.
+		Gdx.app.setLogLevel(Application.LOG_DEBUG);
+		Gdx.app.debug("OW", Gdx.graphics.getGLVersion().getDebugVersionString());
+		
+		boolean highQuality = false;
+		if(Gdx.graphics.getGLVersion().getType() == Type.OpenGL){
+			if(Gdx.graphics.getGLVersion().isVersionEqualToOrHigher(4, 0)){
+				highQuality = true;
+			}
+		}
+		
+		
 		editor.entityEngine.addSystem(new OpenWorldManagerSystem());
 		editor.entityEngine.addSystem(new OpenWorldDebugSystem());
 		editor.addTool(new AlignMeshTool(editor));
@@ -58,7 +75,13 @@ public class OpenWorldEditorPlugin extends EditorPlugin implements DefaultEditor
 		editor.entityEngine.addSystem(new OpenWorldCameraSystem(editor.game));
 		editor.entityEngine.addSystem(new OpenWorldSkySystem(editor.game));
 		editor.entityEngine.addSystem(new OpenWorldEnvSystem());
-		editor.entityEngine.addSystem(new OpenWorldWaterRenderSystem(editor.game));
+		
+		editor.entityEngine.addSystem(new OpenWorldWaterLQRenderSystem(editor.game));
+		if(highQuality){
+			editor.entityEngine.addSystem(new OpenWorldWaterRenderSystem(editor.game));
+			editor.entityEngine.getSystem(OpenWorldWaterLQRenderSystem.class).setProcessing(false);
+		}
+		
 		editor.entityEngine.addSystem(new OpenWorldLensFlareSystem(editor.game));
 		editor.entityEngine.addSystem(new OpenWorldTreeSystem(editor.game));
 		editor.entityEngine.addSystem(new OpenWorldMapSystem(editor.game));
