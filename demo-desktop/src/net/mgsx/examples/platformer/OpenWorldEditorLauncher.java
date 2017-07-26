@@ -21,7 +21,7 @@ import net.mgsx.pd.PdConfiguration;
  */
 public class OpenWorldEditorLauncher {
 
-	private final static boolean useRemoteCameraMatrix = true;
+	private final static boolean useRemoteCameraMatrix = false;
 	
 	public static void main (String[] args) 
 	{
