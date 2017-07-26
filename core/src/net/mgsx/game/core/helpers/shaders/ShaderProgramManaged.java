@@ -321,7 +321,7 @@ abstract public class ShaderProgramManaged {
 	
 	public void freeze(boolean frozen){
 		this.frozen = frozen;
-		reload();
+		invalidate();
 	}
 	public boolean isFrozen(){
 		return frozen;
