@@ -1,7 +1,12 @@
 package net.mgsx.game.examples.openworld;
 
 import net.mgsx.game.core.EditorScreen;
+import net.mgsx.game.core.annotations.PluginDef;
 import net.mgsx.game.core.plugins.EditorPlugin;
+import net.mgsx.game.examples.openworld.components.LandMeshComponent;
+import net.mgsx.game.examples.openworld.components.ObjectMeshComponent;
+import net.mgsx.game.examples.openworld.components.OpenWorldCamera;
+import net.mgsx.game.examples.openworld.components.TreesComponent;
 import net.mgsx.game.examples.openworld.systems.OpenWorldCameraSystem;
 import net.mgsx.game.examples.openworld.systems.OpenWorldDebugSystem;
 import net.mgsx.game.examples.openworld.systems.OpenWorldEnvSystem;
@@ -29,6 +34,12 @@ import net.mgsx.game.plugins.DefaultEditorPlugin;
 import net.mgsx.game.plugins.bullet.system.BulletWorldDebugSystem;
 import net.mgsx.game.plugins.procedural.systems.HeightFieldDebugSystem;
 
+@PluginDef(components={
+		LandMeshComponent.class,
+		ObjectMeshComponent.class,
+		OpenWorldCamera.class,
+		TreesComponent.class
+})
 public class OpenWorldEditorPlugin extends EditorPlugin implements DefaultEditorPlugin
 {
 

@@ -12,6 +12,7 @@ import net.mgsx.game.core.helpers.NativeService.NativeServiceInterface;
 import net.mgsx.game.core.meta.ClassRegistry;
 import net.mgsx.game.core.meta.StaticClassRegistry;
 import net.mgsx.game.examples.openworld.OpenWorldEditorPlugin;
+import net.mgsx.game.examples.openworld.systems.OpenWorldCameraSystem;
 import net.mgsx.kit.KitClass;
 import net.mgsx.pd.Pd;
 import net.mgsx.pd.PdConfiguration;
@@ -47,6 +48,7 @@ public class AndroidLauncher extends AndroidApplication {
 			@Override
 			public void create() {
 				Pd.audio.create(new PdConfiguration());
+				OpenWorldCameraSystem.cameraMatrixProvider = new CameraMatrixProviderAndroid(AndroidLauncher.this);
 				super.create();
 			}
 		}, config);

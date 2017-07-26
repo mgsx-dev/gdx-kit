@@ -7,7 +7,7 @@ entities: [
 				fieldOfView: 67
 				position: {
 					x: -14.991853
-					y: 5.7449617
+					y: 1.6927726
 					z: -25.737053
 				}
 				direction: {
@@ -26,33 +26,6 @@ entities: [
 		}
 		active: {}
 		ow.camera: {}
-	}
-	{
-		id: 1
-		active: {}
-		ow.camera: {}
-		camera: {
-			camera: {
-				fieldOfView: 67
-				position: {
-					x: -3.796438
-					y: 2.4529045
-					z: 19.373028
-				}
-				direction: {
-					x: -0.8474494
-					y: -0.17626014
-					z: 0.4996866
-				}
-				up: {
-					y: 1
-				}
-				near: 1
-				far: 3000
-				viewportWidth: 1855
-				viewportHeight: 1056
-			}
-		}
 	}
 ]
 systems: [
@@ -92,8 +65,8 @@ systems: [
 		seed: 589479544486322176
 		logicSize: 5
 		viewPoint: {
-			x: -3.796438
-			y: 19.373028
+			x: -14.991853
+			y: -25.737053
 		}
 	}
 	{
@@ -138,11 +111,11 @@ systems: [
 		realtime: true
 		autoSun: true
 		autoTime: false
-		time: 23910.52
+		time: 23996.656
 	}
 	{
 		type: ow.user-objects
-		enabled: true
+		enabled: false
 		persistedElements: []
 	}
 	{
@@ -203,13 +176,13 @@ systems: [
 	{
 		type: ow.water
 		enabled: false
-		frequency: 1.6786423
-		amplitude: 5.380697E-4
-		transparency: 0.38891014
-		speed: 1
 		level: 0.3626713
-		mirror: false
 		mirrorSize: 1024
+		waterShader: {
+			vs: shaders/water.vert
+			fs: shaders/water.frag
+			config: []
+		}
 		lands: false
 		trees: false
 		objects: false
@@ -242,6 +215,7 @@ systems: [
 	}
 ]
 views: [
-	ow.sky
+	net.mgsx.game.plugins.ashley.systems.AshleyProfilerSystem
+	net.mgsx.game.plugins.graphics.systems.GLProfilerSystem
 ]
 }

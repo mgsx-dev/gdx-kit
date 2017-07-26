@@ -5,6 +5,7 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntityListener;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
+import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -164,7 +165,12 @@ public class OpenWorldLandRenderSystem extends IteratingSystem
 	
 	@Override
 	public void update(float deltaTime) {
-		renderHigh();
+		// TODO create another system or switch quality settings in some way
+		if(Gdx.app.getType() == ApplicationType.Desktop){
+			renderHigh();
+		}else{
+			renderLow();
+		}
 	}
 
 	@Override

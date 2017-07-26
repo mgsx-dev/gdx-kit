@@ -5,6 +5,7 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.utils.ImmutableArray;
+import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.MathUtils;
@@ -27,6 +28,14 @@ import net.mgsx.game.plugins.camera.components.CameraComponent;
 @EditableSystem
 public class OpenWorldCameraSystem extends EntitySystem
 {
+	public static interface CameraMatrixProvider {
+		public float getAzymuth();
+		public float getPitch();
+		public float getRoll();
+		public void update();
+	}
+	public static CameraMatrixProvider cameraMatrixProvider = null;
+	
 	@Inject BulletWorldSystem bulletWorld;
 	@Inject OpenWorldManagerSystem openWorldManager;
 	@Inject OpenWorldWaterRenderSystem waterRender;
@@ -41,10 +50,13 @@ public class OpenWorldCameraSystem extends EntitySystem
 	@Editable public boolean clipToGround = true; 
 	@Editable public boolean flyingMode = false; 
 	
+	@Editable public float smoothing = 10;
+	
 	private Vector2 dir = new Vector2();
 	private Vector2 pos = new Vector2();
 	
 	private Vector3 focus = new Vector3();
+	private Vector3 up = new Vector3();
 
 	private Ray ray = new Ray();
 	@Editable(realtime=true, readonly=true) public float totalMove = 0;
@@ -57,6 +69,7 @@ public class OpenWorldCameraSystem extends EntitySystem
 		this.screen = screen;
 	}
 	
+
 	@Override
 	public void addedToEngine(Engine engine) {
 		super.addedToEngine(engine);
@@ -82,44 +95,72 @@ public class OpenWorldCameraSystem extends EntitySystem
 			
 			float moveFront = 0;
 			float moveSide = 0;
-			if(Gdx.input.isKeyPressed(Input.Keys.Z)) {
-				moveFront = 1;
-			} else if(Gdx.input.isKeyPressed(Input.Keys.S)) {
-				moveFront = -1;
-			}
-			if(Gdx.input.isKeyPressed(Input.Keys.D)) {
-				moveSide = 1;
-			} else if(Gdx.input.isKeyPressed(Input.Keys.Q)) {
-				moveSide = -1;
-			}
 			
+			
+			if(Gdx.app.getType() == ApplicationType.Desktop)
+			{
+				if(Gdx.input.isKeyPressed(Input.Keys.Z)) {
+					moveFront = 1;
+				} else if(Gdx.input.isKeyPressed(Input.Keys.S)) {
+					moveFront = -1;
+				}
+				if(Gdx.input.isKeyPressed(Input.Keys.D)) {
+					moveSide = 1;
+				} else if(Gdx.input.isKeyPressed(Input.Keys.Q)) {
+					moveSide = -1;
+				}
+			}
+			else
+			{
+				if(Gdx.input.isTouched()){
+					moveSide = 2 * (Gdx.input.getX() / (float)Gdx.graphics.getWidth() - .5f);
+					moveFront = -2 * (Gdx.input.getY() / (float)Gdx.graphics.getHeight() - .5f);
+				}
+			}
 			
 			// rotate camera
-			boolean buttonPressed = Gdx.input.isButtonPressed(Input.Buttons.RIGHT);
-			if(!buttonWasPressed && buttonPressed){
-				buttonWasPressed = true;
-				prevX = Gdx.input.getX();
-				prevY = Gdx.input.getY();
+			if(cameraMatrixProvider != null){
 				
-				focus.set(camera.camera.direction);
+				cameraMatrixProvider.update();
 				
-			}else if(!buttonPressed && buttonWasPressed){
-				buttonWasPressed = false;
+				focus.set(Vector3.Z)
+					.rotate(Vector3.X, cameraMatrixProvider.getPitch() * MathUtils.radiansToDegrees)
+					.rotate(Vector3.Y, -cameraMatrixProvider.getAzymuth() * MathUtils.radiansToDegrees)
+					;
+				camera.camera.direction.lerp(focus, MathUtils.clamp(deltaTime * smoothing, 0, 1));
+				
+				up.set(Vector3.Y).rotate(Vector3.X, cameraMatrixProvider.getRoll() * MathUtils.radiansToDegrees);
+				
+				camera.camera.up.lerp(up, MathUtils.clamp(deltaTime * smoothing, 0, 1));
 			}
-			if(buttonPressed){
-				// camera.camera.direction.set(Vector3.Z);
-				float elevation = (float)(Gdx.input.getY() - prevY) / (float)Gdx.graphics.getHeight();
-				float angle = (float)(Gdx.input.getX() - prevX) / (float)Gdx.graphics.getWidth() * 2 * 360;
-				
-				// focus.set(camera.camera.direction);
-				focus.rotate(Vector3.Y, -angle);
-				focus.y -= elevation * 5;
-				focus.nor();
-				
-				camera.camera.direction.lerp(focus, MathUtils.clamp(deltaTime * 10, 0, 1));
-				
-				prevX = Gdx.input.getX();
-				prevY = Gdx.input.getY();
+			else if(Gdx.app.getType() == ApplicationType.Desktop)
+			{
+				boolean buttonPressed = Gdx.input.isButtonPressed(Input.Buttons.RIGHT);
+				if(!buttonWasPressed && buttonPressed){
+					buttonWasPressed = true;
+					prevX = Gdx.input.getX();
+					prevY = Gdx.input.getY();
+					
+					focus.set(camera.camera.direction);
+					
+				}else if(!buttonPressed && buttonWasPressed){
+					buttonWasPressed = false;
+				}
+				if(buttonPressed){
+					// camera.camera.direction.set(Vector3.Z);
+					float elevation = (float)(Gdx.input.getY() - prevY) / (float)Gdx.graphics.getHeight();
+					float angle = (float)(Gdx.input.getX() - prevX) / (float)Gdx.graphics.getWidth() * 2 * 360;
+					
+					// focus.set(camera.camera.direction);
+					focus.rotate(Vector3.Y, -angle);
+					focus.y -= elevation * 5;
+					focus.nor();
+					
+					camera.camera.direction.lerp(focus, MathUtils.clamp(deltaTime * smoothing, 0, 1));
+					
+					prevX = Gdx.input.getX();
+					prevY = Gdx.input.getY();
+				}
 			}
 			
 			// move camera 2D plan (walking)

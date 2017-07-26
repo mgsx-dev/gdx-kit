@@ -7,6 +7,7 @@ import net.mgsx.game.core.EditorConfiguration;
 import net.mgsx.game.core.helpers.NativeService;
 import net.mgsx.game.core.meta.ClassRegistry;
 import net.mgsx.game.examples.openworld.OpenWorldEditorPlugin;
+import net.mgsx.game.examples.openworld.systems.OpenWorldCameraSystem;
 import net.mgsx.kit.config.ReflectionClassRegistry;
 import net.mgsx.kit.files.DesktopNativeInterface;
 import net.mgsx.kit.launcher.DesktopApplication;
@@ -20,6 +21,8 @@ import net.mgsx.pd.PdConfiguration;
  */
 public class OpenWorldEditorLauncher {
 
+	private final static boolean useRemoteCameraMatrix = true;
+	
 	public static void main (String[] args) 
 	{
 		ClassRegistry.instance = new ReflectionClassRegistry(
@@ -47,6 +50,9 @@ public class OpenWorldEditorLauncher {
 			@Override
 			public void create() {
 				Pd.audio.create(new PdConfiguration());
+				if(useRemoteCameraMatrix){
+					OpenWorldCameraSystem.cameraMatrixProvider = new CameraMatrixProviderRemote();
+				}
 				super.create();
 			}
 		};
