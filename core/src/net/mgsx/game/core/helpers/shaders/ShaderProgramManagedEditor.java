@@ -10,6 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 
 import net.mgsx.game.core.helpers.NativeService;
 import net.mgsx.game.core.helpers.NativeService.DefaultCallback;
+import net.mgsx.game.core.helpers.ReflectionHelper;
 import net.mgsx.game.core.helpers.shaders.ShaderProgramManaged.ControlHandler;
 import net.mgsx.game.core.ui.FieldEditor;
 import net.mgsx.game.core.ui.accessors.Accessor;
@@ -27,7 +28,7 @@ public class ShaderProgramManagedEditor implements FieldEditor
 		
 		Table table = new Table(skin);
 		
-		table.add(VoidWidget.instance.create(new VoidAccessor(spm, "reload"), skin));
+		table.add(VoidWidget.instance.create(new VoidAccessor(spm, ReflectionHelper.method(ShaderProgramManaged.class,"invalidate"), "reload"), skin));
 		
 		// TODO helper for find method ...
 		if(spm.shaderInfo.inject()){
