@@ -11,6 +11,7 @@ import net.mgsx.game.examples.openworld.components.LandMeshComponent;
 import net.mgsx.game.examples.openworld.components.ObjectMeshComponent;
 import net.mgsx.game.examples.openworld.components.OpenWorldCamera;
 import net.mgsx.game.examples.openworld.components.TreesComponent;
+import net.mgsx.game.examples.openworld.model.OpenWorldRuntimeSettings;
 import net.mgsx.game.examples.openworld.systems.OpenWorldCameraSystem;
 import net.mgsx.game.examples.openworld.systems.OpenWorldDebugSystem;
 import net.mgsx.game.examples.openworld.systems.OpenWorldEnvSystem;
@@ -60,6 +61,7 @@ public class OpenWorldEditorPlugin extends EditorPlugin implements DefaultEditor
 				highQuality = true;
 			}
 		}
+		OpenWorldRuntimeSettings.highQuality = highQuality;
 		
 		
 		editor.entityEngine.addSystem(new OpenWorldManagerSystem());

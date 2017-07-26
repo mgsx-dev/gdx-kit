@@ -6,32 +6,55 @@ import com.badlogic.ashley.core.EntityListener;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.g3d.utils.MeshBuilder;
 import com.badlogic.gdx.graphics.g3d.utils.MeshPartBuilder.VertexInfo;
-import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.RandomXS128;
 import com.badlogic.gdx.math.Vector3;
 
 import net.mgsx.game.core.GamePipeline;
 import net.mgsx.game.core.GameScreen;
+import net.mgsx.game.core.PostInitializationListener;
+import net.mgsx.game.core.annotations.Editable;
+import net.mgsx.game.core.annotations.EditableSystem;
 import net.mgsx.game.core.annotations.Inject;
-import net.mgsx.game.core.helpers.ShaderProgramHelper;
+import net.mgsx.game.core.annotations.Storable;
+import net.mgsx.game.core.helpers.shaders.ShaderInfo;
+import net.mgsx.game.core.helpers.shaders.ShaderProgramManaged;
+import net.mgsx.game.core.helpers.shaders.Uniform;
 import net.mgsx.game.examples.openworld.components.TreesComponent;
+import net.mgsx.game.examples.openworld.model.OpenWorldRuntimeSettings;
 import net.mgsx.game.examples.openworld.utils.RandomLookup;
 import net.mgsx.game.plugins.core.components.HeightFieldComponent;
 
-public class OpenWorldTreeSystem extends IteratingSystem
+@Storable("ow.trees")
+@EditableSystem
+public class OpenWorldTreeSystem extends IteratingSystem implements PostInitializationListener
 {
 	@Inject OpenWorldEnvSystem environment;
 
 	private GameScreen screen;
 
 	private RandomLookup rnd;
+	
+	Vector3 vp = new Vector3();
+	
+	@ShaderInfo(vs="shaders/tree.vert", fs="shaders/tree.frag", configs={"highQuality"})
+	public static class TreeShader extends ShaderProgramManaged{
+		
+		@Uniform transient Matrix4 projTrans;
+		@Uniform transient Vector3 sunDirection;
+		@Uniform transient Color fogColor;
+		
+	}
+	@Editable public TreeShader shader = new TreeShader();
+	
 	
 	public OpenWorldTreeSystem(GameScreen screen) {
 		super(Family.all(TreesComponent.class).get(), GamePipeline.RENDER);
@@ -54,11 +77,16 @@ public class OpenWorldTreeSystem extends IteratingSystem
 			}
 		});
 		
-		shader = ShaderProgramHelper.reload(shader, 
-				Gdx.files.internal("shaders/tree.vert"), 
-				Gdx.files.internal("shaders/tree.frag"));
-		
 		rnd = new RandomLookup(new RandomXS128(0xdeaddead), 16, 16);
+	}
+	
+	@Override
+	public void onPostInitialization() {
+		if(OpenWorldRuntimeSettings.highQuality){
+			shader.setConfig("highQuality");
+		}else{
+			shader.setConfig();
+		}
 	}
 	
 	private void buildTrees(Entity entity) {
@@ -113,9 +141,6 @@ public class OpenWorldTreeSystem extends IteratingSystem
 		
 	}
 	
-	Vector3 vp = new Vector3();
-	private ShaderProgram shader;
-	
 	@SuppressWarnings("deprecation")
 	private void buildTree(MeshBuilder builder, Vector3 pos) {
 		
@@ -151,10 +176,12 @@ public class OpenWorldTreeSystem extends IteratingSystem
 	@Override
 	public void update(float deltaTime) {
 		Gdx.gl.glEnable(GL20.GL_DEPTH_TEST);
+		
+		shader.projTrans = screen.camera.combined;
+		shader.sunDirection = environment.sunDirection;
+		shader.fogColor = environment.fogColor;
+		
 		shader.begin();
-		shader.setUniformMatrix("u_projTrans", screen.camera.combined);
-		shader.setUniformf("u_sunDirection", environment.sunDirection);
-		shader.setUniformf("u_fogColor", environment.fogColor);
 		super.update(deltaTime);
 		shader.end();
 	}
@@ -162,7 +189,7 @@ public class OpenWorldTreeSystem extends IteratingSystem
 	@Override
 	protected void processEntity(Entity entity, float deltaTime) {
 		TreesComponent trees = TreesComponent.components.get(entity);
-		trees.mesh.render(shader, GL20.GL_TRIANGLES);
+		trees.mesh.render(shader.program(), GL20.GL_TRIANGLES);
 	}
-	
+
 }

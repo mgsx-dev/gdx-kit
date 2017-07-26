@@ -2,9 +2,7 @@ varying vec3 v_position;
 varying vec3 v_normal;
 varying vec2 v_texCoord;
 
-uniform vec3 u_sunDirection;
-uniform vec4 u_fogColor;
-
+#if defined(HIGH_QUALITY)
 //
 // Description : Array and textureless GLSL 2D/3D/4D simplex
 //               noise functions.
@@ -116,7 +114,7 @@ float snoise(vec3 v, out vec3 gradient)
 
   return 42.0 * dot(m4, pdotx);
 }
-
+#endif
 
 void main() {
 	float day = (-u_sunDirection.y + 1.0) * 0.5;
@@ -127,6 +125,7 @@ void main() {
 
     vec3 dif = (v_texCoord.x < 0.5 ? vec3(0.4,0.3, 0.1) : vec3(0.6,0.9, 0.5)) * lum;
 
+#if defined(HIGH_QUALITY)
     // high res texturing
     float distRate = clamp((gl_FragCoord.z * gl_FragCoord.w - 0.1) / 0.1, 0.0, 1.0);
     if(distRate > 0.0){
@@ -142,6 +141,7 @@ void main() {
 
     	dif += pcolor * distRate;
     }
+#endif
 
     vec3 color = mix(u_fogColor.rgb * day, dif * day, 1.0 - pow(1.0 - fog, 10.0));
 
