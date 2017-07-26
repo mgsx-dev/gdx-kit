@@ -35,6 +35,7 @@ import net.mgsx.game.plugins.core.tools.ResetTool;
 import net.mgsx.game.plugins.core.tools.SaveTool;
 import net.mgsx.game.plugins.core.tools.SelectTool;
 import net.mgsx.game.plugins.core.tools.SwitchCameraTool;
+import net.mgsx.game.plugins.core.tools.SwitchCameraTool2;
 import net.mgsx.game.plugins.core.tools.SwitchModeTool;
 import net.mgsx.game.plugins.core.tools.ToggleHelpTool;
 import net.mgsx.game.plugins.core.tools.UnproxyTool;
@@ -88,6 +89,7 @@ public class CoreEditorPlugin extends EditorPlugin
 		editor.addSuperTool(new ImportEntitiesTool(editor));
 
 		editor.addTool(new ExportClassesTool(editor));;
+		editor.addTool(new SwitchCameraTool2(editor));;
 
 		editor.setTool(noTool);
 		

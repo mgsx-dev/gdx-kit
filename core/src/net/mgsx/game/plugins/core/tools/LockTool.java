@@ -17,6 +17,7 @@ public class LockTool extends Tool
 	@Override
 	public boolean keyDown(int keycode) 
 	{
+		// TODO conflicts with LearnTool (Ctrl+Shift+L) !
 		if(ctrl() && keycode == Input.Keys.L)
 		{
 			if(shift()){
