@@ -12,8 +12,11 @@ import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.core.annotations.EditableSystem;
 import net.mgsx.game.core.annotations.EnumType;
 import net.mgsx.game.core.annotations.Storable;
+import net.mgsx.game.examples.openworld.components.CellDataComponent;
 import net.mgsx.game.examples.openworld.components.LandMeshComponent;
 import net.mgsx.game.examples.openworld.components.TreesComponent;
+import net.mgsx.game.examples.openworld.model.OpenWorldPool;
+import net.mgsx.game.examples.openworld.model.OpenWorldPool.CellData;
 import net.mgsx.game.plugins.bullet.components.BulletHeightFieldComponent;
 import net.mgsx.game.plugins.core.components.HeightFieldComponent;
 import net.mgsx.game.plugins.procedural.model.ClassicalPerlinNoise;
@@ -73,7 +76,7 @@ public class OpenWorldManagerSystem extends EntitySystem
 			for(int i=0 ; i<lands.length ; i++) {
 				Entity entity = lands[i];
 				if(entity != null) {
-					getEngine().removeEntity(entity);
+					removeCell(entity);
 					lands[i] = null;
 				}
 			}
@@ -81,6 +84,12 @@ public class OpenWorldManagerSystem extends EntitySystem
 		logicWidth = logicHeight = logicSize;
 		lands = new Entity[logicWidth * logicHeight];
 		oldLands = new Entity[logicWidth * logicHeight];
+	}
+	
+	private void removeCell(Entity entity){
+		// TODO get BHFC in order to reuse the float buffer
+		// Bullet body have to be removed ... but could be reused as well (just disable it and the nre-enable it ?)
+		getEngine().removeEntity(entity);
 	}
 	
 	@Override
@@ -117,7 +126,7 @@ public class OpenWorldManagerSystem extends EntitySystem
 				else {
 					Entity entity = oldLands[index];
 					if(entity != null) {
-						getEngine().removeEntity(entity);
+						removeCell(entity);
 					}
 				}
 				oldLands[index] = null;
@@ -142,10 +151,15 @@ public class OpenWorldManagerSystem extends EntitySystem
 		
 	}
 	
+	private ClassicalPerlinNoise noise = new ClassicalPerlinNoise();
+	private RandomXS128 rand = new RandomXS128();
+	private Vector3 dx = new Vector3();
+	private Vector3 dy = new Vector3();
+
+	
 	public void generate(Entity entity, float offsetWorldX, float offsetWorldY)
 	{
-		ClassicalPerlinNoise noise = new ClassicalPerlinNoise();
-		RandomXS128 rand = new RandomXS128(this.seed);
+		rand.setSeed(this.seed);
 		
 		int width = verticesPerCell;
 		int height = verticesPerCell;
@@ -153,8 +167,13 @@ public class OpenWorldManagerSystem extends EntitySystem
 		int eWidth = width+2;
 		int eHeight = height+2;
 		
-		float [] values = new float[width * height];
-		float [] extraValues = new float[eWidth * eHeight];
+		CellData data = OpenWorldPool.obtainCellData(width, height);
+		float [] values = data.values;
+		float [] extraValues = data.extraValues;
+		Vector3 [] normals = data.normals;
+		
+		// reset from pool
+		for(int i=0 ; i<extraValues.length ; i++) extraValues[i] = 0;
 		
 		long seed = this.seed;
 		float amplitude = 1;
@@ -187,9 +206,7 @@ public class OpenWorldManagerSystem extends EntitySystem
 			}
 		}
 		// extract inner values and compute normals
-		Vector3 [] normals = new Vector3[width * height];
-		Vector3 dx = new Vector3();
-		Vector3 dy = new Vector3();
+		
 		for(int y=0 ; y<height ; y++){
 			for(int x=0 ; x<width ; x++){
 				values[y*width+x] = extraValues[(y+1)*eWidth+x+1];
@@ -199,12 +216,15 @@ public class OpenWorldManagerSystem extends EntitySystem
 				
 				Vector3 n = dx.crs(dy).nor();
 				
-				normals[y*width+x] = new Vector3(n);
+				normals[y*width+x].set(n);
 			}
 		}
 		
 		// compute normals
 		
+		CellDataComponent cdc = getEngine().createComponent(CellDataComponent.class);
+		cdc.data = data;
+		entity.add(cdc);
 		
 		HeightFieldComponent hfc = getEngine().createComponent(HeightFieldComponent.class);
 		

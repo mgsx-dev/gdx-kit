@@ -5,6 +5,8 @@ import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.utils.Pool.Poolable;
 
+import net.mgsx.game.examples.openworld.model.OpenWorldPool;
+
 public class LandMeshComponent implements Component, Poolable
 {
 	
@@ -15,7 +17,7 @@ public class LandMeshComponent implements Component, Poolable
 	@Override
 	public void reset() {
 		if(mesh != null) {
-			mesh.dispose();
+			OpenWorldPool.landMeshPool.free(mesh);
 			mesh = null;
 		}
 	}

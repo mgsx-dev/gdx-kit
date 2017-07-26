@@ -9,8 +9,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
-import com.badlogic.gdx.graphics.VertexAttribute;
-import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalShadowLight;
@@ -31,6 +29,7 @@ import net.mgsx.game.core.helpers.ShaderProgramHelper;
 import net.mgsx.game.examples.openworld.components.LandMeshComponent;
 import net.mgsx.game.examples.openworld.components.ObjectMeshComponent;
 import net.mgsx.game.examples.openworld.components.TreesComponent;
+import net.mgsx.game.examples.openworld.model.OpenWorldPool;
 import net.mgsx.game.examples.openworld.model.OpenWorldRuntimeSettings;
 import net.mgsx.game.plugins.core.components.HeightFieldComponent;
 
@@ -42,7 +41,6 @@ public class OpenWorldLandRenderSystem extends IteratingSystem
 	@Inject OpenWorldEnvSystem environment;
 	@Inject OpenWorldSkySystem sky;
 	
-	private VertexAttributes attributes = new VertexAttributes(VertexAttribute.Position(), VertexAttribute.Normal());
 	private ShaderProgram shader;
 	private ShaderProgram shaderHigh, shaderHighShadows, shaderHighNoShadows, objectsShader, depthShader;
 	
@@ -111,6 +109,9 @@ public class OpenWorldLandRenderSystem extends IteratingSystem
 		shadowLight = new DirectionalShadowLight(shadowMapSize, shadowMapSize, shadowViewportWidth, shadowViewportHeight, shadowNear, shadowFar);
 	}
 	
+	private float[] vertices;
+	private short[] indices;
+	
 	private void createMesh(Entity entity) {
 		LandMeshComponent landMesh = LandMeshComponent.components.get(entity);
 		HeightFieldComponent hfc = HeightFieldComponent.components.get(entity);
@@ -121,9 +122,16 @@ public class OpenWorldLandRenderSystem extends IteratingSystem
 		// create the grid
 		int verticesCount = width * height;
 		int indicesCount = (width-1) * (height-1) * 6;
-		int stride = attributes.vertexSize / (Float.SIZE / 8);
-		float[] vertices = new float[verticesCount * stride];
-		short[] indices = new short[indicesCount];
+		Mesh mesh = OpenWorldPool.landMeshPool.obtain(verticesCount, indicesCount);
+		int stride = mesh.getVertexAttributes().vertexSize / (Float.SIZE / 8);
+		int verticeBufferSize = verticesCount * stride;
+		
+		if(vertices == null || vertices.length < verticeBufferSize){
+			vertices = new float[verticeBufferSize];
+		}
+		if(indices == null || indices.length < indicesCount){
+			indices = new short[indicesCount];
+		}
 		
 		// vertices
 		for(int y=0 ; y<height ; y++) {
@@ -156,7 +164,6 @@ public class OpenWorldLandRenderSystem extends IteratingSystem
 			}
 		}
 		
-		Mesh mesh = new Mesh(true, verticesCount, indicesCount, attributes);
 		mesh.setVertices(vertices);
 		mesh.setIndices(indices);
 		

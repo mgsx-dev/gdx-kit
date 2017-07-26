@@ -9,8 +9,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
-import com.badlogic.gdx.graphics.VertexAttribute;
-import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.g3d.utils.MeshBuilder;
 import com.badlogic.gdx.graphics.g3d.utils.MeshPartBuilder.VertexInfo;
 import com.badlogic.gdx.math.MathUtils;
@@ -29,6 +27,7 @@ import net.mgsx.game.core.helpers.shaders.ShaderInfo;
 import net.mgsx.game.core.helpers.shaders.ShaderProgramManaged;
 import net.mgsx.game.core.helpers.shaders.Uniform;
 import net.mgsx.game.examples.openworld.components.TreesComponent;
+import net.mgsx.game.examples.openworld.model.OpenWorldPool;
 import net.mgsx.game.examples.openworld.model.OpenWorldRuntimeSettings;
 import net.mgsx.game.examples.openworld.utils.RandomLookup;
 import net.mgsx.game.plugins.core.components.HeightFieldComponent;
@@ -89,16 +88,14 @@ public class OpenWorldTreeSystem extends IteratingSystem implements PostInitiali
 		}
 	}
 	
+	private MeshBuilder builder = new MeshBuilder();
+	
 	private void buildTrees(Entity entity) {
 		TreesComponent trees = TreesComponent.components.get(entity);
 		HeightFieldComponent hfc = HeightFieldComponent.components.get(entity);
 		
-		MeshBuilder builder = new MeshBuilder();
-		builder.begin(new VertexAttributes(
-				VertexAttribute.Position(), 
-				VertexAttribute.Normal(), 
-				VertexAttribute.TexCoords(0)),
-				GL20.GL_TRIANGLES);
+		
+		builder.begin(OpenWorldPool.treesMeshAttributes, GL20.GL_TRIANGLES);
 		
 		// random grid (x/y)
 		// read height map for y
@@ -134,11 +131,23 @@ public class OpenWorldTreeSystem extends IteratingSystem implements PostInitiali
 				
 			}
 		}
-		Mesh mesh = builder.end();
+		
+		// Size of mesh is not predictable but in the worse case it could crash,
+		// we have to ensure this never happens by canceling some meshes or create necessary meshes
+		// during generation above.
+		// Since HFC size is constant (for now) size is predictable, we compute in order to avoid pool garbaging.
+		int maxTrees = hfc.height * hfc.width;
+		int verticesPerTree = 16; // 2 boxes
+		int maxVertices = maxTrees * verticesPerTree;
+		
+		int indicesPerTree = 72; // 2 box, 6 quads/box, 6 indices/quad = 72
+		int maxIndices = maxTrees * indicesPerTree;
+		
+		Mesh mesh = OpenWorldPool.treesMeshPool.obtain(maxVertices, maxIndices);
+		
+		builder.end(mesh);
 		
 		trees.mesh = mesh;
-		
-		
 	}
 	
 	// static pool
