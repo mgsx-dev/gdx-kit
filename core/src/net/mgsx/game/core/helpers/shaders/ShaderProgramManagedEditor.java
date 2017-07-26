@@ -63,6 +63,7 @@ public class ShaderProgramManagedEditor implements FieldEditor
 					configCell.setActor(cTable);
 					for(final String config : spm.configs){
 						final TextButton btConfig = new TextButton(config, skin, "toggle");
+						btConfig.setChecked(spm.isEnabled(config));
 						cTable.add(btConfig);
 						btConfig.addListener(new ChangeListener() {
 							
