@@ -1,11 +1,15 @@
 package net.mgsx.game.examples.openworld.systems;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 
+import de.golfgl.gdxgamesvcs.GameServiceException;
+import de.golfgl.gdxgamesvcs.IGameServiceListener;
 import net.mgsx.game.core.annotations.Asset;
 import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.core.annotations.EditableSystem;
+import net.mgsx.game.examples.openworld.model.OpenWorldRuntimeSettings;
 import net.mgsx.game.examples.openworld.ui.ConnectionView;
 import net.mgsx.game.examples.openworld.ui.SavedGameView;
 import net.mgsx.game.plugins.core.systems.HUDSystem;
@@ -69,5 +73,58 @@ public class OpenWorldHUDSystem extends HUDSystem
 	public void testUpdateLead() {
 		
 		GAPI.service.submitScore("CgkI9ouoooEcEAIQBQ", 500L);
+	}
+	@Editable
+	public void testNewAppInitalize() {
+		
+		OpenWorldRuntimeSettings.gsc.setListener(new IGameServiceListener() {
+			
+			@Override
+			public void gsGameStateLoaded(byte[] gameState) {
+				Gdx.app.log("GPGS", "game loaded !");
+			}
+			
+			@Override
+			public void gsErrorMsg(GsErrorType et, String msg) {
+				Gdx.app.log("GPGS", "error : " + msg);
+			}
+			
+			@Override
+			public void gsDisconnected() {
+				Gdx.app.log("GPGS", "disconnected !");
+			}
+			
+			@Override
+			public void gsConnected() {
+				Gdx.app.log("GPGS", "connected !");
+			}
+		});
+		OpenWorldRuntimeSettings.gsc.connect(false);
+	}
+	@Editable
+	public void testNewAppInc() {
+		OpenWorldRuntimeSettings.gsc.incrementAchievement("CgkI9ouoooEcEAIQAg", 1);
+	}
+	@Editable
+	public void testNewAppPlayerInfo() {
+		Gdx.app.log("GPGS", "service id : " + OpenWorldRuntimeSettings.gsc.getGameServiceId());
+		Gdx.app.log("GPGS", "player name : " + OpenWorldRuntimeSettings.gsc.getPlayerDisplayName());
+		Gdx.app.log("GPGS", "connected ? : " + OpenWorldRuntimeSettings.gsc.isConnected());
+	}
+	@Editable
+	public void testNewAppLogIn() {
+		OpenWorldRuntimeSettings.gsc.connect(false);
+	}
+	@Editable
+	public void testNewAppLogOut() {
+		OpenWorldRuntimeSettings.gsc.logOff();
+	}
+	@Editable
+	public void testNewAppShowAll() {
+		try {
+			OpenWorldRuntimeSettings.gsc.showAchievements();
+		} catch (GameServiceException e) {
+			Gdx.app.error("GPGS",  "error show achievements ...", e);
+		}
 	}
 }

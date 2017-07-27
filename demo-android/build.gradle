@@ -1,3 +1,12 @@
+plugins {
+    id 'com.github.ksoichiro.eclipse.aar' version '0.1.4'
+}
+apply plugin: 'com.android.application'
+eclipseAar {
+	androidTarget = 'android-20'
+	aarDependenciesDir = 'aarDependencies'
+}
+
 android {
     buildToolsVersion "23.0.1"
     compileSdkVersion 20
@@ -18,12 +27,11 @@ android {
         exclude 'META-INF/robovm/ios/robovm.xml'
     }
     defaultConfig {
-        applicationId "net.mgsx.pd"
+        applicationId "net.mgsx.openworld"
         minSdkVersion 8
         targetSdkVersion 20
     }
 }
-
 
 // called every time gradle gets executed, takes the native dependencies of
 // the natives configuration, and extracts them to the proper libs/ folders

@@ -4,6 +4,7 @@ import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 
 import android.os.Bundle;
+import de.golfgl.gdxgamesvcs.GpgsClient;
 import net.mgsx.game.core.EditorApplication;
 import net.mgsx.game.core.EditorConfiguration;
 import net.mgsx.game.core.helpers.NativeService;
@@ -12,6 +13,7 @@ import net.mgsx.game.core.helpers.NativeService.NativeServiceInterface;
 import net.mgsx.game.core.meta.ClassRegistry;
 import net.mgsx.game.core.meta.StaticClassRegistry;
 import net.mgsx.game.examples.openworld.OpenWorldEditorPlugin;
+import net.mgsx.game.examples.openworld.model.OpenWorldRuntimeSettings;
 import net.mgsx.game.examples.openworld.systems.OpenWorldCameraSystem;
 import net.mgsx.kit.KitClass;
 import net.mgsx.pd.Pd;
@@ -20,6 +22,10 @@ import net.mgsx.pd.PdConfiguration;
 public class AndroidLauncher extends AndroidApplication {
 	@Override
 	protected void onCreate (Bundle savedInstanceState) {
+		
+		GpgsClient gsc = new GpgsClient();
+		OpenWorldRuntimeSettings.gsc = gsc;
+		gsc.initialize(this, false); // XXX disable drive API
 		
 		ClassRegistry.instance = new StaticClassRegistry(KitClass.class);
 		

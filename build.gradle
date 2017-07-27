@@ -27,6 +27,7 @@ allprojects {
         pdVersion = '0.6.0'
         junitVersion = '4.12'
         gapiVersion = '1.22.0'
+        gamesvcsVersion = '0.0.1'
     }
 
     repositories {
@@ -89,6 +90,8 @@ project(":demo-core") {
         
         // TODO workaround on issue https://github.com/libgdx/libgdx/issues/4831
         compile 'org.apache.commons:commons-text:1.1'
+        
+        compile "de.golfgl.gdxgamesvcs:gdx-gamesvcs-core:$gamesvcsVersion"
         
         testCompile "junit:junit:$junitVersion"
     }
@@ -157,6 +160,8 @@ project(":demo-android") {
         
         compile "com.badlogicgames.gdx:gdx-controllers-android:$gdxVersion"
         
+        // AAR dependency
+        compile "de.golfgl.gdxgamesvcs:gdx-gamesvcs-android-gpgs:$gamesvcsVersion"
     }
 
 }
