@@ -156,7 +156,32 @@ public class OpenWorldManagerSystem extends EntitySystem
 	private Vector3 dx = new Vector3();
 	private Vector3 dy = new Vector3();
 
+	/**
+	 * Main land function
+	 * @param absoluteX
+	 * @param absoluteY
+	 * @return
+	 */
+	public float generate(float absoluteX, float absoluteY)
+	{
+		long seed = this.seed;
+		float amplitude = 1;
+		float sum = 0;
+		float frequency = this.frequency;
+		float value = 0;
+		for(int i=0 ; i<octaves ; i++){
+			noise.seed(seed);
+			value += noise.get(absoluteX * frequency, absoluteY * frequency) * amplitude;
+			sum += amplitude;
+			amplitude *= persistence;
+			frequency *= 2;
+			seed = rand.nextLong();
+		}
+		// normalized values
+		return value * scale / sum;
+	}
 	
+	// TODO extract absolute generator part from sampling part (refactor with generate absolute ...)
 	public void generate(Entity entity, float offsetWorldX, float offsetWorldY)
 	{
 		rand.setSeed(this.seed);
