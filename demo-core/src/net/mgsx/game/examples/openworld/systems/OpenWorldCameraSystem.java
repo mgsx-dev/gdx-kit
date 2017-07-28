@@ -69,6 +69,15 @@ public class OpenWorldCameraSystem extends EntitySystem
 		this.screen = screen;
 	}
 	
+	@Editable
+	public void resetPosition(){
+		ImmutableArray<Entity> cameras = getEngine().getEntitiesFor(Family.all(OpenWorldCamera.class, CameraComponent.class).get());
+		if(cameras.size() == 0) return;
+		
+		Entity entity = cameras.first();
+		CameraComponent camera = CameraComponent.components.get(entity);
+		camera.camera.position.setZero();
+	}
 
 	@Override
 	public void addedToEngine(Engine engine) {
@@ -95,6 +104,7 @@ public class OpenWorldCameraSystem extends EntitySystem
 			
 			float moveFront = 0;
 			float moveSide = 0;
+			float moveTop = 0;
 			
 			
 			if(Gdx.app.getType() == ApplicationType.Desktop)
@@ -108,6 +118,11 @@ public class OpenWorldCameraSystem extends EntitySystem
 					moveSide = 1;
 				} else if(Gdx.input.isKeyPressed(Input.Keys.Q)) {
 					moveSide = -1;
+				}
+				if(Gdx.input.isKeyPressed(Input.Keys.E)) {
+					moveTop = 1;
+				} else if(Gdx.input.isKeyPressed(Input.Keys.X)) {
+					moveTop = -1;
 				}
 			}
 			else
@@ -181,9 +196,11 @@ public class OpenWorldCameraSystem extends EntitySystem
 			else{
 				
 				Vector3 tan3d = camera.camera.direction.cpy().crs(camera.camera.up).nor();
+				Vector3 nor3d = tan3d.cpy().crs(camera.camera.direction).nor();
 				
 				camera.camera.position.mulAdd(camera.camera.direction, moveFront * speed * deltaTime);
 				camera.camera.position.mulAdd(tan3d, moveSide * speed * deltaTime);
+				camera.camera.position.mulAdd(nor3d, moveTop * speed * deltaTime);
 			}
 			
 			
