@@ -12,6 +12,7 @@ import net.mgsx.game.examples.openworld.components.ObjectMeshComponent;
 import net.mgsx.game.examples.openworld.components.OpenWorldCamera;
 import net.mgsx.game.examples.openworld.components.TreesComponent;
 import net.mgsx.game.examples.openworld.model.OpenWorldRuntimeSettings;
+import net.mgsx.game.examples.openworld.systems.OpenLifeBirdSystem;
 import net.mgsx.game.examples.openworld.systems.OpenWorldCameraPathSystem;
 import net.mgsx.game.examples.openworld.systems.OpenWorldCameraSystem;
 import net.mgsx.game.examples.openworld.systems.OpenWorldDebugSystem;
@@ -39,6 +40,7 @@ import net.mgsx.game.examples.openworld.tools.MoveElementTool;
 import net.mgsx.game.examples.openworld.tools.RemoveElementTool;
 import net.mgsx.game.plugins.DefaultEditorPlugin;
 import net.mgsx.game.plugins.bullet.system.BulletWorldDebugSystem;
+import net.mgsx.game.plugins.g3d.systems.G3DCullingSystem;
 import net.mgsx.game.plugins.procedural.systems.HeightFieldDebugSystem;
 
 @PluginDef(components={
@@ -97,6 +99,8 @@ public class OpenWorldEditorPlugin extends EditorPlugin implements DefaultEditor
 		editor.entityEngine.addSystem(new OpenWorldFaunaSystem(editor.game));
 		editor.entityEngine.addSystem(new UserObjectUpdateSystem());
 		
+		editor.entityEngine.addSystem(new OpenLifeBirdSystem());
+		
 		editor.entityEngine.addSystem(new OpenWorldHUDSystem());
 		
 		// XXX
@@ -104,6 +108,7 @@ public class OpenWorldEditorPlugin extends EditorPlugin implements DefaultEditor
 		editor.entityEngine.getSystem(HeightFieldDebugSystem.class).setProcessing(false);
 		editor.entityEngine.getSystem(ScenarioSystem.class).setProcessing(false);
 		editor.entityEngine.getSystem(OpenWorldMapSystem.class).setProcessing(false);
+		editor.entityEngine.getSystem(G3DCullingSystem.class).culling = false;
 	}
 
 }
