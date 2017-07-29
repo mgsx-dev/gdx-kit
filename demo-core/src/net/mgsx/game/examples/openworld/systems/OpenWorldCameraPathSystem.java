@@ -21,7 +21,8 @@ public class OpenWorldCameraPathSystem extends EntitySystem
 	
 	@Editable public float speed = 0.1f;
 	@Editable public float distance = 5f;
-	@Editable public float offset = 10f;
+	@Editable public float offsetMin = 10f;
+	@Editable public float offsetRange = 5f;
 	
 	CatmullRomSpline<Vector3> spline = new CatmullRomSpline<Vector3>();
 	Vector3 [] controlPoints;
@@ -45,7 +46,8 @@ public class OpenWorldCameraPathSystem extends EntitySystem
 		
 		if(time > 1 || controlPoints == null)
 		{
-			pathBuilder.set(manager, 30, distance, offset);
+			pathBuilder.set(manager, 30, distance, 1);
+			pathBuilder.resetLimit().groundMin(offsetMin).groundMax(offsetMin + offsetRange);
 			
 			if(controlPoints == null){
 				controlPoints = new Vector3[4];

@@ -12,7 +12,7 @@ import net.mgsx.game.examples.openworld.components.ObjectMeshComponent;
 import net.mgsx.game.examples.openworld.components.OpenWorldCamera;
 import net.mgsx.game.examples.openworld.components.TreesComponent;
 import net.mgsx.game.examples.openworld.model.OpenWorldRuntimeSettings;
-import net.mgsx.game.examples.openworld.systems.OpenLifeBirdSystem;
+import net.mgsx.game.examples.openworld.systems.OpenLifeAnimalSystem;
 import net.mgsx.game.examples.openworld.systems.OpenWorldCameraPathSystem;
 import net.mgsx.game.examples.openworld.systems.OpenWorldCameraSystem;
 import net.mgsx.game.examples.openworld.systems.OpenWorldDebugSystem;
@@ -99,7 +99,7 @@ public class OpenWorldEditorPlugin extends EditorPlugin implements DefaultEditor
 		editor.entityEngine.addSystem(new OpenWorldFaunaSystem(editor.game));
 		editor.entityEngine.addSystem(new UserObjectUpdateSystem());
 		
-		editor.entityEngine.addSystem(new OpenLifeBirdSystem());
+		editor.entityEngine.addSystem(new OpenLifeAnimalSystem());
 		
 		editor.entityEngine.addSystem(new OpenWorldHUDSystem());
 		
