@@ -76,7 +76,7 @@ public class OpenWorldEditorPlugin extends EditorPlugin implements DefaultEditor
 		// TODO non edit part
 		editor.entityEngine.addSystem(new OpenWorldLandRenderSystem(editor.game));
 		editor.entityEngine.addSystem(new OpenWorldCameraPathSystem());
-		editor.entityEngine.addSystem(new OpenWorldCameraSystem(editor.game));
+		editor.entityEngine.addSystem(new OpenWorldCameraSystem());
 		editor.entityEngine.addSystem(new OpenWorldSkySystem(editor.game));
 		editor.entityEngine.addSystem(new OpenWorldEnvSystem());
 		

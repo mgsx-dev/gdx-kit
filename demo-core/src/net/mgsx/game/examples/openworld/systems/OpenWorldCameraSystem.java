@@ -8,6 +8,7 @@ import com.badlogic.ashley.utils.ImmutableArray;
 import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -15,13 +16,13 @@ import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.physics.bullet.collision.ClosestRayResultCallback;
 
 import net.mgsx.game.core.GamePipeline;
-import net.mgsx.game.core.GameScreen;
 import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.core.annotations.EditableSystem;
 import net.mgsx.game.core.annotations.Inject;
 import net.mgsx.game.core.annotations.Storable;
 import net.mgsx.game.examples.openworld.components.OpenWorldCamera;
 import net.mgsx.game.plugins.bullet.system.BulletWorldSystem;
+import net.mgsx.game.plugins.camera.components.ActiveCamera;
 import net.mgsx.game.plugins.camera.components.CameraComponent;
 
 @Storable(value="ow.camera")
@@ -39,8 +40,6 @@ public class OpenWorldCameraSystem extends EntitySystem
 	@Inject BulletWorldSystem bulletWorld;
 	@Inject OpenWorldManagerSystem openWorldManager;
 	@Inject OpenWorldEnvSystem env;
-	
-	private GameScreen screen;
 	
 	private ClosestRayResultCallback resultCallback;
 	
@@ -64,25 +63,32 @@ public class OpenWorldCameraSystem extends EntitySystem
 	private boolean enableControl = true, buttonWasPressed;
 	private int prevX, prevY;
 
-	public OpenWorldCameraSystem(GameScreen screen) {
+	private ImmutableArray<Entity> activeCameras;
+	
+	public OpenWorldCameraSystem() {
 		super(GamePipeline.INPUT);
-		this.screen = screen;
+	}
+	
+	public Entity getCameraEntity(){
+		return activeCameras.size() > 0 ? activeCameras.first() : null;
+	}
+	public Camera getCamera(){
+		Entity entity = getCameraEntity();
+		if(entity == null) return null;
+		CameraComponent camera = CameraComponent.components.get(entity);
+		return camera.camera;
 	}
 	
 	@Editable
 	public void resetPosition(){
-		ImmutableArray<Entity> cameras = getEngine().getEntitiesFor(Family.all(OpenWorldCamera.class, CameraComponent.class).get());
-		if(cameras.size() == 0) return;
-		
-		Entity entity = cameras.first();
-		CameraComponent camera = CameraComponent.components.get(entity);
-		camera.camera.position.setZero();
+		Camera camera = getCamera();
+		if(camera != null) camera.position.setZero();
 	}
 
 	@Override
 	public void addedToEngine(Engine engine) {
 		super.addedToEngine(engine);
-		// resultCallback = new ClosestRayResultCallback(Vector3.Zero, Vector3.Z);
+		activeCameras = getEngine().getEntitiesFor(Family.all(OpenWorldCamera.class, CameraComponent.class, ActiveCamera.class).get());
 	}
 	
 	@Override
@@ -94,11 +100,8 @@ public class OpenWorldCameraSystem extends EntitySystem
 	@Override
 	public void update(float deltaTime) {
 		
-		ImmutableArray<Entity> cameras = getEngine().getEntitiesFor(Family.all(OpenWorldCamera.class, CameraComponent.class).get());
-		if(cameras.size() == 0) return;
-		
-		Entity entity = cameras.first();
-		CameraComponent camera = CameraComponent.components.get(entity);
+		Camera camera = getCamera();
+		if(camera == null) return;
 		
 		if(enableControl){
 			
@@ -142,11 +145,11 @@ public class OpenWorldCameraSystem extends EntitySystem
 					.rotate(Vector3.X, cameraMatrixProvider.getPitch() * MathUtils.radiansToDegrees)
 					.rotate(Vector3.Y, -cameraMatrixProvider.getAzymuth() * MathUtils.radiansToDegrees)
 					;
-				camera.camera.direction.lerp(focus, MathUtils.clamp(deltaTime * smoothing, 0, 1));
+				camera.direction.lerp(focus, MathUtils.clamp(deltaTime * smoothing, 0, 1));
 				
 				up.set(Vector3.Y).rotate(Vector3.X, cameraMatrixProvider.getRoll() * MathUtils.radiansToDegrees);
 				
-				camera.camera.up.lerp(up, MathUtils.clamp(deltaTime * smoothing, 0, 1));
+				camera.up.lerp(up, MathUtils.clamp(deltaTime * smoothing, 0, 1));
 			}
 			else if(Gdx.app.getType() == ApplicationType.Desktop)
 			{
@@ -156,22 +159,22 @@ public class OpenWorldCameraSystem extends EntitySystem
 					prevX = Gdx.input.getX();
 					prevY = Gdx.input.getY();
 					
-					focus.set(camera.camera.direction);
+					focus.set(camera.direction);
 					
 				}else if(!buttonPressed && buttonWasPressed){
 					buttonWasPressed = false;
 				}
 				if(buttonPressed){
-					// camera.camera.direction.set(Vector3.Z);
+					// camera.direction.set(Vector3.Z);
 					float elevation = (float)(Gdx.input.getY() - prevY) / (float)Gdx.graphics.getHeight();
 					float angle = (float)(Gdx.input.getX() - prevX) / (float)Gdx.graphics.getWidth() * 2 * 360;
 					
-					// focus.set(camera.camera.direction);
+					// focus.set(camera.direction);
 					focus.rotate(Vector3.Y, -angle);
 					focus.y -= elevation * 5;
 					focus.nor();
 					
-					camera.camera.direction.lerp(focus, MathUtils.clamp(deltaTime * smoothing, 0, 1));
+					camera.direction.lerp(focus, MathUtils.clamp(deltaTime * smoothing, 0, 1));
 					
 					prevX = Gdx.input.getX();
 					prevY = Gdx.input.getY();
@@ -180,27 +183,27 @@ public class OpenWorldCameraSystem extends EntitySystem
 			
 			// move camera 2D plan (walking)
 			if(!flyingMode){
-				dir.set(camera.camera.direction.x, camera.camera.direction.z).nor();
+				dir.set(camera.direction.x, camera.direction.z).nor();
 				
-				pos.set(camera.camera.position.x, camera.camera.position.z);
+				pos.set(camera.position.x, camera.position.z);
 				
 				Vector2 tan = new Vector2(-dir.y, dir.x);
 				
 				pos.mulAdd(dir, moveFront * speed * deltaTime);
 				pos.mulAdd(tan, moveSide * speed * deltaTime);
 				
-				camera.camera.position.x = pos.x;
-				camera.camera.position.z = pos.y;
+				camera.position.x = pos.x;
+				camera.position.z = pos.y;
 			}
 			// move camera 3D space (flying)
 			else{
 				
-				Vector3 tan3d = camera.camera.direction.cpy().crs(camera.camera.up).nor();
-				Vector3 nor3d = tan3d.cpy().crs(camera.camera.direction).nor();
+				Vector3 tan3d = camera.direction.cpy().crs(camera.up).nor();
+				Vector3 nor3d = tan3d.cpy().crs(camera.direction).nor();
 				
-				camera.camera.position.mulAdd(camera.camera.direction, moveFront * speed * deltaTime);
-				camera.camera.position.mulAdd(tan3d, moveSide * speed * deltaTime);
-				camera.camera.position.mulAdd(nor3d, moveTop * speed * deltaTime);
+				camera.position.mulAdd(camera.direction, moveFront * speed * deltaTime);
+				camera.position.mulAdd(tan3d, moveSide * speed * deltaTime);
+				camera.position.mulAdd(nor3d, moveTop * speed * deltaTime);
 			}
 			
 			
@@ -211,7 +214,7 @@ public class OpenWorldCameraSystem extends EntitySystem
 		// ray cast for Y
 		if(clipToGround){
 			
-			ray.origin.set(camera.camera.position);
+			ray.origin.set(camera.position);
 			ray.origin.y = 0;
 			ray.direction.set(0,-1, 0);
 			ray.origin.mulAdd(ray.direction, -20f);
@@ -228,11 +231,11 @@ public class OpenWorldCameraSystem extends EntitySystem
 				float elevation = p2.y + offset;
 				
 				if(clipToWater){
-					float waterLimit = - env.waterLevel + camera.camera.near * (float)Math.sqrt(2);
+					float waterLimit = - env.waterLevel + camera.near * (float)Math.sqrt(2);
 					elevation = Math.max(elevation, waterLimit);
 				}
-				if(!flyingMode || elevation > camera.camera.position.y){
-					camera.camera.position.y = elevation;
+				if(!flyingMode || elevation > camera.position.y){
+					camera.position.y = elevation;
 				}
 				
 			}
@@ -241,10 +244,10 @@ public class OpenWorldCameraSystem extends EntitySystem
 		}
 		
 		// Apply to logic point of view !
-		openWorldManager.viewPoint.set(camera.camera.position.x, camera.camera.position.z);
+		openWorldManager.viewPoint.set(camera.position.x, camera.position.z);
 		
 		// update
-		camera.camera.update();
+		camera.update();
 	}
 	
 }
