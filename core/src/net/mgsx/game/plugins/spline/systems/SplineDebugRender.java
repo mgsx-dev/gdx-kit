@@ -28,11 +28,12 @@ public class SplineDebugRender extends IteratingSystem {
 		SplineDebugComponent debug = SplineDebugComponent.components.get(entity);
 		PathComponent path = PathComponent.components.get(entity);
 		
-		if(debug.vertices == null){
+		if(debug.dirty || debug.vertices == null){
 			
 			int dotsPerSegment = 100;
 			
 			debug.vertices = new Vector3[dotsPerSegment];
+			debug.dirty = false;
 			
 			for(int i=0 ; i<debug.vertices.length ; i++) debug.vertices[i] = path.path.valueAt(new Vector3(), (float)i / (float)(debug.vertices.length-1));
 		}

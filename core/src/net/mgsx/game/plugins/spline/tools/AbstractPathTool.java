@@ -44,7 +44,7 @@ public abstract class AbstractPathTool extends MultiClickTool
 		computePath();
 		
 		SplineDebugComponent debug = SplineDebugComponent.components.get(entity);
-		debug.vertices = null;
+		debug.dirty = true;
 	}
 	
 	
