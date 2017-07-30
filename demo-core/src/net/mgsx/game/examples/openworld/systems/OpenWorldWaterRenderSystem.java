@@ -4,15 +4,16 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Cubemap;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
+import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer;
+import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer20;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -43,6 +44,8 @@ public class OpenWorldWaterRenderSystem extends EntitySystem
 
 	private ShaderProgram reflectionShader;
 	
+	private ImmediateModeRenderer renderer;
+	
 	@ShaderInfo(vs="shaders/water.vert", fs="shaders/water.frag", inject=false)
 	public static class WaterShader extends ShaderProgramManaged
 	{
@@ -50,27 +53,26 @@ public class OpenWorldWaterRenderSystem extends EntitySystem
 		@Editable public float speed = 1f;
 		@Uniform @Editable public float frequency = 10;
 		@Uniform @Editable public float amplitude = 0.005f;
-		@Uniform @Editable public float transparency = 0.3f;
+		@Uniform @Editable public float transparency = 0.3f; // TODO rename diffusion ?
 		@Uniform transient Cubemap texture;
 		@Uniform transient Vector3 camPos = new Vector3();
 		
 		@Uniform(only="mirror") transient Texture mirrorTexture;
 		@Uniform(only="mirror") transient Vector2 window = new Vector2();
+		
+		@Uniform(only="translucent") @Editable public Color translucency = new Color(.5f, .5f, 1f, .5f);
 	}
 	
 	@Editable public WaterShader waterShader = new WaterShader();
 
-	
-	private ShapeRenderer waterRenderer; //, waterRendererMirror, waterRendererNoMirror;
 	
 	private FrameBuffer mirrorBuffer;
 
 	private GameScreen screen;
 	
 	public OpenWorldWaterRenderSystem(GameScreen screen) {
-		super(GamePipeline.RENDER);
+		super(GamePipeline.RENDER_TRANSPARENT);
 		this.screen = screen;
-		
 		loadShader();
 	}
 	
@@ -99,6 +101,7 @@ public class OpenWorldWaterRenderSystem extends EntitySystem
 	public void update(float deltaTime) {
 		
 		final boolean mirror = waterShader.isEnabled("mirror");
+		final boolean translucent = waterShader.isEnabled("translucent");
 		
 		if(mirror){
 			
@@ -177,25 +180,39 @@ public class OpenWorldWaterRenderSystem extends EntitySystem
 		}
 		
 		if(waterShader.begin()){
-			if(waterRenderer != null) waterRenderer.dispose();
-			waterRenderer = new ShapeRenderer(36, waterShader.program());
+			if(renderer != null) renderer.dispose();
+			renderer = new ImmediateModeRenderer20(4, false, false, 0, waterShader.program());
 		}
 		
-		waterRenderer.setProjectionMatrix(screen.camera.combined);
-		waterRenderer.begin(ShapeType.Filled);
+		renderer.begin(screen.camera.combined, GL20.GL_TRIANGLE_STRIP);
 		
 		float s = screen.camera.far;
 		
-		waterRenderer.box(
-				screen.camera.position.x - s, 
-				environment.waterLevel, // TODO not minus !
-				screen.camera.position.z - s, 
-				s*2, 
-				0, 
-				-s*2); // TODO why negative depth ?
+		Gdx.gl.glEnable(GL20.GL_DEPTH_TEST);
+
+		if(translucent){
+			Gdx.gl.glDisable(GL20.GL_CULL_FACE);
+			Gdx.gl.glEnable(GL20.GL_BLEND);
+			Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+		}
 		
-		waterRenderer.end();
+		float x = screen.camera.position.x;
+		float y = environment.waterLevel;
+		float z = screen.camera.position.z;
+		
+		renderer.vertex(x-s, y, z-s);
+		renderer.vertex(x+s, y, z-s);
+		renderer.vertex(x-s, y, z+s);
+		renderer.vertex(x+s, y, z+s);
+		
+		renderer.end();
 		
 		waterShader.end();
+		
+		if(translucent){
+			//Gdx.gl.glEnable(GL20.GL_CULL_FACE);
+			Gdx.gl.glDisable(GL20.GL_BLEND);
+		}
+		Gdx.gl.glDisable(GL20.GL_DEPTH_TEST);
 	}
 }

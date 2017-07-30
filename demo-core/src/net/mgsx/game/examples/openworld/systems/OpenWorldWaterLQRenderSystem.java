@@ -2,8 +2,9 @@ package net.mgsx.game.examples.openworld.systems;
 
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.gdx.graphics.Cubemap;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer;
+import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer20;
 import com.badlogic.gdx.math.Vector3;
 
 import net.mgsx.game.core.GamePipeline;
@@ -38,7 +39,7 @@ public class OpenWorldWaterLQRenderSystem extends EntitySystem
 	@Editable public WaterShaderLQ waterShaderLQ = new WaterShaderLQ();
 	
 	
-	private ShapeRenderer waterRenderer;
+	private ImmediateModeRenderer renderer;
 	
 	private GameScreen screen;
 	
@@ -55,24 +56,24 @@ public class OpenWorldWaterLQRenderSystem extends EntitySystem
 		waterShaderLQ.texture = sky.getCubeMap();
 		
 		if(waterShaderLQ.begin()){
-			if(waterRenderer != null) waterRenderer.dispose();
-			waterRenderer = new ShapeRenderer(36, waterShaderLQ.program());
+			if(renderer != null) renderer.dispose();
+			renderer = new ImmediateModeRenderer20(4, false, false, 0, waterShaderLQ.program());
 		}
 		
-		waterRenderer.setProjectionMatrix(screen.camera.combined);
-		waterRenderer.begin(ShapeType.Filled);
+		renderer.begin(screen.camera.combined, GL20.GL_TRIANGLE_STRIP);
 
 		float s = screen.camera.far;
 		
-		waterRenderer.box(
-				screen.camera.position.x - s, 
-				env.waterLevel,
-				screen.camera.position.z - s, 
-				s*2, 
-				0, 
-				-s*2); // TODO why negative depth ?
+		float x = screen.camera.position.x;
+		float y = env.waterLevel;
+		float z = screen.camera.position.z;
 		
-		waterRenderer.end();
+		renderer.vertex(x-s, y, z-s);
+		renderer.vertex(x+s, y, z-s);
+		renderer.vertex(x-s, y, z+s);
+		renderer.vertex(x+s, y, z+s);
+		
+		renderer.end();
 		
 		waterShaderLQ.end();
 	}

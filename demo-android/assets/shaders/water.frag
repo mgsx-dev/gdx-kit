@@ -10,6 +10,7 @@ uniform float u_time;
 uniform float u_transparency;
 uniform float u_frequency;
 uniform float u_amplitude;
+uniform vec4 u_translucency;
 uniform samplerCube u_texture;
 uniform vec2 u_window;
 
@@ -149,5 +150,9 @@ void main() {
     color = mix(color, mirrorColor.rgb, mirrorColor.a * 0.9);
 	#endif
 
-    gl_FragColor = vec4(color, 1);
+	#if defined(TRANSLUCENT)
+    gl_FragColor = vec4(color * u_translucency.rgb, u_translucency.a);
+	#else
+    gl_FragColor = vec4(color, 1.0);
+	#endif
 }

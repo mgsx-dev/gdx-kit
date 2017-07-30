@@ -40,6 +40,8 @@ public class OpenWorldEnvSystem extends EntitySystem
 	@Editable public boolean autoSun, autoTime;
 
 	@Editable public float time;
+
+	@Editable public Color waterColor = new Color(.1f, .1f, 1f, 1f);
 	
 	public OpenWorldEnvSystem() {
 		super(GamePipeline.LOGIC);

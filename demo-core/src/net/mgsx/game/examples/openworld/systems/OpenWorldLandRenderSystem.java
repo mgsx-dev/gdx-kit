@@ -257,6 +257,8 @@ public class OpenWorldLandRenderSystem extends IteratingSystem
 		shaderHigh.setUniformMatrix("u_projTrans", screen.camera.combined);
 		shaderHigh.setUniformf("u_sunDirection", environment.sunDirection);
 		shaderHigh.setUniformf("u_fogColor", environment.fogColor);
+		shaderHigh.setUniformf("u_waterColor", environment.waterColor);
+		shaderHigh.setUniformf("u_waterLevel", environment.waterLevel);
 		shaderHigh.setUniformf("u_camDirection", screen.camera.direction);
 		shaderHigh.setUniformf("u_camPosition", screen.camera.position);
 		

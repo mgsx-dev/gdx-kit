@@ -8,6 +8,10 @@ uniform vec3 u_camPosition;
 
 uniform mat4 u_projTrans;
 
+uniform vec4 u_waterColor;
+
+uniform float u_waterLevel;
+
 #if defined(SHADOWS)
 uniform sampler2D u_shadowTexture;
 uniform float u_shadowPCFOffset;
@@ -147,7 +151,7 @@ void main() {
     vec3 N = normalize(v_normal + vec3(0.0,(pnoise(v_position.xz * 20.0)*0.5+0.5) * 0.9,0.0));
     float lum = pow(clamp(-dot(N, u_sunDirection), 0.03, 1.0), 0.5) * 0.5;
     float fog = clamp(gl_FragCoord.z * gl_FragCoord.w, 0.0, 1.0);
-    float fogFact = 1.0 - pow(1.0 - fog, 10.0);
+    float fogFact;
 
     vec3 color = vec3(lum, lum, lum);
 
@@ -160,10 +164,25 @@ void main() {
 
     vec3 earth = vec3(1.0, 0.8, 0.6) * (-pow(1.0 - ptnoise(v_position.xz * 0.3), 5.0)*0.3+1.0);
 
-    color = mix(grass, earth, clamp(v_position.y * 20.0 * abs(pnoise(v_position.xz * 13.2)) + pnoise(v_position.xz * 0.2) * 12.3 - 8.0, 0.0, 1.0)) * color;
+    vec3 diffuse = mix(grass, earth, clamp(v_position.y * 20.0 * abs(pnoise(v_position.xz * 13.2)) + pnoise(v_position.xz * 0.2) * 12.3 - 8.0, 0.0, 1.0));
+
+    vec3 sand = mix(vec3(1.6, 1.6, 0.5),  vec3(1.3, 1.3, 0.5), grassPattern); // TODO config
+    diffuse = mix(diffuse, sand, smoothstep(0.0, 1.0, -v_position.y * 4.0)); // TODO config sand falloff ?
+
+    color *= diffuse;
+
+    // vec3 fogColor = mix(u_fogColor.rgb, u_waterColor.rgb , smoothstep(0.0, 1.0, (-v_position.y -6.6) * 10.0));
+    vec3 fogColor;
+    if(v_position.y < u_waterLevel){
+    	fogColor = u_waterColor.rgb;
+    	fogFact = 1.0 - pow(1.0 - fog, 4.0);
+    }else{
+    	fogColor = u_fogColor.rgb;
+    	fogFact = 1.0 - pow(1.0 - fog, 10.0);
+    }
 
     // add fog
-    color = mix(u_fogColor.rgb * day, color, fogFact);
+    color = mix(fogColor * day, color, fogFact);
 
     color = mix(color, vec3(1.0,1.0,1.0), pow(clamp(-dot(N, u_sunDirection) * dot(normalize(v_position - u_camPosition), u_camDirection), 0.0, 1.0), 30.0));
 
