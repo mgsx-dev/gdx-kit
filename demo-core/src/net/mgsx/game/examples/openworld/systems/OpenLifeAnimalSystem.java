@@ -75,7 +75,7 @@ public class OpenLifeAnimalSystem extends IteratingSystem
 		// query world
 		float cameraY = camera.position.y;
 		float landY = manager.generate(camera.position.x, camera.position.z);
-		float waterY = -env.waterLevel; // XXX why inverted !
+		float waterY = env.waterLevel;
 		boolean aquaticENV = waterY > landY;
 		boolean aquaticPOV = cameraY < waterY;
 		

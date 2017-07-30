@@ -66,7 +66,7 @@ public class OpenWorldWaterLQRenderSystem extends EntitySystem
 		
 		waterRenderer.box(
 				screen.camera.position.x - s, 
-				-env.waterLevel, // TODO not minus !
+				env.waterLevel,
 				screen.camera.position.z - s, 
 				s*2, 
 				0, 

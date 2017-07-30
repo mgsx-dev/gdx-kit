@@ -231,7 +231,7 @@ public class OpenWorldCameraSystem extends EntitySystem
 				float elevation = p2.y + offset;
 				
 				if(clipToWater){
-					float waterLimit = - env.waterLevel + camera.near * (float)Math.sqrt(2);
+					float waterLimit = env.waterLevel + camera.near * (float)Math.sqrt(2);
 					elevation = Math.max(elevation, waterLimit);
 				}
 				if(!flyingMode || elevation > camera.position.y){
