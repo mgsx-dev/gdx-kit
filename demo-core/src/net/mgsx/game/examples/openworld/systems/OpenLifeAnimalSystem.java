@@ -35,6 +35,9 @@ public class OpenLifeAnimalSystem extends IteratingSystem
 	@Asset("openworld/fish.g3dj")
 	public Model fishModel;
 	
+	@Asset("openworld/quadriped.g3dj")
+	public Model quadriModel;
+	
 	@Inject OpenWorldCameraSystem cameraSystem;
 	@Inject OpenWorldManagerSystem manager;
 	@Inject OpenWorldEnvSystem env;
@@ -44,7 +47,11 @@ public class OpenLifeAnimalSystem extends IteratingSystem
 	
 	@Editable public float speed = 0.1f;
 	@Editable public float distance = 5f;
-	@Editable public float maxHeight = 10f;
+	
+	@Editable public float flyingGroundMin = 5f;
+	@Editable public float flyingGroundRange = 10f;
+	@Editable public float aquaticOffset = 1f;
+	
 	
 	@Editable(type=EnumType.UNIT)
 	public float randomness = .2f;
@@ -94,18 +101,20 @@ public class OpenLifeAnimalSystem extends IteratingSystem
 				}
 			}
 			else{
-				// TODO land/bird mix
-				isBird = true;
+				// land/bird mix
+				isBird = MathUtils.randomBoolean();
 			}
 			
 			if(isBird){
 				modelTempalte = birdModel;
 				animation = "Armature|fly-full";
 			}
-			// TODO set template land
-			else{
+			else if(isFish){
 				modelTempalte = fishModel;
 				animation = "Armature|swim-speed";
+			}else{
+				modelTempalte = quadriModel;
+				animation = "Armature|run"; // TODO walk or run depends on speed ...
 			}
 			
 			Entity animal = getEngine().createEntity();
@@ -126,12 +135,14 @@ public class OpenLifeAnimalSystem extends IteratingSystem
 			// - water animals : range from 0+epsilon (ground) to absolute water limit - epsilon
 			// - air anmals : range from max(ground, water)+epsilon to arbitrary limit (no limit actually)
 			if(isFish){
-				pathBuilder.resetLimit().groundMin(0).absoluteMax(waterY);
+				pathBuilder.resetLimit().groundMin(aquaticOffset).absoluteMax(waterY - aquaticOffset);
 			}else if(isBird){
-				pathBuilder.resetLimit().absoluteMin(waterY + 6) // XXX 6m above ground
-					.absoluteMax(waterY + 6 + maxHeight);
+				pathBuilder.resetLimit()
+				//.absoluteMin(waterY + flyingGroundMin)
+				.groundMin(flyingGroundMin)
+				.absoluteMax(waterY + flyingGroundMin + flyingGroundRange);
 			}else{
-				pathBuilder.resetLimit().groundMin(0).groundMax(0).absoluteMin(waterY);
+				pathBuilder.resetLimit().groundMin(0).groundMax(0).absoluteMin(waterY - .5f); // TODO swim
 			}
 			// TODO there might be some swiming animals (limited to sea level but can go there) ...
 			
@@ -198,13 +209,19 @@ public class OpenLifeAnimalSystem extends IteratingSystem
 			return; // TODO free to pool
 		}
 		
-		// TODO fix models coordinate system instead of here
+		// TODO fix models coordinate system instead of here (bird should be fixed)
 		// TODO only birds can rool, other should be Y-up
-		Vector3 base = model.modelInstance.model == birdModel ? Vector3.Z : Vector3.X;
-		float scale = model.modelInstance.model == birdModel ? -1 : 1;
+		if(model.modelInstance.model == birdModel){
+			model.modelInstance.transform.setToRotation(Vector3.Z, direction.nor().scl(-1));
+			model.modelInstance.transform.setTranslation(position);
+		}else{
+			// TODO find an optimized way to avoid matrix inversion !
+			// TODO cross product to roll a little ?
+			model.modelInstance.transform.setToLookAt(direction.nor().scl(-1), Vector3.Y).inv();
+			model.modelInstance.transform.rotate(Vector3.Y, -90);			
+			model.modelInstance.transform.setTranslation(position);
+		}
 		
-		model.modelInstance.transform.setToRotation(base, direction.nor().scl(scale));
-		model.modelInstance.transform.setTranslation(position);
 		model.modelInstance.calculateTransforms();
 	}
 

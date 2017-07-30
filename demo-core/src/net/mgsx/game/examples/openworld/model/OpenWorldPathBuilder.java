@@ -44,7 +44,7 @@ public class OpenWorldPathBuilder {
 		return v;
 	}
 	
-	private float computeHeight(float gndValue)
+	float computeHeight(float gndValue)
 	{
 		float min, max;
 		if(gndMin){
@@ -70,10 +70,13 @@ public class OpenWorldPathBuilder {
 		}else{
 			max = gndValue;
 		}
-		
-		// TODO case of min>max is properly handled ??
-		min = Math.min(min, max);
-		max = Math.max(min, max);
+		// re-clamp min and max to absolute limits
+		if(absMax){
+			min = Math.min(min, absMaxValue);
+		}
+		if(absMin){
+			max = Math.max(max, absMinValue);
+		}
 		
 		float mid = (min + max) * .5f;
 		float randomValue = MathUtils.random(min, max);

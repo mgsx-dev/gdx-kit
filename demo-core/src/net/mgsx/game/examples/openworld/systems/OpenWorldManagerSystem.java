@@ -164,6 +164,8 @@ public class OpenWorldManagerSystem extends EntitySystem
 	 */
 	public float generate(float absoluteX, float absoluteY)
 	{
+		rand.setSeed(this.seed);
+		
 		long seed = this.seed;
 		float amplitude = 1;
 		float sum = 0;
