@@ -29,7 +29,6 @@ import net.mgsx.game.examples.openworld.systems.OpenWorldTimeSystem;
 import net.mgsx.game.examples.openworld.systems.OpenWorldTreeSystem;
 import net.mgsx.game.examples.openworld.systems.OpenWorldWaterLQRenderSystem;
 import net.mgsx.game.examples.openworld.systems.OpenWorldWaterRenderSystem;
-import net.mgsx.game.examples.openworld.systems.ScenarioSystem;
 import net.mgsx.game.examples.openworld.systems.UserObjectSystem;
 import net.mgsx.game.examples.openworld.systems.UserObjectUpdateSystem;
 import net.mgsx.game.examples.openworld.systems.WeatherSystem;
@@ -92,7 +91,6 @@ public class OpenWorldEditorPlugin extends EditorPlugin implements DefaultEditor
 		editor.entityEngine.addSystem(new OpenWorldTreeSystem(editor.game));
 		editor.entityEngine.addSystem(new OpenWorldMapSystem(editor.game));
 		editor.entityEngine.addSystem(new WeatherSystem());
-		editor.entityEngine.addSystem(new ScenarioSystem());
 		editor.entityEngine.addSystem(new UserObjectSystem(editor.game));
 		editor.entityEngine.addSystem(new OpenWorldRainSystem(editor.game));
 		editor.entityEngine.addSystem(new OpenWorldTimeSystem());
@@ -106,7 +104,6 @@ public class OpenWorldEditorPlugin extends EditorPlugin implements DefaultEditor
 		// XXX
 		editor.entityEngine.getSystem(BulletWorldDebugSystem.class).setProcessing(false);
 		editor.entityEngine.getSystem(HeightFieldDebugSystem.class).setProcessing(false);
-		editor.entityEngine.getSystem(ScenarioSystem.class).setProcessing(false);
 		editor.entityEngine.getSystem(OpenWorldMapSystem.class).setProcessing(false);
 		editor.entityEngine.getSystem(G3DCullingSystem.class).culling = false;
 	}

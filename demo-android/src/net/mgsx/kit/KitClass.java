@@ -68,7 +68,6 @@ package net.mgsx.kit;
 	net.mgsx.game.examples.openworld.systems.OpenWorldWaterRenderSystem.class,
 	net.mgsx.game.examples.openworld.systems.OpenWorldWaterRenderSystem.class,
 	net.mgsx.game.examples.openworld.systems.OpenWorldWaterRenderSystem.WaterShader.class,
-	net.mgsx.game.examples.openworld.systems.ScenarioSystem.class,
 	net.mgsx.game.examples.openworld.systems.UserObjectSystem.class,
 	net.mgsx.game.examples.openworld.systems.WeatherSystem.class,
 	net.mgsx.game.examples.openworld.tools.AddElementTool.class,

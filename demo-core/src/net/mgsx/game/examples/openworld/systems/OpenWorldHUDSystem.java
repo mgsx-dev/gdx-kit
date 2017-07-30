@@ -12,6 +12,7 @@ import net.mgsx.game.core.annotations.EditableSystem;
 import net.mgsx.game.examples.openworld.model.OpenWorldRuntimeSettings;
 import net.mgsx.game.examples.openworld.ui.ConnectionView;
 import net.mgsx.game.examples.openworld.ui.SavedGameView;
+import net.mgsx.game.examples.openworld.ui.ScenarioView;
 import net.mgsx.game.plugins.core.systems.HUDSystem;
 import net.mgsx.game.services.gapi.GAPI;
 
@@ -57,6 +58,14 @@ public class OpenWorldHUDSystem extends HUDSystem
 		root.add(view);
 	}
 
+	@Editable
+	public void testScenario() {
+		
+		root.clearChildren();
+		view = new ScenarioView(skin);
+		root.add(view);
+		
+	}
 	@Editable
 	public void testCompleteAch() {
 		
