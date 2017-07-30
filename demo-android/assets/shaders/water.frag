@@ -133,7 +133,7 @@ float snoise(vec3 v, out vec3 gradient)
 
 void main() {
 	vec3 grad;
-	float nzv = snoise(vec3(v_position.xz * u_frequency, u_time), grad);
+	float nzv = snoise(vec3((v_position.xz - 0.5 * u_camPos.xz) * u_frequency, u_time), grad);
 
 	// project view vector on the plane
 	vec3 I = v_position.xyz - u_camPos;

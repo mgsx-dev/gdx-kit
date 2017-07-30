@@ -62,13 +62,16 @@ public class OpenWorldWaterLQRenderSystem extends EntitySystem
 		waterRenderer.setProjectionMatrix(screen.camera.combined);
 		waterRenderer.begin(ShapeType.Filled);
 
-		Vector3 vOffset = Vector3.Zero; //screen.camera.position.cpy().scl(1);
-		float s = 1e3f; // TODO not really that ... should be clipped to camera space ...
+		float s = screen.camera.far;
 		
 		waterRenderer.box(
-				vOffset.x-s, 
-				vOffset.y- env.waterLevel,
-				vOffset.z-s, s*2, 0, -s*2);
+				screen.camera.position.x - s, 
+				-env.waterLevel, // TODO not minus !
+				screen.camera.position.z - s, 
+				s*2, 
+				0, 
+				-s*2); // TODO why negative depth ?
+		
 		waterRenderer.end();
 		
 		waterShaderLQ.end();
