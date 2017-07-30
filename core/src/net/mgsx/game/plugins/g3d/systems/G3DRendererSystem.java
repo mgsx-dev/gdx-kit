@@ -53,6 +53,8 @@ public class G3DRendererSystem extends IteratingSystem
 	@Editable public Vector2 shadowSize = new Vector2(50, 50);
 	@Editable public float shadowNear = .1f;
 	@Editable public float shadowFar = 100f;
+	@Editable public Color fog = new Color(0,0,0,0);
+	
 	private int currentShadowSize;
 	
 	@Editable
@@ -189,8 +191,12 @@ public class G3DRendererSystem extends IteratingSystem
 			if(transform != null) dl.light.position.set(transform.position, 0);
 			environment.add(dl.light);
 		}
+		
+		// TODO cache attributes and set when required (avoid GC)
+		
 		environment.set(new ColorAttribute(ColorAttribute.AmbientLight, ambient));
 		
+		if(fog.a > 0) environment.set(new ColorAttribute(ColorAttribute.Fog, fog));
 		
 		Camera camera = engine.camera;
 		
