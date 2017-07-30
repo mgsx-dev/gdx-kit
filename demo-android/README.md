@@ -1,5 +1,18 @@
 
-# Credentials
+# Open Weather Map configuration
+
+in **local/openweathermap.properties** :
+
+```
+openweathermap.api.key=xxxxxxxxxxxxxxxxxxx
+geo.lon=00.0000000
+geo.lat=00.0000000
+enabled=true
+log=false
+pollingMinutes=10
+```
+
+# Google Play Credentials
 
 Google play service credentials are stored in **assets/openworld/client_secrets.json** file and is
 ignored by GIT. This file is only included in desktop distribution.

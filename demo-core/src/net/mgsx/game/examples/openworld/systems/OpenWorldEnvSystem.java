@@ -33,6 +33,7 @@ public class OpenWorldEnvSystem extends EntitySystem
 	@Editable public float waterLevelRate = .3f;
 	public transient float waterLevel;
 
+	/** range from 0 (sunrise) to 1 (sunset), extra values are night */
 	@Editable(realtime=true) public float timeOfDay;
 	@Editable(realtime=true) public float temperature;
 	
@@ -41,7 +42,6 @@ public class OpenWorldEnvSystem extends EntitySystem
 	@Editable public Color sunsetColor = new Color(.9f, .85f, .70f, 1f);
 	@Editable public Color sunriseColor = new Color(.1f, .1f, .1f, 1f);
 		
-	@Editable public boolean realtime = true;
 	@Inject public WeatherSystem weather;
 	@Editable public boolean autoSun, autoTime;
 
@@ -58,7 +58,10 @@ public class OpenWorldEnvSystem extends EntitySystem
 		time += deltaTime;
 		if(autoTime){
 			Calendar cal = Calendar.getInstance();
-			timeOfDay = cal.get(Calendar.HOUR_OF_DAY); // TODO over 24
+			float ms = cal.get(Calendar.MILLISECOND) / 1000f;
+			float secs = (cal.get(Calendar.SECOND) + ms) / 60f;
+			float minutes = (cal.get(Calendar.MINUTE) + secs) / 60f;
+			timeOfDay = (cal.get(Calendar.HOUR_OF_DAY) + minutes) / 24f;
 		}
 		float angle = ((timeOfDay - weather.sunrise) / (weather.sunset - weather.sunrise));
 		

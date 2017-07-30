@@ -25,19 +25,25 @@ import net.mgsx.game.core.annotations.Inject;
 @EditableSystem
 public class WeatherSystem extends EntitySystem
 {
-	@Editable public boolean mock = true;
+	@Inject OpenWorldSkySystem sky;
+
+	private boolean enabled = false;
+	private long pollingMS = 1000 * 60 * 10;
+	private String openweathermapAkiKey = null;
+	private float geoLon, geoLat;
+	private boolean enableLogging;
+	
+	private volatile boolean weatherDirty;
+	private volatile boolean forecastDirty;
 	
 	private JsonValue lastWeather, lastForeCast;
-	private int jobsRemains = 0;
-	private String openweathermapAkiKey;
 	
-	@Editable public float sunrise, sunset;
+	@Editable(realtime=true) public float sunrise, sunset;
 	
-	public static class OpenWeatherMapData{
-		
-	}
+	private long nextFetchTimeMS;
 	
 	float time = -1;
+	
 	public WeatherSystem() {
 		super(GamePipeline.BEFORE_LOGIC);
 	}
@@ -45,35 +51,42 @@ public class WeatherSystem extends EntitySystem
 	@Override
 	public void addedToEngine(Engine engine) {
 		super.addedToEngine(engine);
-		// injection bug workaround here
-		sky = getEngine().getSystem(OpenWorldSkySystem.class);
-		if(mock){
+		
+		// try to load configuration file
+		FileHandle config = Gdx.files.local("../local/openweathermap.properties");
+		if(config.exists()){
+			try {
+				Properties props = new Properties();
+				props.load(config.read());
+				openweathermapAkiKey = props.get("openweathermap.api.key").toString();
+				geoLon = Float.valueOf(props.get("geo.lon").toString());
+				geoLat = Float.valueOf(props.get("geo.lat").toString());
+				enabled = Boolean.parseBoolean(props.get("enabled").toString());
+				enableLogging = Boolean.parseBoolean(props.get("log").toString());
+				pollingMS = Integer.valueOf(props.get("pollingMinutes").toString()) * 60 * 1000;
+			} catch (IOException e) {
+				Gdx.app.error("OPENWEATHERMAP", "cannot load properties file", e);
+			}
+		}else{
+			Gdx.app.log("NET", "cannot find api config in " + config.path() + " switch to default configuration (mock)");
+		}
+		
+		if(!enabled){
 			lastWeather = new JsonReader().parse(Gdx.files.classpath("openweathermap-weather.json").read());
 			lastForeCast = new JsonReader().parse(Gdx.files.classpath("openweathermap-forecast.json").read());
-			processData();
-		}else{
-			// load API key
-			FileHandle config = Gdx.files.internal("openweathermap.properties");
-			if(config.exists()){
-				try {
-					Properties props = new Properties();
-					props.load(config.read());
-					openweathermapAkiKey = props.get("openweathermap.api.key").toString();
-				} catch (IOException e) {
-					Gdx.app.error("OPENWEATHERMAP", "cannot load properties file", e);
-				}
-			}
+			weatherDirty = true;
+			forecastDirty = true;
 		}
+		nextFetchTimeMS = System.currentTimeMillis();
 	}
 	
-	
-	@Inject public OpenWorldSkySystem sky;
 	private void processData() {
+		// TODO who update who : env/sky/wind get from weather and weather can be manually configurable ?
+		
 		sky.cloudRate = 1f / (0.001f + (float)lastWeather.get("clouds").getDouble("all") / 100f); // In percents
 		sky.cloudSpeed = lastWeather.get("wind").getFloat("speed") * .01f;
 		sky.cloudDarkness = lastWeather.get("clouds").getFloat("all") + 10;
 		sky.cloudDirection.set(Vector2.X).setAngle(lastWeather.get("wind").getFloat("deg"));
-		long date = lastWeather.getLong("dt");
 		long sunrise = lastWeather.get("sys").getLong("sunrise");
 		long sunset = lastWeather.get("sys").getLong("sunset");
 		
@@ -85,62 +98,88 @@ public class WeatherSystem extends EntitySystem
 		cal.setTime(new Date(sunset * 1000));
 		this.sunset = cal.get(Calendar.HOUR_OF_DAY) / 24f;
 		
-		cal.setTime(new Date(date * 1000));
-		float fdate = cal.get(Calendar.HOUR_OF_DAY);
+		// TODO cache forecast ... (40 results 1 every 3 hours => 5 days)
+		try{
+			for(JsonValue forecast : lastForeCast.get("list")){
+				long dt = forecast.get("dt").asLong();
+				cal.setTime(new Date(dt * 1000));
+//				System.out.println(forecast.get("dt_txt").asString());
+//				System.out.println(cal.get(Calendar.HOUR_OF_DAY));
+			}
+		}catch(Exception e){
+			Gdx.app.error("WEATHER", "???", e);
+		}
 	}
+	
+	@Editable
+	public void fetchWeather(){
+		HttpRequest r = new HttpRequest(HttpMethods.GET);
+		r.setUrl("http://api.openweathermap.org/data/2.5/weather?lat=" + geoLat + "&lon=" + geoLon + "&appid=" + openweathermapAkiKey);
+		Gdx.net.sendHttpRequest(r , new HttpResponseListener() {
+			
+			@Override
+			public void handleHttpResponse(HttpResponse httpResponse) {
+				lastWeather = new JsonReader().parse(httpResponse.getResultAsStream());
+				if(enableLogging){
+					FileHandle log = Gdx.files.local("../local/logs/openweathermap-weather-" + System.currentTimeMillis() + ".json");
+					log.writeString(lastWeather.toString(), false);
+					Gdx.app.log("NET", "data logged to " + log.path());
+				}else{
+					Gdx.app.log("NET", "weather fetched");
+				}
+				weatherDirty = true;
+			}
+			@Override
+			public void failed(Throwable t) {
+				Gdx.app.error("NET", "parsing", t);
+			}
+			@Override
+			public void cancelled() {
+			}
+		});
+	}
+	
+	@Editable
+	public void fetchForecast(){
+		HttpRequest r = new HttpRequest(HttpMethods.GET);
+		r.setUrl("http://api.openweathermap.org/data/2.5/forecast?lat=" + geoLat + "&lon=" + geoLon + "&appid=" + openweathermapAkiKey);
+		Gdx.net.sendHttpRequest(r , new HttpResponseListener() {
+			
+			@Override
+			public void handleHttpResponse(HttpResponse httpResponse) {
+				lastForeCast = new JsonReader().parse(httpResponse.getResultAsStream());
+				if(enableLogging){
+					FileHandle log = Gdx.files.local("../local/logs/openweathermap-forecast-" + System.currentTimeMillis() + ".json");
+					log.writeString(lastForeCast.toString(), false);
+					Gdx.app.log("NET", "data logged to " + log.path());
+				}else{
+					Gdx.app.log("NET", "forecast fetched");
+				}
+				forecastDirty = true;
+			}
+			@Override
+			public void failed(Throwable t) {
+				Gdx.app.error("NET", "parsing", t);
+			}
+			@Override
+			public void cancelled() {
+			}
+		});
+	}
+	
 	@Override
 	public void update(float deltaTime) {
-		if(mock) return;
-		if(openweathermapAkiKey == null) return;
-		if(jobsRemains == 0){
-			jobsRemains = -1;
-			
+		if(weatherDirty || forecastDirty){
 			processData();
-			
+			weatherDirty = false;
+			forecastDirty = false;
 		}
-		if(time>0) time -= deltaTime;
-		else{
-			jobsRemains = 2;
-			HttpRequest r = new HttpRequest(HttpMethods.GET);
-			r.setUrl("http://api.openweathermap.org/data/2.5/weather?lat=47.291407&lon=-1.54949&appid=" + openweathermapAkiKey);
-			Gdx.net.sendHttpRequest(r , new HttpResponseListener() {
-				
-				@Override
-				public void handleHttpResponse(HttpResponse httpResponse) {
-					lastWeather = new JsonReader().parse(httpResponse.getResultAsStream());
-					Gdx.app.log("NET", "weather updated");
-					jobsRemains--;
-				}
-				@Override
-				public void failed(Throwable t) {
-					Gdx.app.error("NET", "parsing", t);
-				}
-				@Override
-				public void cancelled() {
-				}
-			});
-			r = new HttpRequest(HttpMethods.GET);
-			r.setUrl("http://api.openweathermap.org/data/2.5/forecast?lat=47.291407&lon=-1.54949&appid=" + openweathermapAkiKey);
-			Gdx.net.sendHttpRequest(r , new HttpResponseListener() {
-				
-				@Override
-				public void handleHttpResponse(HttpResponse httpResponse) {
-					lastForeCast = new JsonReader().parse(httpResponse.getResultAsStream());
-					Gdx.app.log("NET", "weather updated");
-					jobsRemains--;
-				}
-				@Override
-				public void failed(Throwable t) {
-					Gdx.app.error("NET", "parsing", t);
-				}
-				@Override
-				public void cancelled() {
-				}
-			});
-			
+		if(enabled){
+			if(nextFetchTimeMS < System.currentTimeMillis()){
+				fetchWeather();
+				nextFetchTimeMS = System.currentTimeMillis() + pollingMS;
+			}
 		}
-		super.update(deltaTime);
 	}
-
 	
 }
