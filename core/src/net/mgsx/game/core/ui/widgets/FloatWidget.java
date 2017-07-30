@@ -31,17 +31,17 @@ public class FloatWidget extends Label
 		return width;
 	}
 	
-	public FloatWidget(Accessor accessor, boolean dynamic, Skin skin) {
+	public FloatWidget(Accessor accessor, boolean dynamic, boolean readonly, Skin skin) {
 		super("", skin);
-		this.dynamic = accessor.config() != null && accessor.config().realtime();
+		this.dynamic = dynamic;
 		this.accessor = accessor;
 		this.type = accessor.config() != null ? accessor.config().type() : null;
 		setAlignment(Align.center);
 		
-		if(accessor.config() != null && accessor.config().readonly()){
+		if(readonly){
 			setColor(Color.CYAN);
 		}else{
-			setColor(Color.ORANGE);
+			setColor(this.dynamic ? Color.GOLD : Color.ORANGE);
 			addListener(new FocusListener() {
 				@Override
 				public void keyboardFocusChanged(FocusEvent event, Actor actor, boolean focused) {

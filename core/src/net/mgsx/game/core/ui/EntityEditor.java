@@ -156,7 +156,9 @@ public class EntityEditor extends Table
 		table.add(ctrl);
 	}
 	static private void createSlider(final Table table, final Object rootEntity, final Accessor rootField, final Object entity, final Accessor accessor){
-		final Label label = new FloatWidget(accessor, true, table.getSkin());
+		boolean dynamic = rootField.config() != null && rootField.config().realtime();
+		boolean readonly = rootField.config() != null && rootField.config().readonly();
+		final Label label = new FloatWidget(accessor, dynamic, readonly, table.getSkin());
 		table.add(label);
 	}
 	public static Button createBoolean(Skin skin, boolean value) 
