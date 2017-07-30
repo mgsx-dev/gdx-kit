@@ -10,11 +10,13 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalShadowLight;
 import com.badlogic.gdx.graphics.g3d.model.MeshPart;
 import com.badlogic.gdx.graphics.g3d.model.Node;
 import com.badlogic.gdx.graphics.g3d.model.NodePart;
+import com.badlogic.gdx.graphics.g3d.utils.DepthShaderProvider;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
@@ -29,9 +31,11 @@ import net.mgsx.game.core.helpers.ShaderProgramHelper;
 import net.mgsx.game.examples.openworld.components.LandMeshComponent;
 import net.mgsx.game.examples.openworld.components.ObjectMeshComponent;
 import net.mgsx.game.examples.openworld.components.TreesComponent;
+import net.mgsx.game.examples.openworld.components.WildLifeComponent;
 import net.mgsx.game.examples.openworld.model.OpenWorldPool;
 import net.mgsx.game.examples.openworld.model.OpenWorldRuntimeSettings;
 import net.mgsx.game.plugins.core.components.HeightFieldComponent;
+import net.mgsx.game.plugins.g3d.components.G3DModel;
 
 @Storable("ow.lands")
 @SuppressWarnings("deprecation")
@@ -47,6 +51,8 @@ public class OpenWorldLandRenderSystem extends IteratingSystem
 	private GameScreen screen;
 	
 	private DirectionalShadowLight shadowLight;
+	
+	private ModelBatch shadowBatch;
 	
 	@Editable public boolean shadowEnabled = false;
 	@Editable public int shadowMapSize = 1024;
@@ -85,6 +91,12 @@ public class OpenWorldLandRenderSystem extends IteratingSystem
 		depthShader = ShaderProgramHelper.reload(depthShader,
 			Gdx.files.internal("shaders/depth.vert"), 
 			Gdx.files.internal("shaders/depth.frag"));
+		
+		if(shadowBatch != null) shadowBatch.dispose();
+		shadowBatch = new ModelBatch(new DepthShaderProvider());
+		
+		if(shadowLight != null) shadowLight.dispose();
+		shadowLight = new DirectionalShadowLight(shadowMapSize, shadowMapSize, shadowViewportWidth, shadowViewportHeight, shadowNear, shadowFar);
 	}
 	
 	@Override
@@ -105,8 +117,6 @@ public class OpenWorldLandRenderSystem extends IteratingSystem
 		});
 		
 		loadShaders();
-		
-		shadowLight = new DirectionalShadowLight(shadowMapSize, shadowMapSize, shadowViewportWidth, shadowViewportHeight, shadowNear, shadowFar);
 	}
 	
 	private float[] vertices;
@@ -233,6 +243,17 @@ public class OpenWorldLandRenderSystem extends IteratingSystem
 			}
 			
 			depthShader.end();
+			
+			
+			shadowBatch.begin(shadowLight.getCamera());
+			
+			for(Entity entity : getEngine().getEntitiesFor(Family.all(WildLifeComponent.class, G3DModel.class).get())){
+				G3DModel model = G3DModel.components.get(entity);
+				shadowBatch.render(model.modelInstance);
+			}
+			shadowBatch.end();
+			
+			
 			shadowLight.end();
 		}
 		

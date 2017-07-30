@@ -2,7 +2,10 @@ package net.mgsx.game.examples.openworld.systems;
 
 import java.util.Calendar;
 
+import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntitySystem;
+import com.badlogic.ashley.core.Family;
+import com.badlogic.ashley.utils.ImmutableArray;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
@@ -13,12 +16,15 @@ import net.mgsx.game.core.annotations.EditableSystem;
 import net.mgsx.game.core.annotations.EnumType;
 import net.mgsx.game.core.annotations.Inject;
 import net.mgsx.game.core.annotations.Storable;
+import net.mgsx.game.plugins.g3d.components.DirectionalLightComponent;
+import net.mgsx.game.plugins.g3d.systems.G3DRendererSystem;
 
 @Storable(value="ow.env")
 @EditableSystem
 public class OpenWorldEnvSystem extends EntitySystem
 {
 	@Inject OpenWorldManagerSystem manager;
+	@Inject G3DRendererSystem g3dRender;
 	
 	@Editable public Color fogColor = new Color(1.0f, 0.8f, 0.7f, 1.0f);
 	
@@ -52,7 +58,7 @@ public class OpenWorldEnvSystem extends EntitySystem
 		time += deltaTime;
 		if(autoTime){
 			Calendar cal = Calendar.getInstance();
-			timeOfDay = cal.get(Calendar.HOUR_OF_DAY);
+			timeOfDay = cal.get(Calendar.HOUR_OF_DAY); // TODO over 24
 		}
 		float angle = ((timeOfDay - weather.sunrise) / (weather.sunset - weather.sunrise));
 		
@@ -87,6 +93,25 @@ public class OpenWorldEnvSystem extends EntitySystem
 		}
 		
 		waterLevel = manager.scale * waterLevelRate;
+		
+		
+		float luminosity = MathUtils.clamp(timeOfDay * (1-timeOfDay) * 4, 0, 1) * 2;
+		
+		// synchronize G3DRendering
+		g3dRender.fog.set(fogColor);
+		g3dRender.ambient.set(fogColor).mul(luminosity);
+		
+		// create a directional light if needed
+		ImmutableArray<Entity> allDirLights = getEngine().getEntitiesFor(Family.all(DirectionalLightComponent.class).get());
+		DirectionalLightComponent firstLight;
+		if(allDirLights.size() < 1){
+			firstLight = getEngine().createComponent(DirectionalLightComponent.class);
+			getEngine().addEntity(getEngine().createEntity().add(firstLight));
+		}else{
+			firstLight = DirectionalLightComponent.components.get(allDirLights.first());
+		}
+		firstLight.light.direction.set(sunDirection);
+		firstLight.light.color.set(fogColor).mul(luminosity);
 	}
 	
 }

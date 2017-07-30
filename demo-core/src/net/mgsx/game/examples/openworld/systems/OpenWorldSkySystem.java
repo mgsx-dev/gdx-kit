@@ -144,8 +144,8 @@ public class OpenWorldSkySystem extends EntitySystem
 				
 				// TODO render geometries
 				fboCam.position.set(screen.camera.position);
-				fboCam.position.y = 0; // XXX offset
-				fboCam.near = 10f;
+				fboCam.position.y = 3; // XXX offset
+				fboCam.near = 50;
 				fboCam.far = 3000;
 				
 				fboCubeMap.getSide().getUp(fboCam.up);
