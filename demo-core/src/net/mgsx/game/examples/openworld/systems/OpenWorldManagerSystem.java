@@ -8,6 +8,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 
 import net.mgsx.game.core.GamePipeline;
+import net.mgsx.game.core.PostInitializationListener;
 import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.core.annotations.EditableSystem;
 import net.mgsx.game.core.annotations.EnumType;
@@ -23,7 +24,7 @@ import net.mgsx.game.plugins.procedural.model.ClassicalPerlinNoise;
 
 @Storable(value="ow.manager")
 @EditableSystem
-public class OpenWorldManagerSystem extends EntitySystem
+public class OpenWorldManagerSystem extends EntitySystem implements PostInitializationListener
 {
 	@Editable public float scale = 10;
 	@Editable public float frequency = .2f;
@@ -49,7 +50,10 @@ public class OpenWorldManagerSystem extends EntitySystem
 	
 	public OpenWorldManagerSystem() {
 		super(GamePipeline.LOGIC);
-		
+	}
+	
+	@Override
+	public void onPostInitialization() {
 		clear();
 	}
 	

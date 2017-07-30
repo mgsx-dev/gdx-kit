@@ -20,6 +20,7 @@ import com.badlogic.gdx.utils.BufferUtils;
 
 import net.mgsx.game.core.GamePipeline;
 import net.mgsx.game.core.GameScreen;
+import net.mgsx.game.core.PostInitializationListener;
 import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.core.annotations.EditableSystem;
 import net.mgsx.game.core.annotations.Inject;
@@ -28,7 +29,7 @@ import net.mgsx.game.core.helpers.ShaderProgramHelper;
 
 @Storable(value="ow.sky")
 @EditableSystem
-public class OpenWorldSkySystem extends EntitySystem
+public class OpenWorldSkySystem extends EntitySystem implements PostInitializationListener
 {
 	@Inject OpenWorldLandRenderSystem landRenderer;
 	@Inject OpenWorldEnvSystem environment;
@@ -111,7 +112,10 @@ public class OpenWorldSkySystem extends EntitySystem
 	
 		renderer = new ShapeRenderer(36, bgShader);
 		// skyRenderer = new ShapeRenderer(36, skyShader);
-		
+	}
+	
+	@Override
+	public void onPostInitialization() {
 		genEnv();
 	}
 	
