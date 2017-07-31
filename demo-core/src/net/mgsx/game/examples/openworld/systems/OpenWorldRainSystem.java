@@ -25,6 +25,7 @@ import net.mgsx.game.core.storage.SystemSettingsListener;
 public class OpenWorldRainSystem extends EntitySystem implements SystemSettingsListener
 {
 	@Inject OpenWorldTimeSystem timeSystem;
+	@Inject WeatherSystem weather;
 	
 	private Mesh mesh;
 	private GameScreen screen;
@@ -34,8 +35,11 @@ public class OpenWorldRainSystem extends EntitySystem implements SystemSettingsL
 	@ShaderInfo(vs="shaders/rain.vert", fs="shaders/rain.frag")
 	public static class RainShader extends ShaderProgramManaged 
 	{
-		@Editable @Uniform 
-		public Color color = new Color(5f, .5f, 1f, .3f);
+		@Editable
+		public Color tint = new Color(5f, .5f, 1f, 1f);
+		
+		@Uniform
+		transient protected Color color = new Color(5f, .5f, 1f, .3f);
 		
 		@Editable @Uniform 
 		public float size = 100;
@@ -100,6 +104,9 @@ public class OpenWorldRainSystem extends EntitySystem implements SystemSettingsL
 	@Override
 	public void update(float deltaTime) 
 	{
+		rainShader.color.set(rainShader.tint);
+		rainShader.color.a *= weather.rainRate;
+		
 		if(rainShader.color.a <= 0) return;
 
 		// XXX fix when no settings

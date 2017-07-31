@@ -14,6 +14,7 @@ import com.badlogic.gdx.graphics.glutils.FrameBufferCubemap;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.BufferUtils;
@@ -33,6 +34,7 @@ public class OpenWorldSkySystem extends EntitySystem implements PostInitializati
 {
 	@Inject OpenWorldLandRenderSystem landRenderer;
 	@Inject OpenWorldEnvSystem environment;
+	@Inject WeatherSystem weather;
 	
 	@Editable public boolean debugFaces = false;
 	
@@ -40,8 +42,6 @@ public class OpenWorldSkySystem extends EntitySystem implements PostInitializati
 	
 	@Editable public boolean realtime = false;
 	
-	@Editable public float cloudSpeed = 0.1f;
-	@Editable public float cloudRate = 2f;
 	@Editable public float cloudDarkness = 3f;
 	@Editable public float parallax = 1f;
 	
@@ -55,6 +55,8 @@ public class OpenWorldSkySystem extends EntitySystem implements PostInitializati
 	
 	private ShapeRenderer renderer;
 	private GameScreen screen;
+	
+	private float cloudTime; // TODO should trace offset, since direction can change (need shader modifictions)
 	
 	public OpenWorldSkySystem(GameScreen screen) {
 		super(GamePipeline.RENDER);
@@ -125,6 +127,8 @@ public class OpenWorldSkySystem extends EntitySystem implements PostInitializati
 	@Override
 	public void update(float deltaTime) 
 	{
+		cloudTime += deltaTime * weather.windSpeed / 400f; // map from km/h to texCoord
+		
 		if(cubeMapDirty || realtime) {
 			
 			prepareSky();
@@ -208,10 +212,10 @@ public class OpenWorldSkySystem extends EntitySystem implements PostInitializati
 		skyShader.begin();
 		skyShader.setUniformf("u_sunDirection", environment.sunDirection);
 		skyShader.setUniformf("u_fogColor", environment.fogColor);
-		skyShader.setUniformf("u_cloudTime", environment.time * cloudSpeed);
-		skyShader.setUniformf("u_cloudRate", cloudRate);
+		skyShader.setUniformf("u_cloudTime", cloudTime);
+		skyShader.setUniformf("u_cloudRate", MathUtils.lerp(5, .5f, weather.cloudRate));
 		skyShader.setUniformf("u_cloudDarkness", cloudDarkness);
-		skyShader.setUniformf("u_cloudDirection", cloudDirection);
+		skyShader.setUniformf("u_cloudDirection", cloudDirection.set(Vector2.Y).rotate(-weather.windAngle));
 		skyShader.end();
 	}
 	

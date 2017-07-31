@@ -13,13 +13,13 @@ import com.badlogic.gdx.Net.HttpRequest;
 import com.badlogic.gdx.Net.HttpResponse;
 import com.badlogic.gdx.Net.HttpResponseListener;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
 
 import net.mgsx.game.core.GamePipeline;
 import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.core.annotations.EditableSystem;
+import net.mgsx.game.core.annotations.EnumType;
 import net.mgsx.game.core.annotations.Inject;
 
 @EditableSystem
@@ -27,6 +27,29 @@ public class WeatherSystem extends EntitySystem
 {
 	@Inject OpenWorldSkySystem sky;
 
+	@Editable(type=EnumType.UNIT, realtime=true) 
+	public float cloudRate = 0.5f;
+	
+	/** km/h */
+	@Editable(type=EnumType.UNIT, realtime=true)
+	public float windSpeed = 20;
+	
+	/** 0 north, 90 east */
+	@Editable(realtime=true) 
+	public float windAngle = 0;
+	
+	@Editable(type=EnumType.UNIT, realtime=true)
+	public float rainRate = 0;
+	
+	/** in ° Celsius */
+	@Editable(realtime=true)
+	public float temperature = 20;
+	
+	@Editable(type=EnumType.UNIT, realtime=true)
+	public float humidity = 0;
+	
+	
+	
 	private boolean enabled = false;
 	private long pollingMS = 1000 * 60 * 10;
 	private String openweathermapAkiKey = null;
@@ -45,7 +68,7 @@ public class WeatherSystem extends EntitySystem
 	float time = -1;
 	
 	public WeatherSystem() {
-		super(GamePipeline.BEFORE_LOGIC);
+		super(GamePipeline.INPUT);
 	}
 	
 	@Override
@@ -84,13 +107,21 @@ public class WeatherSystem extends EntitySystem
 		// TODO who update who : env/sky/wind get from weather and weather can be manually configurable ?
 		
 		try{
-			// TODO just cache cloud rate normalized and code mapping in sky system. Idem for rain ...etc
-			sky.cloudRate = 1f / (0.001f + (float)lastWeather.get("clouds").getDouble("all") / 100f); // In percents
-			sky.cloudSpeed = lastWeather.get("wind").getFloat("speed") * .01f;
-			sky.cloudDarkness = lastWeather.get("clouds").getFloat("all") + 10;
+			cloudRate = lastWeather.get("clouds").getFloat("all", 0) / 100f;
 			
-			// sometime deg is not set, maybe 0 if default ...
-			sky.cloudDirection.set(Vector2.X).setAngle(lastWeather.get("wind").getFloat("deg", 0));
+			// convert m/s to km/h
+			windSpeed = lastWeather.get("wind").getFloat("speed", 0) * 60f / 1000f;
+			
+			// 0 for north, 90 for east
+			windAngle = lastWeather.get("wind").getFloat("deg", 0);
+			
+			// From this source, mm/m²/s can be mapped from 0 to 8
+			// http://pluiesextremes.meteo.fr/france-metropole/Intensite-de-precipitations.html
+			rainRate = lastWeather.has("rain") ? (lastWeather.get("rain").getFloat("3h", 0) / 3f) / 8f : 0;
+			
+			temperature = lastWeather.get("main").getFloat("temp", 0);
+			
+			humidity = lastWeather.get("main").getFloat("humidity", 0);
 			
 			long sunrise = lastWeather.get("sys").getLong("sunrise");
 			long sunset = lastWeather.get("sys").getLong("sunset");
@@ -118,7 +149,7 @@ public class WeatherSystem extends EntitySystem
 	@Editable
 	public void fetchWeather(){
 		HttpRequest r = new HttpRequest(HttpMethods.GET);
-		r.setUrl("http://api.openweathermap.org/data/2.5/weather?lat=" + geoLat + "&lon=" + geoLon + "&appid=" + openweathermapAkiKey);
+		r.setUrl("http://api.openweathermap.org/data/2.5/weather?lat=" + geoLat + "&lon=" + geoLon + "&units=metric&appid=" + openweathermapAkiKey);
 		Gdx.net.sendHttpRequest(r , new HttpResponseListener() {
 			
 			@Override
@@ -146,7 +177,7 @@ public class WeatherSystem extends EntitySystem
 	@Editable
 	public void fetchForecast(){
 		HttpRequest r = new HttpRequest(HttpMethods.GET);
-		r.setUrl("http://api.openweathermap.org/data/2.5/forecast?lat=" + geoLat + "&lon=" + geoLon + "&appid=" + openweathermapAkiKey);
+		r.setUrl("http://api.openweathermap.org/data/2.5/forecast?lat=" + geoLat + "&lon=" + geoLon + "&units=metric&appid=" + openweathermapAkiKey);
 		Gdx.net.sendHttpRequest(r , new HttpResponseListener() {
 			
 			@Override
