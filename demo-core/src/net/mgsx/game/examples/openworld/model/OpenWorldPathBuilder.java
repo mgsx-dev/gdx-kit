@@ -31,7 +31,7 @@ public class OpenWorldPathBuilder {
 		v.x = MathUtils.cos(angle) * distance;
 		v.z = MathUtils.sin(angle) * distance;
 		v.add(a);
-		v.y = computeHeight(manager.generate(v.x, v.z));
+		v.y = computeHeight(manager.generateAltitude(v.x, v.z));
 		return v;
 	}
 	
@@ -40,7 +40,7 @@ public class OpenWorldPathBuilder {
 		Vector2 delta = new Vector2(b.x, b.z).sub(a.x, a.z).nor().rotate(angle).scl(distance);
 		v.x = b.x + delta.x;
 		v.z = b.z + delta.y;
-		v.y = computeHeight(manager.generate(v.x, v.z));
+		v.y = computeHeight(manager.generateAltitude(v.x, v.z));
 		return v;
 	}
 	
@@ -94,7 +94,7 @@ public class OpenWorldPathBuilder {
 			if(controlPoints[i] == null) controlPoints[i] = new Vector3();
 		}
 		controlPoints[0].set(initialPosition);
-		controlPoints[0].y = computeHeight(manager.generate(initialPosition.x, initialPosition.z));
+		controlPoints[0].y = computeHeight(manager.generateAltitude(initialPosition.x, initialPosition.z));
 		randomXZ(controlPoints[1], controlPoints[0]);
 		for(int i=2 ; i<controlPoints.length ; i++){
 			randomXZ(controlPoints[i], controlPoints[i-2], controlPoints[i-1]);

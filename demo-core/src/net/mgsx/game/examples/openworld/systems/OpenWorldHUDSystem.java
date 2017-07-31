@@ -1,5 +1,8 @@
 package net.mgsx.game.examples.openworld.systems;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -9,12 +12,14 @@ import de.golfgl.gdxgamesvcs.IGameServiceListener;
 import net.mgsx.game.core.annotations.Asset;
 import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.core.annotations.EditableSystem;
+import net.mgsx.game.examples.openworld.model.OpenWorldGame;
 import net.mgsx.game.examples.openworld.model.OpenWorldRuntimeSettings;
 import net.mgsx.game.examples.openworld.ui.ConnectionView;
 import net.mgsx.game.examples.openworld.ui.SavedGameView;
 import net.mgsx.game.examples.openworld.ui.ScenarioView;
 import net.mgsx.game.plugins.core.systems.HUDSystem;
 import net.mgsx.game.services.gapi.GAPI;
+import net.mgsx.game.services.gapi.SavedGame;
 
 @EditableSystem
 public class OpenWorldHUDSystem extends HUDSystem
@@ -56,6 +61,16 @@ public class OpenWorldHUDSystem extends HUDSystem
 		root.clearChildren();
 		view = new SavedGameView(skin, getEngine());
 		root.add(view);
+	}
+	
+	// XXX workaround for listeners bug !
+	@Editable
+	public void savedGames() 
+	{
+		// TODO refactor fielname formatting in saved game ?
+		SavedGame game = GAPI.service.createGame();
+		game.name = "save-" + new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(new Date());
+		GAPI.service.saveGame(game, OpenWorldGame.save(getEngine()));
 	}
 
 	@Editable

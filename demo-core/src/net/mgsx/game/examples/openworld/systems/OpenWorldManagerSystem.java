@@ -30,7 +30,16 @@ public class OpenWorldManagerSystem extends EntitySystem implements PostInitiali
 	@Editable public float frequency = .2f;
 	@Editable public float persistence = .5f;
 	@Editable public int octaves = 3;
+	
+	/** this is the main game seed, different for each game, all other seeds are
+	 * based on this seed. */
 	@Editable(type=EnumType.RANDOM) public long seed = 0xdeadbeef;
+	
+	public static final int SEED_LAYER_ALTITUDE = 0;
+	public static final int SEED_LAYER_FLORA = 1;
+	public static final int SEED_LAYERS_COUNT = 2;
+	
+	private long [] seedLayers = new long[SEED_LAYERS_COUNT];
 	
 	private transient Entity [] lands;
 	private transient Entity [] oldLands;
@@ -88,6 +97,12 @@ public class OpenWorldManagerSystem extends EntitySystem implements PostInitiali
 		logicWidth = logicHeight = logicSize;
 		lands = new Entity[logicWidth * logicHeight];
 		oldLands = new Entity[logicWidth * logicHeight];
+		
+		// build seed layers
+		rand.setSeed(seed);
+		for(int i=0 ; i<seedLayers.length ; i++){
+			seedLayers[i] = rand.nextLong();
+		}
 	}
 	
 	private void removeCell(Entity entity){
@@ -166,32 +181,28 @@ public class OpenWorldManagerSystem extends EntitySystem implements PostInitiali
 	 * @param absoluteY
 	 * @return
 	 */
-	public float generate(float absoluteX, float absoluteY)
+	public float generateAltitude(float absoluteX, float absoluteY)
 	{
-		rand.setSeed(this.seed);
+		rand.setSeed(this.seedLayers[SEED_LAYER_ALTITUDE]);
 		
-		long seed = this.seed;
 		float amplitude = 1;
 		float sum = 0;
 		float frequency = this.frequency;
 		float value = 0;
 		for(int i=0 ; i<octaves ; i++){
-			noise.seed(seed);
+			noise.seed(rand.nextLong());
 			value += noise.get(absoluteX * frequency, absoluteY * frequency) * amplitude;
 			sum += amplitude;
 			amplitude *= persistence;
 			frequency *= 2;
-			seed = rand.nextLong();
 		}
 		// normalized values
 		return value * scale / sum;
 	}
 	
 	// TODO extract absolute generator part from sampling part (refactor with generate absolute ...)
-	public void generate(Entity entity, float offsetWorldX, float offsetWorldY)
+	private void generate(Entity entity, float offsetWorldX, float offsetWorldY)
 	{
-		rand.setSeed(this.seed);
-		
 		int width = verticesPerCell;
 		int height = verticesPerCell;
 		
@@ -206,12 +217,12 @@ public class OpenWorldManagerSystem extends EntitySystem implements PostInitiali
 		// reset from pool
 		for(int i=0 ; i<extraValues.length ; i++) extraValues[i] = 0;
 		
-		long seed = this.seed;
+		rand.setSeed(this.seedLayers[SEED_LAYER_ALTITUDE]);
 		float amplitude = 1;
 		float sum = 0;
 		float frequency = this.frequency;
 		for(int i=0 ; i<octaves ; i++){
-			noise.seed(seed);
+			noise.seed(rand.nextLong());
 			for(int ey=0 ; ey<eHeight ; ey++){
 				for(int ex=0 ; ex<eWidth ; ex++){
 					int x = ex - 1;
@@ -228,7 +239,6 @@ public class OpenWorldManagerSystem extends EntitySystem implements PostInitiali
 			sum += amplitude;
 			amplitude *= persistence;
 			frequency *= 2;
-			seed = rand.nextLong();
 		}
 		// normalized values
 		for(int y=0 ; y<eHeight ; y++){
