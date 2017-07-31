@@ -26,4 +26,25 @@ public class StringHelper {
 		}
 		return result;
 	}
+
+	public static String humanBytes(double value) {
+		String suffix = " B";
+		if(value > 1024){
+			value /= 1024;
+			suffix = " KB";
+		}
+		if(value > 1024){
+			value /= 1024;
+			suffix = " MB";
+		}
+		if(value > 1024){
+			value /= 1024;
+			suffix = " GB";
+		}
+		if(value > 1024){
+			value /= 1024;
+			suffix = " TB";
+		}
+		return String.valueOf(Math.round(value * 100.0) / 100.0) + suffix;
+	}
 }
