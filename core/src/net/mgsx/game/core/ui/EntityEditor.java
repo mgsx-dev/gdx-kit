@@ -4,6 +4,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
@@ -143,6 +144,7 @@ public class EntityEditor extends Table
 	
 	private static void createSlider2D(Table table, Object entity, String name, final Quaternion q) {
 		Label ctrl = new Label("CTRL", table.getSkin());
+		// TODO ? ctrl.setTouchable(Touchable.enabled);
 		ctrl.addListener(new DragListener(){
 			Quaternion m = new Quaternion();
 			@Override
@@ -150,6 +152,7 @@ public class EntityEditor extends Table
 				float dx = getDeltaX();
 				float dy = getDeltaY();
 				q.mul(m.setEulerAngles(dx, dy,0));
+				event.getStage().cancelTouchFocusExcept(this, event.getTarget());
 				event.cancel();
 			}
 		});
@@ -277,6 +280,17 @@ public class EntityEditor extends Table
 			createSlider(sub, entity, accessor, v, new FieldAccessorWrapper(accessor, "x"));
 			sub.add(",");
 			createSlider(sub, entity, accessor, v, new FieldAccessorWrapper(accessor, "y"));
+			sub.add(")");
+			table.add(sub);
+		}else if(accessor.getType() == Vector3.class){
+			Vector3 v = (Vector3)accessor.get();
+			Table sub = new Table(table.getSkin());
+			sub.add("(");
+			createSlider(sub, entity, accessor, v, new FieldAccessorWrapper(accessor, "x"));
+			sub.add(",");
+			createSlider(sub, entity, accessor, v, new FieldAccessorWrapper(accessor, "y"));
+			sub.add(",");
+			createSlider(sub, entity, accessor, v, new FieldAccessorWrapper(accessor, "z"));
 			sub.add(")");
 			table.add(sub);
 		}else if(accessor.getType() == Quaternion.class){

@@ -13,6 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.FocusListener;
 import com.badlogic.gdx.utils.Align;
 
 import net.mgsx.game.core.annotations.EnumType;
+import net.mgsx.game.core.helpers.StringHelper;
 import net.mgsx.game.core.ui.accessors.Accessor;
 import net.mgsx.game.core.ui.events.SetEvent;
 
@@ -135,27 +136,7 @@ public class FloatWidget extends Label
 	
 	private void updateValue(){
 		if(type == EnumType.BYTES){
-			// format bytes
-			float value = getValue();
-			String suffix = "";
-			if(value > 1024){
-				value /= 1024;
-				suffix = " Ko";
-			}
-			if(value > 1024){
-				value /= 1024;
-				suffix = " Mo";
-			}
-			if(value > 1024){
-				value /= 1024;
-				suffix = " Go";
-			}
-			if(value > 1024){
-				value /= 1024;
-				suffix = " To";
-			}
-			String formatted = String.valueOf(Math.round(value * 100) / 100f) + suffix;
-			setText(formatted);
+			setText(StringHelper.humanBytes(getValue()));
 		}else{
 			setText(String.valueOf(getValue()));
 		}
