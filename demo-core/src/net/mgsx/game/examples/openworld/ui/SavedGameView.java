@@ -1,36 +1,30 @@
 package net.mgsx.game.examples.openworld.ui;
 
-import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import java.io.StringWriter;
-import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import com.badlogic.gdx.math.Vector3;
+import com.badlogic.ashley.core.Engine;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.Json;
 
+import net.mgsx.game.examples.openworld.model.OpenWorldGame;
 import net.mgsx.game.services.gapi.GAPI;
 import net.mgsx.game.services.gapi.SavedGame;
 
 // TODO threading for all remote calls
 // TODO don't recall service some times : just sync local lists !
-
 public class SavedGameView extends Table
 {
-
-	public static class DummyGameData {
-		public long seed = 0;
-		public Vector3 position = new Vector3();
-	}
+	private Engine engine;
 	
-	public SavedGameView(Skin skin) {
+	public SavedGameView(Skin skin, Engine engine) {
 		super(skin);
+		this.engine = engine;
 		setBackground("default-window");
 		buildUI();
 	}
@@ -90,17 +84,10 @@ public class SavedGameView extends Table
 		// TODO get form engine
 		
 		SavedGame game = GAPI.service.createGame();
-		game.name = "save-" + DateFormat.getInstance().format(new Date());
 		
-		DummyGameData gameData = new DummyGameData();
-		gameData.seed = 0xdeadbeef;
-		gameData.position.set(3.2f, 6.5f, 8.1f);
+		game.name = "save-" + new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(new Date());
 		
-		Json json = new Json();
-		StringWriter writer = new StringWriter();
-		json.toJson(gameData, writer);
-		
-		GAPI.service.saveGame(game, new ByteArrayInputStream(writer.toString().getBytes()));
+		GAPI.service.saveGame(game, OpenWorldGame.save(engine));
 		
 		buildUI(); // TODO optimize by reduce remote API calls
 	}
@@ -108,14 +95,7 @@ public class SavedGameView extends Table
 	private void loadGame(final SavedGame game) {
 		InputStream stream = GAPI.service.loadGame(game);
 		
-		Json json = new Json();
-		
-		DummyGameData gameData = json.fromJson(DummyGameData.class, stream);
-		
-		System.out.println(gameData.seed);
-		System.out.println(gameData.position);
-		
-		// TODO set to engine
+		OpenWorldGame.load(engine, stream);
 	}
 	
 	private void deleteGame(final SavedGame game) {

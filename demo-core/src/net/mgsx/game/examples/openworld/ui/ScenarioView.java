@@ -21,7 +21,6 @@ public class ScenarioView extends Table
 	{
 		super(skin);
 		
-		OpenWorldModel.load(); // TODO lazy ?
 		String introText = OpenWorldModel.map.root().child("quests").child("intro").child(0).asString();
 		
 		// TODO put font in skin or create a game skin for open world

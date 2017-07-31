@@ -64,7 +64,6 @@ public class ConnectionView extends Table
 
 	protected void bgConnect(String user) {
 		try {
-			GAPI.service.init("OpenWorld");
 			GAPI.service.connect(user);
 			
 			OpenWorldRepository.achievements = GAPI.service.fetchAchievements();

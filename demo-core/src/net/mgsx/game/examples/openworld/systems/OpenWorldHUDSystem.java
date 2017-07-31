@@ -54,7 +54,7 @@ public class OpenWorldHUDSystem extends HUDSystem
 	public void showSavedGames() 
 	{
 		root.clearChildren();
-		view = new SavedGameView(skin);
+		view = new SavedGameView(skin, getEngine());
 		root.add(view);
 	}
 

@@ -27,14 +27,13 @@ import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.core.annotations.Inject;
 import net.mgsx.game.core.annotations.Storable;
 import net.mgsx.game.core.helpers.AssetHelper;
-import net.mgsx.game.core.storage.SystemSettingsListener;
 import net.mgsx.game.examples.openworld.components.ObjectMeshComponent;
 import net.mgsx.game.examples.openworld.model.OpenWorldElement;
 import net.mgsx.game.examples.openworld.utils.SmoothBoxShapeBuilder;
 import net.mgsx.game.plugins.bullet.system.BulletWorldSystem;
 
 @Storable(value="ow.user-objects", auto=true)
-public class UserObjectSystem extends EntitySystem implements SystemSettingsListener
+public class UserObjectSystem extends EntitySystem
 {
 	public static class UserObject {
 		transient Entity entity; // null if not on stage
@@ -45,10 +44,6 @@ public class UserObjectSystem extends EntitySystem implements SystemSettingsList
 	@Inject BulletWorldSystem bulletWorld;
 	
 	private Array<UserObject> userObjects = new Array<UserObject>();
-	
-	@Editable // XXX kit bug workaround
-	@Storable
-	public OpenWorldElement[] persistedElements;
 	
 	public Array<UserObject> allUserObjects = new Array<UserObject>();
 	
@@ -265,24 +260,13 @@ public class UserObjectSystem extends EntitySystem implements SystemSettingsList
 		allUserObjects.removeValue(object, true);
 	}
 
-	@Override
-	public void onSettingsLoaded() {
-		for(int i=0 ; i<persistedElements.length ; i++){
-			UserObject o = new UserObject();
-			o.element = persistedElements[i];
-			allUserObjects.add(o);
+	@Editable
+	public void removeAllElements() {
+		for(UserObject uo : userObjects){
+			getEngine().removeEntity(uo.entity);
 		}
+		userObjects.clear();
+		allUserObjects.clear();
 	}
 
-	@Override
-	public void beforeSettingsSaved() {
-		persistedElements = new OpenWorldElement[allUserObjects.size];
-		for(int i=0 ; i<persistedElements.length ; i++){
-			UserObject o = allUserObjects.get(i);
-			persistedElements[i] = o.element;
-		}
-	}
-
-	
-	
 }

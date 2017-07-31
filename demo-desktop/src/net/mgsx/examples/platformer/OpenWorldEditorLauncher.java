@@ -7,7 +7,10 @@ import net.mgsx.game.core.EditorConfiguration;
 import net.mgsx.game.core.helpers.NativeService;
 import net.mgsx.game.core.meta.ClassRegistry;
 import net.mgsx.game.examples.openworld.OpenWorldEditorPlugin;
+import net.mgsx.game.examples.openworld.model.OpenWorldModel;
 import net.mgsx.game.examples.openworld.systems.OpenWorldCameraSystem;
+import net.mgsx.game.services.gapi.GAPI;
+import net.mgsx.game.services.gapi.LocalGameStorage;
 import net.mgsx.kit.config.ReflectionClassRegistry;
 import net.mgsx.kit.files.DesktopNativeInterface;
 import net.mgsx.kit.launcher.DesktopApplication;
@@ -49,6 +52,13 @@ public class OpenWorldEditorLauncher {
 		final EditorApplication editor = new EditorApplication(editConfig){
 			@Override
 			public void create() {
+				// Wrap with local service and disable cloud storage
+				GAPI.service = new LocalGameStorage(GAPI.service, false);
+				GAPI.service.init("OpenWorld");
+				
+				// TODO should be an asset ...
+				OpenWorldModel.load();
+				
 				Pd.audio.create(new PdConfiguration());
 				if(useRemoteCameraMatrix){
 					OpenWorldCameraSystem.cameraMatrixProvider = new CameraMatrixProviderRemote();
