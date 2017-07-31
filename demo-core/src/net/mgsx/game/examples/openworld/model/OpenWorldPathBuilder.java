@@ -4,11 +4,11 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 
-import net.mgsx.game.examples.openworld.systems.OpenWorldManagerSystem;
+import net.mgsx.game.examples.openworld.systems.OpenWorldGeneratorSystem;
 
 public class OpenWorldPathBuilder {
 
-	private OpenWorldManagerSystem manager;
+	private OpenWorldGeneratorSystem generator;
 	private float distance;
 	private float halfAngleDegree;
 	
@@ -16,8 +16,8 @@ public class OpenWorldPathBuilder {
 	private float absMinValue, absMaxValue, gndMinValue, gndMaxValue;
 	private float randomness = 1;
 	
-	public OpenWorldPathBuilder set(OpenWorldManagerSystem manager, float halfAngleDegree, float distance, float randomness) {
-		this.manager = manager;
+	public OpenWorldPathBuilder set(OpenWorldGeneratorSystem generator, float halfAngleDegree, float distance, float randomness) {
+		this.generator = generator;
 		this.distance = distance;
 		this.halfAngleDegree = halfAngleDegree;
 		this.randomness = randomness;
@@ -31,7 +31,7 @@ public class OpenWorldPathBuilder {
 		v.x = MathUtils.cos(angle) * distance;
 		v.z = MathUtils.sin(angle) * distance;
 		v.add(a);
-		v.y = computeHeight(manager.generateAltitude(v.x, v.z));
+		v.y = computeHeight(generator.getAltitude(v.x, v.z));
 		return v;
 	}
 	
@@ -40,7 +40,7 @@ public class OpenWorldPathBuilder {
 		Vector2 delta = new Vector2(b.x, b.z).sub(a.x, a.z).nor().rotate(angle).scl(distance);
 		v.x = b.x + delta.x;
 		v.z = b.z + delta.y;
-		v.y = computeHeight(manager.generateAltitude(v.x, v.z));
+		v.y = computeHeight(generator.getAltitude(v.x, v.z));
 		return v;
 	}
 	
@@ -94,7 +94,7 @@ public class OpenWorldPathBuilder {
 			if(controlPoints[i] == null) controlPoints[i] = new Vector3();
 		}
 		controlPoints[0].set(initialPosition);
-		controlPoints[0].y = computeHeight(manager.generateAltitude(initialPosition.x, initialPosition.z));
+		controlPoints[0].y = computeHeight(generator.getAltitude(initialPosition.x, initialPosition.z));
 		randomXZ(controlPoints[1], controlPoints[0]);
 		for(int i=2 ; i<controlPoints.length ; i++){
 			randomXZ(controlPoints[i], controlPoints[i-2], controlPoints[i-1]);

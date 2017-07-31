@@ -12,6 +12,9 @@ uniform vec4 u_waterColor;
 
 uniform float u_waterLevel;
 
+uniform sampler2D u_infoTexture;
+varying vec2 v_texCoord;
+
 #if defined(SHADOWS)
 uniform sampler2D u_shadowTexture;
 uniform float u_shadowPCFOffset;
@@ -155,6 +158,13 @@ void main() {
 
     vec3 color = vec3(lum, lum, lum);
 
+    // fetch info
+    vec4 info = texture2D(u_infoTexture, v_texCoord);
+    float alt = info.r;
+    float flora = 1.0 - clamp((info.g-0.3) * 10.0, 0.0, 1.0);
+    float altFactor = clamp((info.r - 0.65) * 10.0, 0.0, 1.0);
+
+
     // select materials
     float amb = 0.4;
     float dif = 0.7;
@@ -164,7 +174,7 @@ void main() {
 
     vec3 earth = vec3(1.0, 0.8, 0.6) * (-pow(1.0 - ptnoise(v_position.xz * 0.3), 5.0)*0.3+1.0);
 
-    vec3 diffuse = mix(grass, earth, clamp(v_position.y * 20.0 * abs(pnoise(v_position.xz * 13.2)) + pnoise(v_position.xz * 0.2) * 12.3 - 8.0, 0.0, 1.0));
+    vec3 diffuse = mix(grass, earth, flora * clamp(v_position.y * 20.0 * abs(pnoise(v_position.xz * 13.2)) + pnoise(v_position.xz * 0.2) * 12.3 - 8.0, 0.0, 1.0));
 
     vec3 sand = mix(vec3(1.6, 1.6, 0.5),  vec3(1.3, 1.3, 0.5), grassPattern); // TODO config
     diffuse = mix(diffuse, sand, smoothstep(0.0, 1.0, -v_position.y * 4.0)); // TODO config sand falloff ?

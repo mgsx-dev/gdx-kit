@@ -9,6 +9,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Json;
 
 import net.mgsx.game.examples.openworld.systems.OpenWorldCameraSystem;
+import net.mgsx.game.examples.openworld.systems.OpenWorldGeneratorSystem;
 import net.mgsx.game.examples.openworld.systems.OpenWorldManagerSystem;
 import net.mgsx.game.examples.openworld.systems.UserObjectSystem;
 
@@ -21,8 +22,11 @@ public class OpenWorldGame {
 		
 		engine.getSystem(OpenWorldCameraSystem.class).getCamera().position.set(gameData.position);
 		
+		OpenWorldGeneratorSystem generator = engine.getSystem(OpenWorldGeneratorSystem.class);
+		generator.seed = gameData.seed;
+		generator.reset();
+		
 		OpenWorldManagerSystem manager = engine.getSystem(OpenWorldManagerSystem.class);
-		manager.seed = gameData.seed;
 		manager.clear();
 		
 		UserObjectSystem uos = engine.getSystem(UserObjectSystem.class);
@@ -40,7 +44,7 @@ public class OpenWorldGame {
 		
 		// store camera position and seed
 		gameData.position.set(engine.getSystem(OpenWorldCameraSystem.class).getCamera().position);
-		gameData.seed = engine.getSystem(OpenWorldManagerSystem.class).seed;
+		gameData.seed = engine.getSystem(OpenWorldGeneratorSystem.class).seed;
 		
 		// store objects
 		UserObjectSystem uos = engine.getSystem(UserObjectSystem.class);

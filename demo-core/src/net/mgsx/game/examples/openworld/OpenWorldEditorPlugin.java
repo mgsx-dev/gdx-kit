@@ -18,6 +18,7 @@ import net.mgsx.game.examples.openworld.systems.OpenWorldCameraSystem;
 import net.mgsx.game.examples.openworld.systems.OpenWorldDebugSystem;
 import net.mgsx.game.examples.openworld.systems.OpenWorldEnvSystem;
 import net.mgsx.game.examples.openworld.systems.OpenWorldFaunaSystem;
+import net.mgsx.game.examples.openworld.systems.OpenWorldGeneratorSystem;
 import net.mgsx.game.examples.openworld.systems.OpenWorldHUDSystem;
 import net.mgsx.game.examples.openworld.systems.OpenWorldLandRenderSystem;
 import net.mgsx.game.examples.openworld.systems.OpenWorldLensFlareSystem;
@@ -66,6 +67,7 @@ public class OpenWorldEditorPlugin extends EditorPlugin implements DefaultEditor
 		OpenWorldRuntimeSettings.highQuality = highQuality;
 		
 		
+		editor.entityEngine.addSystem(new OpenWorldGeneratorSystem());
 		editor.entityEngine.addSystem(new OpenWorldManagerSystem());
 		editor.entityEngine.addSystem(new OpenWorldDebugSystem());
 		editor.addTool(new AlignMeshTool(editor));

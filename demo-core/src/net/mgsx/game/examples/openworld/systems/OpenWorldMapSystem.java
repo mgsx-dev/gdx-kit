@@ -5,43 +5,46 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Pixmap.Format;
-import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.FrameBuffer;
-import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
-import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.utils.Array;
 
 import net.mgsx.game.core.GamePipeline;
 import net.mgsx.game.core.GameScreen;
+import net.mgsx.game.core.annotations.Editable;
+import net.mgsx.game.core.annotations.EditableSystem;
 import net.mgsx.game.core.annotations.Inject;
-import net.mgsx.game.core.helpers.ShaderProgramHelper;
-import net.mgsx.game.plugins.core.components.HeightFieldComponent;
+import net.mgsx.game.core.annotations.Storable;
+import net.mgsx.game.core.helpers.shaders.ShaderInfo;
+import net.mgsx.game.core.helpers.shaders.ShaderProgramManaged;
+import net.mgsx.game.core.helpers.shaders.Uniform;
+import net.mgsx.game.examples.openworld.components.CellDataComponent;
 
+@Storable("ow.map")
+@EditableSystem
 public class OpenWorldMapSystem extends EntitySystem {
 
+	@Inject OpenWorldEnvSystem env;
 	@Inject OpenWorldManagerSystem manager;
-	
-	private FrameBuffer mapFbo;
-
-	private int logicalOffsetX;
-	private int logicalOffsetY;
+	@Inject OpenWorldGeneratorSystem generator;
 	
 	private SpriteBatch batch;
 	private ShapeRenderer renderer;
 	
-	private ShaderProgram shader;
+	@ShaderInfo(vs="shaders/map.vert", fs="shaders/map.frag", inject=false)
+	public static class MapShader extends ShaderProgramManaged
+	{
+		@Uniform public transient float waterLevel;
+	}
+	@Editable public MapShader shader = new MapShader();
+	@Editable public float mapSize = .3f;
+	@Editable public Vector2 mapOffset = new Vector2(10, 10);
 	
-	// TODO just attach texture to entities !
-	private Array<Texture> heightMapTextures = new Array<Texture>();
-
 	private GameScreen screen;
 	
 	public OpenWorldMapSystem(GameScreen screen) {
@@ -52,92 +55,71 @@ public class OpenWorldMapSystem extends EntitySystem {
 	@Override
 	public void addedToEngine(Engine engine) {
 		super.addedToEngine(engine);
-		
-		shader = ShaderProgramHelper.reload(shader, Gdx.files.internal("shaders/map.vert"), Gdx.files.internal("shaders/map.frag"));
-		batch = new SpriteBatch();
-		renderer = new ShapeRenderer();
 	}
 	
 	@Override
 	public void update(float deltaTime) 
 	{
-		// Render to texture first time or if logic position has changed.
-		if(mapFbo == null || manager.getLogicOffsetX() != logicalOffsetX || manager.getLogicOffsetY() != logicalOffsetY) {
-			
-			for(Texture t : heightMapTextures) t.dispose();
-			heightMapTextures.clear();
-			
-			mapFbo = new FrameBuffer(Format.RGBA8888, 256, 256, true);
-			
-			float minHeight = -manager.scale;
-			float maxHeight = manager.scale;
-			float heightScale = 1.f / (maxHeight - minHeight);
-			
-			OrthographicCamera camera = new OrthographicCamera(manager.logicSize, manager.logicSize);
-			camera.position.set(0,0,1);
-			camera.direction.set(0, 0, -1);
-			camera.up.set(Vector3.Y);
-			camera.near = .1f;
-			camera.far = 3000f; //maxHeight - minHeight + 1;
-			camera.update();
-			
-			SpriteBatch batch = new SpriteBatch(4, shader);
-			
-			mapFbo.begin();
-			
-			Entity [] heightMaps = manager.getHeightMaps();
-			Color pixel = new Color();
-			for(Entity entity : heightMaps) {
-				HeightFieldComponent hfc = HeightFieldComponent.components.get(entity);
-				Pixmap pixmap = new Pixmap(hfc.width, hfc.height, Format.RGBA8888);
-				for(int y=0 ; y<hfc.height ; y++){
-					for(int x=0 ; x<hfc.width ; x++){
-						pixmap.drawPixel(x, y, Color.rgba8888(pixel.set((hfc.values[y*hfc.width+x] - minHeight) * heightScale, 0f, 0f, 1)));
-					}
-				}
-				
-				Texture heightTexture = new Texture(pixmap);
-				
-				batch.setProjectionMatrix(camera.combined);
-				float fx = -manager.logicSize/2f + hfc.position.x / manager.worldCellScale - manager.getLogicOffsetX();
-				float fy = manager.logicSize/2f-1 - hfc.position.z / manager.worldCellScale + manager.getLogicOffsetY();
-				
-				batch.setTransformMatrix(new Matrix4().setToTranslation(fx, fy, 0));
-				batch.begin();
-				batch.draw(heightTexture, 0, 0, 1, 1);
-				batch.end();
-				
-				heightMapTextures.add(heightTexture);
-			}
-			
-			mapFbo.end();
-			
-			logicalOffsetX = manager.getLogicOffsetX();
-			logicalOffsetY = manager.getLogicOffsetY();
+		float mx = mapOffset.x;
+		float my = mapOffset.y;
+		float ms = mapSize * Math.min(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		float mw = ms / manager.getLogicWidth();
+		float mh = ms / manager.getLogicHeight();
+		
+		shader.waterLevel = (env.waterLevel / generator.scale + 1) * .5f;
+		
+		if(shader.begin()){
+			if(batch != null) batch.dispose();
+			batch = new SpriteBatch(4, shader.program());
+			if(renderer != null) renderer.dispose();
+			renderer = new ShapeRenderer();
 		}
-		
-		float renderSize = 64;
-		
-		// Render map
-		// render some dots (camera origin)
+		batch.setProjectionMatrix(batch.getProjectionMatrix().setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
 		batch.disableBlending();
 		batch.begin();
-		batch.draw(mapFbo.getColorBufferTexture(), 10+renderSize, 10+renderSize, -renderSize, -renderSize);
-//		for(int i=0 ; i<heightMapTextures.size ; i++){
-//			int x = i%manager.logicSize;
-//			int y = manager.logicSize-i/manager.logicSize-1;
-//			batch.draw(heightMapTextures.get(i), 400 + x * 32, 100 + y * 32, 32, 32);
-//		}
+		for(int y=0 ; y<manager.getLogicHeight() ; y++)
+		{
+			for(int x=0 ; x<manager.getLogicWidth() ; x++)
+			{
+				Entity entity = manager.getHeightMaps()[(manager.getLogicHeight() - 1 - y) * manager.getLogicHeight() + x];
+				if(entity != null){
+					CellDataComponent cdc = CellDataComponent.components.get(entity);
+					batch.draw(cdc.data.infoTexture, mx + mw*x, my + y*mh, mw, mh);
+				}
+			}
+			
+		}
 		batch.end();
+		
+		renderer.setProjectionMatrix(batch.getProjectionMatrix());
+		float renderSize = mw * manager.getLogicWidth();
 		
 		float camX = renderSize * (manager.viewPoint.x / manager.worldCellScale - manager.getLogicOffsetX()) / manager.getLogicWidth();
 		float camY = renderSize - renderSize * (manager.viewPoint.y / manager.worldCellScale - manager.getLogicOffsetY())/ manager.getLogicHeight();
-		Vector2 vdir = new Vector2(screen.camera.direction.x, -screen.camera.direction.z).nor();
-		float camDirX = vdir.x;
-		float camDirY = vdir.y;
 		
-		renderer.begin(ShapeType.Line);
-		renderer.line(10 + camX, 10 + camY, 10 + camX + camDirX * 10, 10 + camY + camDirY * 10, Color.BLUE, Color.YELLOW);
+		Color c1 = new Color(Color.WHITE);
+		c1.a = 0.5f;
+		Color c2 = new Color(Color.WHITE);
+		c2.a = 0.0f;
+		
+		float fov = screen.camera instanceof PerspectiveCamera ? ((PerspectiveCamera)screen.camera).fieldOfView : 90;
+		float farScale = 0.05f;
+		
+		Gdx.gl.glEnable(GL20.GL_BLEND);
+		Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE);
+		
+		renderer.setTransformMatrix(
+				renderer.getTransformMatrix()
+				.idt()
+				.translate(mx + camX, my + camY, 0)
+				.rotateRad(Vector3.Z, -MathUtils.PI * .5f + MathUtils.atan2(-screen.camera.direction.z, screen.camera.direction.x)));
+		renderer.begin(ShapeType.Filled);
+		renderer.triangle(
+				0, 0, 
+				farScale * screen.camera.far * MathUtils.cosDeg(fov), farScale * screen.camera.far * MathUtils.sinDeg(fov),
+				farScale * -screen.camera.far * MathUtils.cosDeg(fov), farScale * screen.camera.far * MathUtils.sinDeg(fov), 
+				c1, c2, c2);
+		//renderer.line(mx + camX, my + camY, mx + camX + camDirX * mw, my + camY + camDirY * mh, Color.BLACK, Color.WHITE);
 		renderer.end();
 	}
 }

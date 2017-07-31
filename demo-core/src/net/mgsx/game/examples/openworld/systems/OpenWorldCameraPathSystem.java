@@ -16,7 +16,7 @@ import net.mgsx.game.examples.openworld.model.OpenWorldPathBuilder;
 @EditableSystem
 public class OpenWorldCameraPathSystem extends EntitySystem
 {
-	@Inject OpenWorldManagerSystem manager;
+	@Inject OpenWorldGeneratorSystem generator;
 	@Inject OpenWorldCameraSystem cameraSystem;
 	
 	@Editable public float speed = 0.1f;
@@ -46,7 +46,7 @@ public class OpenWorldCameraPathSystem extends EntitySystem
 		
 		if(time > 1 || controlPoints == null)
 		{
-			pathBuilder.set(manager, 30, distance, 1);
+			pathBuilder.set(generator, 30, distance, 1);
 			pathBuilder.resetLimit().groundMin(offsetMin).groundMax(offsetMin + offsetRange);
 			
 			if(controlPoints == null){

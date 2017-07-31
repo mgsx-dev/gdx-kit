@@ -23,7 +23,7 @@ import net.mgsx.game.plugins.g3d.systems.G3DRendererSystem;
 @EditableSystem
 public class OpenWorldEnvSystem extends EntitySystem
 {
-	@Inject OpenWorldManagerSystem manager;
+	@Inject OpenWorldGeneratorSystem generator;
 	@Inject G3DRendererSystem g3dRender;
 	
 	@Editable public Color fogColor = new Color(1.0f, 0.8f, 0.7f, 1.0f);
@@ -95,7 +95,7 @@ public class OpenWorldEnvSystem extends EntitySystem
 			fogColor.set(sunsetColor).lerp(nightColor, t);
 		}
 		
-		waterLevel = manager.scale * waterLevelRate;
+		waterLevel = generator.scale * waterLevelRate;
 		
 		
 		float luminosity = MathUtils.clamp(timeOfDay * (1-timeOfDay) * 4, 0, 1) * 2;

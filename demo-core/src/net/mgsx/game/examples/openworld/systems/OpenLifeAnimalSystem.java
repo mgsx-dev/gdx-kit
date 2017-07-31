@@ -39,7 +39,7 @@ public class OpenLifeAnimalSystem extends IteratingSystem
 	public Model quadriModel;
 	
 	@Inject OpenWorldCameraSystem cameraSystem;
-	@Inject OpenWorldManagerSystem manager;
+	@Inject OpenWorldGeneratorSystem generator;
 	@Inject OpenWorldEnvSystem env;
 	
 	@Editable public int maxAnimals = 10;
@@ -74,7 +74,7 @@ public class OpenLifeAnimalSystem extends IteratingSystem
 		
 		// query world
 		float cameraY = camera.position.y;
-		float landY = manager.generateAltitude(camera.position.x, camera.position.z);
+		float landY = generator.getAltitude(camera.position.x, camera.position.z);
 		float waterY = env.waterLevel;
 		boolean aquaticENV = waterY > landY;
 		boolean aquaticPOV = cameraY < waterY;
@@ -128,7 +128,7 @@ public class OpenLifeAnimalSystem extends IteratingSystem
 			
 			PathComponent path = getEngine().createComponent(PathComponent.class);
 			Vector3[] controlPoints = new Vector3[10]; // TODO should be configurable
-			pathBuilder.set(manager, 30, distance, randomness);
+			pathBuilder.set(generator, 30, distance, randomness);
 			
 			// algo for limits : 
 			// - land animals : range for 0 to 0 relative to ground

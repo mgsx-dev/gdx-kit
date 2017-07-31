@@ -2,8 +2,11 @@ package net.mgsx.game.examples.openworld.systems;
 
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntitySystem;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Pixmap.Blending;
+import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.RandomXS128;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 
@@ -11,7 +14,7 @@ import net.mgsx.game.core.GamePipeline;
 import net.mgsx.game.core.PostInitializationListener;
 import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.core.annotations.EditableSystem;
-import net.mgsx.game.core.annotations.EnumType;
+import net.mgsx.game.core.annotations.Inject;
 import net.mgsx.game.core.annotations.Storable;
 import net.mgsx.game.examples.openworld.components.CellDataComponent;
 import net.mgsx.game.examples.openworld.components.LandMeshComponent;
@@ -20,31 +23,43 @@ import net.mgsx.game.examples.openworld.model.OpenWorldPool;
 import net.mgsx.game.examples.openworld.model.OpenWorldPool.CellData;
 import net.mgsx.game.plugins.bullet.components.BulletHeightFieldComponent;
 import net.mgsx.game.plugins.core.components.HeightFieldComponent;
-import net.mgsx.game.plugins.procedural.model.ClassicalPerlinNoise;
 
 @Storable(value="ow.manager")
 @EditableSystem
 public class OpenWorldManagerSystem extends EntitySystem implements PostInitializationListener
 {
-	@Editable public float scale = 10;
-	@Editable public float frequency = .2f;
-	@Editable public float persistence = .5f;
-	@Editable public int octaves = 3;
-	
-	/** this is the main game seed, different for each game, all other seeds are
-	 * based on this seed. */
-	@Editable(type=EnumType.RANDOM) public long seed = 0xdeadbeef;
-	
-	public static final int SEED_LAYER_ALTITUDE = 0;
-	public static final int SEED_LAYER_FLORA = 1;
-	public static final int SEED_LAYERS_COUNT = 2;
-	
-	public transient long [] seedLayers = new long[SEED_LAYERS_COUNT];
+	@Inject OpenWorldGeneratorSystem generator;
 	
 	private transient Entity [] lands;
 	private transient Entity [] oldLands;
 	
 	@Editable public int logicSize = 3;
+	
+	/**
+	 * 4 textures holding world layer information :
+	 * R = altitude
+	 * G = flora
+	 * B = undefined
+	 * A = undefined
+	 * 
+	 * each texture cover a big world part and just a small part
+	 * is updated when needed.
+	 * 
+	 * Since quality is very low, shaders never render it directly but
+	 * select appropriate shading based on this information. For instance,
+	 * when flora is at its maximum value then shader mix diffuse as a full
+	 * grass area.
+	 * 
+	 * Texture coordinates are setup to avoid binding the 4 textures at a time and
+	 * to avoid recopy previous pixels.
+	 * 
+	 * Then texture is aligned to cells and lands can get appropriate texture depending on
+	 * its location. Texture coordinates are also computed to match the area.
+	 * 
+	 * XXX a simpler solution would be to attach a texture to each cells ... (small like 16x16)
+	 * 
+	 */
+	// XXX private Texture [] worldTextures = new Texture[4];
 	
 	private int logicWidth;
 	private int logicHeight;
@@ -97,12 +112,6 @@ public class OpenWorldManagerSystem extends EntitySystem implements PostInitiali
 		logicWidth = logicHeight = logicSize;
 		lands = new Entity[logicWidth * logicHeight];
 		oldLands = new Entity[logicWidth * logicHeight];
-		
-		// build seed layers
-		rand.setSeed(seed);
-		for(int i=0 ; i<seedLayers.length ; i++){
-			seedLayers[i] = rand.nextLong();
-		}
 	}
 	
 	private void removeCell(Entity entity){
@@ -170,35 +179,9 @@ public class OpenWorldManagerSystem extends EntitySystem implements PostInitiali
 		
 	}
 	
-	private ClassicalPerlinNoise noise = new ClassicalPerlinNoise();
-	private RandomXS128 rand = new RandomXS128();
 	private Vector3 dx = new Vector3();
 	private Vector3 dy = new Vector3();
 
-	/**
-	 * Main land function
-	 * @param absoluteX
-	 * @param absoluteY
-	 * @return
-	 */
-	public float generateAltitude(float absoluteX, float absoluteY)
-	{
-		rand.setSeed(this.seedLayers[SEED_LAYER_ALTITUDE]);
-		
-		float amplitude = 1;
-		float sum = 0;
-		float frequency = this.frequency;
-		float value = 0;
-		for(int i=0 ; i<octaves ; i++){
-			noise.seed(rand.nextLong());
-			value += noise.get(absoluteX * frequency, absoluteY * frequency) * amplitude;
-			sum += amplitude;
-			amplitude *= persistence;
-			frequency *= 2;
-		}
-		// normalized values
-		return value * scale / sum;
-	}
 	
 	// TODO extract absolute generator part from sampling part (refactor with generate absolute ...)
 	private void generate(Entity entity, float offsetWorldX, float offsetWorldY)
@@ -214,40 +197,22 @@ public class OpenWorldManagerSystem extends EntitySystem implements PostInitiali
 		float [] extraValues = data.extraValues;
 		Vector3 [] normals = data.normals;
 		
-		// reset from pool
-		for(int i=0 ; i<extraValues.length ; i++) extraValues[i] = 0;
+		for(int ey=0 ; ey<eHeight ; ey++){
+			for(int ex=0 ; ex<eWidth ; ex++){
+				int x = ex - 1;
+				int y = ey - 1;
+				
+				float fy = worldCellScale * (float)y / (float)(height-1);
+				float fx = worldCellScale * (float)x / (float)(width-1);
+				
+				float ax = fx + offsetWorldX;
+				float ay = fy + offsetWorldY;
+				
+				extraValues[ey*eWidth+ex] = generator.getAltitude(ax, ay);
+			}
+		}
 		
-		rand.setSeed(this.seedLayers[SEED_LAYER_ALTITUDE]);
-		float amplitude = 1;
-		float sum = 0;
-		float frequency = this.frequency;
-		for(int i=0 ; i<octaves ; i++){
-			noise.seed(rand.nextLong());
-			for(int ey=0 ; ey<eHeight ; ey++){
-				for(int ex=0 ; ex<eWidth ; ex++){
-					int x = ex - 1;
-					int y = ey - 1;
-					
-					float fy = worldCellScale * (float)y / (float)(height-1);
-					float fx = worldCellScale * (float)x / (float)(width-1);
-					
-					float value = noise.get((fx + offsetWorldX) * frequency, (fy + offsetWorldY) * frequency) * amplitude;
-					
-					extraValues[ey*eWidth+ex] += value;
-				}
-			}
-			sum += amplitude;
-			amplitude *= persistence;
-			frequency *= 2;
-		}
-		// normalized values
-		for(int y=0 ; y<eHeight ; y++){
-			for(int x=0 ; x<eWidth ; x++){
-				extraValues[y*eWidth+x] *= scale / sum;
-			}
-		}
 		// extract inner values and compute normals
-		
 		for(int y=0 ; y<height ; y++){
 			for(int x=0 ; x<width ; x++){
 				values[y*width+x] = extraValues[(y+1)*eWidth+x+1];
@@ -290,6 +255,38 @@ public class OpenWorldManagerSystem extends EntitySystem implements PostInitiali
 		// add trees
 		TreesComponent tc = getEngine().createComponent(TreesComponent.class);
 		entity.add(tc);
+		
+		// create the associated texture
+		// TODO mutualize with 2D map which is the info texture rendered differently (height layering, ... hidden parts from user ...and so on ...)
+		// TODO use bigger map to reduce texture switching
+		// TODO compute borders to avoid breaks between cells.
+		// TODO more info :
+		// altitude => under/above water, mountain, snow
+		// flora VS desert
+		// humidity => big green trees VS savana
+		// 4th ? diffculty or other important things (wind ?...)
+		Pixmap pixmap = OpenWorldPool.pixmap;
+		pixmap.setBlending(Blending.None);
+		for(int y=0 ; y<pixmap.getHeight() ; y++){
+			for(int x=0 ; x<pixmap.getWidth() ; x++){
+				float fx = (float)x / (float)pixmap.getWidth();
+				float fy = (float)y / (float)pixmap.getHeight();
+				float ax = offsetWorldX + fx * worldCellScale;
+				float ay = offsetWorldY + fy * worldCellScale;
+				float altitude = generator.getAltitude(ax, ay);
+				float altitudeNor = (altitude / generator.scale + 1) * .5f;
+				
+				float flora = generator.getFlora(ax, ay);
+				float floraNor = (flora + 1) * .5f;
+				
+				pixmap.drawPixel(x, y, Color.rgba8888(altitudeNor, floraNor, 0, 0));
+			}
+		}
+		//cdc.data.infoTexture.load(new PixmapTextureData(pixmap, null, false, false));
+		cdc.data.infoTexture.draw(pixmap, 0, 0);
+		
+		// TODO set filter at creation time
+		cdc.data.infoTexture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 		
 	}
 }

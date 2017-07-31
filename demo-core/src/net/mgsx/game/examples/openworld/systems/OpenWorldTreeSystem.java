@@ -37,9 +37,8 @@ public class OpenWorldTreeSystem extends IteratingSystem implements PostInitiali
 {
 	@Inject OpenWorldEnvSystem environment;
 	@Inject OpenWorldManagerSystem manager;
+	@Inject OpenWorldGeneratorSystem generator;
 
-	@Editable public float frequency = .1f;
-	
 	/** how many tree per meter (max) */
 	@Editable public float densityMax = 1;
 	
@@ -99,10 +98,12 @@ public class OpenWorldTreeSystem extends IteratingSystem implements PostInitiali
 		TreesComponent trees = TreesComponent.components.get(entity);
 		HeightFieldComponent hfc = HeightFieldComponent.components.get(entity);
 		
+		// TODO instead of be based on land meshes, just generate forest based on
+		// voronoi F1 algorithm
 		
 		builder.begin(OpenWorldPool.treesMeshAttributes, GL20.GL_TRIANGLES);
 		
-		noise.seed(manager.seedLayers[OpenWorldManagerSystem.SEED_LAYER_FLORA]);
+		noise.seed(generator.seedLayers[OpenWorldGeneratorSystem.SEED_LAYER_FLORA]);
 		
 		float zoneWidth = manager.worldCellScale;
 		float zoneHeight = manager.worldCellScale;
@@ -129,13 +130,12 @@ public class OpenWorldTreeSystem extends IteratingSystem implements PostInitiali
 				float fy = hfc.position.z + relY + dy;
 				
 				// check if flora is here
-				float flora = noise.get(fx * frequency, fy * frequency);
-				flora += noise.get(fx * frequency * 4 + 765, fy * frequency * 4 + 345) * .5f;
+				float flora = generator.getFlora(fx, fy);
 				if(flora < -.2f) continue; // TODO config
 				
 				
 				// get altitude (don't generate trees in water)
-				float base = manager.generateAltitude(fx, fy);
+				float base = generator.getAltitude(fx, fy);
 				if(base < -.5f) continue; // TODO config trees in sand/water a little
 				
 				buildTree(builder, p.set(fx, base - .1f, fy));

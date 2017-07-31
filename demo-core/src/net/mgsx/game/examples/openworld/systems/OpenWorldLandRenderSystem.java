@@ -28,6 +28,7 @@ import net.mgsx.game.core.annotations.EditableSystem;
 import net.mgsx.game.core.annotations.Inject;
 import net.mgsx.game.core.annotations.Storable;
 import net.mgsx.game.core.helpers.ShaderProgramHelper;
+import net.mgsx.game.examples.openworld.components.CellDataComponent;
 import net.mgsx.game.examples.openworld.components.LandMeshComponent;
 import net.mgsx.game.examples.openworld.components.ObjectMeshComponent;
 import net.mgsx.game.examples.openworld.components.TreesComponent;
@@ -157,6 +158,10 @@ public class OpenWorldLandRenderSystem extends IteratingSystem
 				vertices[index + 3] = normal.x;
 				vertices[index + 4] = normal.z;
 				vertices[index + 5] = normal.y;
+				
+				// texCoord
+				vertices[index + 6] = (float)x / (float)width;
+				vertices[index + 7] = (float)y / (float)height;
 			}
 		}
 		
@@ -290,8 +295,11 @@ public class OpenWorldLandRenderSystem extends IteratingSystem
 			shaderHigh.setUniformf("u_shadowPCFOffset", shadowPCFOffset); // TODO
 		}
 		
+		shaderHigh.setUniformi("u_infoTexture", 2);
 		for(Entity entity : getEntities()){
 			LandMeshComponent lmc = LandMeshComponent.components.get(entity);
+			CellDataComponent cdc = CellDataComponent.components.get(entity);
+			cdc.data.infoTexture.bind(2);
 			lmc.mesh.render(shaderHigh, GL20.GL_TRIANGLES);
 		}
 		shaderHigh.end();
@@ -299,8 +307,10 @@ public class OpenWorldLandRenderSystem extends IteratingSystem
 		if(shadowEnabled){
 			Gdx.gl.glActiveTexture(GL20.GL_TEXTURE0 + 1);
 			Gdx.gl.glBindTexture(GL20.GL_TEXTURE_2D, 0);
-			Gdx.gl.glActiveTexture(GL20.GL_TEXTURE0);
 		}
+		Gdx.gl.glActiveTexture(GL20.GL_TEXTURE0 + 2);
+		Gdx.gl.glBindTexture(GL20.GL_TEXTURE_2D, 0);
+		Gdx.gl.glActiveTexture(GL20.GL_TEXTURE0);
 		
 		ShaderProgram shader = objectsShader;
 		
