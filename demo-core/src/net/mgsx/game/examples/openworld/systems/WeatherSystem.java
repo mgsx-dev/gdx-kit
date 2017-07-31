@@ -83,23 +83,27 @@ public class WeatherSystem extends EntitySystem
 	private void processData() {
 		// TODO who update who : env/sky/wind get from weather and weather can be manually configurable ?
 		
-		sky.cloudRate = 1f / (0.001f + (float)lastWeather.get("clouds").getDouble("all") / 100f); // In percents
-		sky.cloudSpeed = lastWeather.get("wind").getFloat("speed") * .01f;
-		sky.cloudDarkness = lastWeather.get("clouds").getFloat("all") + 10;
-		sky.cloudDirection.set(Vector2.X).setAngle(lastWeather.get("wind").getFloat("deg"));
-		long sunrise = lastWeather.get("sys").getLong("sunrise");
-		long sunset = lastWeather.get("sys").getLong("sunset");
-		
-		Calendar cal = Calendar.getInstance();
-		
-		cal.setTime(new Date(sunrise * 1000));
-		this.sunrise = cal.get(Calendar.HOUR_OF_DAY) / 24f;
-		
-		cal.setTime(new Date(sunset * 1000));
-		this.sunset = cal.get(Calendar.HOUR_OF_DAY) / 24f;
-		
-		// TODO cache forecast ... (40 results 1 every 3 hours => 5 days)
 		try{
+			// TODO just cache cloud rate normalized and code mapping in sky system. Idem for rain ...etc
+			sky.cloudRate = 1f / (0.001f + (float)lastWeather.get("clouds").getDouble("all") / 100f); // In percents
+			sky.cloudSpeed = lastWeather.get("wind").getFloat("speed") * .01f;
+			sky.cloudDarkness = lastWeather.get("clouds").getFloat("all") + 10;
+			
+			// sometime deg is not set, maybe 0 if default ...
+			sky.cloudDirection.set(Vector2.X).setAngle(lastWeather.get("wind").getFloat("deg", 0));
+			
+			long sunrise = lastWeather.get("sys").getLong("sunrise");
+			long sunset = lastWeather.get("sys").getLong("sunset");
+			
+			Calendar cal = Calendar.getInstance();
+			
+			cal.setTime(new Date(sunrise * 1000));
+			this.sunrise = cal.get(Calendar.HOUR_OF_DAY) / 24f;
+			
+			cal.setTime(new Date(sunset * 1000));
+			this.sunset = cal.get(Calendar.HOUR_OF_DAY) / 24f;
+			
+			// TODO cache forecast ... (40 results 1 every 3 hours => 5 days)
 			for(JsonValue forecast : lastForeCast.get("list")){
 				long dt = forecast.get("dt").asLong();
 				cal.setTime(new Date(dt * 1000));
