@@ -39,7 +39,7 @@ public class OpenWorldManagerSystem extends EntitySystem implements PostInitiali
 	public static final int SEED_LAYER_FLORA = 1;
 	public static final int SEED_LAYERS_COUNT = 2;
 	
-	private long [] seedLayers = new long[SEED_LAYERS_COUNT];
+	public transient long [] seedLayers = new long[SEED_LAYERS_COUNT];
 	
 	private transient Entity [] lands;
 	private transient Entity [] oldLands;

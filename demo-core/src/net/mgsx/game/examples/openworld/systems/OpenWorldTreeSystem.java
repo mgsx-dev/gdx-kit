@@ -13,7 +13,6 @@ import com.badlogic.gdx.graphics.g3d.utils.MeshBuilder;
 import com.badlogic.gdx.graphics.g3d.utils.MeshPartBuilder.VertexInfo;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix4;
-import com.badlogic.gdx.math.RandomXS128;
 import com.badlogic.gdx.math.Vector3;
 
 import net.mgsx.game.core.GamePipeline;
@@ -29,18 +28,25 @@ import net.mgsx.game.core.helpers.shaders.Uniform;
 import net.mgsx.game.examples.openworld.components.TreesComponent;
 import net.mgsx.game.examples.openworld.model.OpenWorldPool;
 import net.mgsx.game.examples.openworld.model.OpenWorldRuntimeSettings;
-import net.mgsx.game.examples.openworld.utils.RandomLookup;
 import net.mgsx.game.plugins.core.components.HeightFieldComponent;
+import net.mgsx.game.plugins.procedural.model.ClassicalPerlinNoise;
 
 @Storable("ow.trees")
 @EditableSystem
 public class OpenWorldTreeSystem extends IteratingSystem implements PostInitializationListener
 {
 	@Inject OpenWorldEnvSystem environment;
+	@Inject OpenWorldManagerSystem manager;
 
+	@Editable public float frequency = .1f;
+	
+	/** how many tree per meter (max) */
+	@Editable public float densityMax = 1;
+	
+	
 	private GameScreen screen;
 
-	private RandomLookup rnd;
+	private ClassicalPerlinNoise noise = new ClassicalPerlinNoise();
 	
 	Vector3 vp = new Vector3();
 	
@@ -76,7 +82,6 @@ public class OpenWorldTreeSystem extends IteratingSystem implements PostInitiali
 			}
 		});
 		
-		rnd = new RandomLookup(new RandomXS128(0xdeaddead), 16, 16);
 	}
 	
 	@Override
@@ -97,38 +102,43 @@ public class OpenWorldTreeSystem extends IteratingSystem implements PostInitiali
 		
 		builder.begin(OpenWorldPool.treesMeshAttributes, GL20.GL_TRIANGLES);
 		
+		noise.seed(manager.seedLayers[OpenWorldManagerSystem.SEED_LAYER_FLORA]);
+		
+		float zoneWidth = manager.worldCellScale;
+		float zoneHeight = manager.worldCellScale;
+		
+		int width = MathUtils.floor(zoneWidth * densityMax);
+		int height = MathUtils.floor(zoneHeight * densityMax);
+		
 		// random grid (x/y)
 		// read height map for y
 		// build tree
 		Vector3 p = new Vector3();
-		for(int y=0 ; y<hfc.height ; y++){
-			for(int x=0 ; x<hfc.width ; x++) {
+		for(int y=0 ; y<height ; y++){
+			for(int x=0 ; x<width ; x++) {
 				
-				float dx = rnd.get(x, y) * 0.5f;
-				float dy = rnd.get(x + 7, y + 3) * 0.5f;
+				float relX = (float)x / densityMax;
+				float relY = (float)y / densityMax;
+				
+				// move tree a little
+				float dx = noise.get(hfc.position.x + relX + 49, hfc.position.z + relY + 36) * 0.5f / densityMax;
+				float dy = noise.get(hfc.position.x + relX + 7, hfc.position.z + relY + 3) * 0.5f / densityMax;
 				
 				// lerp position
-				float fx = x + dx;
-				float fy = y + dy;
+				float fx = hfc.position.x + relX + dx;
+				float fy = hfc.position.z + relY + dy;
 				
-				int ix = MathUtils.floor(fx);
-				int iy = MathUtils.floor(fy);
-				float rx = fx - ix;
-				float ry = fy - iy;
+				// check if flora is here
+				float flora = noise.get(fx * frequency, fy * frequency);
+				flora += noise.get(fx * frequency * 4 + 765, fy * frequency * 4 + 345) * .5f;
+				if(flora < -.2f) continue; // TODO config
 				
-				float base00 = hfc.extraValues[(iy+1)*(hfc.width+2)+ix+1];
-				float base10 = hfc.extraValues[(iy+1)*(hfc.width+2)+ix+2];
-				float base01 = hfc.extraValues[(iy+2)*(hfc.width+2)+ix+1];
-				float base11 = hfc.extraValues[(iy+2)*(hfc.width+2)+ix+2];
 				
-				float base = MathUtils.lerp(
-						MathUtils.lerp(base00, base10, rx),
-						MathUtils.lerp(base01, base11, rx), ry);
+				// get altitude (don't generate trees in water)
+				float base = manager.generateAltitude(fx, fy);
+				if(base < -.5f) continue; // TODO config trees in sand/water a little
 				
-				if(base > 0 && base < .5f){
-					buildTree(builder, p.set(hfc.position).add(fx, base - .1f, fy));
-				}
-				
+				buildTree(builder, p.set(fx, base - .1f, fy));
 			}
 		}
 		
@@ -136,7 +146,7 @@ public class OpenWorldTreeSystem extends IteratingSystem implements PostInitiali
 		// we have to ensure this never happens by canceling some meshes or create necessary meshes
 		// during generation above.
 		// Since HFC size is constant (for now) size is predictable, we compute in order to avoid pool garbaging.
-		int maxTrees = hfc.height * hfc.width;
+		int maxTrees = width * height;
 		int verticesPerTree = 16; // 2 boxes
 		int maxVertices = maxTrees * verticesPerTree;
 		
@@ -159,7 +169,8 @@ public class OpenWorldTreeSystem extends IteratingSystem implements PostInitiali
 	@SuppressWarnings("deprecation")
 	private void buildTree(MeshBuilder builder, Vector3 pos) {
 		
-		float s = .2f * (1 + .8f * rnd.getSigned((int)(pos.x * 500), (int)(pos.z * 500)));
+		// TODO maybe another layer ? and correlated to flora layer ?
+		float s = .2f * (1 + .8f * noise.get(pos.x * 500, pos.z * 500));
 		
 		float r1 = 0.7f * s;
 		float r2 = 0.4f * s;
