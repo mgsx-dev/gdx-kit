@@ -71,6 +71,11 @@ public class BulletWorldSystem extends EntitySystem
 	 * @return the hit entity or null if no collision
 	 */
 	public Entity rayCast(Ray rayFrom, Ray rayResult){
+		Object o = rayCastObject(rayFrom, rayResult);
+		return o instanceof Entity ? (Entity)o : null;
+	}
+
+	public Object rayCastObject(Ray rayFrom, Ray rayResult){
 		ClosestRayResultCallback resultCallback = new ClosestRayResultCallback(Vector3.Zero.cpy(), Vector3.Z.cpy());
 		collisionWorld.rayTest(rayFrom.origin, rayFrom.origin.cpy().add(rayFrom.direction), resultCallback);
 		boolean hasHit = resultCallback.hasHit();
@@ -82,7 +87,7 @@ public class BulletWorldSystem extends EntitySystem
 			rayResult.origin.set(rayFrom.origin).add(rayFrom.direction);
 		}
 		resultCallback.release();
-		return hasHit ? (Entity)resultCallback.getCollisionObject().userData : null;
+		return hasHit ? resultCallback.getCollisionObject().userData : null;
 	}
 
 	public void createBox(Entity entity, final Matrix4 transform, float w, float h, float d, boolean dynamic) {
