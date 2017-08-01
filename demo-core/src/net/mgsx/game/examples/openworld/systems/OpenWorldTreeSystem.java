@@ -14,6 +14,7 @@ import com.badlogic.gdx.graphics.g3d.utils.MeshPartBuilder.VertexInfo;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.physics.bullet.collision.btCollisionObject;
 
 import net.mgsx.game.core.GamePipeline;
 import net.mgsx.game.core.GameScreen;
@@ -28,6 +29,8 @@ import net.mgsx.game.core.helpers.shaders.Uniform;
 import net.mgsx.game.examples.openworld.components.TreesComponent;
 import net.mgsx.game.examples.openworld.model.OpenWorldPool;
 import net.mgsx.game.examples.openworld.model.OpenWorldRuntimeSettings;
+import net.mgsx.game.examples.openworld.utils.BulletBuilder;
+import net.mgsx.game.plugins.bullet.system.BulletWorldSystem;
 import net.mgsx.game.plugins.core.components.HeightFieldComponent;
 import net.mgsx.game.plugins.procedural.model.ClassicalPerlinNoise;
 
@@ -38,10 +41,12 @@ public class OpenWorldTreeSystem extends IteratingSystem implements PostInitiali
 	@Inject OpenWorldEnvSystem environment;
 	@Inject OpenWorldManagerSystem manager;
 	@Inject OpenWorldGeneratorSystem generator;
+	@Inject BulletWorldSystem bulletSystem;
 
 	/** how many tree per meter (max) */
 	@Editable public float densityMax = 1;
 	
+	@Editable public boolean collisions = false;
 	
 	private GameScreen screen;
 
@@ -93,6 +98,7 @@ public class OpenWorldTreeSystem extends IteratingSystem implements PostInitiali
 	}
 	
 	private MeshBuilder builder = new MeshBuilder();
+	private BulletBuilder bulletBuilder = new BulletBuilder();
 	
 	private void buildTrees(Entity entity) {
 		TreesComponent trees = TreesComponent.components.get(entity);
@@ -100,6 +106,8 @@ public class OpenWorldTreeSystem extends IteratingSystem implements PostInitiali
 		
 		// TODO instead of be based on land meshes, just generate forest based on
 		// voronoi F1 algorithm
+		
+		if(collisions) bulletBuilder.beginStatic(hfc.position);
 		
 		builder.begin(OpenWorldPool.treesMeshAttributes, GL20.GL_TRIANGLES);
 		
@@ -158,6 +166,16 @@ public class OpenWorldTreeSystem extends IteratingSystem implements PostInitiali
 		builder.end(mesh);
 		
 		trees.mesh = mesh;
+		
+		if(collisions){
+			btCollisionObject collisionObject = bulletBuilder.end();
+			if(collisionObject != null){
+				trees.collisionObject = collisionObject;
+				trees.world = bulletSystem.collisionWorld;
+				collisionObject.userData = trees;
+				bulletSystem.collisionWorld.addCollisionObject(collisionObject);
+			}
+		}
 	}
 	
 	// static pool
@@ -197,6 +215,14 @@ public class OpenWorldTreeSystem extends IteratingSystem implements PostInitiali
 				vertexInfo[6].setPos(vp.set(pos).add(r3, h-r3, r3)).setUV(1, 0).setNor(1, -1, 1),
 				vertexInfo[7].setPos(vp.set(pos).add(r3, h+r3, r3)).setUV(1, 1).setNor(1, 1, 1));
 		
+		// create the bullet shape
+		if(collisions && h > 1){ // TODO config limit tree size
+			float trunkRadius = (r1 + r2) / 2;
+			bulletBuilder.beginShape()
+			.position(pos.x, pos.y + h/2, pos.z)
+			.cylinder(trunkRadius, h/2, trunkRadius)
+			.endShape();
+		}
 	}
 
 	@Override
