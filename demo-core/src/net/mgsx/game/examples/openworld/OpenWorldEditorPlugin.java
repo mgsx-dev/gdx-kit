@@ -37,6 +37,7 @@ import net.mgsx.game.examples.openworld.tools.AddElementTool;
 import net.mgsx.game.examples.openworld.tools.AlignMeshTool;
 import net.mgsx.game.examples.openworld.tools.CraftTransformTool;
 import net.mgsx.game.examples.openworld.tools.MoveElementTool;
+import net.mgsx.game.examples.openworld.tools.OpenWorldActionTool;
 import net.mgsx.game.examples.openworld.tools.RemoveElementTool;
 import net.mgsx.game.plugins.DefaultEditorPlugin;
 import net.mgsx.game.plugins.bullet.system.BulletWorldDebugSystem;
@@ -75,6 +76,7 @@ public class OpenWorldEditorPlugin extends EditorPlugin implements DefaultEditor
 		editor.addTool(new RemoveElementTool(editor));
 		editor.addTool(new MoveElementTool(editor));
 		editor.addTool(new CraftTransformTool(editor));
+		editor.addTool(new OpenWorldActionTool(editor));
 		
 		// TODO non edit part
 		editor.entityEngine.addSystem(new OpenWorldLandRenderSystem(editor.game));
