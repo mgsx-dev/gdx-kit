@@ -23,6 +23,7 @@ import com.badlogic.gdx.utils.JsonReader;
 
 import net.mgsx.game.core.GamePipeline;
 import net.mgsx.game.core.GameScreen;
+import net.mgsx.game.core.annotations.Asset;
 import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.core.annotations.Inject;
 import net.mgsx.game.core.annotations.Storable;
@@ -41,6 +42,9 @@ public class UserObjectSystem extends EntitySystem
 		public OpenWorldElement element; // underlying data (persisted not null)
 		transient boolean toRemove; // flag used to schedule a remove
 	}
+	
+	@Asset("openworld/missing.g3dj")
+	public Model missingModel;
 	
 	@Inject BulletWorldSystem bulletWorld;
 	
@@ -175,13 +179,16 @@ public class UserObjectSystem extends EntitySystem
 			// find model (load it if necessary) TODO pre load ...
 			Model model;
 			if(screen.assets.getAssetType(fileName) == null){
-				// TODO if not exists, preload placeholder model !
-				model = AssetHelper.loadAssetNow(screen.assets, fileName, Model.class);
+				if(!Gdx.files.internal(fileName).exists()){
+					model = missingModel;
+				}else{
+					model = AssetHelper.loadAssetNow(screen.assets, fileName, Model.class);
+				}
 			}else{
 				model = screen.assets.get(fileName, Model.class);
 			}
 			lmc.setInstance(new ModelInstance(model));
-			bulletWorld.createFromModel(newEntity, model, lmc.getTransform(), false);
+			bulletWorld.createFromModel(newEntity, model, lmc.getTransform(), element.dynamic);
 			
 		}
 		newEntity.add(lmc);

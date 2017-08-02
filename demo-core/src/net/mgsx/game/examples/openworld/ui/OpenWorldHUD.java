@@ -23,6 +23,7 @@ import net.mgsx.game.examples.openworld.components.TreesComponent;
 import net.mgsx.game.examples.openworld.model.OpenWorldElement;
 import net.mgsx.game.examples.openworld.model.OpenWorldModel;
 import net.mgsx.game.examples.openworld.systems.OpenWorldCameraSystem;
+import net.mgsx.game.examples.openworld.systems.OpenWorldGameSystem;
 import net.mgsx.game.examples.openworld.systems.UserObjectSystem;
 import net.mgsx.game.examples.openworld.systems.UserObjectSystem.UserObject;
 import net.mgsx.game.plugins.bullet.system.BulletWorldSystem;
@@ -38,7 +39,7 @@ public class OpenWorldHUD extends Table
 	// TODO something better like : Backpack selection and World selection
 	private OpenWorldElement selectedItem;
 	String elementName = null;
-	Entity e = null;
+	Entity e = null; // TODO dangerous to keep reference to entity ... except if it's in the same frame.
 	UserObject uo = null;
 	Vector3 position = new Vector3();
 	
@@ -52,13 +53,7 @@ public class OpenWorldHUD extends Table
 		super(skin);
 		this.engine = engine;
 		
-		// TODO add click listenr ?
-		// to have default look or selected tool (look, ...etc)
-		// Kit.inputs.addProcessor(...);
 		build();
-		
-		// XXX load from savedgame (with default set)
-		addItemToBackpack(OpenWorldModel.generateNewElement("machete"));
 		
 		Kit.inputs.addProcessor(new InputAdapter(){
 			@Override
@@ -101,6 +96,23 @@ public class OpenWorldHUD extends Table
 			}
 		});
 	}
+	
+	public void resetState() {
+		action = null;
+		actionButtonGroup = null;
+		uo = null;
+		selectedItem = null;
+		position.setZero();
+		elementName = null;
+		e = null;
+		backpackItemButtons.clear();;
+		backpackContent.clear();
+		
+		clearChildren();
+		clearActions();
+		
+		build();
+	}
 
 	public void addItemToBackpack(final OpenWorldElement item){
 		TextButton bt = backpackItemButtons.get(item.type);
@@ -130,6 +142,7 @@ public class OpenWorldHUD extends Table
 			backpackItemButtons.get(type).remove();
 			backpackItemButtons.remove(type);
 		}
+		engine.getSystem(OpenWorldGameSystem.class).backpack.removeValue(item, true);
 		
 		// append just in front of player ! TODO ray cast for ground !
 		Camera camera = engine.getSystem(OpenWorldCameraSystem.class).getCamera();
@@ -185,6 +198,11 @@ public class OpenWorldHUD extends Table
 		add(infoLabel).colspan(2).expand().center().bottom().row();
 		add(actionsTable).expandX().right();
 		add(backpack).expandX().left();
+		
+		
+		for(OpenWorldElement e : engine.getSystem(OpenWorldGameSystem.class).backpack){
+			addItemToBackpack(e);
+		}
 	}
 
 	private TextButton createActionButton(String label, final GameAction newAction) {
@@ -217,6 +235,7 @@ public class OpenWorldHUD extends Table
 				// and add it to the player backpack ! if meet conditions (size, ...etc).
 				// animate model : lerp to player and inc GUI
 				addItemToBackpack(uo.element);
+				engine.getSystem(OpenWorldGameSystem.class).backpack.add(uo.element);
 				infoLabel.setText(OpenWorldModel.name(uo.element.type) + " added to your backpack.");
 				actionPerformed = true;
 			}else{
@@ -299,4 +318,6 @@ public class OpenWorldHUD extends Table
 		
 		return actionPerformed;
 	}
+
+	
 }

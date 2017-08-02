@@ -1,6 +1,5 @@
 package net.mgsx.game.examples.openworld.ui;
 
-import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -12,7 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Array;
 
-import net.mgsx.game.examples.openworld.model.OpenWorldGame;
+import net.mgsx.game.examples.openworld.systems.OpenWorldGameSystem;
 import net.mgsx.game.services.gapi.GAPI;
 import net.mgsx.game.services.gapi.SavedGame;
 
@@ -87,15 +86,14 @@ public class SavedGameView extends Table
 		
 		game.name = "save-" + new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(new Date());
 		
-		GAPI.service.saveGame(game, OpenWorldGame.save(engine));
+		engine.getSystem(OpenWorldGameSystem.class).save(game);
 		
 		buildUI(); // TODO optimize by reduce remote API calls
 	}
 
 	private void loadGame(final SavedGame game) {
-		InputStream stream = GAPI.service.loadGame(game);
 		
-		OpenWorldGame.load(engine, stream);
+		engine.getSystem(OpenWorldGameSystem.class).loadRequest(game);
 	}
 	
 	private void deleteGame(final SavedGame game) {

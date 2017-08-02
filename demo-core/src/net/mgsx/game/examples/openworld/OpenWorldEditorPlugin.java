@@ -18,6 +18,7 @@ import net.mgsx.game.examples.openworld.systems.OpenWorldCameraSystem;
 import net.mgsx.game.examples.openworld.systems.OpenWorldDebugSystem;
 import net.mgsx.game.examples.openworld.systems.OpenWorldEnvSystem;
 import net.mgsx.game.examples.openworld.systems.OpenWorldFaunaSystem;
+import net.mgsx.game.examples.openworld.systems.OpenWorldGameSystem;
 import net.mgsx.game.examples.openworld.systems.OpenWorldGeneratorSystem;
 import net.mgsx.game.examples.openworld.systems.OpenWorldHUDSystem;
 import net.mgsx.game.examples.openworld.systems.OpenWorldLandRenderSystem;
@@ -37,7 +38,6 @@ import net.mgsx.game.examples.openworld.tools.AddElementTool;
 import net.mgsx.game.examples.openworld.tools.AlignMeshTool;
 import net.mgsx.game.examples.openworld.tools.CraftTransformTool;
 import net.mgsx.game.examples.openworld.tools.MoveElementTool;
-import net.mgsx.game.examples.openworld.tools.OpenWorldActionTool;
 import net.mgsx.game.examples.openworld.tools.RemoveElementTool;
 import net.mgsx.game.plugins.DefaultEditorPlugin;
 import net.mgsx.game.plugins.bullet.system.BulletWorldDebugSystem;
@@ -68,6 +68,8 @@ public class OpenWorldEditorPlugin extends EditorPlugin implements DefaultEditor
 		OpenWorldRuntimeSettings.highQuality = highQuality;
 		
 		
+		editor.entityEngine.addSystem(new OpenWorldGameSystem());
+		
 		editor.entityEngine.addSystem(new OpenWorldGeneratorSystem());
 		editor.entityEngine.addSystem(new OpenWorldManagerSystem());
 		editor.entityEngine.addSystem(new OpenWorldDebugSystem());
@@ -76,7 +78,6 @@ public class OpenWorldEditorPlugin extends EditorPlugin implements DefaultEditor
 		editor.addTool(new RemoveElementTool(editor));
 		editor.addTool(new MoveElementTool(editor));
 		editor.addTool(new CraftTransformTool(editor));
-		editor.addTool(new OpenWorldActionTool(editor));
 		
 		// TODO non edit part
 		editor.entityEngine.addSystem(new OpenWorldLandRenderSystem(editor.game));

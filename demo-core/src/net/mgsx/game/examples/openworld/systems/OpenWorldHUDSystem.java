@@ -1,8 +1,5 @@
 package net.mgsx.game.examples.openworld.systems;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -14,7 +11,6 @@ import net.mgsx.game.core.PostInitializationListener;
 import net.mgsx.game.core.annotations.Asset;
 import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.core.annotations.EditableSystem;
-import net.mgsx.game.examples.openworld.model.OpenWorldGame;
 import net.mgsx.game.examples.openworld.model.OpenWorldRuntimeSettings;
 import net.mgsx.game.examples.openworld.ui.ConnectionView;
 import net.mgsx.game.examples.openworld.ui.OpenWorldHUD;
@@ -22,7 +18,6 @@ import net.mgsx.game.examples.openworld.ui.SavedGameView;
 import net.mgsx.game.examples.openworld.ui.ScenarioView;
 import net.mgsx.game.plugins.core.systems.HUDSystem;
 import net.mgsx.game.services.gapi.GAPI;
-import net.mgsx.game.services.gapi.SavedGame;
 
 @EditableSystem
 public class OpenWorldHUDSystem extends HUDSystem implements PostInitializationListener
@@ -50,7 +45,7 @@ public class OpenWorldHUDSystem extends HUDSystem implements PostInitializationL
 	
 	@Override
 	public void update(float deltaTime) {
-		// XXX workaround for click bug listener
+		// XXX workaround for click bug listener but could be the desktop version of android properties button ?
 		if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE)){
 			if(hudMain.isVisible()){
 				hudMain.setVisible(false);
@@ -84,16 +79,6 @@ public class OpenWorldHUDSystem extends HUDSystem implements PostInitializationL
 		root.add(view);
 	}
 	
-	// XXX workaround for listeners bug !
-	@Editable
-	public void savedGames() 
-	{
-		// TODO refactor fielname formatting in saved game ?
-		SavedGame game = GAPI.service.createGame();
-		game.name = "save-" + new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(new Date());
-		GAPI.service.saveGame(game, OpenWorldGame.save(getEngine()));
-	}
-
 	@Editable
 	public void testScenario() {
 		
