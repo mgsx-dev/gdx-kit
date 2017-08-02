@@ -25,7 +25,9 @@ public class OpenWorldGeneratorSystem extends EntitySystem implements PostInitia
 {
 	public static final int SEED_LAYER_ALTITUDE = 0;
 	public static final int SEED_LAYER_FLORA = 1;
-	public static final int SEED_LAYERS_COUNT = 2;
+	public static final int SEED_LAYER_ROUGHNESS = 2;
+	public static final int SEED_LAYER_PLANARITY = 3;
+	public static final int SEED_LAYERS_COUNT = 4;
 	
 	/**
 	 * Height map scale (shouldn't be changed in order to preserve object positions.
@@ -42,6 +44,8 @@ public class OpenWorldGeneratorSystem extends EntitySystem implements PostInitia
 	@Editable public float frequency = .2f;
 	@Editable public float persistence = .5f;
 	@Editable public int octaves = 3;
+
+	@Editable public boolean fBm = false;
 
 	@Editable public float floraFrequency = .1f;
 
@@ -79,10 +83,24 @@ public class OpenWorldGeneratorSystem extends EntitySystem implements PostInitia
 	 */
 	public float getAltitude(float ax, float ay)
 	{
+		if(fBm){
+			// TODO config planarity frequency
+			float planarity = 0.5f + .5f * getPerlin(ax, ay, seedLayers[SEED_LAYER_PLANARITY], frequency * 8, 1, 1);
+			
+			// TODO config roughness frequency
+			float rougness = 0.5f + 0.25f * getPerlin(ax, ay, seedLayers[SEED_LAYER_ROUGHNESS], frequency * 5.5f, 1, 1);
+			
+			float altitude = getPerlin(ax, ay, seedLayers[SEED_LAYER_ALTITUDE], frequency, octaves, rougness);
+			
+			return scale * altitude * planarity;
+		}
 		return scale * getPerlin(ax, ay, seedLayers[SEED_LAYER_ALTITUDE], frequency, octaves, persistence);
 	}
 
 	public float getFlora(float ax, float ay){
+		
+		// TODO depends on altitude and planarity and maybe roughness.
+		
 		return getPerlin(ax, ay, seedLayers[SEED_LAYER_FLORA], floraFrequency, 2, .5f); // TODO config ?
 	}
 	
