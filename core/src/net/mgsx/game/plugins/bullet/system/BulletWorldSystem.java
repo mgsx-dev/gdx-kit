@@ -6,6 +6,7 @@ import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.physics.bullet.Bullet;
 import com.badlogic.gdx.physics.bullet.collision.ClosestRayResultCallback;
@@ -168,9 +169,14 @@ public class BulletWorldSystem extends EntitySystem
 	public void createFromModel(Entity entity, Model model, final Matrix4 transform, boolean dynamic) {
 		BulletComponent bullet = getEngine().createComponent(BulletComponent.class);
 		
-		bullet.shape = Bullet.obtainStaticNodeShape(model.nodes);
+		// TODO add dynamic support ?? not really possible natively by bullet
+		// require at least convex hull with less of 100 vertices.
+		// see : http://www.bulletphysics.org/mediawiki-1.5.8/index.php/Collision_Shapes#Meshes
+		// quick approximation is to take max extends of the model boundary but should be
+		// more accurate with center offset ...etc
 		
-		if(dynamic)
+		if(dynamic){
+			bullet.shape = new btBoxShape(model.calculateBoundingBox(new BoundingBox()).max);
 			bullet.object = new btRigidBody(new btRigidBodyConstructionInfo(10, new btMotionState(){
 				@Override
 				public void getWorldTransform(Matrix4 worldTrans) {
@@ -181,7 +187,8 @@ public class BulletWorldSystem extends EntitySystem
 					transform.set(worldTrans);
 				}
 			}, bullet.shape, new Vector3(1,1,1)));
-		else{
+		}else{
+			bullet.shape = Bullet.obtainStaticNodeShape(model.nodes);
 			bullet.object = new btCollisionObject();
 			bullet.object.setCollisionShape(bullet.shape);
 			bullet.object.setWorldTransform(transform);
