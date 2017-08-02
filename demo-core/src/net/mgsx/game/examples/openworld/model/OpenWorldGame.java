@@ -8,4 +8,6 @@ public class OpenWorldGame {
 	public Vector3 position = new Vector3();
 	public OpenWorldElement [] objects;
 	public OpenWorldElement [] backpack;
+	
+	public OpenWorldPlayer player;
 }
