@@ -3,6 +3,7 @@ package net.mgsx.game.examples.openworld.systems;
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.math.CatmullRomSpline;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
 
 import net.mgsx.game.core.GamePipeline;
@@ -42,7 +43,7 @@ public class OpenWorldCameraPathSystem extends EntitySystem
 		Camera camera = cameraSystem.getCamera();
 		if(camera == null) return;
 		
-		if(controlPoints != null) time += deltaTime * speed / splineLength;
+		if(controlPoints != null) time += deltaTime * Math.abs(speed) / splineLength; // avoid negative
 		
 		if(time > 1 || controlPoints == null)
 		{
@@ -64,6 +65,8 @@ public class OpenWorldCameraPathSystem extends EntitySystem
 			splineLength = spline.approxLength(100); // TODO precision
 		}
 		
+		// quick fix in case of too much time
+		time = MathUtils.clamp(time, 0, 1);
 		
 		spline.valueAt(camera.position, time);
 		
