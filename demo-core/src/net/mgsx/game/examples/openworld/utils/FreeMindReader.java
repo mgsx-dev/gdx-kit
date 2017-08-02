@@ -77,6 +77,9 @@ public class FreeMindReader
 		public String asString() {
 			return null;
 		}
+		public String asString(String defaultValue) {
+			return defaultValue;
+		}
 	}
 	public static class FreemindNode {
 		public static final FreemindNode DEFAULT = new FreemindNodeDefault();
@@ -124,6 +127,9 @@ public class FreeMindReader
 		}
 		public String asString() {
 			return text;
+		}
+		public String asString(String defaultValue) {
+			return asString();
 		}
 		public FreemindNode first() {
 			return child(0);

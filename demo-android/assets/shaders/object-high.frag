@@ -146,7 +146,7 @@ void main() {
     vec3 color = vec3(lum,lum,lum);
 
     // select materials
-    color *= v_color.rgb * u_color.rgb * day;
+    color *= u_color.rgb * day;
 
     color += specular * u_color.rgb * day;
 

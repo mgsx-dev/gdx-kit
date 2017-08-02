@@ -11,13 +11,14 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.ObjectMap;
 
+import net.mgsx.game.core.helpers.ArrayHelper;
 import net.mgsx.game.examples.openworld.utils.FreeMindReader;
 import net.mgsx.game.examples.openworld.utils.FreeMindReader.FreemindMap;
 import net.mgsx.game.examples.openworld.utils.FreeMindReader.FreemindNode;
 
 public class OpenWorldModel {
 	
-	public static FreemindMap map;
+	private static FreemindMap map;
 	static Array<FreemindNode> elements;
 	static float maxRarity;
 	private static ObjectMap<Compound, ElementTemplate> fusions = new ObjectMap<Compound, ElementTemplate>();
@@ -59,6 +60,10 @@ public class OpenWorldModel {
 				fusions.put(template.compound, template);
 			}
 		}
+	}
+	
+	public static String questSummary(String id){
+		return map.root().child("quests").child(id).child(0).asString();
 	}
 	
 	public static Array<String> getAllTypes() {
@@ -121,18 +126,8 @@ public class OpenWorldModel {
 		
 		owElement.geo_x = MathUtils.lerp(0.1f, 0.9f, rnd.nextFloat());
 		owElement.geo_y = MathUtils.lerp(0.1f, 0.9f, rnd.nextFloat());
-		float h1 = element.child("color").child("hue").child(0).asFloat(0);
-		float h2 = element.child("color").child("hue").child(1).asFloat(h1);
-		float s1 = element.child("color").child("sat").child(0).asFloat(0);
-		float s2 = element.child("color").child("sat").child(1).asFloat(s1);
-		float l1 = element.child("color").child("lum").child(0).asFloat(100);
-		float l2 = element.child("color").child("lum").child(1).asFloat(l1);
 		
-		float h = MathUtils.lerp(h1, h2, rnd.nextFloat());
-		float s = MathUtils.lerp(s1, s2, rnd.nextFloat());
-		float l = MathUtils.lerp(l1, l2, rnd.nextFloat());
-		
-		owElement.color = HSV_to_RGB(h,s,l);
+		owElement.color = generateColor(element.child("color"));
 		
 		owElement.type = elements.get((int)(elements.size * rnd.nextFloat())).asString();
 		
@@ -194,5 +189,89 @@ public class OpenWorldModel {
 		return new Color(r / 255.0f, g / 255.0f, b / 255.0f, 1);
 	}
 
+	public static OpenWorldElement useTool(String toolName, String targetName) 
+	{
+		// find all cases
+		Array<FreemindNode> names = map.root().child("entities").child(targetName).child("with").child(toolName).children();
+		
+		// no cases available
+		if(names != null) return null;
+		
+		// pickup random item
+		String name = ArrayHelper.any(names).asString();
+		
+		// find item
+		FreemindNode item = map.root().child("elements").child(name);
+		
+		// generate
+		return generateElement(item);
+	}
+
+	private static OpenWorldElement generateElement(FreemindNode item) 
+	{
+		OpenWorldElement element = new OpenWorldElement();
+		
+		// generates color
+		element.color = generateColor(item.child("color"));
+		
+		// generates shape
+		final float ratio = .2f;
+		String shape = item.child("shape").first().asString();
+		
+		element.geo_x = element.geo_y = 1;
+		element.type = "box";
+		
+		if("box".equals(shape)){
+		}else if("ball".equals(shape)){
+			element.type = "sphere";
+		}else if("tube".equals(shape)){
+			element.geo_x = element.geo_y = ratio;
+		}else if("plate".equals(shape)){
+			element.geo_x = ratio;
+		}else{
+			// TODO find blender model
+		}
+		
+		element.name = item.asString();
+		System.out.println(element.name); // XXX
+		System.out.println(element.color); // XXX
+				
+		element.dynamic = true;
+		
+		element.size = generateSize(item.child("size"));
+		
+		return element;
+	}
+
+	private static float generateSize(FreemindNode size) {
+		return generateFloat(size, 1);
+	}
+
+	private static Color generateColor(FreemindNode color) 
+	{
+		float h = generateFloat(color.child("hue"), 0);
+		float s = generateFloat(color.child("sat"), 50);
+		float l = generateFloat(color.child("lum"), 50);
+		
+		return HSV_to_RGB(h,s,l);
+	}
+
+	private static float generateFloat(FreemindNode node, float defaultValue) {
+		float f1 = node.child(0).asFloat(defaultValue);
+		float f2 = node.child(1).asFloat(f1);
+		return MathUtils.lerp(f1, f2, MathUtils.random());
+	}
+
+	public static String description(String name) {
+		// find in any : elements or entities
+		FreemindNode item = map.root().child("elements").child(name);
+		if(!item.exists()){
+			item = map.root().child("entities").child(name);
+		}
+		if(!item.exists()){
+			return "Unknow item " + name;
+		}
+		return item.child("name").asString(name) + " : " + item.child("hint").asString("no specific info");
+	}
 	
 }

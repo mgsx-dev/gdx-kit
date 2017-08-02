@@ -36,5 +36,8 @@ public class OpenWorldElement {
 	
 	public Vector3 position = new Vector3();
 	public Quaternion rotation = new Quaternion();
+
+	/** this is the reference */
+	public String name;
 	
 }

@@ -1,24 +1,27 @@
 package net.mgsx.game.examples.openworld.tools;
 
+import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.collision.Ray;
 
 import net.mgsx.game.core.EditorScreen;
 import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.core.annotations.Inject;
 import net.mgsx.game.core.tools.Tool;
+import net.mgsx.game.examples.openworld.components.ObjectMeshComponent;
 import net.mgsx.game.examples.openworld.components.TreesComponent;
 import net.mgsx.game.examples.openworld.model.OpenWorldElement;
+import net.mgsx.game.examples.openworld.model.OpenWorldModel;
 import net.mgsx.game.examples.openworld.systems.UserObjectSystem;
+import net.mgsx.game.examples.openworld.systems.UserObjectSystem.UserObject;
 import net.mgsx.game.plugins.bullet.system.BulletWorldSystem;
 
 @Editable
 public class OpenWorldActionTool extends Tool
 {
 	public static enum Action{
-		NONE, GRAB, AXE // and so on ...
+		NONE, LOOK, GRAB, BUILD, TOOL
 	}
 	
 	@Editable public Action action;
@@ -41,22 +44,58 @@ public class OpenWorldActionTool extends Tool
 		Object o = bulletWorld.rayCastObject(ray, rayResult);
 		if(o != null){
 			
-			// Game logic : depending on action and item, could produce element or any other things ...
-			if(o instanceof TreesComponent){
-				if(action == Action.AXE){
-					// TODO create some wood
-					OpenWorldElement element = new OpenWorldElement();
-					element.color = new Color().set(Color.BROWN);
-					element.dynamic = true;
-					element.geo_x = element.geo_y = 1;
+			// find which object as been picked :
+			String elementName = null;
+			Entity e = null;
+			UserObject uo = null;
+			
+			if(o instanceof Entity){
+				e = (Entity)o;
+				ObjectMeshComponent omc = ObjectMeshComponent.components.get(e);
+				if(omc != null){
+					if(omc.userObject != null){
+						uo = omc.userObject;
+						elementName = omc.userObject.element.name;
+					}
+				}
+			}
+			else if(o instanceof TreesComponent){
+				elementName = "tree";
+				
+			}
+			
+			if(elementName == null) return false;
+			
+			// select appropriate action
+			if(action == Action.TOOL){
+				final String toolName = "machete"; // TODO dynamic
+				
+				OpenWorldElement element = OpenWorldModel.useTool(toolName, elementName);
+				if(element != null){
 					element.position.set(rayResult.origin);
-					element.size = .1f;
-					element.type = "box";
 					userObject.appendObject(element);
 				}else{
-					// TODO display info to the player
-					Gdx.app.log("OW", "no actions for object " + o.toString());
+					// nothing as been generated ...
 				}
+			}
+			else if(action == Action.GRAB){
+				// try to grab element
+				if(e != null){
+					// remove it TODO but keep its properties somewhere in order to regenerates !
+					if(uo != null) userObject.removeElement(uo);
+					getEngine().removeEntity(e);
+					// and add it to the player backpack ! if meet conditions (size, ...etc).
+					// animate model : lerp to player and inc GUI
+					Gdx.app.log("OW", "grabbed !");
+					
+				}else{
+					Gdx.app.log("OW", "cannot grab : " + elementName);
+				}
+			}
+			// default tool is look at
+			else{
+				String description = OpenWorldModel.description(elementName);
+				Gdx.app.log("OW", "description : " + description);
 			}
 			
 			return true;

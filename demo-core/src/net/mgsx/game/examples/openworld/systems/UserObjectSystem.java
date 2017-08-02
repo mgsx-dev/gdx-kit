@@ -156,12 +156,12 @@ public class UserObjectSystem extends EntitySystem
 		
 		// built-in box and sphere objects
 		if(element.type.equals("box")){
-			lmc.setInstance(createInstance(createMeshBox(element)));
+			lmc.setInstance(createInstance(createMeshBox(element), element.color));
 			// physics :
 			bulletWorld.createBox(newEntity, lmc.getTransform(), element.size * element.geo_x, element.size * element.geo_y, element.size, element.dynamic);
 		}
 		else if(element.type.equals("sphere")){
-			lmc.setInstance(createInstance(createMeshSphere(element)));
+			lmc.setInstance(createInstance(createMeshSphere(element), element.color));
 			bulletWorld.createSphere(newEntity, lmc.getTransform(), element.size,element.dynamic);
 		}
 		// predefined assets
@@ -189,12 +189,13 @@ public class UserObjectSystem extends EntitySystem
 		return newEntity;
 	}
 	
-	private ModelInstance createInstance(Mesh mesh) {
+	private ModelInstance createInstance(Mesh mesh, Color color) {
 		MeshPart part = new MeshPart("root", mesh, 0, mesh.getNumIndices(), GL20.GL_TRIANGLES);
 		ModelBuilder b = new ModelBuilder();
 		b.begin();
 		b.node();
-		b.part(part, defaultMaterial);
+		Material mat = new Material(new ColorAttribute(ColorAttribute.Diffuse, color));
+		b.part(part, mat);
 		Model model = b.end();
 		return new ModelInstance(model);
 	}
@@ -205,7 +206,6 @@ public class UserObjectSystem extends EntitySystem
 		int stride = mesh.getVertexSize()/4;
 		float[] vertices = new float[stride * mesh.getNumVertices()];
 		mesh.getVertices(vertices);
-		e.color.set(.7f, .7f, .65f, 1); // XXX force color
 		for(int i=0, index=mesh.getVertexAttribute(VertexAttributes.Usage.Position).offset / 4 ; i<mesh.getNumVertices() ; i++, index+=stride){
 			vertices[index+0] *= e.size;
 			vertices[index+1] *= e.size;
@@ -221,7 +221,6 @@ public class UserObjectSystem extends EntitySystem
 		//e.size = 1;
 		// Matrix4 m = new Matrix4().scale(e.size * e.geo_x, e.size * e.geo_y, e.size);
 		MeshBuilder builder = new MeshBuilder();
-		builder.setColor(e.color);
 		builder.begin(new VertexAttributes(
 				VertexAttribute.Position(), 
 				VertexAttribute.Normal(),
