@@ -55,7 +55,7 @@ public class OpenWorldActionTool extends Tool
 				if(omc != null){
 					if(omc.userObject != null){
 						uo = omc.userObject;
-						elementName = omc.userObject.element.name;
+						elementName = omc.userObject.element.type;
 					}
 				}
 			}

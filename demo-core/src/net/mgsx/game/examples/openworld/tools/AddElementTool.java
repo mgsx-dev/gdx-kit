@@ -2,7 +2,6 @@ package net.mgsx.game.examples.openworld.tools;
 
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.math.RandomXS128;
 import com.badlogic.gdx.math.collision.Ray;
 
 import net.mgsx.game.core.EditorScreen;
@@ -24,11 +23,6 @@ public class AddElementTool extends Tool
 	@Editable public boolean dynamic;
 	@Editable public float size = 1;
 	
-	@Editable public boolean forceShape = false;
-	@Editable public float sx = 1;
-	@Editable public float sy = 1;
-	@Editable public float sz = 1;
-	
 	@Editable(editor=OpenWorldTypeSelector.class)
 	public String type;
 	
@@ -47,19 +41,9 @@ public class AddElementTool extends Tool
 		Entity entity = bulletWorld.rayCast(ray, rayResult);
 		if(entity != null){
 			
-			RandomXS128 rnd = new RandomXS128();
-			OpenWorldElement e = OpenWorldModel.generateNewElement(rnd.nextLong());
-			
-			if(forceShape){
-				e.geo_x = sx;
-				e.geo_y = sy;
-				e.size = sz;
-			}
-			e.type = type;
+			OpenWorldElement e = OpenWorldModel.generateNewElement(type);
 			
 			e.dynamic = dynamic;
-			
-			e.size *= size;
 			
 			e.position.set(rayResult.origin);
 			e.rotation.idt();

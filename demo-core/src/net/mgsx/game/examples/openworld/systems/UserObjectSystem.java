@@ -29,6 +29,7 @@ import net.mgsx.game.core.annotations.Storable;
 import net.mgsx.game.core.helpers.AssetHelper;
 import net.mgsx.game.examples.openworld.components.ObjectMeshComponent;
 import net.mgsx.game.examples.openworld.model.OpenWorldElement;
+import net.mgsx.game.examples.openworld.model.OpenWorldElement.GeometryType;
 import net.mgsx.game.examples.openworld.utils.SmoothBoxShapeBuilder;
 import net.mgsx.game.plugins.bullet.system.BulletWorldSystem;
 
@@ -155,12 +156,12 @@ public class UserObjectSystem extends EntitySystem
 		}
 		
 		// built-in box and sphere objects
-		if(element.type.equals("box")){
+		if(element.shape == GeometryType.BOX){
 			lmc.setInstance(createInstance(createMeshBox(element), element.color));
 			// physics :
 			bulletWorld.createBox(newEntity, lmc.getTransform(), element.size * element.geo_x, element.size * element.geo_y, element.size, element.dynamic);
 		}
-		else if(element.type.equals("sphere")){
+		else if(element.shape == GeometryType.SPHERE){
 			lmc.setInstance(createInstance(createMeshSphere(element), element.color));
 			bulletWorld.createSphere(newEntity, lmc.getTransform(), element.size,element.dynamic);
 		}

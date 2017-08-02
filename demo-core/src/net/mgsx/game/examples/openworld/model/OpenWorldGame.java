@@ -33,6 +33,7 @@ public class OpenWorldGame {
 		uos.removeAllElements();
 		if(gameData.objects != null){
 			for(OpenWorldElement element : gameData.objects){
+				OpenWorldModel.generateElement(element);
 				uos.appendObject(element);
 			}
 		}

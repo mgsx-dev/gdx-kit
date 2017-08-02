@@ -10,34 +10,25 @@ public class OpenWorldElement {
 		BOX, SPHERE
 	}
 	
+	/** this is the reference */
 	public String type;
 	
-	// shape
-	public float geo_x;
-	public float geo_y;
-	// material
-	public Color color;
-	// volume
-	public float size;
-	// rarity (-1 for fusion only objects)
-	public float rarity;
-	
-	public boolean dynamic = false;
-	
-	// runtime seed (id for other generators)
+	/** the item seed */
 	public long seed;
 	
-	/** bit wise boolean for wood, stone, metal, sand, water ... rates when destroyed 
-	 * factor of size, eg. if only wood then it is made of size of wooks, if wood and stone
-	 * then wood is made of size of woods / 2, same for stone.
-	 * It's the history of the item
-	 * */
-	public long composition;
-	
+	/** item matrix */
 	public Vector3 position = new Vector3();
 	public Quaternion rotation = new Quaternion();
-
-	/** this is the reference */
-	public String name;
 	
+	// procedural properties
+	public transient GeometryType shape;
+	public transient float geo_x;
+	public transient float geo_y;
+	// material
+	public transient Color color;
+	// volume
+	public transient float size;
+	
+	// TODO not all are dynamic ... store or not ?
+	public boolean dynamic = false;
 }

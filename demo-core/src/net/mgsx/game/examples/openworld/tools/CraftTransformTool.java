@@ -2,7 +2,6 @@ package net.mgsx.game.examples.openworld.tools;
 
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.math.RandomXS128;
 import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.physics.bullet.collision.btPersistentManifold;
 import com.badlogic.gdx.utils.Array;
@@ -82,20 +81,12 @@ public class CraftTransformTool extends Tool
 			ObjectSet<Entity> result = new ObjectSet<Entity>();
 			findRecursive(result , entity, map);
 			
-			// TODO check which transform in the dictionary
-			// if no transform match then create a random garbage ... :-)
-			
-				
 			// aggregate entities by type
 			Compound compound = new Compound();
 			for(Entity e : result){
 				ObjectMeshComponent omc = ObjectMeshComponent.components.get(e);
 				compound.add(omc.userObject.element.type);
 			}
-			
-			// TODO serialize recipe in a string (sorted keys + values separated by pipes ...)
-			// TODO do the same for all recipes (cache in model)
-			// and then map search ... (in model again)
 			
 			// check if can do it
 			ElementTemplate foundRecipe = OpenWorldModel.findFusion(compound);
@@ -105,37 +96,22 @@ public class CraftTransformTool extends Tool
 				ObjectMeshComponent omc = ObjectMeshComponent.components.get(e);
 				userObjectSystem.removeElement(omc.userObject);
 			}
-
+			OpenWorldElement e;
 			if(foundRecipe != null){
-				// TODO create the new object !
-				RandomXS128 rnd = new RandomXS128();
-				OpenWorldElement e = OpenWorldModel.generateNewElement(rnd.nextLong());
-				e.dynamic = true;
-				e.type = foundRecipe.id;
-				
-				// TODO ? e.size *= size;
-				
-				e.position.set(rayResult.origin);
-				e.rotation.idt();
-				e.type = foundRecipe.id;
-				
-				userObjectSystem.appendObject(e);
+				// create the new object !
+				e = OpenWorldModel.generateNewElement(foundRecipe.id);
 			}
 			else
 			{
-				// TODO create some basic objects (fail !)
-				RandomXS128 rnd = new RandomXS128();
-				OpenWorldElement e = OpenWorldModel.generateNewElement(rnd.nextLong());
-				e.dynamic = true;
-				
-				// TODO ? e.size *= size;
-				
-				e.position.set(rayResult.origin);
-				e.rotation.idt();
-				
-				// XXX userObjectSystem.appendObject(e);
-				
+				// create some basic objects (fail !)
+				e = OpenWorldModel.generateNewGarbageElement(compound);
 			}
+			e.dynamic = true;
+			
+			e.position.set(rayResult.origin);
+			e.rotation.idt();
+			
+			userObjectSystem.appendObject(e);
 			
 			
 			return true;
