@@ -175,6 +175,7 @@ public class UserObjectSystem extends EntitySystem
 			// find model (load it if necessary) TODO pre load ...
 			Model model;
 			if(screen.assets.getAssetType(fileName) == null){
+				// TODO if not exists, preload placeholder model !
 				model = AssetHelper.loadAssetNow(screen.assets, fileName, Model.class);
 			}else{
 				model = screen.assets.get(fileName, Model.class);

@@ -4,17 +4,20 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 
 import de.golfgl.gdxgamesvcs.GameServiceException;
 import de.golfgl.gdxgamesvcs.IGameServiceListener;
+import net.mgsx.game.core.PostInitializationListener;
 import net.mgsx.game.core.annotations.Asset;
 import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.core.annotations.EditableSystem;
 import net.mgsx.game.examples.openworld.model.OpenWorldGame;
 import net.mgsx.game.examples.openworld.model.OpenWorldRuntimeSettings;
 import net.mgsx.game.examples.openworld.ui.ConnectionView;
+import net.mgsx.game.examples.openworld.ui.OpenWorldHUD;
 import net.mgsx.game.examples.openworld.ui.SavedGameView;
 import net.mgsx.game.examples.openworld.ui.ScenarioView;
 import net.mgsx.game.plugins.core.systems.HUDSystem;
@@ -22,7 +25,7 @@ import net.mgsx.game.services.gapi.GAPI;
 import net.mgsx.game.services.gapi.SavedGame;
 
 @EditableSystem
-public class OpenWorldHUDSystem extends HUDSystem
+public class OpenWorldHUDSystem extends HUDSystem implements PostInitializationListener
 {
 	@Asset("skins/game-skin.json")
 	public Skin skin;
@@ -30,14 +33,32 @@ public class OpenWorldHUDSystem extends HUDSystem
 	private Table root;
 	private Table view;
 	
+	public transient OpenWorldHUD hudMain;
+	
+	@Override
+	public void onPostInitialization() {
+		
+		hudMain = new OpenWorldHUD(skin, getEngine());
+		hudMain.setFillParent(true);
+		hudMain.setVisible(false);
+		getStage().addActor(hudMain);
+		
+		root = new Table(skin);
+		root.setFillParent(true);
+		getStage().addActor(root);
+	}
+	
 	@Override
 	public void update(float deltaTime) {
-		// XXX init GUI in update because of dependency injection
-		if(root == null){
-			root = new Table(skin);
-			root.setFillParent(true);
-			getStage().addActor(root);
+		// XXX workaround for click bug listener
+		if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE)){
+			if(hudMain.isVisible()){
+				hudMain.setVisible(false);
+			}else{
+				hudMain.setVisible(true);
+			}
 		}
+		
 		super.update(deltaTime);
 	}
 	

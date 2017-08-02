@@ -13,6 +13,7 @@ import net.mgsx.game.examples.openworld.components.ObjectMeshComponent;
 import net.mgsx.game.examples.openworld.components.TreesComponent;
 import net.mgsx.game.examples.openworld.model.OpenWorldElement;
 import net.mgsx.game.examples.openworld.model.OpenWorldModel;
+import net.mgsx.game.examples.openworld.systems.OpenWorldHUDSystem;
 import net.mgsx.game.examples.openworld.systems.UserObjectSystem;
 import net.mgsx.game.examples.openworld.systems.UserObjectSystem.UserObject;
 import net.mgsx.game.plugins.bullet.system.BulletWorldSystem;
@@ -86,6 +87,7 @@ public class OpenWorldActionTool extends Tool
 					getEngine().removeEntity(e);
 					// and add it to the player backpack ! if meet conditions (size, ...etc).
 					// animate model : lerp to player and inc GUI
+					getEngine().getSystem(OpenWorldHUDSystem.class).hudMain.addItemToBackpack(uo.element);
 					Gdx.app.log("OW", "grabbed !");
 					
 				}else{

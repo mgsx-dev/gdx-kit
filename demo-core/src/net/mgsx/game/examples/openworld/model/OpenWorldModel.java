@@ -124,7 +124,7 @@ public class OpenWorldModel {
 		Array<FreemindNode> names = map.root().child("items").child(targetName).child("actions").child(toolName).children();
 		
 		// no cases available
-		if(names == null) return null;
+		if(names == null || names.size == 0) return null;
 		
 		// pickup random item
 		String name = ArrayHelper.any(names).asString();
@@ -216,13 +216,17 @@ public class OpenWorldModel {
 		if(!item.exists()){
 			return "Unknow item " + name;
 		}
-		return item.child("name").asString(name) + " : " + item.child("hint").asString("no specific info");
+		return item.child("name").first().asString(name) + " : " + item.child("hint").first().asString("no specific info");
 	}
 
 	public static OpenWorldElement generateNewGarbageElement(Compound compound) 
 	{
 		// TODO based on compound ?
 		return generateNewElement("dirt");
+	}
+
+	public static String name(String type) {
+		return map.root().child("items").child("name").asString("Something");
 	}
 
 }
