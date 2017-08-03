@@ -178,6 +178,10 @@ public class OpenWorldHUD extends Table
 
 	private ButtonGroup<TextButton> actionButtonGroup;
 	
+	/**
+	 * contextual actions depends on surrounding items.
+	 * eg. near a caban, you can sleep, neer a hover you can cook.
+	 */
 	private Table contextualActionsTable;
 	
 	private void build() {
@@ -213,6 +217,7 @@ public class OpenWorldHUD extends Table
 		
 		infoLabel = new Label("", getSkin());
 		add(infoLabel).colspan(2).expand().center().bottom().row();
+		add(new StatusView(getSkin(), engine)).colspan(2).expandX().center().row();
 		add(actionsTable).expandX().right();
 		add(backpack).expandX().left();
 		
@@ -239,6 +244,8 @@ public class OpenWorldHUD extends Table
 		
 		// TODO put texts in model with i18n
 		
+		OpenWorldGameSystem gameSystem = engine.getSystem(OpenWorldGameSystem.class);
+		
 		boolean actionPerformed = false;
 		boolean actionCanceled = false;
 		
@@ -250,14 +257,28 @@ public class OpenWorldHUD extends Table
 			if(worldSelection != null){
 				// remove it TODO but keep its properties somewhere in order to regenerates !
 				if(worldSelection.uo != null){
-					userObject.removeElement(worldSelection.uo);
-					engine.removeEntity(worldSelection.e);
-					// and add it to the player backpack ! if meet conditions (size, ...etc).
-					// animate model : lerp to player and inc GUI
-					addItemToBackpack(worldSelection.uo.element);
-					engine.getSystem(OpenWorldGameSystem.class).backpack.add(worldSelection.uo.element);
-					infoLabel.setText(OpenWorldModel.name(worldSelection.uo.element.type) + " added to your backpack.");
-					actionPerformed = true;
+					
+					Integer space = OpenWorldModel.space(worldSelection.uo.element.type);
+					if(space != null){
+						int spaceAvailable = gameSystem.getAvailableSpaceInBackpack();
+						if(space <= spaceAvailable){
+							userObject.removeElement(worldSelection.uo);
+							engine.removeEntity(worldSelection.e);
+							// and add it to the player backpack ! if meet conditions (size, ...etc).
+							// animate model : lerp to player and inc GUI
+							addItemToBackpack(worldSelection.uo.element);
+							gameSystem.backpack.add(worldSelection.uo.element);
+							// TODO update backpack fill rate
+							infoLabel.setText(OpenWorldModel.name(worldSelection.uo.element.type) + " added to your backpack.");
+							actionPerformed = true;
+						}else{
+							infoLabel.setText("You don't have enough space in your backpack.");
+						}
+					}else{
+						infoLabel.setText("You can't pick up this... try something else.");
+					}
+				}else{
+					infoLabel.setText("You can't pick up this... try something else.");
 				}
 			}else{
 				infoLabel.setText("Pick anything you want...");
@@ -296,15 +317,27 @@ public class OpenWorldHUD extends Table
 		}
 		else if(action == GameAction.EAT){
 			if(worldSelection != null && worldSelection.elementName != null){
-				// TODO eat if not too far
-				infoLabel.setText("You're too far from it.");
+				// TODO allow eat something not too far
+				infoLabel.setText("You have to pick it up first.");
 				actionCanceled = true;
 			}
 			else if(backpackSelection != null){
-				// TODO eatable only !
-				removeFromBackpack(backpackSelection);
-				actionPerformed = true;
-				infoLabel.setText(OpenWorldModel.name(backpackSelection.type) + " gives you some energie!");
+				Integer energyGiven = OpenWorldModel.energy(backpackSelection.type);
+				if(energyGiven != null){
+					if(energyGiven > 0){
+						gameSystem.player.energy = Math.min(gameSystem.player.energy + energyGiven, gameSystem.player.energyMax);
+						infoLabel.setText(OpenWorldModel.name(backpackSelection.type) + " gives you some energie!");
+					}else if(energyGiven < 0){
+						gameSystem.player.energy = Math.max(gameSystem.player.energy + energyGiven, 0);
+						infoLabel.setText(OpenWorldModel.name(backpackSelection.type) + " poisonned you, you lost energie!");
+					}else{
+						infoLabel.setText(OpenWorldModel.name(backpackSelection.type) + " gives you no energie at all...");
+					}
+					removeFromBackpack(backpackSelection);
+					actionPerformed = true;
+				}else{
+					infoLabel.setText(OpenWorldModel.name(backpackSelection.type) + " cannot be eat or drink...");
+				}
 			}else{
 				infoLabel.setText("Get something to eat...");
 			}

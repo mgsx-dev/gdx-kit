@@ -245,4 +245,20 @@ public class OpenWorldModel {
 		return i18n(map.root().child("default"), name, missing(name));
 	}
 
+	public static Integer space(String type) {
+		FreemindNode transportNode = map.root().child("items").child(type).child("transportable");
+		if(transportNode.exists()){
+			return transportNode.first().asInt(1);
+		}
+		return null;
+	}
+
+	public static Integer energy(String type) {
+		FreemindNode eatNode = map.root().child("items").child(type).child("eatable");
+		if(eatNode.exists()){
+			return eatNode.first().asInt(1);
+		}
+		return null;
+	}
+
 }

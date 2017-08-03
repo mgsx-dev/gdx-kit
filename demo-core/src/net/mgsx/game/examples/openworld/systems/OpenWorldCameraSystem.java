@@ -64,6 +64,9 @@ public class OpenWorldCameraSystem extends EntitySystem
 	private int prevX, prevY;
 
 	private ImmutableArray<Entity> activeCameras;
+
+	public transient float currentMove;
+	public transient boolean onGround;
 	
 	public OpenWorldCameraSystem() {
 		super(GamePipeline.INPUT);
@@ -99,6 +102,10 @@ public class OpenWorldCameraSystem extends EntitySystem
 	
 	@Override
 	public void update(float deltaTime) {
+		
+		// reset current state
+		currentMove = 0;
+		onGround = false;
 		
 		Camera camera = getCamera();
 		if(camera == null) return;
@@ -207,8 +214,8 @@ public class OpenWorldCameraSystem extends EntitySystem
 			}
 			
 			
-			float moveLen = (moveFront + moveSide) * speed * deltaTime;
-			totalMove += Math.abs(moveLen);
+			currentMove = (moveFront + moveSide) * speed * deltaTime;
+			totalMove += Math.abs(currentMove);
 		}
 		
 		// ray cast for Y
@@ -237,6 +244,7 @@ public class OpenWorldCameraSystem extends EntitySystem
 				if(!flyingMode || elevation > camera.position.y){
 					camera.position.y = elevation;
 				}
+				onGround = !flyingMode;
 				
 			}
 			resultCallback.release();
