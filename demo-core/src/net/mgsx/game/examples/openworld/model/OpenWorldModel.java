@@ -22,6 +22,8 @@ public class OpenWorldModel {
 	
 	private static FreemindMap map;
 	
+	public static String lang = "fr"; // TODO set it at game startup
+	
 	public static void load(){
 		try {
 			map = new FreeMindReader().parse(Gdx.files.internal("openworld/openworld-model.mm"));
@@ -31,7 +33,7 @@ public class OpenWorldModel {
 	}
 	
 	public static String questSummary(String id){
-		return map.root().child("quests").child(id).child(0).asString();
+		return i18n(map.root().child("quests").child(id), "summary");
 	}
 	
 	public static Array<String> getAllTypes() {
@@ -210,13 +212,22 @@ public class OpenWorldModel {
 		return MathUtils.lerp(f1, f2, rand.nextFloat());
 	}
 
-	public static String description(String name) {
-		// find in any : elements or entities
-		FreemindNode item = map.root().child("items").child(name);
-		if(!item.exists()){
-			return "Unknow item " + name;
-		}
-		return item.child("name").first().asString(name) + " : " + item.child("hint").first().asString("no specific info");
+	public static String description(String type) {
+		return i18n(map.root().child("items").child(type), "hint");
+	}
+
+	private static String i18n(FreemindNode node, String field) {
+		return i18n(node, field, defaultString(field));
+	}
+	private static String i18n(FreemindNode node, String field, String defaultValue) {
+		// return defulat value if field doesn't exists.
+		FreemindNode fieldNode = node.child(field);
+		if(!fieldNode.exists()) return defaultValue;
+		// return first translation if theres is not translation for the current lang.
+		FreemindNode langNode = fieldNode.child(lang);
+		if(!langNode.exists()) return fieldNode.first().first().asString(defaultValue);
+		// return the found translation
+		return langNode.first().asString(defaultValue);
 	}
 
 	public static OpenWorldElement generateNewGarbageElement(Compound compound) 
@@ -226,7 +237,15 @@ public class OpenWorldModel {
 	}
 
 	public static String name(String type) {
-		return map.root().child("items").child("name").asString("Something");
+		return i18n(map.root().child("items").child(type), "name", missing(type));
+	}
+
+	private static String missing(String text) {
+		return "[" + text + "]";
+	}
+
+	private static String defaultString(String name) {
+		return i18n(map.root().child("default"), name, missing(name));
 	}
 
 }

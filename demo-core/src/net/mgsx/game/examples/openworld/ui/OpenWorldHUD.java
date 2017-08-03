@@ -130,13 +130,13 @@ public class OpenWorldHUD extends Table
 			});
 		}
 		backpackContent.get(item.type).add(item);
-		bt.setText(item.type + " : " + backpackContent.get(item.type).size);
+		bt.setText(OpenWorldModel.name(item.type) + " : " + backpackContent.get(item.type).size);
 	}
 	
 	private void removeFromBackpack(String type) {
 		OpenWorldElement item = backpackContent.get(type).pop();
 		if(backpackContent.get(type).size > 0){
-			backpackItemButtons.get(type).setText(item.type + " : " + backpackContent.get(item.type).size);
+			backpackItemButtons.get(type).setText(OpenWorldModel.name(item.type) + " : " + backpackContent.get(item.type).size);
 		}else{
 			backpackContent.remove(type);
 			backpackItemButtons.get(type).remove();
@@ -220,6 +220,8 @@ public class OpenWorldHUD extends Table
 
 	protected boolean resolveInteraction() {
 		
+		// TODO put texts in model with i18n
+		
 		boolean actionPerformed = false;
 		boolean actionCanceled = false;
 		
@@ -230,14 +232,16 @@ public class OpenWorldHUD extends Table
 			// try to grab element
 			if(e != null){
 				// remove it TODO but keep its properties somewhere in order to regenerates !
-				if(uo != null) userObject.removeElement(uo);
-				engine.removeEntity(e);
-				// and add it to the player backpack ! if meet conditions (size, ...etc).
-				// animate model : lerp to player and inc GUI
-				addItemToBackpack(uo.element);
-				engine.getSystem(OpenWorldGameSystem.class).backpack.add(uo.element);
-				infoLabel.setText(OpenWorldModel.name(uo.element.type) + " added to your backpack.");
-				actionPerformed = true;
+				if(uo != null){
+					userObject.removeElement(uo);
+					engine.removeEntity(e);
+					// and add it to the player backpack ! if meet conditions (size, ...etc).
+					// animate model : lerp to player and inc GUI
+					addItemToBackpack(uo.element);
+					engine.getSystem(OpenWorldGameSystem.class).backpack.add(uo.element);
+					infoLabel.setText(OpenWorldModel.name(uo.element.type) + " added to your backpack.");
+					actionPerformed = true;
+				}
 			}else{
 				infoLabel.setText("Pick anything you want...");
 			}
