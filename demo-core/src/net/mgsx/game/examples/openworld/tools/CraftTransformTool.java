@@ -13,7 +13,6 @@ import net.mgsx.game.core.annotations.Inject;
 import net.mgsx.game.core.tools.Tool;
 import net.mgsx.game.examples.openworld.components.ObjectMeshComponent;
 import net.mgsx.game.examples.openworld.model.Compound;
-import net.mgsx.game.examples.openworld.model.ElementTemplate;
 import net.mgsx.game.examples.openworld.model.OpenWorldElement;
 import net.mgsx.game.examples.openworld.model.OpenWorldModel;
 import net.mgsx.game.examples.openworld.systems.UserObjectSystem;
@@ -89,7 +88,7 @@ public class CraftTransformTool extends Tool
 			}
 			
 			// check if can do it
-			ElementTemplate foundRecipe = OpenWorldModel.findFusion(compound);
+			String foundRecipe = OpenWorldModel.findFusion(compound);
 			
 			// remove all anyway !
 			for(Entity e : result){
@@ -99,14 +98,13 @@ public class CraftTransformTool extends Tool
 			OpenWorldElement e;
 			if(foundRecipe != null){
 				// create the new object !
-				e = OpenWorldModel.generateNewElement(foundRecipe.id);
+				e = OpenWorldModel.generateNewElement(foundRecipe);
 			}
 			else
 			{
 				// create some basic objects (fail !)
 				e = OpenWorldModel.generateNewGarbageElement(compound);
 			}
-			e.dynamic = true;
 			
 			e.position.set(rayResult.origin);
 			e.rotation.idt();

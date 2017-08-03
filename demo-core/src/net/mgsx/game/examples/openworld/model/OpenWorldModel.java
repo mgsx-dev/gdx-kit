@@ -44,7 +44,7 @@ public class OpenWorldModel {
 		return l;
 	}
 	
-	public static ElementTemplate findFusion(Compound compound) 
+	public static String findFusion(Compound compound) 
 	{
 		for(FreemindNode node : map.root().child("items").children()){
 			FreemindNode buildable = node.child("buildable");
@@ -52,13 +52,10 @@ public class OpenWorldModel {
 				
 				Compound c = new Compound();
 				for(FreemindNode compo : buildable.child("deps").children()){
-					compound.add(compo.asString(), compo.first().asInt(1));
+					c.add(compo.asString(), compo.first().asInt(1));
 				}
 				if(compound.equals(c)){
-					ElementTemplate t = new ElementTemplate();
-					t.compound = c;
-					t.id = node.asString();
-					return t;
+					return node.asString();
 				}
 			}
 		}
@@ -186,7 +183,7 @@ public class OpenWorldModel {
 		OpenWorldElement element = new OpenWorldElement();
 		element.seed = seed;
 		element.type = item.asString();
-		element.dynamic = true;
+		element.dynamic = !item.child("static").exists();
 		
 		generateElement(element);
 		

@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.ButtonGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -20,6 +21,7 @@ import com.badlogic.gdx.utils.ObjectMap;
 import net.mgsx.game.core.Kit;
 import net.mgsx.game.examples.openworld.components.ObjectMeshComponent;
 import net.mgsx.game.examples.openworld.components.TreesComponent;
+import net.mgsx.game.examples.openworld.model.Compound;
 import net.mgsx.game.examples.openworld.model.OpenWorldElement;
 import net.mgsx.game.examples.openworld.model.OpenWorldModel;
 import net.mgsx.game.examples.openworld.systems.OpenWorldCameraSystem;
@@ -31,17 +33,28 @@ import net.mgsx.game.plugins.bullet.system.BulletWorldSystem;
 public class OpenWorldHUD extends Table
 {
 	private static enum GameAction{
-		LOOK, GRAB, EAT, USE, DROP // ...
+		LOOK, GRAB, EAT, USE, DROP, CRAFT // ...
 	}
 	private GameAction action;
 	private Label infoLabel;
 	
 	// TODO something better like : Backpack selection and World selection
-	private OpenWorldElement selectedItem;
-	String elementName = null;
-	Entity e = null; // TODO dangerous to keep reference to entity ... except if it's in the same frame.
-	UserObject uo = null;
-	Vector3 position = new Vector3();
+	private OpenWorldElement backpackSelection;
+	
+	static class WorldSelection {
+		public String elementName = null;
+		/** short living reference, should be cleared upon processing since it may be removed at any time */
+		public Entity e = null;
+		public UserObject uo = null;
+		public Vector3 position = new Vector3();
+		public Vector3 normal = new Vector3();
+		public Object object;
+	}
+	
+	private WorldSelection worldSelection;
+	
+	private Array<OpenWorldElement> craftSelection;
+	
 	
 	Table backpack;
 	ObjectMap<String, TextButton> backpackItemButtons = new ObjectMap<String, TextButton>();
@@ -68,31 +81,27 @@ public class OpenWorldHUD extends Table
 				Ray rayResult = new Ray();
 				Object o = bulletWorld.rayCastObject(ray, rayResult);
 				
-				// TODO always set ray for action resolution
-				
+				worldSelection = new WorldSelection();
+				worldSelection.position.set(rayResult.origin);
+				worldSelection.normal.set(rayResult.direction);
+				worldSelection.object = o;
 				if(o != null){
-					
 					// find which object as been picked :
-					
 					if(o instanceof Entity){
-						e = (Entity)o;
-						ObjectMeshComponent omc = ObjectMeshComponent.components.get(e);
+						worldSelection.e = (Entity)o;
+						ObjectMeshComponent omc = ObjectMeshComponent.components.get(worldSelection.e);
 						if(omc != null){
 							if(omc.userObject != null){
-								uo = omc.userObject;
-								elementName = omc.userObject.element.type;
+								worldSelection.uo = omc.userObject;
+								worldSelection.elementName = omc.userObject.element.type;
 							}
 						}
 					}
 					else if(o instanceof TreesComponent){
-						elementName = "tree";
+						worldSelection.elementName = "tree";
 					}
-					
-					position.set(rayResult.origin);
-					
-					return resolveInteraction();
 				}
-				return false;
+				return resolveInteraction();
 			}
 		});
 	}
@@ -100,13 +109,15 @@ public class OpenWorldHUD extends Table
 	public void resetState() {
 		action = null;
 		actionButtonGroup = null;
-		uo = null;
-		selectedItem = null;
-		position.setZero();
-		elementName = null;
-		e = null;
+		backpackSelection = null;
+		craftSelection = null;
+		worldSelection = null;
 		backpackItemButtons.clear();;
 		backpackContent.clear();
+		
+		if(popin != null) popin.remove();
+		popin = null;
+		craftingView = null;
 		
 		clearChildren();
 		clearActions();
@@ -123,7 +134,7 @@ public class OpenWorldHUD extends Table
 			bt.addListener(new ChangeListener() {
 				@Override
 				public void changed(ChangeEvent event, Actor actor) {
-					selectedItem = backpackContent.get(item.type).peek();
+					backpackSelection = backpackContent.get(item.type).peek();
 					resolveInteraction();
 					//removeFromBackpack(item.type);
 				}
@@ -133,16 +144,10 @@ public class OpenWorldHUD extends Table
 		bt.setText(OpenWorldModel.name(item.type) + " : " + backpackContent.get(item.type).size);
 	}
 	
-	private void removeFromBackpack(String type) {
-		OpenWorldElement item = backpackContent.get(type).pop();
-		if(backpackContent.get(type).size > 0){
-			backpackItemButtons.get(type).setText(OpenWorldModel.name(item.type) + " : " + backpackContent.get(item.type).size);
-		}else{
-			backpackContent.remove(type);
-			backpackItemButtons.get(type).remove();
-			backpackItemButtons.remove(type);
-		}
-		engine.getSystem(OpenWorldGameSystem.class).backpack.removeValue(item, true);
+	private void dropFromBackpack(String type) {
+		OpenWorldElement item = backpackContent.get(type).peek();
+		
+		removeFromBackpack(item);
 		
 		// append just in front of player ! TODO ray cast for ground !
 		Camera camera = engine.getSystem(OpenWorldCameraSystem.class).getCamera();
@@ -150,15 +155,25 @@ public class OpenWorldHUD extends Table
 		// materialize item
 		OpenWorldModel.generateElement(item);
 		
-		item.dynamic = true;
-		
-		// TODO mimic the move tool (drag'n'drop)
+		// TODO project on bullet world
 		
 		item.position.set(camera.position).mulAdd(camera.direction, 2); // 2m
 		item.rotation.idt();
 		
 		engine.getSystem(UserObjectSystem.class).appendObject(item);
 			
+	}
+	
+	private void removeFromBackpack(OpenWorldElement item) {
+		backpackContent.get(item.type).removeValue(item, true);
+		if(backpackContent.get(item.type).size > 0){
+			backpackItemButtons.get(item.type).setText(OpenWorldModel.name(item.type) + " : " + backpackContent.get(item.type).size);
+		}else{
+			backpackContent.remove(item.type);
+			backpackItemButtons.get(item.type).remove();
+			backpackItemButtons.remove(item.type);
+		}
+		engine.getSystem(OpenWorldGameSystem.class).backpack.removeValue(item, true);
 	}
 
 	private ButtonGroup<TextButton> actionButtonGroup;
@@ -179,7 +194,8 @@ public class OpenWorldHUD extends Table
 		// TODO actions !
 		// like Point'n'click : look, build, ...etc
 		actionButtonGroup = new ButtonGroup<TextButton>();
-		
+		actionButtonGroup.setMaxCheckCount(1);
+		actionButtonGroup.setMinCheckCount(0);
 		
 		Table actionsTable = new Table(getSkin());
 		
@@ -190,6 +206,7 @@ public class OpenWorldHUD extends Table
 		actionsTable.add(createActionButton("Eat/Drink", GameAction.EAT));
 		actionsTable.add(createActionButton("Use", GameAction.USE));
 		actionsTable.add(createActionButton("Drop", GameAction.DROP));
+		actionsTable.add(createActionButton("Build", GameAction.CRAFT));
 		
 		contextualActionsTable = new Table(getSkin());
 		actionsTable.add(contextualActionsTable);
@@ -230,16 +247,16 @@ public class OpenWorldHUD extends Table
 		// eat, grab, look
 		if(action == GameAction.GRAB){
 			// try to grab element
-			if(e != null){
+			if(worldSelection != null){
 				// remove it TODO but keep its properties somewhere in order to regenerates !
-				if(uo != null){
-					userObject.removeElement(uo);
-					engine.removeEntity(e);
+				if(worldSelection.uo != null){
+					userObject.removeElement(worldSelection.uo);
+					engine.removeEntity(worldSelection.e);
 					// and add it to the player backpack ! if meet conditions (size, ...etc).
 					// animate model : lerp to player and inc GUI
-					addItemToBackpack(uo.element);
-					engine.getSystem(OpenWorldGameSystem.class).backpack.add(uo.element);
-					infoLabel.setText(OpenWorldModel.name(uo.element.type) + " added to your backpack.");
+					addItemToBackpack(worldSelection.uo.element);
+					engine.getSystem(OpenWorldGameSystem.class).backpack.add(worldSelection.uo.element);
+					infoLabel.setText(OpenWorldModel.name(worldSelection.uo.element.type) + " added to your backpack.");
 					actionPerformed = true;
 				}
 			}else{
@@ -247,10 +264,10 @@ public class OpenWorldHUD extends Table
 			}
 		}
 		else if(action == GameAction.USE){
-			if(selectedItem != null && elementName != null){
-				OpenWorldElement element = OpenWorldModel.useTool(selectedItem.type, elementName);
+			if(backpackSelection != null && worldSelection != null && worldSelection.elementName != null){
+				OpenWorldElement element = OpenWorldModel.useTool(backpackSelection.type, worldSelection.elementName);
 				if(element != null){
-					element.position.set(position);
+					element.position.set(worldSelection.position);
 					userObject.appendObject(element);
 					infoLabel.setText(OpenWorldModel.name(element.type) + " just spawned!");
 					actionPerformed = true;
@@ -259,49 +276,90 @@ public class OpenWorldHUD extends Table
 					actionCanceled = true;
 				}
 			}
-			else if(selectedItem == null && elementName == null){
+			else if(backpackSelection == null && (worldSelection == null || worldSelection.elementName == null)){
 				infoLabel.setText("Use something from your backpack...");
 			}
 			// use in the world ?
-			else if(selectedItem != null){
-				infoLabel.setText("Use your " + OpenWorldModel.name(selectedItem.type) + " on something...");
+			else if(backpackSelection != null){
+				infoLabel.setText("Use your " + OpenWorldModel.name(backpackSelection.type) + " on something...");
 			}
 		}
 		else if(action == GameAction.DROP){
 			// TODO and if raycasted toward the world ...
-			if(selectedItem != null){
-				removeFromBackpack(selectedItem.type);
+			if(backpackSelection != null){
+				dropFromBackpack(backpackSelection.type);
 				actionPerformed = true;
-				infoLabel.setText(OpenWorldModel.name(selectedItem.type) + " was dropped from your backpack");
+				infoLabel.setText(OpenWorldModel.name(backpackSelection.type) + " was dropped from your backpack");
 			}else{
 				infoLabel.setText("Drop something from your backpack");
 			}
 		}
 		else if(action == GameAction.EAT){
-			if(elementName != null){
+			if(worldSelection != null && worldSelection.elementName != null){
 				// TODO eat if not too far
 				infoLabel.setText("You're too far from it.");
 				actionCanceled = true;
 			}
-			else if(selectedItem != null){
+			else if(backpackSelection != null){
 				// TODO eatable only !
-				removeFromBackpack(selectedItem.type);
+				removeFromBackpack(backpackSelection);
 				actionPerformed = true;
-				infoLabel.setText(OpenWorldModel.name(selectedItem.type) + " gives you some energie!");
+				infoLabel.setText(OpenWorldModel.name(backpackSelection.type) + " gives you some energie!");
 			}else{
 				infoLabel.setText("Get something to eat...");
+			}
+		}
+		else if(action == GameAction.CRAFT){
+			if(craftSelection != null && worldSelection != null){
+				// fusion
+				Compound compound = new Compound();
+				for(OpenWorldElement item : craftSelection){
+					compound.add(item.type);
+					removeFromBackpack(item);
+				}
+				String newType = OpenWorldModel.findFusion(compound);
+				
+				OpenWorldElement e;
+				if(newType != null){
+					// create the new object !
+					e = OpenWorldModel.generateNewElement(newType);
+					infoLabel.setText("Congrats! you get " + OpenWorldModel.name(e.type));
+				}
+				else
+				{
+					// create some basic objects (fail !)
+					e = OpenWorldModel.generateNewGarbageElement(compound);
+					infoLabel.setText("Ooops ... you get nothing valuable, check your note book.");
+				}
+				
+				e.position.set(worldSelection.position);
+				e.rotation.idt(); // TODO normal ?
+				
+				engine.getSystem(UserObjectSystem.class).appendObject(e);
+				
+				actionPerformed = true;
+			}
+			else if(craftSelection != null && worldSelection == null){
+				infoLabel.setText("Choose where to build your ... thing.");
+			}
+			else if(craftingView == null){
+				openCrafting();
+			}
+			else{
+				actionCanceled = true;
+				infoLabel.setText("");
 			}
 		}
 		// default look
 		else
 		{
-			if(elementName != null){
-				String description = OpenWorldModel.description(elementName);
+			if(worldSelection != null && worldSelection.elementName != null){
+				String description = OpenWorldModel.description(worldSelection.elementName);
 				infoLabel.setText(description);
 				actionPerformed = true;
 			}
-			else if(selectedItem != null){
-				String description = OpenWorldModel.description(selectedItem.type);
+			else if(backpackSelection != null){
+				String description = OpenWorldModel.description(backpackSelection.type);
 				infoLabel.setText(description);
 				actionPerformed = true;
 			}else{
@@ -313,14 +371,50 @@ public class OpenWorldHUD extends Table
 		// TODO not always clear if action not resolved
 		// clear all but action
 		if(actionPerformed || actionCanceled){
-			e = null;
-			uo = null;
-			elementName = null;
+			craftSelection = null;
 			if(action != GameAction.USE)
-				selectedItem = null; // TODO depends on context : use will reuse
+				backpackSelection = null; // TODO depends on context : use will reuse
+			if(action == GameAction.CRAFT){
+				actionButtonGroup.uncheckAll();
+				action = null;
+			}
+		}
+		// always reset world selection because this is the last action in the workflow
+		worldSelection = null;
+		
+		// XXX
+		if(action != GameAction.CRAFT){
+			if(popin != null) popin.remove();
+			popin = null;
+			craftingView = null;
 		}
 		
+		
+		
+		
 		return actionPerformed;
+	}
+
+	private Table popin;
+	private CraftingView craftingView;
+	
+	private void openCrafting() {
+		craftingView = new CraftingView(getSkin(), engine, new CraftingView.Callback() {
+			@Override
+			public void onComplete(Array<OpenWorldElement> selection) {
+				craftSelection = selection;
+				resolveInteraction();
+				if(popin != null) popin.remove();
+				popin = null;
+				craftingView = null;
+			}
+		});
+		
+		popin = new Table();
+		popin.setFillParent(true);
+		popin.setTouchable(Touchable.enabled);
+		popin.add(craftingView);
+		getStage().addActor(popin);
 	}
 
 	

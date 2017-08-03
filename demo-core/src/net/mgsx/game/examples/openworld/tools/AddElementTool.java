@@ -43,8 +43,6 @@ public class AddElementTool extends Tool
 			
 			OpenWorldElement e = OpenWorldModel.generateNewElement(type);
 			
-			e.dynamic = dynamic;
-			
 			e.position.set(rayResult.origin);
 			e.rotation.idt();
 			
