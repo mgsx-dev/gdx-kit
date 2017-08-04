@@ -21,7 +21,7 @@ public class ScenarioView extends Table
 	{
 		super(skin);
 		
-		String introText = OpenWorldModel.questSummary("intro");
+		String introText = OpenWorldModel.quest("intro").summary();
 		
 		// TODO put font in skin or create a game skin for open world
 		font = new BitmapFont(Gdx.files.internal("openworld/game_font.fnt"));

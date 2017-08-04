@@ -32,10 +32,6 @@ public class OpenWorldModel {
 		}
 	}
 	
-	public static String questSummary(String id){
-		return i18n(map.root().child("quests").child(id), "summary");
-	}
-	
 	public static Array<String> getAllTypes() {
 		Array<String> l = new Array<String>();
 		for(FreemindNode c : map.root().child("items").children()){
@@ -213,10 +209,10 @@ public class OpenWorldModel {
 		return i18n(map.root().child("items").child(type), "hint");
 	}
 
-	private static String i18n(FreemindNode node, String field) {
+	static String i18n(FreemindNode node, String field) {
 		return i18n(node, field, defaultString(field));
 	}
-	private static String i18n(FreemindNode node, String field, String defaultValue) {
+	static String i18n(FreemindNode node, String field, String defaultValue) {
 		// return defulat value if field doesn't exists.
 		FreemindNode fieldNode = node.child(field);
 		if(!fieldNode.exists()) return defaultValue;
@@ -237,7 +233,7 @@ public class OpenWorldModel {
 		return i18n(map.root().child("items").child(type), "name", missing(type));
 	}
 
-	private static String missing(String text) {
+	static String missing(String text) {
 		return "[" + text + "]";
 	}
 
@@ -281,6 +277,18 @@ public class OpenWorldModel {
 			return result;
 		}
 		return null;
+	}
+
+	public static OpenWorldQuestModel quest(String UID) {
+		return new OpenWorldQuestModel(map, UID);
+	}
+
+	public static Array<String> quests() {
+		Array<String> ids = new Array<String>();
+		for(FreemindNode node : map.root().child("quests").children()){
+			ids.add(node.asString());
+		}
+		return ids;
 	}
 
 }

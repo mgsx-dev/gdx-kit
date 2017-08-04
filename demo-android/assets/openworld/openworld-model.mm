@@ -18,11 +18,129 @@
 </node>
 </node>
 </node>
-<node CREATED="1500200079522" FOLDED="true" ID="ID_1434941534" MODIFIED="1501744914669" POSITION="right" TEXT="quests">
+<node CREATED="1500200079522" ID="ID_1434941534" MODIFIED="1501839089423" POSITION="right" TEXT="quests">
 <node CREATED="1500200116723" ID="ID_1836859391" MODIFIED="1501744700125" TEXT="intro">
-<node CREATED="1501744700117" ID="ID_704129527" MODIFIED="1501744704667" TEXT="summary">
+<node CREATED="1501851477845" ID="ID_203600060" MODIFIED="1501851482271" TEXT="name">
+<node CREATED="1501851482272" ID="ID_1092347246" MODIFIED="1501851483545" TEXT="fr">
+<node CREATED="1501851483545" ID="ID_268413303" MODIFIED="1501851518973" TEXT="Survie miraculeuse"/>
+</node>
+</node>
+<node CREATED="1501744700117" ID="ID_704129527" MODIFIED="1501845156243" TEXT="summary">
 <node CREATED="1501744673923" ID="ID_1062051547" MODIFIED="1501744676051" TEXT="en">
 <node CREATED="1500208251052" ID="ID_1318405663" MODIFIED="1500208504171" TEXT="you are on a desert island ... you see a book, an adventurer book, it seams pages missing from this book. But When you arrive you noticed something ! some food is here and a caban to sleep a little for few nights."/>
+</node>
+<node CREATED="1501839327159" ID="ID_1688569731" MODIFIED="1501839334050" TEXT="fr">
+<node CREATED="1501839334052" ID="ID_847920077" MODIFIED="1501839631264" TEXT="Vous vous r&#xe9;veillez sur cette &#xee;le d&#xe9;serte, vous n&apos;avez aucun souvenir de votre arriv&#xe9;e et c&apos;est un miracle si vous avez surv&#xe9;cu.&#xa;Non loin de vous vous apercevez ce qui ressemble &#xe0; une machette ainsi qu&apos;une bouteille renfermant un message.&#xa;La lecture de ce message vous apprend comment construire une cabane, &#xe9;l&#xe9;ment indispensable pour vous reposer sans &#xea;tre trop expos&#xe9; au nuisible.&#xa;Allez prenez cette machette et partez &#xe0; la d&#xe9;couverte de l&apos;&#xee;le."/>
+</node>
+</node>
+<node CREATED="1501852163388" ID="ID_1625300540" MODIFIED="1501853569239" TEXT="require">
+<node CREATED="1501853569235" ID="ID_1471947784" MODIFIED="1501853574054" TEXT="actions">
+<node CREATED="1501852168625" ID="ID_1208402419" MODIFIED="1501852172507" TEXT="grab">
+<node CREATED="1501840309899" ID="ID_38267662" MODIFIED="1501840313541" TEXT="machete"/>
+</node>
+</node>
+</node>
+<node CREATED="1501840300013" ID="ID_578227806" MODIFIED="1501840307128" TEXT="reward">
+<node CREATED="1501841207940" ID="ID_1935289391" MODIFIED="1501841218117" TEXT="building">
+<node CREATED="1501841218117" ID="ID_1282620341" MODIFIED="1501841220355" TEXT="caban"/>
+</node>
+</node>
+<node CREATED="1501839887112" ID="ID_699228572" MODIFIED="1501839890635" TEXT="unlock">
+<node CREATED="1501839890636" ID="ID_363539914" MODIFIED="1501839894898" TEXT="first-food"/>
+</node>
+</node>
+<node CREATED="1501839652410" ID="ID_1138376357" MODIFIED="1501839679863" TEXT="first-food">
+<node CREATED="1501839679865" FOLDED="true" ID="ID_1830628145" MODIFIED="1501841276196" TEXT="summary">
+<node CREATED="1501839683039" ID="ID_1487014272" MODIFIED="1501839685137" TEXT="fr">
+<node CREATED="1501839685139" ID="ID_126732509" MODIFIED="1501839863413" TEXT="A votre r&#xe9;veil vous &#xea;tes &#xe9;puis&#xe9;. Il vous fau reprendre des forces pour ne pas mourrir d&apos;&#xe9;puisement. Vous pourrez surement trouver quelques fruits &#xe0; manger dans les arbres aux alentours. &#xa;Aidez vous de votre machette pour faire tomber quelques fruits des arbres.&#xa;Mangez donc 3 fruits pour vous restorer."/>
+</node>
+</node>
+<node CREATED="1501839792263" ID="ID_261188467" MODIFIED="1501839799341" TEXT="require">
+<node CREATED="1501839799342" ID="ID_1063991136" MODIFIED="1501839806549" TEXT="actions">
+<node CREATED="1501839806550" ID="ID_226831976" MODIFIED="1501839810907" TEXT="eat">
+<node CREATED="1501839810908" ID="ID_321458969" MODIFIED="1501839815117" TEXT="fruit">
+<node CREATED="1501839819102" ID="ID_284116082" MODIFIED="1501839821279" TEXT="3"/>
+</node>
+</node>
+</node>
+</node>
+<node CREATED="1501840248431" ID="ID_1943437557" MODIFIED="1501840285396" TEXT="reward">
+<node CREATED="1501839906848" ID="ID_532568560" MODIFIED="1501839910089" TEXT="xp">
+<node CREATED="1501839910089" ID="ID_1051948485" MODIFIED="1501841121889" TEXT="50"/>
+</node>
+</node>
+<node CREATED="1501839920049" ID="ID_565162675" MODIFIED="1501839924441" TEXT="unlock">
+<node CREATED="1501839924442" ID="ID_79830645" MODIFIED="1501839939596" TEXT="more-xp"/>
+<node CREATED="1501840335942" ID="ID_1604425798" MODIFIED="1501840352643" TEXT="first-caban"/>
+</node>
+</node>
+<node CREATED="1501839942209" ID="ID_566803995" MODIFIED="1501839946323" TEXT="more-xp">
+<node CREATED="1501839946324" FOLDED="true" ID="ID_1541428628" MODIFIED="1501841277747" TEXT="summary">
+<node CREATED="1501839949728" ID="ID_470552014" MODIFIED="1501839950846" TEXT="fr">
+<node CREATED="1501839950847" ID="ID_1902674877" MODIFIED="1501840194778" TEXT="Accomplir des qu&#xea;tes vous apporte de l&apos;exp&#xe9;rience. En accumulant de l&apos;exp&#xe9;rience vous pourrez acc&#xe9;der &#xe0; des niveau sup&#xe9;rieur.&#xa;Lorsque vous atteignez un niveau sup&#xe9;rieur, votre condition physique s&apos;am&#xe9;liore : le maximum de vos attributs (sant&#xe9;, &#xe9;nergie, apn&#xe9;e) sont augment&#xe9;. Vous augmenterez ainsi vos chance de survivre dans e milieu hostile.&#xa;Atteignez le niveau maximum et devenez un aventurier aguerrit."/>
+</node>
+</node>
+<node CREATED="1501840202088" ID="ID_1085690524" MODIFIED="1501840205618" TEXT="require">
+<node CREATED="1501840205619" ID="ID_573485727" MODIFIED="1501840210746" TEXT="level">
+<node CREATED="1501840210747" ID="ID_1025730314" MODIFIED="1501840218442" TEXT="20"/>
+</node>
+</node>
+</node>
+<node CREATED="1501840355506" ID="ID_1133288813" MODIFIED="1501840361318" TEXT="first-caban">
+<node CREATED="1501840361319" FOLDED="true" ID="ID_1526329563" MODIFIED="1501841279291" TEXT="summary">
+<node CREATED="1501840364456" ID="ID_116287171" MODIFIED="1501840366028" TEXT="fr">
+<node CREATED="1501840366029" ID="ID_285719930" MODIFIED="1501840484792" TEXT="Vous regagner des forces mais vous commencez &#xe0; &#xea;tre fatigu&#xe9;, il vous faudra un abri pour vous reposer.&#xa;Gr&#xe2;ce aux conseils trouv&#xe9; dans la bouteille, vous savez comment construire une cabane. Trouvez les &#xe9;l&#xe9;ments requis et construisez une cabane."/>
+</node>
+</node>
+<node CREATED="1501840487785" ID="ID_1360715001" MODIFIED="1501840490026" TEXT="require">
+<node CREATED="1501840490027" ID="ID_135865808" MODIFIED="1501840492803" TEXT="actions">
+<node CREATED="1501840492804" ID="ID_50935843" MODIFIED="1501840495994" TEXT="build">
+<node CREATED="1501840495995" ID="ID_194808675" MODIFIED="1501840499621" TEXT="caban"/>
+</node>
+</node>
+</node>
+<node CREATED="1501840538592" ID="ID_6083961" MODIFIED="1501840543064" TEXT="unlock">
+<node CREATED="1501840543065" ID="ID_1925588193" MODIFIED="1501840563835" TEXT="first-chest"/>
+</node>
+<node CREATED="1501841094773" ID="ID_1637621458" MODIFIED="1501841098291" TEXT="reward">
+<node CREATED="1501841098293" ID="ID_993685348" MODIFIED="1501841103439" TEXT="xp">
+<node CREATED="1501841103440" ID="ID_460194022" MODIFIED="1501841125449" TEXT="50"/>
+</node>
+</node>
+</node>
+<node CREATED="1501840567909" ID="ID_1887975979" MODIFIED="1501840572319" TEXT="first-chest">
+<node CREATED="1501840572320" FOLDED="true" ID="ID_1054090730" MODIFIED="1501841280507" TEXT="summary">
+<node CREATED="1501840574747" ID="ID_303297772" MODIFIED="1501840576168" TEXT="fr">
+<node CREATED="1501840576169" ID="ID_323386833" MODIFIED="1501840813670" TEXT="Vous n&apos;allez pas rester sur cette &#xee;le &#xe0; attendre la fin de vos jours, vous r&#xea;vez de retrouver un semblant de civilisation mais pour cel&#xe0; il vous faut prendre le large.&#xa;Vous n&apos;allez pas partir &#xe0; la nage, ce serait de la folie, il vous faut une embarcation mais vous n&apos;avez pas la moindre id&#xe9;e comment en construire une.&#xa;Gr&#xe2;ce au message d&apos;un pr&#xe9;c&#xe9;dent aventurier vous avez d&#xe9;j&#xe0; appris des choses. Peut &#xea;tre que d&apos;autres indices sont cach&#xe9;s &#xe7;a et l&#xe0;.&#xa;Partez en qu&#xea;tes de nouveaux indices afin de trouver un moyen de construire une embarcation."/>
+</node>
+</node>
+<node CREATED="1501840821764" ID="ID_217988586" MODIFIED="1501840824837" TEXT="require">
+<node CREATED="1501840824838" ID="ID_483783351" MODIFIED="1501840833102" TEXT="actions">
+<node CREATED="1501840833103" ID="ID_81881914" MODIFIED="1501840836239" TEXT="build">
+<node CREATED="1501840836240" ID="ID_770910677" MODIFIED="1501840908489" TEXT="cheap-raft"/>
+</node>
+</node>
+</node>
+<node CREATED="1501841136667" ID="ID_956943015" MODIFIED="1501841141438" TEXT="reward">
+<node CREATED="1501841142476" ID="ID_1267413715" MODIFIED="1501841144249" TEXT="xp">
+<node CREATED="1501841144250" ID="ID_1265413236" MODIFIED="1501841151343" TEXT="100"/>
+</node>
+</node>
+<node CREATED="1501840920759" ID="ID_178504380" MODIFIED="1501840923907" TEXT="unlock">
+<node CREATED="1501840923908" ID="ID_339341946" MODIFIED="1501840934598" TEXT="back-to-the-world"/>
+</node>
+</node>
+<node CREATED="1501840923908" ID="ID_723455722" MODIFIED="1501840934598" TEXT="back-to-the-world">
+<node CREATED="1501840944246" ID="ID_980926352" MODIFIED="1501853474171" TEXT="summary">
+<node CREATED="1501840947343" ID="ID_678831317" MODIFIED="1501840949600" TEXT="fr">
+<node CREATED="1501840949600" ID="ID_603991757" MODIFIED="1501841065076" TEXT="Vous &#xea;tes fin pr&#xea;t &#xe0; prendre le large. Vous vous imaginez d&#xe9;j&#xe0; &#xe0; la barre d&apos;un nouveau galion et &#xe0; la t&#xea;te d&apos;un &#xe9;quipage chevronn&#xe9; parr&#xe9; &#xe0; naviguer dans les eaux de ce monde en qu&#xea;te de tr&#xe9;sor et d&apos;aventure.&#xa;Que les vents favorables soient avec vous !"/>
+</node>
+</node>
+<node CREATED="1501853482851" ID="ID_515290994" MODIFIED="1501853487595" TEXT="require">
+<node CREATED="1501853487596" ID="ID_236093243" MODIFIED="1501853600186" TEXT="actions">
+<node CREATED="1501853602124" ID="ID_1694503287" MODIFIED="1501853606726" TEXT="build">
+<node CREATED="1501853606727" ID="ID_1671723997" MODIFIED="1501853621845" TEXT="galoin-with-a-crew"/>
+</node>
 </node>
 </node>
 </node>

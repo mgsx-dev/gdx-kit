@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.ButtonGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -15,6 +16,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 
@@ -23,6 +25,7 @@ import net.mgsx.game.examples.openworld.components.ObjectMeshComponent;
 import net.mgsx.game.examples.openworld.components.TreesComponent;
 import net.mgsx.game.examples.openworld.model.Compound;
 import net.mgsx.game.examples.openworld.model.OpenWorldElement;
+import net.mgsx.game.examples.openworld.model.OpenWorldGameEventListener;
 import net.mgsx.game.examples.openworld.model.OpenWorldModel;
 import net.mgsx.game.examples.openworld.systems.OpenWorldCameraSystem;
 import net.mgsx.game.examples.openworld.systems.OpenWorldEnvSystem;
@@ -34,10 +37,15 @@ import net.mgsx.game.plugins.bullet.system.BulletWorldSystem;
 public class OpenWorldHUD extends Table
 {
 	private static enum GameAction{
-		LOOK, GRAB, EAT, USE, DROP, CRAFT, SLEEP, DESTROY // ...
+		LOOK, GRAB, EAT, USE, DROP, CRAFT, SLEEP, DESTROY
+	}
+	private static enum GameMenu{
+		STATE, QUESTS
 	}
 	private GameAction action;
 	private Label infoLabel;
+	
+	OpenWorldGameSystem gameSystem;
 	
 	// TODO something better like : Backpack selection and World selection
 	private OpenWorldElement backpackSelection;
@@ -64,6 +72,19 @@ public class OpenWorldHUD extends Table
 	public OpenWorldHUD(Skin skin, final Engine engine) {
 		super(skin);
 		this.engine = engine;
+		gameSystem = engine.getSystem(OpenWorldGameSystem.class);
+		
+		// TODO just push message not create another view !
+		gameSystem.addGameEventListener(new OpenWorldGameEventListener() {
+			@Override
+			public void onQuestUnlocked(String qid) {
+				getStage().addActor(new QuestStatusPopup(getSkin(), gameSystem, qid, true));
+			}
+			@Override
+			public void onQuestRevealed(String qid) {
+				getStage().addActor(new QuestStatusPopup(getSkin(), gameSystem, qid, false));
+			}
+		});
 		
 		build();
 		
@@ -172,7 +193,7 @@ public class OpenWorldHUD extends Table
 			backpackItemButtons.get(item.type).remove();
 			backpackItemButtons.remove(item.type);
 		}
-		engine.getSystem(OpenWorldGameSystem.class).backpack.removeValue(item, true);
+		gameSystem.backpack.removeValue(item, true);
 	}
 
 	private ButtonGroup<TextButton> actionButtonGroup;
@@ -217,15 +238,24 @@ public class OpenWorldHUD extends Table
 		
 		infoLabel = new Label("", getSkin());
 		
+		Table menuTable = new Table(getSkin());
+		menuTable.add("Menu: ");
+		menuTable.add(createMenuButton("Load/Save", GameMenu.STATE));
+		menuTable.add(createMenuButton("Quests", GameMenu.QUESTS));
+		
 		defaults().padRight(30);
 		
 		add(infoLabel).colspan(2).expand().center().bottom().row();
 		add(new StatusView(getSkin(), engine)).colspan(2).expandX().center().row();
 		add(actionsTable).expandX().right();
-		add(backpack).expandX().left();
+		add(menuTable).expandX().left();
+		row();
+		
+		add(backpack).colspan(2).expandX().left();
 		
 		
-		for(OpenWorldElement e : engine.getSystem(OpenWorldGameSystem.class).backpack){
+		
+		for(OpenWorldElement e : gameSystem.backpack){
 			addItemToBackpack(e);
 		}
 	}
@@ -243,11 +273,37 @@ public class OpenWorldHUD extends Table
 		return bt;
 	}
 
+	private TextButton createMenuButton(String label, final GameMenu menu) {
+		final TextButton bt = new TextButton(label, getSkin());
+		bt.addListener(new ChangeListener() {
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				openMenu(menu);
+			}
+		});
+		return bt;
+	}
+
+	private void openMenu(GameMenu menu) 
+	{
+		Actor dialog;
+		switch(menu){
+		case QUESTS:
+			dialog = new QuestsView(getSkin(), engine);
+			break;
+		default:
+		case STATE:
+			dialog = new SavedGameView(getSkin(), engine);
+			break;
+		}
+		
+		openPopin(dialog);
+	}
+
 	protected boolean resolveInteraction() {
 		
 		// TODO put texts in model with i18n
 		
-		OpenWorldGameSystem gameSystem = engine.getSystem(OpenWorldGameSystem.class);
 		OpenWorldEnvSystem envSystem = engine.getSystem(OpenWorldEnvSystem.class);
 		UserObjectSystem objectSystem = engine.getSystem(UserObjectSystem.class);
 		
@@ -274,6 +330,9 @@ public class OpenWorldHUD extends Table
 							gameSystem.backpack.add(worldSelection.uo.element);
 							// TODO update backpack fill rate
 							infoLabel.setText(OpenWorldModel.name(worldSelection.uo.element.type) + " added to your backpack.");
+							
+							gameSystem.actionPickup(worldSelection.uo.element.type);
+							
 							actionPerformed = true;
 						}else{
 							infoLabel.setText("You don't have enough space in your backpack.");
@@ -491,18 +550,35 @@ public class OpenWorldHUD extends Table
 			public void onComplete(Array<OpenWorldElement> selection) {
 				craftSelection = selection;
 				resolveInteraction();
-				if(popin != null) popin.remove();
-				popin = null;
 				craftingView = null;
+				closePopin();
 			}
 		});
 		
+		openPopin(craftingView);
+	}
+
+	private void openPopin(Actor dialog)
+	{
+		if(popin != null) popin.remove();
 		popin = new Table();
 		popin.setFillParent(true);
 		popin.setTouchable(Touchable.enabled);
-		popin.add(craftingView);
+		popin.add(dialog).expand().center();
 		getStage().addActor(popin);
+		popin.addListener(new ClickListener(){
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				if(event.getTarget() == popin){
+					closePopin();
+				}
+			}
+		});
 	}
-
+	
+	private void closePopin(){
+		if(popin != null) popin.remove();
+		popin = null;
+	}
 	
 }

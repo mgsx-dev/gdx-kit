@@ -11,6 +11,7 @@ import net.mgsx.game.core.PostInitializationListener;
 import net.mgsx.game.core.annotations.Asset;
 import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.core.annotations.EditableSystem;
+import net.mgsx.game.core.annotations.Inject;
 import net.mgsx.game.examples.openworld.model.OpenWorldRuntimeSettings;
 import net.mgsx.game.examples.openworld.ui.ConnectionView;
 import net.mgsx.game.examples.openworld.ui.OpenWorldHUD;
@@ -27,6 +28,8 @@ public class OpenWorldHUDSystem extends HUDSystem implements PostInitializationL
 	
 	private Table root;
 	private Table view;
+	
+	@Inject OpenWorldGameSystem gameSystem;
 	
 	public transient OpenWorldHUD hudMain;
 	

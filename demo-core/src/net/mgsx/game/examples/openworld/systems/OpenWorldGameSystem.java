@@ -8,6 +8,9 @@ import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
+import com.badlogic.gdx.utils.ObjectMap;
+import com.badlogic.gdx.utils.ObjectMap.Entry;
+import com.badlogic.gdx.utils.ObjectSet;
 
 import net.mgsx.game.core.GamePipeline;
 import net.mgsx.game.core.PostInitializationListener;
@@ -16,8 +19,11 @@ import net.mgsx.game.core.annotations.EditableSystem;
 import net.mgsx.game.core.annotations.Inject;
 import net.mgsx.game.examples.openworld.model.OpenWorldElement;
 import net.mgsx.game.examples.openworld.model.OpenWorldGame;
+import net.mgsx.game.examples.openworld.model.OpenWorldGameEventListener;
+import net.mgsx.game.examples.openworld.model.OpenWorldGameEventManager;
 import net.mgsx.game.examples.openworld.model.OpenWorldModel;
 import net.mgsx.game.examples.openworld.model.OpenWorldPlayer;
+import net.mgsx.game.examples.openworld.model.OpenWorldQuestModel.Requirement;
 import net.mgsx.game.services.gapi.GAPI;
 import net.mgsx.game.services.gapi.SavedGame;
 
@@ -27,11 +33,15 @@ import net.mgsx.game.services.gapi.SavedGame;
  * 
  * TODO add threading support and callback.
  * 
+ * some quests are realtime based (distance, time ...) and is checked at each frames.
+ * Other quests are event based and don't have to be checked every time, just
+ * when player performs some actions or when world spawn something.
+ * 
  * @author mgsx
  *
  */
 @EditableSystem
-public class OpenWorldGameSystem extends EntitySystem implements PostInitializationListener
+public class OpenWorldGameSystem extends EntitySystem implements PostInitializationListener, OpenWorldGameEventManager
 {
 	@Inject OpenWorldCameraSystem cameraSystem;
 	@Inject OpenWorldGeneratorSystem generator;
@@ -44,10 +54,13 @@ public class OpenWorldGameSystem extends EntitySystem implements PostInitializat
 	public transient boolean diving, walking, flying, swimming;
 	
 	@Editable public boolean playerLogic = true;
+	@Editable public transient boolean eventsLogic = false;
 	
 	public Array<OpenWorldElement> backpack = new Array<OpenWorldElement>();
 	
 	private SavedGame gameToLoad;
+	
+	private ObjectSet<OpenWorldGameEventListener> gameEventListeners = new ObjectSet<OpenWorldGameEventListener>();
 	
 	// TODO move player logic to dedicated system ? only keep game loading/saving logic here.
 	// things need environement system to be computed first (specially at loading time)
@@ -74,6 +87,15 @@ public class OpenWorldGameSystem extends EntitySystem implements PostInitializat
 		player.oxygen = player.oxygenMax;
 		
 		// TODO some values should be updated in realtime
+	}
+	
+	@Override
+	public void addGameEventListener(OpenWorldGameEventListener listener) {
+		gameEventListeners.add(listener);
+	}
+	@Override
+	public void removeGameEventListener(OpenWorldGameEventListener listener) {
+		gameEventListeners.remove(listener);
 	}
 	
 	/**
@@ -130,6 +152,52 @@ public class OpenWorldGameSystem extends EntitySystem implements PostInitializat
 		player.energy = player.energyMax;
 		player.oxygen = player.oxygenMax;
 		player.temperature = 37.2;
+		
+		// compute quests based on achievements (already completed quests)
+		// and quests revealed from model
+		ObjectSet<String> unlocked = new ObjectSet<String>();
+		Array<String> toProcess = new Array<String>();
+		for(String qid : player.achievements){
+			toProcess.add(qid);
+		}
+		
+		while(toProcess.size > 0){
+			String qid = toProcess.pop();
+			if(unlocked.add(qid)){
+				for(String reveal : OpenWorldModel.quest(qid).unlocking()){
+					if(!unlocked.contains(reveal)){
+						if(isUnlocked(reveal)){
+							unlocked.add(reveal);
+						}else{
+							player.pendingQuests.add(reveal);
+						}
+					}
+				}
+			}
+		}
+		
+		// update completed since model may have changed between last save (migration)
+		for(String id : unlocked) player.completedQuests.add(id);
+		
+		// load history
+		for(String code : player.history){
+			String [] codes = code.split("|");
+			ObjectMap<String, Integer> act = player.actions.get(codes[0]);
+			if(act == null) player.actions.put(codes[0], act = new ObjectMap<String, Integer>());
+			act.put(codes[1], Integer.valueOf(codes[2]));
+		}
+	}
+
+	private boolean isUnlocked(String qid) 
+	{
+		Array<Requirement> requirements = OpenWorldModel.quest(qid).requirements();
+		for(Requirement requirement : requirements){
+			ObjectMap<String, Integer> act = player.actions.get(requirement.action);
+			if(act == null) return false;
+			int count = act.get(requirement.type);
+			if(count < requirement.count) return false;
+		}
+		return true;
 	}
 
 	private void load(SavedGame game)
@@ -193,6 +261,19 @@ public class OpenWorldGameSystem extends EntitySystem implements PostInitializat
 		}
 		
 		gameData.player = player;
+		
+		gameData.player.achievements = new String[player.completedQuests.size];
+		for(int i=0 ; i<gameData.player.achievements.length ; i++){
+			gameData.player.achievements[i] = player.completedQuests.get(i);
+		}
+		
+		Array<String> history = new Array<String>(String.class);
+		for(Entry<String, ObjectMap<String, Integer>> act : player.actions){
+			for(Entry<String, Integer> type : act.value){
+				history.add(act.key + "|" + type.key + "|" + type.value);
+			}
+		}
+		gameData.player.history = history.toArray();
 		
 		// serialize
 		Json json = new Json();
@@ -335,7 +416,82 @@ public class OpenWorldGameSystem extends EntitySystem implements PostInitializat
 				player.life = 0;
 				// TODO death sequence ...
 			}
+			
+			
+			if(!eventsLogic) return;
+			
+			// case of game beginning : reveal the first quest and drop a machete
+			// just in front of player.
+			if(player.completedQuests.size == 0 && player.pendingQuests.size == 0){
+				revealQuest("intro");
+				
+				OpenWorldElement item = OpenWorldModel.generateNewElement("machete");
+				item.position.set(camera.position).mulAdd(camera.direction, 2); // 2m
+				item.rotation.idt();
+				userObjectSystem.appendObject(item);
+			}
+			
+			// TODO check some realtime achievements here.
+			
 		}
+	}
+	
+	@Override
+	public void actionPickup(String type) {
+		increment("grab", type, 1);
+		checkQuestsStatus();
+	}
+	
+	private void increment(String action, String type, int count){
+		ObjectMap<String, Integer> act = player.actions.get(action);
+		if(act == null) player.actions.put(action, act = new ObjectMap<String, Integer>());
+		Integer counter = act.get(type);
+		if(counter == null) counter = 0;
+		counter += count;
+		act.put(type, counter);
+	}
+
+	private void revealQuest(String qid) {
+		player.pendingQuests.add(qid);
+		for(OpenWorldGameEventListener listener : gameEventListeners)
+			listener.onQuestRevealed(qid);
+		
+		checkQuestsStatus();
+	}
+
+	private void checkQuestsStatus() 
+	{
+		// Iterate for removal
+		for(int i=0 ; i<player.pendingQuests.size ; ){
+			String qid = player.pendingQuests.get(i);
+			if(isUnlocked(qid)){
+				player.pendingQuests.removeIndex(i);
+				unlockQuest(qid);
+				continue;
+			}
+			i++;
+		}
+	}
+
+	private boolean unlockQuest(String qid) {
+		// if(player.acknowledgedQuests.contains(qid)){
+		//	player.acknowledgedQuests.remove(qid);
+			player.completedQuests.add(qid);
+			
+			for(OpenWorldGameEventListener listener : gameEventListeners)
+				listener.onQuestUnlocked(qid);
+			for(String newQid : OpenWorldModel.quest(qid).unlocking()){
+				revealQuest(newQid);
+			}
+			return true;
+//		}
+//		return false;
+	}
+	
+	@Override
+	public void questAck(String qid) {
+		player.acknowledgedQuests.add(qid);
+		checkQuestsStatus();
 	}
 
 	public int getAvailableSpaceInBackpack() 
