@@ -18,6 +18,7 @@ public class StatusView extends Table
 	private Label lifeLabel;
 	private Label oxygenLabel;
 	private Label temperatureLabel;
+	private Label timeLabel;
 	
 	public StatusView(Skin skin, Engine engine) {
 		super(skin);
@@ -28,11 +29,15 @@ public class StatusView extends Table
 		lifeLabel = new Label("", skin);
 		oxygenLabel = new Label("", skin);
 		temperatureLabel = new Label("", skin);
+		timeLabel = new Label("", skin);
+		
+		defaults().padRight(30);
 		
 		add(lifeLabel);
 		add(energyLabel);
 		add(oxygenLabel);
 		add(temperatureLabel);
+		add(timeLabel);
 	}
 	
 	@Override
@@ -71,6 +76,10 @@ public class StatusView extends Table
 			temperatureLabel.setColor(Color.ORANGE);
 		else 
 			temperatureLabel.setColor(Color.WHITE);
+		
+		int hours = (int)(envSystem.timeOfDay * 24);
+		int minutes = (int)((envSystem.timeOfDay * 24 - hours) * 60);
+		timeLabel.setText("Time: " + String.format("%02d:%02d", hours, minutes));
 		
 		super.act(delta);
 	}

@@ -1,6 +1,7 @@
 package net.mgsx.game.examples.openworld.systems;
 
 import java.util.Calendar;
+import java.util.TimeZone;
 
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntitySystem;
@@ -33,7 +34,7 @@ public class OpenWorldEnvSystem extends EntitySystem
 	@Editable public float waterLevelRate = .3f;
 	public transient float waterLevel;
 
-	/** range from 0 (sunrise) to 1 (sunset), extra values are night */
+	/** normalized time : range from 0 (midnight) to 1 (midnight), O.5 is noon */
 	@Editable(realtime=true) public float timeOfDay;
 	@Editable(realtime=true) public float temperature;
 	
@@ -60,14 +61,24 @@ public class OpenWorldEnvSystem extends EntitySystem
 	public void update(float deltaTime) {
 		time += deltaTime;
 		if(autoTime){
-			Calendar cal = Calendar.getInstance();
+			// TODO timezone gives wrong values 
+			// Gives -2 error
+			// Calendar.getInstance(TimeZone.getTimeZone("Europe/Paris"), Locale.FRANCE).get(Calendar.HOUR_OF_DAY)
+			// Gives -1 error
+			// Calendar.getInstance(TimeZone.getDefault()).get(Calendar.HOUR_OF_DAY);
+			// This hardcoded value gives good value for france in summer ...
+			// Calendar.getInstance(TimeZone.getTimeZone("GMT+2")).get(Calendar.HOUR_OF_DAY);
+			
+			Calendar cal = Calendar.getInstance(TimeZone.getDefault());
 			float ms = cal.get(Calendar.MILLISECOND) / 1000f;
 			float secs = (cal.get(Calendar.SECOND) + ms) / 60f;
 			float minutes = (cal.get(Calendar.MINUTE) + secs) / 60f;
 			timeOfDay = (cal.get(Calendar.HOUR_OF_DAY) + minutes) / 24f;
 			timeOfDay += timeOffset / 24f;
-			timeOfDay = timeOfDay % 1f;
 		}
+		// always clip/wrap to unit normalized value.
+		timeOfDay = timeOfDay % 1f;
+		
 		float angle = ((timeOfDay - weather.sunrise) / (weather.sunset - weather.sunrise));
 		
 		// TODO temperature = f(angle)

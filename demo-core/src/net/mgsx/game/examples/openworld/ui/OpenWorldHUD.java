@@ -192,19 +192,18 @@ public class OpenWorldHUD extends Table
 		// TODO backpack
 		backpack = new Table(getSkin());
 		
-		backpack.add("Backpack content : ");
+		backpack.add("Backpack: ");
 		
 		
 		
-		// TODO actions !
-		// like Point'n'click : look, build, ...etc
+		// actions like Point'n'click
 		actionButtonGroup = new ButtonGroup<TextButton>();
 		actionButtonGroup.setMaxCheckCount(1);
 		actionButtonGroup.setMinCheckCount(0);
 		
 		Table actionsTable = new Table(getSkin());
 		
-		actionsTable.add("Actions : ");
+		actionsTable.add("Actions: ");
 		
 		actionsTable.add(createActionButton("Pick Up", GameAction.GRAB));
 		actionsTable.add(createActionButton("Look At", GameAction.LOOK));
@@ -218,6 +217,9 @@ public class OpenWorldHUD extends Table
 		actionsTable.add(contextualActionsTable);
 		
 		infoLabel = new Label("", getSkin());
+		
+		defaults().padRight(30);
+		
 		add(infoLabel).colspan(2).expand().center().bottom().row();
 		add(new StatusView(getSkin(), engine)).colspan(2).expandX().center().row();
 		add(actionsTable).expandX().right();
