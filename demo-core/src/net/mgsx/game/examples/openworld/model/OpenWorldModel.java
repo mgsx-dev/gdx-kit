@@ -269,4 +269,18 @@ public class OpenWorldModel {
 		return null;
 	}
 
+	public static Array<OpenWorldElement> destroy(String type) {
+		FreemindNode node = map.root().child("items").child(type).child("destructible");
+		if(node.exists()){
+			Array<OpenWorldElement> result = new Array<OpenWorldElement>();
+			for(FreemindNode component : node.child("components").children()){
+				for(int i=0 ; i<component.first().asInt(1) ; i++){
+					result.add(generateNewElement(component));
+				}
+			}
+			return result;
+		}
+		return null;
+	}
+
 }

@@ -34,7 +34,7 @@ import net.mgsx.game.plugins.bullet.system.BulletWorldSystem;
 public class OpenWorldHUD extends Table
 {
 	private static enum GameAction{
-		LOOK, GRAB, EAT, USE, DROP, CRAFT, SLEEP // ...
+		LOOK, GRAB, EAT, USE, DROP, CRAFT, SLEEP, DESTROY // ...
 	}
 	private GameAction action;
 	private Label infoLabel;
@@ -44,8 +44,6 @@ public class OpenWorldHUD extends Table
 	
 	static class WorldSelection {
 		public String elementName = null;
-		/** short living reference, should be cleared upon processing since it may be removed at any time */
-		public Entity e = null;
 		public UserObject uo = null;
 		public Vector3 position = new Vector3();
 		public Vector3 normal = new Vector3();
@@ -89,8 +87,8 @@ public class OpenWorldHUD extends Table
 				if(o != null){
 					// find which object as been picked :
 					if(o instanceof Entity){
-						worldSelection.e = (Entity)o;
-						ObjectMeshComponent omc = ObjectMeshComponent.components.get(worldSelection.e);
+						Entity e = (Entity)o;
+						ObjectMeshComponent omc = ObjectMeshComponent.components.get(e);
 						if(omc != null){
 							if(omc.userObject != null){
 								worldSelection.uo = omc.userObject;
@@ -212,6 +210,7 @@ public class OpenWorldHUD extends Table
 		actionsTable.add(createActionButton("Drop", GameAction.DROP));
 		actionsTable.add(createActionButton("Build", GameAction.CRAFT));
 		actionsTable.add(createActionButton("Sleep", GameAction.SLEEP));
+		actionsTable.add(createActionButton("Destroy", GameAction.DESTROY));
 		
 		contextualActionsTable = new Table(getSkin());
 		actionsTable.add(contextualActionsTable);
@@ -250,6 +249,7 @@ public class OpenWorldHUD extends Table
 		
 		OpenWorldGameSystem gameSystem = engine.getSystem(OpenWorldGameSystem.class);
 		OpenWorldEnvSystem envSystem = engine.getSystem(OpenWorldEnvSystem.class);
+		UserObjectSystem objectSystem = engine.getSystem(UserObjectSystem.class);
 		
 		boolean actionPerformed = false;
 		boolean actionCanceled = false;
@@ -268,7 +268,6 @@ public class OpenWorldHUD extends Table
 						int spaceAvailable = gameSystem.getAvailableSpaceInBackpack();
 						if(space <= spaceAvailable){
 							userObject.removeElement(worldSelection.uo);
-							engine.removeEntity(worldSelection.e);
 							// and add it to the player backpack ! if meet conditions (size, ...etc).
 							// animate model : lerp to player and inc GUI
 							addItemToBackpack(worldSelection.uo.element);
@@ -411,6 +410,32 @@ public class OpenWorldHUD extends Table
 				infoLabel.setText("Touch a safe place where you could sleep...");
 			}
 			
+		}
+		else if(action == GameAction.DESTROY){
+			if(worldSelection != null && worldSelection.elementName != null && worldSelection.uo != null){
+				
+				Array<OpenWorldElement> result = OpenWorldModel.destroy(worldSelection.elementName);
+				if(result != null){
+					
+					// first remove element
+					objectSystem.removeElement(worldSelection.uo);
+					
+					// then create some new object here
+					for(OpenWorldElement item : result){
+						
+						item.position.set(worldSelection.position);
+						
+						objectSystem.appendObject(item);
+					}
+					
+					actionPerformed = true;
+				}else{
+					infoLabel.setText("This can't be destroyed, try another thing...");
+				}
+				
+			}else{
+				infoLabel.setText("Touch something to destroy it...");
+			}
 		}
 		// default look
 		else
