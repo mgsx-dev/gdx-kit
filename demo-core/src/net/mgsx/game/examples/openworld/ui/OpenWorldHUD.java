@@ -24,6 +24,7 @@ import net.mgsx.game.core.Kit;
 import net.mgsx.game.examples.openworld.components.ObjectMeshComponent;
 import net.mgsx.game.examples.openworld.components.TreesComponent;
 import net.mgsx.game.examples.openworld.model.Compound;
+import net.mgsx.game.examples.openworld.model.GameAction;
 import net.mgsx.game.examples.openworld.model.OpenWorldElement;
 import net.mgsx.game.examples.openworld.model.OpenWorldGameEventListener;
 import net.mgsx.game.examples.openworld.model.OpenWorldModel;
@@ -36,14 +37,13 @@ import net.mgsx.game.plugins.bullet.system.BulletWorldSystem;
 
 public class OpenWorldHUD extends Table
 {
-	private static enum GameAction{
-		LOOK, GRAB, EAT, USE, DROP, CRAFT, SLEEP, DESTROY
-	}
 	private static enum GameMenu{
 		STATE, QUESTS
 	}
 	private GameAction action;
 	private Label infoLabel;
+	
+	QuestStatusPopup questStatusPopup;
 	
 	OpenWorldGameSystem gameSystem;
 	
@@ -74,15 +74,14 @@ public class OpenWorldHUD extends Table
 		this.engine = engine;
 		gameSystem = engine.getSystem(OpenWorldGameSystem.class);
 		
-		// TODO just push message not create another view !
 		gameSystem.addGameEventListener(new OpenWorldGameEventListener() {
 			@Override
 			public void onQuestUnlocked(String qid) {
-				getStage().addActor(new QuestStatusPopup(getSkin(), gameSystem, qid, true));
+				questStatusPopup.pushQuestStatus(qid, true);
 			}
 			@Override
 			public void onQuestRevealed(String qid) {
-				getStage().addActor(new QuestStatusPopup(getSkin(), gameSystem, qid, false));
+				questStatusPopup.pushQuestStatus(qid, false);
 			}
 		});
 		
@@ -245,13 +244,17 @@ public class OpenWorldHUD extends Table
 		
 		defaults().padRight(30);
 		
-		add(infoLabel).colspan(2).expand().center().bottom().row();
+		questStatusPopup = new QuestStatusPopup(getSkin());
+		
+		add(questStatusPopup).colspan(2).expand().center().top().row();
+		
+		add(infoLabel).colspan(2).expandX().center().row();
 		add(new StatusView(getSkin(), engine)).colspan(2).expandX().center().row();
 		add(actionsTable).expandX().right();
 		add(menuTable).expandX().left();
 		row();
 		
-		add(backpack).colspan(2).expandX().left();
+		add(backpack).colspan(2).expandX().center();
 		
 		
 		
@@ -307,7 +310,7 @@ public class OpenWorldHUD extends Table
 		OpenWorldEnvSystem envSystem = engine.getSystem(OpenWorldEnvSystem.class);
 		UserObjectSystem objectSystem = engine.getSystem(UserObjectSystem.class);
 		
-		boolean actionPerformed = false;
+		String actionPerformed = null;
 		boolean actionCanceled = false;
 		
 		UserObjectSystem userObject = engine.getSystem(UserObjectSystem.class);
@@ -330,10 +333,7 @@ public class OpenWorldHUD extends Table
 							gameSystem.backpack.add(worldSelection.uo.element);
 							// TODO update backpack fill rate
 							infoLabel.setText(OpenWorldModel.name(worldSelection.uo.element.type) + " added to your backpack.");
-							
-							gameSystem.actionPickup(worldSelection.uo.element.type);
-							
-							actionPerformed = true;
+							actionPerformed = worldSelection.uo.element.type;
 						}else{
 							infoLabel.setText("You don't have enough space in your backpack.");
 						}
@@ -354,7 +354,7 @@ public class OpenWorldHUD extends Table
 					element.position.set(worldSelection.position);
 					userObject.appendObject(element);
 					infoLabel.setText(OpenWorldModel.name(element.type) + " just spawned!");
-					actionPerformed = true;
+					actionPerformed = backpackSelection.type;
 				}else{
 					infoLabel.setText("Nothing happens...");
 					actionCanceled = true;
@@ -372,7 +372,7 @@ public class OpenWorldHUD extends Table
 			// TODO and if raycasted toward the world ...
 			if(backpackSelection != null){
 				dropFromBackpack(backpackSelection.type);
-				actionPerformed = true;
+				actionPerformed = backpackSelection.type;
 				infoLabel.setText(OpenWorldModel.name(backpackSelection.type) + " was dropped from your backpack");
 			}else{
 				infoLabel.setText("Drop something from your backpack");
@@ -397,7 +397,7 @@ public class OpenWorldHUD extends Table
 						infoLabel.setText(OpenWorldModel.name(backpackSelection.type) + " gives you no energie at all...");
 					}
 					removeFromBackpack(backpackSelection);
-					actionPerformed = true;
+					actionPerformed = backpackSelection.type;
 				}else{
 					infoLabel.setText(OpenWorldModel.name(backpackSelection.type) + " cannot be eat or drink...");
 				}
@@ -433,7 +433,7 @@ public class OpenWorldHUD extends Table
 				
 				engine.getSystem(UserObjectSystem.class).appendObject(e);
 				
-				actionPerformed = true;
+				actionPerformed = e.type;
 			}
 			else if(craftSelection != null && worldSelection == null){
 				infoLabel.setText("Choose where to build your ... thing.");
@@ -460,7 +460,7 @@ public class OpenWorldHUD extends Table
 					envSystem.timeOffset += 8;
 					
 					infoLabel.setText("This nap gave you some energy, you're ready to go now.");
-					actionPerformed = true;
+					actionPerformed = worldSelection.elementName;
 				}else{
 					infoLabel.setText("This place is not safe, try another place...");
 				}
@@ -487,7 +487,7 @@ public class OpenWorldHUD extends Table
 						objectSystem.appendObject(item);
 					}
 					
-					actionPerformed = true;
+					actionPerformed = worldSelection.elementName;
 				}else{
 					infoLabel.setText("This can't be destroyed, try another thing...");
 				}
@@ -499,24 +499,28 @@ public class OpenWorldHUD extends Table
 		// default look
 		else
 		{
+			action = GameAction.LOOK;
 			if(worldSelection != null && worldSelection.elementName != null){
 				String description = OpenWorldModel.description(worldSelection.elementName);
 				infoLabel.setText(description);
-				actionPerformed = true;
+				actionPerformed = worldSelection.elementName;
 			}
 			else if(backpackSelection != null){
 				String description = OpenWorldModel.description(backpackSelection.type);
 				infoLabel.setText(description);
-				actionPerformed = true;
+				actionPerformed = backpackSelection.type;
 			}else{
 				infoLabel.setText("Touch something to examin it...");
 			}
 		}
 		
+		if(actionPerformed != null){
+			gameSystem.actionReport(action, actionPerformed);
+		}
 		
 		// TODO not always clear if action not resolved
 		// clear all but action
-		if(actionPerformed || actionCanceled){
+		if(actionPerformed != null || actionCanceled){
 			craftSelection = null;
 			if(action != GameAction.USE)
 				backpackSelection = null; // TODO depends on context : use will reuse
@@ -538,7 +542,7 @@ public class OpenWorldHUD extends Table
 		
 		
 		
-		return actionPerformed;
+		return actionPerformed != null;
 	}
 
 	private Table popin;

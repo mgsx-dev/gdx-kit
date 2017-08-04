@@ -7,5 +7,5 @@ public interface OpenWorldGameEventManager {
 	
 	void questAck(String qid);
 	
-	void actionPickup(String type);
+	void actionReport(GameAction action, String type);
 }

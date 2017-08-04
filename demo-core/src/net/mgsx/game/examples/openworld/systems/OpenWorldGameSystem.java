@@ -17,6 +17,7 @@ import net.mgsx.game.core.PostInitializationListener;
 import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.core.annotations.EditableSystem;
 import net.mgsx.game.core.annotations.Inject;
+import net.mgsx.game.examples.openworld.model.GameAction;
 import net.mgsx.game.examples.openworld.model.OpenWorldElement;
 import net.mgsx.game.examples.openworld.model.OpenWorldGame;
 import net.mgsx.game.examples.openworld.model.OpenWorldGameEventListener;
@@ -73,10 +74,6 @@ public class OpenWorldGameSystem extends EntitySystem implements PostInitializat
 	
 	@Override
 	public void onPostInitialization() {
-		// XXX init workaround
-		if(backpack.size == 0){
-			backpack.add(OpenWorldModel.generateNewElement("machete"));
-		}
 		player = new OpenWorldPlayer();
 		
 		computePlayerStats();
@@ -181,7 +178,7 @@ public class OpenWorldGameSystem extends EntitySystem implements PostInitializat
 		
 		// load history
 		for(String code : player.history){
-			String [] codes = code.split("|");
+			String [] codes = code.split("\\|");
 			ObjectMap<String, Integer> act = player.actions.get(codes[0]);
 			if(act == null) player.actions.put(codes[0], act = new ObjectMap<String, Integer>());
 			act.put(codes[1], Integer.valueOf(codes[2]));
@@ -194,7 +191,8 @@ public class OpenWorldGameSystem extends EntitySystem implements PostInitializat
 		for(Requirement requirement : requirements){
 			ObjectMap<String, Integer> act = player.actions.get(requirement.action);
 			if(act == null) return false;
-			int count = act.get(requirement.type);
+			Integer count = act.get(requirement.type);
+			if(count == null) return false;
 			if(count < requirement.count) return false;
 		}
 		return true;
@@ -437,8 +435,39 @@ public class OpenWorldGameSystem extends EntitySystem implements PostInitializat
 	}
 	
 	@Override
-	public void actionPickup(String type) {
-		increment("grab", type, 1);
+	public void actionReport(GameAction action, String type) {
+		String actionName;
+		switch(action){
+		case CRAFT:
+			actionName = "build";
+			break;
+		case DESTROY:
+			actionName = "destroy";
+			break;
+		case DROP:
+			actionName = "drop";
+			break;
+		case EAT:
+			actionName = "eat";
+			break;
+		case GRAB:
+			actionName = "grab";
+			break;
+		case LOOK:
+			actionName = "look";
+			break;
+		case SLEEP:
+			actionName = "sleep";
+			break;
+		case USE:
+			actionName = "use";
+			break;
+		default:
+			actionName = "unknown";
+			break;
+		
+		}
+		increment(actionName, type, 1);
 		checkQuestsStatus();
 	}
 	

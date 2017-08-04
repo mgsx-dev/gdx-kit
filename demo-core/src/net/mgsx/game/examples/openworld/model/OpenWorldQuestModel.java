@@ -36,13 +36,13 @@ public class OpenWorldQuestModel {
 	// TODO could be multiple ...
 	public Array<String> items() {
 		Array<String> r = new Array<String>();
-		for(FreemindNode q : quest.child("items").children()) r.add(q.asString());
+		for(FreemindNode q : quest.child("reward").child("items").children()) r.add(q.asString());
 		return r;
 	}
 
 	public Array<String> knowledges() {
 		Array<String> r = new Array<String>();
-		for(FreemindNode q : quest.child("building").children()) r.add(q.asString());
+		for(FreemindNode q : quest.child("reward").child("building").children()) r.add(q.asString());
 		return r;
 	}
 

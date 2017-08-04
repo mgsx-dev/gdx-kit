@@ -23,13 +23,14 @@ import net.mgsx.game.services.gapi.GAPI;
 @EditableSystem
 public class OpenWorldHUDSystem extends HUDSystem implements PostInitializationListener
 {
-	@Asset("skins/game-skin.json")
+	@Asset("openworld/game-skin.json")
 	public Skin skin;
 	
 	private Table root;
 	private Table view;
 	
 	@Inject OpenWorldGameSystem gameSystem;
+	@Inject OpenWorldMapSystem mapSystem;
 	
 	public transient OpenWorldHUD hudMain;
 	
@@ -52,8 +53,10 @@ public class OpenWorldHUDSystem extends HUDSystem implements PostInitializationL
 		if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE)){
 			if(hudMain.isVisible()){
 				hudMain.setVisible(false);
+				mapSystem.setProcessing(false);
 			}else{
 				hudMain.setVisible(true);
+				mapSystem.setProcessing(true);
 			}
 		}
 		
