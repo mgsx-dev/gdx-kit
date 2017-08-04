@@ -261,4 +261,12 @@ public class OpenWorldModel {
 		return null;
 	}
 
+	public static Integer sleepableEnergy(String type) {
+		FreemindNode node = map.root().child("items").child(type).child("sleepable");
+		if(node.exists()){
+			return node.first().asInt(1);
+		}
+		return null;
+	}
+
 }

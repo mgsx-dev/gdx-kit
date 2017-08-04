@@ -49,6 +49,9 @@ public class OpenWorldEnvSystem extends EntitySystem
 
 	@Editable public Color waterColor = new Color(.1f, .1f, 1f, 1f);
 	
+	/** this is an offset time in hour relative to realtime */
+	@Editable public transient float timeOffset = 0;
+	
 	public OpenWorldEnvSystem() {
 		super(GamePipeline.LOGIC);
 	}
@@ -62,6 +65,8 @@ public class OpenWorldEnvSystem extends EntitySystem
 			float secs = (cal.get(Calendar.SECOND) + ms) / 60f;
 			float minutes = (cal.get(Calendar.MINUTE) + secs) / 60f;
 			timeOfDay = (cal.get(Calendar.HOUR_OF_DAY) + minutes) / 24f;
+			timeOfDay += timeOffset / 24f;
+			timeOfDay = timeOfDay % 1f;
 		}
 		float angle = ((timeOfDay - weather.sunrise) / (weather.sunset - weather.sunrise));
 		

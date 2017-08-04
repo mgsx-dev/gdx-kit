@@ -25,6 +25,7 @@ import net.mgsx.game.examples.openworld.model.Compound;
 import net.mgsx.game.examples.openworld.model.OpenWorldElement;
 import net.mgsx.game.examples.openworld.model.OpenWorldModel;
 import net.mgsx.game.examples.openworld.systems.OpenWorldCameraSystem;
+import net.mgsx.game.examples.openworld.systems.OpenWorldEnvSystem;
 import net.mgsx.game.examples.openworld.systems.OpenWorldGameSystem;
 import net.mgsx.game.examples.openworld.systems.UserObjectSystem;
 import net.mgsx.game.examples.openworld.systems.UserObjectSystem.UserObject;
@@ -33,7 +34,7 @@ import net.mgsx.game.plugins.bullet.system.BulletWorldSystem;
 public class OpenWorldHUD extends Table
 {
 	private static enum GameAction{
-		LOOK, GRAB, EAT, USE, DROP, CRAFT // ...
+		LOOK, GRAB, EAT, USE, DROP, CRAFT, SLEEP // ...
 	}
 	private GameAction action;
 	private Label infoLabel;
@@ -211,6 +212,7 @@ public class OpenWorldHUD extends Table
 		actionsTable.add(createActionButton("Use", GameAction.USE));
 		actionsTable.add(createActionButton("Drop", GameAction.DROP));
 		actionsTable.add(createActionButton("Build", GameAction.CRAFT));
+		actionsTable.add(createActionButton("Sleep", GameAction.SLEEP));
 		
 		contextualActionsTable = new Table(getSkin());
 		actionsTable.add(contextualActionsTable);
@@ -228,12 +230,12 @@ public class OpenWorldHUD extends Table
 	}
 
 	private TextButton createActionButton(String label, final GameAction newAction) {
-		TextButton bt = new TextButton(label, getSkin(), "toggle");
+		final TextButton bt = new TextButton(label, getSkin(), "toggle");
 		actionButtonGroup.add(bt);
 		bt.addListener(new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
-				action = newAction;
+				action = bt.isChecked() ? newAction : null;
 				resolveInteraction();
 			}
 		});
@@ -245,6 +247,7 @@ public class OpenWorldHUD extends Table
 		// TODO put texts in model with i18n
 		
 		OpenWorldGameSystem gameSystem = engine.getSystem(OpenWorldGameSystem.class);
+		OpenWorldEnvSystem envSystem = engine.getSystem(OpenWorldEnvSystem.class);
 		
 		boolean actionPerformed = false;
 		boolean actionCanceled = false;
@@ -382,6 +385,30 @@ public class OpenWorldHUD extends Table
 				actionCanceled = true;
 				infoLabel.setText("");
 			}
+		}
+		else if(action == GameAction.SLEEP){
+			
+			// player have to select a place to sleep. For now only sleepable area is allowed
+			if(worldSelection != null && worldSelection.elementName != null){
+				
+				Integer restValue = OpenWorldModel.sleepableEnergy(worldSelection.elementName);
+				if(restValue != null){
+					gameSystem.player.energy = Math.min(gameSystem.player.energy + restValue, gameSystem.player.energyMax);
+
+					// TODO should have a cinematic, time elpased, ...etc.
+					// we simply offet time a little (8 hours)
+					envSystem.timeOffset += 8;
+					
+					infoLabel.setText("This nap gave you some energy, you're ready to go now.");
+					actionPerformed = true;
+				}else{
+					infoLabel.setText("This place is not safe, try another place...");
+				}
+				
+			}else{
+				infoLabel.setText("Touch a safe place where you could sleep...");
+			}
+			
 		}
 		// default look
 		else
