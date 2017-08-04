@@ -43,6 +43,8 @@ public class OpenWorldGameSystem extends EntitySystem implements PostInitializat
 	@Editable(realtime=true, readonly=true)
 	public transient boolean diving, walking, flying, swimming;
 	
+	@Editable public boolean playerLogic = true;
+	
 	public Array<OpenWorldElement> backpack = new Array<OpenWorldElement>();
 	
 	private SavedGame gameToLoad;
@@ -214,25 +216,71 @@ public class OpenWorldGameSystem extends EntitySystem implements PostInitializat
 			gameToLoad = null;
 		}else{
 			
+			if(!playerLogic) return;
+			
 			Camera camera = cameraSystem.getCamera();
 			if(camera == null) return;
 			
-			final float playerSize = cameraSystem.offset;
+			// offset from ground to camera is the player's tall
+			final float footsToEyeHeight = 1.7f;
 			
+			// head offset when swimming (limit : cannot fly up to this value above sea)
+			float headOffset = .2f;
+			
+			// TODO replace by enum : states are mutually exclusive !
+			// flying is just a case we'll see later (falling or planning or bird mode ...)
+			// we reset all status
+			flying = false;
+			walking = false;
+			diving = false;
+			swimming = false;
+			
+			// this is the ground level based on procedural lands
 			float altitude = generator.getAltitude(camera.position.x, camera.position.z);
 			
-			boolean isAquatic = altitude < env.waterLevel;
-			diving = isAquatic && camera.position.y < env.waterLevel;
-			if(cameraSystem.flyingMode){
-				flying = !diving;
-				walking = false;
-				swimming = false;
+			
+			// walking status is when ground below the sea is no more than player tall
+			float waterDepth = env.waterLevel - altitude;
+			
+			if(waterDepth < footsToEyeHeight){
+				walking = true;
+			}
+			else
+			{
+				// diving status is easy, it is when camera is below water level.
+				if(camera.position.y < env.waterLevel){
+					diving = true;
+				}
+				// all other cases, the player is swimming
+				else
+				{
+					swimming = true;
+				}
+			}
+			
+			
+			// enable flying mode in case of diving or swimming only
+			if(diving || swimming){
+				cameraSystem.flyingMode = true;
+				
+				// in this case, we limit to palyer's head above the sea.
+				float altitudeMax = env.waterLevel + headOffset;
+				if(camera.position.y > altitudeMax){
+					camera.position.y = altitudeMax;
+				}
+				
+				// in this case, camera offset in small, player is not vertical.
+				// to avoid camera clipping we offset to 1 meter;
+				cameraSystem.offset = 1.5f; // TODO maybe less depends on near camera clipping ...
+				
 			}
 			else{
-				flying = false;
-				swimming = !diving && isAquatic && camera.position.y - playerSize > altitude;
-				walking = !swimming && !diving && cameraSystem.currentMove != 0;
+				cameraSystem.flyingMode = false;
+				
+				// in this case, camera offset is player tall
+				cameraSystem.offset = footsToEyeHeight;
 			}
+			
 			
 			// update player logic
 			float currentMove = cameraSystem.currentMove;
@@ -267,9 +315,9 @@ public class OpenWorldGameSystem extends EntitySystem implements PostInitializat
 			if(walking){
 				player.energy -= currentMove * 0.001;
 			}else if(swimming || diving){
-				player.energy -= currentMove * 1;
+				player.energy -= currentMove * 0.01;
 			}else if(flying){
-				player.energy -= currentMove * .5;
+				player.energy -= currentMove * 0.005;
 			}else{
 				// loose energy in all cases
 				player.energy -= deltaTime * 0.0000001;
@@ -278,7 +326,7 @@ public class OpenWorldGameSystem extends EntitySystem implements PostInitializat
 			if(player.energy < 0){
 				player.energy = 0;
 				player.life -= deltaTime * 0.01;
-			}else if(player.energy >= player.energyMax){
+			}else if(player.energy / player.energyMax > 0.9){ // recuperation at 90% since energy can't get at 100%
 				player.life += deltaTime * 0.01;
 				if(player.life > player.lifeMax) player.life = player.lifeMax;
 			}
