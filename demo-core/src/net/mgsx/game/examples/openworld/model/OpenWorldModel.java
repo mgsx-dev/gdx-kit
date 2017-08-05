@@ -173,6 +173,12 @@ public class OpenWorldModel {
 			
 			element.size = generateSize(procedural.child("size"));
 		}
+		
+		// TODO damping and density could be derived from typical material :
+		// wood like : 700 (floating)
+		// stone like : 1500 to 2500
+		// default is water density
+		element.density = item.child("density").first().asFloat(1000);
 	}
 	private static OpenWorldElement generateElement(FreemindNode item, long seed) 
 	{

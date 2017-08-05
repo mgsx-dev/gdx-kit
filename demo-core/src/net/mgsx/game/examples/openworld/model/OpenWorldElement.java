@@ -31,4 +31,11 @@ public class OpenWorldElement {
 	
 	// TODO not all are dynamic ... store or not ?
 	public boolean dynamic = false;
+
+	/** in Kg/m³ some examples could be found here :
+	 * https://en.wikipedia.org/wiki/Density#Various_materials*/
+	public transient float density;
+
+	/** original damping for object */
+	public transient float damping;
 }

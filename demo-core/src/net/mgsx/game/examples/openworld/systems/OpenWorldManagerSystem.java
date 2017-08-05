@@ -265,6 +265,7 @@ public class OpenWorldManagerSystem extends EntitySystem implements PostInitiali
 		// flora VS desert
 		// humidity => big green trees VS savana
 		// 4th ? diffculty or other important things (wind ?...)
+		Vector2 flow = new Vector2(); 
 		Pixmap pixmap = OpenWorldPool.pixmap;
 		pixmap.setBlending(Blending.None);
 		for(int y=0 ; y<pixmap.getHeight() ; y++){
@@ -279,7 +280,10 @@ public class OpenWorldManagerSystem extends EntitySystem implements PostInitiali
 				float flora = generator.getFlora(ax, ay);
 				float floraNor = (flora + 1) * .5f;
 				
-				pixmap.drawPixel(x, y, Color.rgba8888(altitudeNor, floraNor, 0, 0));
+				// generator.getWaterCurrent(flow, ax, ay).scl(.5f / generator.waterFlowForce);
+				float flowRate = generator.getWaterCurrent(flow, ax, ay).scl(1.f / generator.waterFlowForce).len() * 2 - 1;
+				
+				pixmap.drawPixel(x, y, Color.rgba8888(altitudeNor, floraNor, flowRate, 0));
 			}
 		}
 		//cdc.data.infoTexture.load(new PixmapTextureData(pixmap, null, false, false));

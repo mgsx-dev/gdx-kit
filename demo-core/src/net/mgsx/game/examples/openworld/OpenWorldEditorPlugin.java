@@ -25,6 +25,7 @@ import net.mgsx.game.examples.openworld.systems.OpenWorldLandRenderSystem;
 import net.mgsx.game.examples.openworld.systems.OpenWorldLensFlareSystem;
 import net.mgsx.game.examples.openworld.systems.OpenWorldManagerSystem;
 import net.mgsx.game.examples.openworld.systems.OpenWorldMapSystem;
+import net.mgsx.game.examples.openworld.systems.OpenWorldPhysicSystem;
 import net.mgsx.game.examples.openworld.systems.OpenWorldRainSystem;
 import net.mgsx.game.examples.openworld.systems.OpenWorldSkySystem;
 import net.mgsx.game.examples.openworld.systems.OpenWorldTimeSystem;
@@ -73,6 +74,11 @@ public class OpenWorldEditorPlugin extends EditorPlugin implements DefaultEditor
 		editor.entityEngine.addSystem(new OpenWorldGeneratorSystem());
 		editor.entityEngine.addSystem(new OpenWorldManagerSystem());
 		editor.entityEngine.addSystem(new OpenWorldDebugSystem());
+		
+		editor.entityEngine.addSystem(new OpenWorldPhysicSystem());
+
+		
+		
 		editor.addTool(new AlignMeshTool(editor));
 		editor.addTool(new AddElementTool(editor));
 		editor.addTool(new RemoveElementTool(editor));

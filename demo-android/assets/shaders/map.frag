@@ -11,10 +11,11 @@ void main() {
 	vec3 color;
 	if(height < 0.5){
 		// water
-		if(height < u_waterLevel)
-			color = vec3(0.5,0.6,1.0) * resample(height + 0.5, 32.0);
+		if(height < u_waterLevel){
+			float flow = clamp((1.0 - info.b) * 2.0 - 0.5, 0.6, 0.7);
+			color = vec3(0.5,flow,1.0) * resample(height + 0.5, 32.0);
 		// Sand
-		else
+		}else
 			color = vec3(0.9, 0.8, 0.5);
 	}else{
 		float nh = height * 2.0;

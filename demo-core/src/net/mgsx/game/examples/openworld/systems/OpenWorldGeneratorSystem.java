@@ -2,6 +2,7 @@ package net.mgsx.game.examples.openworld.systems;
 
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.gdx.math.RandomXS128;
+import com.badlogic.gdx.math.Vector2;
 
 import net.mgsx.game.core.GamePipeline;
 import net.mgsx.game.core.PostInitializationListener;
@@ -27,7 +28,8 @@ public class OpenWorldGeneratorSystem extends EntitySystem implements PostInitia
 	public static final int SEED_LAYER_FLORA = 1;
 	public static final int SEED_LAYER_ROUGHNESS = 2;
 	public static final int SEED_LAYER_PLANARITY = 3;
-	public static final int SEED_LAYERS_COUNT = 4;
+	public static final int SEED_LAYER_WATER_FLOW = 4;
+	public static final int SEED_LAYERS_COUNT = 5;
 	
 	/**
 	 * Height map scale (shouldn't be changed in order to preserve object positions.
@@ -49,6 +51,8 @@ public class OpenWorldGeneratorSystem extends EntitySystem implements PostInitia
 
 	@Editable public float floraFrequency = .1f;
 
+	@Editable public float waterFlowFrequency = .1f;
+	@Editable public float waterFlowForce = 1f;
 	
 	public transient long [] seedLayers = new long[SEED_LAYERS_COUNT];
 
@@ -120,6 +124,20 @@ public class OpenWorldGeneratorSystem extends EntitySystem implements PostInitia
 		}
 		// normalized values
 		return value / sum;
+	}
+
+	public Vector2 getWaterCurrent(Vector2 waterFlow, float ax, float ay) {
+		rand.setSeed(seedLayers[SEED_LAYER_WATER_FLOW]);
+		
+		float lx = ax * waterFlowFrequency;
+		float ly = ay * waterFlowFrequency;
+		
+		// Force is never zero and range from 0.5 to 1
+		noise.seed(rand.nextLong());
+		float force = noise.get(lx, ly) * .25f + .75f;
+
+		noise.seed(rand.nextLong());
+		return noise.get(waterFlow, lx, ly).scl(force * waterFlowForce);
 	}
 
 

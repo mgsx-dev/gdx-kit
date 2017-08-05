@@ -163,11 +163,11 @@ public class UserObjectSystem extends EntitySystem
 		if(element.shape == GeometryType.BOX){
 			lmc.setInstance(createInstance(createMeshBox(element), element.color));
 			// physics :
-			bulletWorld.createBox(newEntity, lmc.getTransform(), element.size * element.geo_x, element.size * element.geo_y, element.size, element.dynamic);
+			bulletWorld.createBox(newEntity, lmc.getTransform(), element.size * element.geo_x, element.size * element.geo_y, element.size, element.dynamic, element.density);
 		}
 		else if(element.shape == GeometryType.SPHERE){
 			lmc.setInstance(createInstance(createMeshSphere(element), element.color));
-			bulletWorld.createSphere(newEntity, lmc.getTransform(), element.size,element.dynamic);
+			bulletWorld.createSphere(newEntity, lmc.getTransform(), element.size,element.dynamic, element.density);
 		}
 		// predefined assets
 		else {
@@ -188,7 +188,7 @@ public class UserObjectSystem extends EntitySystem
 				model = screen.assets.get(fileName, Model.class);
 			}
 			lmc.setInstance(new ModelInstance(model));
-			bulletWorld.createFromModel(newEntity, model, lmc.getTransform(), element.dynamic);
+			bulletWorld.createFromModel(newEntity, model, lmc.getTransform(), element.dynamic, element.density);
 			
 		}
 		newEntity.add(lmc);
