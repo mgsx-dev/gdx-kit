@@ -1,6 +1,7 @@
 package net.mgsx.game.examples.openworld.systems;
 
 import com.badlogic.ashley.core.EntitySystem;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.RandomXS128;
 import com.badlogic.gdx.math.Vector2;
 
@@ -48,6 +49,7 @@ public class OpenWorldGeneratorSystem extends EntitySystem implements PostInitia
 	@Editable public int octaves = 3;
 
 	@Editable public boolean fBm = false;
+	@Editable public boolean fBm2 = false;
 
 	@Editable public float floraFrequency = .1f;
 
@@ -87,6 +89,7 @@ public class OpenWorldGeneratorSystem extends EntitySystem implements PostInitia
 	 */
 	public float getAltitude(float ax, float ay)
 	{
+		float base;
 		if(fBm){
 			// TODO config planarity frequency
 			float planarity = 0.5f + .5f * getPerlin(ax, ay, seedLayers[SEED_LAYER_PLANARITY], frequency * 8, 1, 1);
@@ -96,9 +99,21 @@ public class OpenWorldGeneratorSystem extends EntitySystem implements PostInitia
 			
 			float altitude = getPerlin(ax, ay, seedLayers[SEED_LAYER_ALTITUDE], frequency, octaves, rougness);
 			
-			return scale * altitude * planarity;
+			base = altitude * planarity;
 		}
-		return scale * getPerlin(ax, ay, seedLayers[SEED_LAYER_ALTITUDE], frequency, octaves, persistence);
+		else{
+			base = getPerlin(ax, ay, seedLayers[SEED_LAYER_ALTITUDE], frequency, octaves, persistence);
+		}
+		
+		if(fBm2){
+			// TODO use another layer than roughness
+			float acc = getPerlin(ax, ay, seedLayers[SEED_LAYER_ROUGHNESS], frequency * 2, 1, persistence);
+			float acc2 = getPerlin(ax, ay, seedLayers[SEED_LAYER_ROUGHNESS], frequency * 16, 1, persistence);
+			acc = Math.abs(acc) + Math.abs(acc2);
+			base = base * MathUtils.clamp((float)Math.sqrt(Math.abs(acc)) - .1f, 0, 1) - .05f;
+		}
+		
+		return scale * base;
 	}
 
 	public float getFlora(float ax, float ay){
