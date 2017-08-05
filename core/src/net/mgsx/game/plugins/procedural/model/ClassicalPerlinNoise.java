@@ -2,6 +2,7 @@ package net.mgsx.game.plugins.procedural.model;
 
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.RandomXS128;
+import com.badlogic.gdx.math.Vector2;
 
 public class ClassicalPerlinNoise 
 {
@@ -76,5 +77,13 @@ public class ClassicalPerlinNoise
 		random.setSeed(seed + ix);
 		random.setSeed(random.nextInt() + iy);
 		return random.nextFloat() * 2 - 1;
+	}
+
+	public Vector2 get(Vector2 result, float x, float y) {
+		// TODO normal distributed angle doesn't work due to lerp average, need to wrap angle
+		float angleRad = MathUtils.PI * get(x, y);
+		result.x = MathUtils.cos(angleRad);
+		result.y = MathUtils.sin(angleRad);
+		return result;
 	}
 }
