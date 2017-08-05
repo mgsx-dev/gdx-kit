@@ -311,6 +311,8 @@ abstract public class ShaderProgramManaged {
 	transient private int samplerUnits;
 	
 	transient ObjectSet<String> configs;
+
+	private boolean invalidated;
 	
 	public ShaderProgramManaged() {
 		// no deep initialization here because of JSON serializer (check default)
@@ -328,10 +330,14 @@ abstract public class ShaderProgramManaged {
 	}
 	
 	public ShaderProgram program() {
-		if(shaderProgram == null){
+		if(shouldBeReloaded()){
 			reload();
 		}
 		return shaderProgram;
+	}
+	
+	private boolean shouldBeReloaded(){
+		return shaderProgram == null || invalidated;
 	}
 	
 	/**
@@ -342,7 +348,7 @@ abstract public class ShaderProgramManaged {
 	 */
 	public boolean begin(){
 		boolean hasChanged = false;
-		if(shaderProgram == null){
+		if(shouldBeReloaded()){
 			reload();
 			hasChanged = true;
 		}
@@ -357,7 +363,7 @@ abstract public class ShaderProgramManaged {
 	 * useful if shader program is used by a Batch or a ShaderProvider.
 	 */
 	public void setUniforms() {
-		if(shaderProgram == null){
+		if(shouldBeReloaded()){
 			reload();
 		}
 		for(UniformAccessor ua : activeUniformAccessors){
@@ -396,6 +402,8 @@ abstract public class ShaderProgramManaged {
 	
 	public void reload()
 	{
+		invalidated = false;
+		
 		if(vs == null) vs = shaderInfo.vs();
 		if(fs == null) fs = shaderInfo.fs();
 		
@@ -606,8 +614,7 @@ abstract public class ShaderProgramManaged {
 	}
 
 	public void invalidate() {
-		if(shaderProgram != null) shaderProgram.dispose();
-		shaderProgram = null;
+		invalidated = true;
 	}
 	
 	public boolean isEnabled(String config) {
