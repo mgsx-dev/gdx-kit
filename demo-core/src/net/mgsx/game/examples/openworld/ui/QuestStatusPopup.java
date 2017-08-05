@@ -32,6 +32,17 @@ public class QuestStatusPopup extends Table
 			Actions.visible(false)
 		));
 	}
+	public void pushSecretStatus(String itemId) {
+		pendingActions.add(Actions.sequence(
+				Actions.alpha(0),
+				buildSecretUIAction(itemId),
+				Actions.visible(true),
+				Actions.alpha(1, 2),
+				Actions.delay(3),
+				Actions.alpha(0, 2),
+				Actions.visible(false)
+			));
+	}
 	
 	@Override
 	public void act(float delta) {
@@ -62,5 +73,21 @@ public class QuestStatusPopup extends Table
 		{
 			add("New quest available : " + OpenWorldModel.quest(qid).name());
 		}
+	}
+	
+	private Action buildSecretUIAction(final String itemId) {
+		return Actions.run(new Runnable() {
+			@Override
+			public void run() {
+				displaySecretStatus(itemId);
+			}
+		});
+	}
+
+	private void displaySecretStatus(final String itemId)
+	{
+		clearChildren();
+		
+		add("New secret discovered : " + OpenWorldModel.name(itemId)).row();
 	}
 }

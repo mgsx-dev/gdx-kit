@@ -24,6 +24,7 @@ import net.mgsx.game.examples.openworld.model.OpenWorldGameEventListener;
 import net.mgsx.game.examples.openworld.model.OpenWorldGameEventManager;
 import net.mgsx.game.examples.openworld.model.OpenWorldModel;
 import net.mgsx.game.examples.openworld.model.OpenWorldPlayer;
+import net.mgsx.game.examples.openworld.model.OpenWorldQuestModel;
 import net.mgsx.game.examples.openworld.model.OpenWorldQuestModel.Requirement;
 import net.mgsx.game.services.gapi.GAPI;
 import net.mgsx.game.services.gapi.SavedGame;
@@ -161,7 +162,8 @@ public class OpenWorldGameSystem extends EntitySystem implements PostInitializat
 		while(toProcess.size > 0){
 			String qid = toProcess.pop();
 			if(unlocked.add(qid)){
-				for(String reveal : OpenWorldModel.quest(qid).unlocking()){
+				OpenWorldQuestModel quest = OpenWorldModel.quest(qid);
+				for(String reveal : quest.unlocking()){
 					if(!unlocked.contains(reveal)){
 						if(isUnlocked(reveal)){
 							unlocked.add(reveal);
@@ -169,6 +171,9 @@ public class OpenWorldGameSystem extends EntitySystem implements PostInitializat
 							player.pendingQuests.add(reveal);
 						}
 					}
+				}
+				for(String itemId : quest.knowledges()){
+					player.knownSecrets.add(itemId);
 				}
 			}
 		}
@@ -415,6 +420,12 @@ public class OpenWorldGameSystem extends EntitySystem implements PostInitializat
 				// TODO death sequence ...
 			}
 			
+			// increment stats
+			if(flying) player.distanceFly += currentMove;
+			if(swimming || diving) player.distanceSwim += currentMove;
+			if(walking) player.distanceWalk += currentMove;
+			
+			player.timePlay += deltaTime;
 			
 			if(!eventsLogic) return;
 			
@@ -467,6 +478,11 @@ public class OpenWorldGameSystem extends EntitySystem implements PostInitializat
 			break;
 		
 		}
+		
+		if(action == GameAction.SLEEP){
+			player.timeSleep += 8; // TODO 8 is defined in HUD should be handled differently
+		}
+		
 		increment(actionName, type, 1);
 		checkQuestsStatus();
 	}
@@ -502,19 +518,23 @@ public class OpenWorldGameSystem extends EntitySystem implements PostInitializat
 		}
 	}
 
-	private boolean unlockQuest(String qid) {
-		// if(player.acknowledgedQuests.contains(qid)){
-		//	player.acknowledgedQuests.remove(qid);
-			player.completedQuests.add(qid);
-			
-			for(OpenWorldGameEventListener listener : gameEventListeners)
-				listener.onQuestUnlocked(qid);
-			for(String newQid : OpenWorldModel.quest(qid).unlocking()){
-				revealQuest(newQid);
+	private void unlockQuest(String qid) {
+		player.completedQuests.add(qid);
+		
+		for(OpenWorldGameEventListener listener : gameEventListeners)
+			listener.onQuestUnlocked(qid);
+		
+		OpenWorldQuestModel quest = OpenWorldModel.quest(qid);
+		for(String itemId : quest.knowledges()){
+			if(player.knownSecrets.add(itemId)){
+				for(OpenWorldGameEventListener listener : gameEventListeners)
+					listener.onSecretUnlocked(itemId);
 			}
-			return true;
-//		}
-//		return false;
+		}
+		
+		for(String newQid : quest.unlocking()){
+			revealQuest(newQid);
+		}
 	}
 	
 	@Override

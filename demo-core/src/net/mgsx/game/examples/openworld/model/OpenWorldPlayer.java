@@ -44,4 +44,6 @@ public class OpenWorldPlayer {
 	
 	/** persisted statistics */
 	public double distanceWalk, distanceSwim, distanceFly, timeSleep, timePlay;
+	
+	public transient ObjectSet<String> knownSecrets = new ObjectSet<String>();
 }

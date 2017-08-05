@@ -38,7 +38,7 @@ import net.mgsx.game.plugins.bullet.system.BulletWorldSystem;
 public class OpenWorldHUD extends Table
 {
 	private static enum GameMenu{
-		STATE, QUESTS
+		STATE, QUESTS, BUILDS, STATS
 	}
 	private GameAction action;
 	private Label infoLabel;
@@ -82,6 +82,10 @@ public class OpenWorldHUD extends Table
 			@Override
 			public void onQuestRevealed(String qid) {
 				questStatusPopup.pushQuestStatus(qid, false);
+			}
+			@Override
+			public void onSecretUnlocked(String itemId) {
+				questStatusPopup.pushSecretStatus(itemId);
 			}
 		});
 		
@@ -241,6 +245,8 @@ public class OpenWorldHUD extends Table
 		menuTable.add("Menu: ");
 		menuTable.add(createMenuButton("Load/Save", GameMenu.STATE));
 		menuTable.add(createMenuButton("Quests", GameMenu.QUESTS));
+		menuTable.add(createMenuButton("Secrets", GameMenu.BUILDS));
+		menuTable.add(createMenuButton("Stats", GameMenu.STATS));
 		
 		defaults().padRight(30);
 		
@@ -293,6 +299,12 @@ public class OpenWorldHUD extends Table
 		switch(menu){
 		case QUESTS:
 			dialog = new QuestsView(getSkin(), engine);
+			break;
+		case BUILDS:
+			dialog = new SecretsView(getSkin(), engine);
+			break;
+		case STATS:
+			dialog = new StatisticsView(getSkin(), engine);
 			break;
 		default:
 		case STATE:

@@ -22,6 +22,10 @@ public class Compound
 		add(component, 1);
 	}
 	
+	public ObjectMap<String, Integer> getMap() {
+		return map;
+	}
+	
 	private String getKey(){
 		if(key == null)
 		{
