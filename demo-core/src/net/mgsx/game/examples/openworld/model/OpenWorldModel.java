@@ -144,7 +144,7 @@ public class OpenWorldModel {
 	{
 		return generateNewElement(map.root().child("items").child(UID));
 	}
-	private static OpenWorldElement generateNewElement(FreemindNode item) 
+	static OpenWorldElement generateNewElement(FreemindNode item) 
 	{
 		long seed = inGameRandom.nextLong();
 		return generateElement(item, seed);
@@ -304,6 +304,10 @@ public class OpenWorldModel {
 			ids.add(node.asString());
 		}
 		return ids;
+	}
+
+	static Array<FreemindNode> items() {
+		return map.root().child("items").children();
 	}
 
 }

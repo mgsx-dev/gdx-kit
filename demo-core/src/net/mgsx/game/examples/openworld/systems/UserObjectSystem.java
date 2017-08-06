@@ -139,12 +139,18 @@ public class UserObjectSystem extends EntitySystem
 	}
 	
 	public void appendObject(OpenWorldElement e) {
+		appendObject(e, true);
+	}
+	public UserObject appendObject(OpenWorldElement e, boolean track) {
 		
 		UserObject o = new UserObject();
 		o.element = e;
 		o.entity = createEntity(o, e);
-		allUserObjects.add(o);
-		userObjects.add(o);
+		if(track){
+			allUserObjects.add(o);
+			userObjects.add(o);
+		}
+		return o;
 	}
 
 

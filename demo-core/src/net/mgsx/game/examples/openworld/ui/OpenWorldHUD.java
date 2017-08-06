@@ -180,6 +180,9 @@ public class OpenWorldHUD extends Table
 		
 		// TODO project on bullet world
 		
+		// XXX restore dynamic property but it should be 2 dynamic fields : 
+		// intrinsic and runtime (used by spawning ...)
+		item.dynamic = true;
 		item.position.set(camera.position).mulAdd(camera.direction, 2); // 2m
 		item.rotation.idt();
 		
