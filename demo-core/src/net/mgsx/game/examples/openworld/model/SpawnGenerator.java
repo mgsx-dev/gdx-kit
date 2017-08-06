@@ -7,14 +7,41 @@ import net.mgsx.game.examples.openworld.utils.FreeMindReader.FreemindNode;
 
 public class SpawnGenerator {
 	
-	private Array<FreemindNode> items = new Array<FreemindNode>();
-	public SpawnGenerator() {
+	private static class SpawnCache
+	{
+		FreemindNode def;
+		int clusterMin, clusterMax;
+		int rank;
+	}
+	
+	private Array<SpawnCache> items = new Array<SpawnCache>();
+	
+	private int rankMax;
+	
+	public SpawnGenerator() 
+	{
+		// collect all spawnable items and build a quick access map for chance calculation.
+		rankMax = 0;
 		for(FreemindNode item : OpenWorldModel.items()){
 			FreemindNode spawnDef = item.child("spawnable");
 			if(spawnDef.exists()){
-				items.add(item);
+				SpawnCache cache = new SpawnCache();
+				cache.def = item;
+				
+				// clustering
+				FreemindNode cluster = spawnDef.child("cluster");
+				cache.clusterMin = cluster.first().asInt(1);
+				cache.clusterMax = cluster.child(1).asInt(cache.clusterMin);
+				
+				// chance
+				int percent = spawnDef.child("chance").first().asInt(100);
+				cache.rank = rankMax;
+				rankMax += percent;
+				
+				items.add(cache);
 			}
 		}
+		
 		
 	}
 
@@ -22,16 +49,30 @@ public class SpawnGenerator {
 	{
 		if(items.size == 0) return;
 		
-		FreemindNode item = items.get((int)(MathUtils.random() * items.size));
-		FreemindNode spawnDef = item.child("spawnable");
+		// Find by chance
+		int rank = MathUtils.random(rankMax);
+		int left = 0;
+		int right = items.size;
+		SpawnCache item = null;
+		int index;
+		for(;;){
+			index = (left + right)/2;
+			if(right - left <= 1){
+				item = items.get(index);
+				break;
+			}
+			SpawnCache cache = items.get(index);
+			if(rank < cache.rank){
+				right = index;
+			}else{
+				left = index;
+			}
+		}
 		
 		// clustering
-		FreemindNode cluster = spawnDef.child("cluster");
-		int min = cluster.first().asInt(1);
-		int max = cluster.child(1).asInt(min);
-		int count = MathUtils.random(min, max);
+		int count = MathUtils.random(item.clusterMin, item.clusterMax);
 		for(int i=0 ; i<count ; i++){
-			OpenWorldElement element = OpenWorldModel.generateNewElement(item);
+			OpenWorldElement element = OpenWorldModel.generateNewElement(item.def);
 			result.add(element);
 		}
 	}
