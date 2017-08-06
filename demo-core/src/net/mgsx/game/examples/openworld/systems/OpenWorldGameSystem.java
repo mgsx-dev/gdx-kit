@@ -45,6 +45,7 @@ import net.mgsx.game.services.gapi.SavedGame;
 @EditableSystem
 public class OpenWorldGameSystem extends EntitySystem implements PostInitializationListener, OpenWorldGameEventManager
 {
+	@Inject OpenWorldSpawnSystem spawnSystem;
 	@Inject OpenWorldCameraSystem cameraSystem;
 	@Inject OpenWorldGeneratorSystem generator;
 	@Inject OpenWorldManagerSystem manager;
@@ -217,6 +218,7 @@ public class OpenWorldGameSystem extends EntitySystem implements PostInitializat
 		generator.reset();
 		
 		manager.clear();
+		spawnSystem.clear();
 		
 		userObjectSystem.removeAllElements();
 		if(gameData.objects != null){

@@ -38,8 +38,8 @@ public class OpenWorldSpawnSystem extends EntitySystem
 	
 	private VirtualGrid<SpawnChunk> spawnGrid;
 
-	private int spawnGridSize = 3; // XXX 10; // 10 active chunks forming a minimal 10x10=100 chunks
-	private int spawnGridMargin = 1; // XXX = 10; // extra 10 chunks forming a maximal 30x30=900 chunks
+	private int spawnGridSize = 10; // 10 active chunks forming a minimal 10x10=100 chunks
+	private int spawnGridMargin = 10; // extra 10 chunks forming a maximal 30x30=900 chunks
 	private float spawnGridScale = 10; // 10m chunk size forming a 100m X 100m living grid, 300m X 300m memory
 	
 	private SpawnGenerator spawnGenerator;
@@ -167,5 +167,10 @@ public class OpenWorldSpawnSystem extends EntitySystem
 		
 		// update grid
 		spawnGrid.update(camera.position.x, camera.position.z);
+	}
+
+	public void clear() 
+	{
+		spawnGrid.clear();
 	}
 }
