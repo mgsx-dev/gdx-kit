@@ -6,6 +6,7 @@ import com.badlogic.ashley.core.EntityListener;
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 
 import net.mgsx.game.core.GamePipeline;
@@ -130,23 +131,32 @@ public class OpenWorldSpawnSystem extends EntitySystem
 	
 	private void spawn(SpawnChunk chunk, float worldX, float worldY)
 	{
-		// TODO clusters and voronoi offset.
-		float centerX = worldX + spawnGridScale/2;
-		float centerY = worldY + spawnGridScale/2;
+		float centerX = worldX + spawnGridScale * (MathUtils.random() * .5f + .5f);
+		float centerY = worldY + spawnGridScale * (MathUtils.random() * .5f + .5f);
 		
-		OpenWorldElement element = spawnGenerator.generate();
+		spawnGenerator.generate(chunk.elements);
 		
-		// TODO how to handle dynamics ? they should not be handled by chunk !
-		// so should be removed from elements when materialized
-		// another system should keep track of these kind of objects.
-		element.dynamic = false;
-		
-		float altitude = generatorSystem.getAltitude(centerX, centerY);
-
-		// TODO static has no auto offset but it's nice to have them planted into the groud though!
-		element.position.set(worldX, altitude, worldY);
-		
-		chunk.elements.add(element);
+		for(OpenWorldElement element : chunk.elements){
+			
+			// cluster position start from center
+			float angle = MathUtils.random(MathUtils.PI2);
+			float distance = MathUtils.random();
+			distance *= distance;
+			distance *= spawnGridScale/2;
+			
+			float x = centerX + MathUtils.cos(angle) * distance;
+			float y = centerY + MathUtils.sin(angle) * distance;
+			
+			// TODO how to handle dynamics ? they should not be handled by chunk !
+			// so should be removed from elements when materialized
+			// another system should keep track of these kind of objects.
+			element.dynamic = false;
+			
+			float altitude = generatorSystem.getAltitude(x, y);
+			
+			// TODO static has no auto offset but it's nice to have them planted into the groud though!
+			element.position.set(x, altitude, y);
+		}
 	}
 	
 	@Override

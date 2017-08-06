@@ -18,11 +18,21 @@ public class SpawnGenerator {
 		
 	}
 
-	public OpenWorldElement generate() 
+	public void generate(Array<OpenWorldElement> result) 
 	{
-		if(items.size == 0) return null;
+		if(items.size == 0) return;
 		
 		FreemindNode item = items.get((int)(MathUtils.random() * items.size));
-		return OpenWorldModel.generateNewElement(item);
+		FreemindNode spawnDef = item.child("spawnable");
+		
+		// clustering
+		FreemindNode cluster = spawnDef.child("cluster");
+		int min = cluster.first().asInt(1);
+		int max = cluster.child(1).asInt(min);
+		int count = MathUtils.random(min, max);
+		for(int i=0 ; i<count ; i++){
+			OpenWorldElement element = OpenWorldModel.generateNewElement(item);
+			result.add(element);
+		}
 	}
 }
