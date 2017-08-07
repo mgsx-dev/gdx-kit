@@ -171,10 +171,10 @@ public class OpenWorldLandRenderSystem extends IteratingSystem
 			for(int x=0 ; x<width-1 ; x++) {
 				indices[iIndex + 0] = (short)(y*width + x);
 				indices[iIndex + 4] = 
-				indices[iIndex + 1] = (short)(y*width + x+1);
-				indices[iIndex + 3] = 
-				indices[iIndex + 2] = (short)((y+1)*width + x);
-				indices[iIndex + 5] = (short)((y+1)*width + x+1);
+				indices[iIndex + 2] = (short)(y*width + x+1);
+				indices[iIndex + 5] = 
+				indices[iIndex + 1] = (short)((y+1)*width + x);
+				indices[iIndex + 3] = (short)((y+1)*width + x+1);
 				iIndex += 6;
 			}
 		}
@@ -215,6 +215,8 @@ public class OpenWorldLandRenderSystem extends IteratingSystem
 	Matrix4 transform = new Matrix4();
 	
 	public void renderHigh() {
+		
+		Gdx.gl.glEnable(GL20.GL_CULL_FACE);	
 		
 		if(shadowEnabled){
 			shadowLight.color.set(Color.RED); // XXX debug purpose
@@ -260,6 +262,9 @@ public class OpenWorldLandRenderSystem extends IteratingSystem
 			
 			
 			shadowLight.end();
+			
+			// XXX restore back face culling changed by depth shader !
+			Gdx.gl.glCullFace(GL20.GL_BACK);
 		}
 		
 //		if(sb == null) sb = new SpriteBatch();

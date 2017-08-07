@@ -189,6 +189,8 @@ public class OpenWorldSkySystem extends EntitySystem implements PostInitializati
 			screen.camera.update();
 		}
 		
+		Gdx.gl.glDisable(GL20.GL_CULL_FACE); // XXX issue with render box !
+		
 		// render background
 		float s = screen.camera.far / 2; // TODO not really that ...
 		renderer.setTransformMatrix(renderer.getTransformMatrix().setToTranslation(screen.camera.position));
@@ -205,6 +207,8 @@ public class OpenWorldSkySystem extends EntitySystem implements PostInitializati
 			((PerspectiveCamera)screen.camera).fieldOfView = oldFOV;
 			screen.camera.update();
 		}
+		
+		Gdx.gl.glEnable(GL20.GL_CULL_FACE); // XXX issue with render box !
 
 	}
 	
@@ -221,6 +225,7 @@ public class OpenWorldSkySystem extends EntitySystem implements PostInitializati
 	
 	private void renderSky() {
 		
+		
 		// simple "infinite" quad
 		float s = screen.camera.far / 2; // TODO not really that ...
 		
@@ -228,13 +233,15 @@ public class OpenWorldSkySystem extends EntitySystem implements PostInitializati
 		skyRenderer.setProjectionMatrix(screen.camera.combined);
 		skyRenderer.begin(ShapeType.Filled);
 		
-		// bgShader.setUniformi("u_texture", 0);
+		Gdx.gl.glDisable(GL20.GL_CULL_FACE); // XXX issue with render box !
 		
 		skyRenderer.box(
 				-s, 
 				-s, 
 				-s, s*2, s*2, -s*2);
 		skyRenderer.end();
+		
+		Gdx.gl.glEnable(GL20.GL_CULL_FACE); // XXX issue with render box !
 		
 	}
 }

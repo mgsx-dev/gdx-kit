@@ -44,7 +44,7 @@ public class OpenWorldTreeSystem extends IteratingSystem implements PostInitiali
 	@Inject BulletWorldSystem bulletSystem;
 
 	/** how many tree per meter (max) */
-	@Editable public float densityMax = 1;
+	@Editable public float densityMax = 1f / 3f;
 	
 	@Editable public boolean collisions = false;
 	
@@ -139,13 +139,19 @@ public class OpenWorldTreeSystem extends IteratingSystem implements PostInitiali
 				
 				// check if flora is here
 				float flora = generator.getFlora(fx, fy);
-				if(flora < -.2f) continue; // TODO config
+				if(flora < 0){
+					// TODO another layer for seed
+					float flora2 = generator.getFlora(fx * 30, fy * 30);
+					if(-flora * flora2 < .2f) continue; // TODO config
+				}
 				
 				
 				// get altitude (don't generate trees in water)
 				float base = generator.getAltitude(fx, fy);
 				if(base < -.5f) continue; // TODO config trees in sand/water a little
 				
+				
+				// XXX offset which doesn't work every time, needs to sample around to get min altitude
 				buildTree(builder, p.set(fx, base - .1f, fy));
 			}
 		}
@@ -188,13 +194,26 @@ public class OpenWorldTreeSystem extends IteratingSystem implements PostInitiali
 	private void buildTree(MeshBuilder builder, Vector3 pos) {
 		
 		// TODO maybe another layer ? and correlated to flora layer ?
-		float s = .2f * (1 + .8f * noise.get(pos.x * 500, pos.z * 500));
+		float s = (noise.get(pos.x * 500, pos.z * 500)+1)*.5f;
 		
-		float r1 = 0.7f * s;
-		float r2 = 0.4f * s;
-		float h = 7f * s;
-		float r3 = 1.5f * s;
+		// base
+		float r1 = MathUtils.lerp(.4f, .8f, s);
+		// top
+		float r2 = MathUtils.lerp(.2f, .6f, s);
+		float h = MathUtils.lerp(3, 8, s);
 		
+		
+		float random2 = (noise.get(pos.x * 10, pos.z * 10)+1)*.5f;
+
+		// foliage half height
+		float fh = MathUtils.lerp(1f, 4f, random2);
+		// foliage radius
+		float r3 = MathUtils.lerp(1f, 4f, 1-random2);
+		
+		// foliage center
+		float h2 = h + fh;
+		
+		// TODO not box : cylinder without top/bottom polys
 		builder.box(
 				vertexInfo[0].setPos(vp.set(pos).add(-r1, 0, -r1)).setUV(0, 0).setNor(-1, 0, -1),
 				vertexInfo[1].setPos(vp.set(pos).add(-r2, h, -r2)).setUV(0, 1).setNor(-1, 0, -1),
@@ -205,15 +224,16 @@ public class OpenWorldTreeSystem extends IteratingSystem implements PostInitiali
 				vertexInfo[6].setPos(vp.set(pos).add(r1, 0, r1)).setUV(0, 0).setNor(1, 0, 1),
 				vertexInfo[7].setPos(vp.set(pos).add(r2, h, r2)).setUV(0, 1).setNor(1, 0, 1));
 		
+		// TODO not box : deformed sphere without
 		builder.box(
-				vertexInfo[0].setPos(vp.set(pos).add(-r3, h-r3, -r3)).setUV(1, 0).setNor(-1, -1, -1),
-				vertexInfo[1].setPos(vp.set(pos).add(-r3, h+r3, -r3)).setUV(1, 1).setNor(-1, 1, -1),
-				vertexInfo[2].setPos(vp.set(pos).add(r3, h-r3, -r3)).setUV(1, 0).setNor(1, -1, -1),
-				vertexInfo[3].setPos(vp.set(pos).add(r3, h+r3, -r3)).setUV(1, 1).setNor(1, 1, -1),
-				vertexInfo[4].setPos(vp.set(pos).add(-r3, h-r3, r3)).setUV(1, 0).setNor(-1, -1, 1),
-				vertexInfo[5].setPos(vp.set(pos).add(-r3, h+r3, r3)).setUV(1, 1).setNor(-1, 1, 1),
-				vertexInfo[6].setPos(vp.set(pos).add(r3, h-r3, r3)).setUV(1, 0).setNor(1, -1, 1),
-				vertexInfo[7].setPos(vp.set(pos).add(r3, h+r3, r3)).setUV(1, 1).setNor(1, 1, 1));
+				vertexInfo[0].setPos(vp.set(pos).add(-r3, h2-fh, -r3)).setUV(1, 0).setNor(-1, -1, -1),
+				vertexInfo[1].setPos(vp.set(pos).add(-r3, h2+fh, -r3)).setUV(1, 1).setNor(-1, 1, -1),
+				vertexInfo[2].setPos(vp.set(pos).add(r3, h2-fh, -r3)).setUV(1, 0).setNor(1, -1, -1),
+				vertexInfo[3].setPos(vp.set(pos).add(r3, h2+fh, -r3)).setUV(1, 1).setNor(1, 1, -1),
+				vertexInfo[4].setPos(vp.set(pos).add(-r3, h2-fh, r3)).setUV(1, 0).setNor(-1, -1, 1),
+				vertexInfo[5].setPos(vp.set(pos).add(-r3, h2+fh, r3)).setUV(1, 1).setNor(-1, 1, 1),
+				vertexInfo[6].setPos(vp.set(pos).add(r3, h2-fh, r3)).setUV(1, 0).setNor(1, -1, 1),
+				vertexInfo[7].setPos(vp.set(pos).add(r3, h2+fh, r3)).setUV(1, 1).setNor(1, 1, 1));
 		
 		// create the bullet shape
 		if(collisions && h > 1){ // TODO config limit tree size
@@ -228,6 +248,9 @@ public class OpenWorldTreeSystem extends IteratingSystem implements PostInitiali
 	@Override
 	public void update(float deltaTime) {
 		Gdx.gl.glEnable(GL20.GL_DEPTH_TEST);
+
+		Gdx.gl.glCullFace(GL20.GL_FRONT); // XXX workaround
+		
 		
 		shader.projTrans = screen.camera.combined;
 		shader.sunDirection = environment.sunDirection;
@@ -236,6 +259,8 @@ public class OpenWorldTreeSystem extends IteratingSystem implements PostInitiali
 		shader.begin();
 		super.update(deltaTime);
 		shader.end();
+		
+		Gdx.gl.glCullFace(GL20.GL_BACK); // XXX workaround
 	}
 	
 	@Override

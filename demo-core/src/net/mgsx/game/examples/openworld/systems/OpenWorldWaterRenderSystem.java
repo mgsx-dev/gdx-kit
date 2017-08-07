@@ -168,6 +168,9 @@ public class OpenWorldWaterRenderSystem extends EntitySystem
 			mirrorBuffer.end();
 			
 			screen.camera.combined.set(backup);
+			
+			Gdx.gl.glCullFace(GL20.GL_BACK);
+			Gdx.gl.glDisable(GL20.GL_CULL_FACE);
 		}
 		
 		waterShader.time += deltaTime * waterShader.speed;
@@ -210,7 +213,7 @@ public class OpenWorldWaterRenderSystem extends EntitySystem
 		waterShader.end();
 		
 		if(translucent){
-			//Gdx.gl.glEnable(GL20.GL_CULL_FACE);
+			Gdx.gl.glDisable(GL20.GL_CULL_FACE);
 			Gdx.gl.glDisable(GL20.GL_BLEND);
 		}
 		Gdx.gl.glDisable(GL20.GL_DEPTH_TEST);

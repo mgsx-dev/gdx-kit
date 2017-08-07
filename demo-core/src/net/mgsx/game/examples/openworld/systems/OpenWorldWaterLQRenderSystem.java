@@ -1,6 +1,7 @@
 package net.mgsx.game.examples.openworld.systems;
 
 import com.badlogic.ashley.core.EntitySystem;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Cubemap;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer;
@@ -51,6 +52,8 @@ public class OpenWorldWaterLQRenderSystem extends EntitySystem
 	@Override
 	public void update(float deltaTime) {
 		
+		Gdx.gl.glDisable(GL20.GL_CULL_FACE);
+		
 		waterShaderLQ.time += deltaTime * waterShaderLQ.speed;
 		waterShaderLQ.camPos.set(screen.camera.position);
 		waterShaderLQ.texture = sky.getCubeMap();
@@ -76,6 +79,8 @@ public class OpenWorldWaterLQRenderSystem extends EntitySystem
 		renderer.end();
 		
 		waterShaderLQ.end();
+		
+		Gdx.gl.glEnable(GL20.GL_CULL_FACE);
 	}
 	
 }

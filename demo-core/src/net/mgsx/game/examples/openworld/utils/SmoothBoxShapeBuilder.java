@@ -25,7 +25,7 @@ public class SmoothBoxShapeBuilder {
 
 	private static VertexInfo vi(Vector3 pos, Vector3 half, float dx, float dy, float dz) {
 		VertexInfo vp = new VertexInfo();
-		vp.setPos(vp.position.set(half).scl(dx,dy,dz).add(pos));
+		vp.setPos(vp.position.set(half).scl(dx,dy,-dz).add(pos)); // XXX -z workaround because of vertices order
 		vp.setNor(vp.normal.set(dx,dy,dz).nor());
 		vp.setCol(vp.color.set(Color.WHITE));
 		return vp;
