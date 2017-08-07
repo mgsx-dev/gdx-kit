@@ -375,12 +375,12 @@ abstract public class ShaderProgramManaged {
 		shaderProgram.end();
 		
 		// unbind textures
-		// XXX this is mainly a workaround because LibGDX assume current unit is 0 maybe to avoid some calls....
-		// but it's not necessary if binding is properly made
-//		if(samplerUnits > 1){
-//			Gdx.gl.glActiveTexture(GL20.GL_TEXTURE0);
-//			
-//		}
+		// this is mainly a workaround because LibGDX assume current unit is 0 maybe to avoid some calls
+		// we just set current unit to zero
+		if(samplerUnits > 1){
+			Gdx.gl.glActiveTexture(GL20.GL_TEXTURE0);
+			
+		}
 		// TODO is it necessary to do this ... seams not
 //		for(int i=0 ; i<samplerUnits ; i++){
 //			Gdx.gl.glActiveTexture(GL20.GL_TEXTURE0 + i);
