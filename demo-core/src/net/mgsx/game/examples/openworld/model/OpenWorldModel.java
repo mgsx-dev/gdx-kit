@@ -195,7 +195,10 @@ public class OpenWorldModel {
 		element.seed = seed;
 		element.type = item.asString();
 		element.dynamic = !item.child("static").exists();
-		
+		String modelName = item.child("model").first().asString(null);
+		if(modelName != null){
+			element.modelPath = "openworld/" + modelName + ".g3dj";
+		}
 		generateElement(element);
 		
 		return element;

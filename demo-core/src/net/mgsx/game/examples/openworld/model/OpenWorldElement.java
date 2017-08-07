@@ -38,4 +38,7 @@ public class OpenWorldElement {
 
 	/** original damping for object */
 	public transient float damping;
+
+	/** optional model path for procedural models */
+	public transient String modelPath;
 }

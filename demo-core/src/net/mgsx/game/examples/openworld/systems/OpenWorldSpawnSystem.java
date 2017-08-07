@@ -126,7 +126,7 @@ public class OpenWorldSpawnSystem extends EntitySystem
 		
 		spawnGrid.resize(spawnGridSize, spawnGridSize, spawnGridMargin, spawnGridMargin, spawnGridScale);
 		
-		spawnGenerator = new SpawnGenerator();
+		spawnGenerator = new SpawnGenerator(SpawnGenerator.LAYER_ITEM);
 	}
 	
 	private void spawn(SpawnChunk chunk, float worldX, float worldY)

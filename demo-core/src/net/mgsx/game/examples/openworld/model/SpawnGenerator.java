@@ -7,6 +7,9 @@ import net.mgsx.game.examples.openworld.utils.FreeMindReader.FreemindNode;
 
 public class SpawnGenerator {
 	
+	public static final int LAYER_ITEM = 0;
+	public static final int LAYER_ANIMAL = 1;
+	
 	private static class SpawnCache
 	{
 		FreemindNode def;
@@ -18,12 +21,14 @@ public class SpawnGenerator {
 	
 	private int rankMax;
 	
-	public SpawnGenerator() 
+	public SpawnGenerator(int layer) 
 	{
 		// collect all spawnable items and build a quick access map for chance calculation.
 		rankMax = 0;
 		for(FreemindNode item : OpenWorldModel.items()){
-			FreemindNode spawnDef = item.child("spawnable");
+			FreemindNode spawnDef;
+			if(layer == LAYER_ITEM) spawnDef = item.child("spawnable");
+			else spawnDef = item.child("moving");
 			if(spawnDef.exists()){
 				SpawnCache cache = new SpawnCache();
 				cache.def = item;

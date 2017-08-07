@@ -113,6 +113,15 @@ public class OpenWorldPathBuilder {
 				controlPoints[controlPoints.length-3], 
 				controlPoints[controlPoints.length-2]);
 	}
+	public void updateDynamicPath(Vector3 [] controlPoints, Vector3 newPoint)
+	{
+		// rotate buffer
+		Vector3 lastPoint = controlPoints[0];
+		for(int i=1 ; i<controlPoints.length ; i++) controlPoints[i-1] = controlPoints[i];
+		controlPoints[controlPoints.length-1] = lastPoint;
+		
+		lastPoint.set(newPoint);
+	}
 
 	public OpenWorldPathBuilder resetLimit() 
 	{
