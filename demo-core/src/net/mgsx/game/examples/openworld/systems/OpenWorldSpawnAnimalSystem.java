@@ -17,6 +17,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 
 import net.mgsx.game.core.GamePipeline;
+import net.mgsx.game.core.PostInitializationListener;
 import net.mgsx.game.core.annotations.Inject;
 import net.mgsx.game.examples.openworld.components.SpawnAnimalComponent;
 import net.mgsx.game.examples.openworld.components.SpawnAnimalComponent.State;
@@ -35,7 +36,7 @@ import net.mgsx.game.plugins.spline.components.SplineDebugComponent;
  * @author mgsx
  *
  */
-public class OpenWorldSpawnAnimalSystem extends IteratingSystem
+public class OpenWorldSpawnAnimalSystem extends IteratingSystem implements PostInitializationListener
 {
 	public static class SpawnAnimalChunk {
 		public Array<Entity> entities = new Array<Entity>();
@@ -137,6 +138,7 @@ public class OpenWorldSpawnAnimalSystem extends IteratingSystem
 					
 					PathComponent path = getEngine().createComponent(PathComponent.class);
 					Vector3[] controlPoints = new Vector3[4];
+					// TODO limits are handled by update and initial points hould be same point
 					pathBuilder.set(generatorSystem, 30, 3, .5f);
 					pathBuilder.resetLimit().groundMin(0).groundMax(0).absoluteMin(envSystem.waterLevel - .5f);
 					pathBuilder.createPath(controlPoints, element.position);
@@ -144,6 +146,8 @@ public class OpenWorldSpawnAnimalSystem extends IteratingSystem
 					path.path = new CatmullRomSpline<Vector3>(controlPoints , false);
 					path.length = path.path.approxLength(100);
 					entity.add(path);
+					
+					// TODO add kinematic body in order to allow player selection/interaction ...
 					
 					getEngine().addEntity(entity);
 				}
@@ -162,8 +166,11 @@ public class OpenWorldSpawnAnimalSystem extends IteratingSystem
 		};
 		
 		spawnGrid.resize(spawnGridSize, spawnGridSize, spawnGridMargin, spawnGridMargin, spawnGridScale);
-		
-		spawnGenerator = new SpawnGenerator(SpawnGenerator.LAYER_ANIMAL);
+	}
+	
+	@Override
+	public void onPostInitialization() {
+		spawnGenerator = new SpawnGenerator(SpawnGenerator.LAYER_ANIMAL, getEngine());
 	}
 	
 	private void spawn(SpawnAnimalChunk chunk, float worldX, float worldY)
@@ -171,7 +178,7 @@ public class OpenWorldSpawnAnimalSystem extends IteratingSystem
 		float centerX = worldX + spawnGridScale * (MathUtils.random() * .5f + .5f);
 		float centerY = worldY + spawnGridScale * (MathUtils.random() * .5f + .5f);
 		
-		spawnGenerator.generate(chunk.elements);
+		spawnGenerator.generate(chunk.elements, centerX, centerY);
 		
 		for(OpenWorldElement element : chunk.elements){
 			
@@ -219,6 +226,8 @@ public class OpenWorldSpawnAnimalSystem extends IteratingSystem
 		G3DModel model = G3DModel.components.get(entity);
 		PathComponent path = PathComponent.components.get(entity);
 		
+		// XXX this is a kind of state machine. Should we use behavior trees ?
+		
 		// initial state, set it strolling
 		if(animal.state == null){
 			animal.state = State.STROLL;
@@ -243,6 +252,7 @@ public class OpenWorldSpawnAnimalSystem extends IteratingSystem
 		}
 		if(animal.state == State.FLEE)
 		{
+			// TODO maybe not flee in any directions, flee from player ...
 			float dst = playerPosition.dst(animal.element.position);
 			if(dst > 30){
 				model.animationController.setAnimation("Armature|walk", -1, 1.5f, null);
@@ -259,34 +269,48 @@ public class OpenWorldSpawnAnimalSystem extends IteratingSystem
 		
 		if(animal.pathTime > 1){
 			CatmullRomSpline<Vector3> spline = (CatmullRomSpline<Vector3>)path.path;
-			// TODO set target point instead of let generate anything
 			
-			// pickup any point in its zone
-			target.x = animal.chunk.zone.x + MathUtils.random(animal.chunk.zone.width);
-			target.z = animal.chunk.zone.y + MathUtils.random(animal.chunk.zone.height);
-			target.y = 0;
+			// algorithme :
+			// compute ahead from current direction and head bias.
+			// is ahead of animal appropriate zone ?
+			//	- in its area ?
+			//  - in appropriate environement (water/land/rocks...etc)
+			// if so then reset bias.
+			// else if bias not set then set a bias (random left or right).
+			// finally generate a direction around bias.
 			
-			// set as a target direction
-			target.sub(animal.element.position).nor();
-			
-			// compute actual direction
+			// Check 3 meters ahead of animal
 			direction.set(spline.controlPoints[3]).sub(spline.controlPoints[2]).nor();
+			target.set(animal.element.position).mulAdd(direction, 3);
+			float altitudeAhead = generatorSystem.getAltitude(target.x, target.z);
 			
-			// slerp to avoid random rotations
-			target.slerp(direction, .9f).nor();
+			// in water
+			if(altitudeAhead < envSystem.waterLevel || !animal.chunk.zone.contains(target.x, target.z)){
+				if(animal.directionBias == 0){
+					animal.directionBias = MathUtils.randomSign();
+				}
+			}
+			// it's OK
+			else{
+				animal.directionBias = 0;
+			}
 			
-			// transform to target point
-			target.scl(3).add(animal.element.position); // XXX 3m
+			// generate a random direction around direction and bias
+			direction.rotate(Vector3.Y, (animal.directionBias * 2 + MathUtils.random()) * 10);
+			
+			// compute final target : current position + 3 meters
+			target.set(animal.element.position).mulAdd(direction, 3);
 			target.y = generatorSystem.getAltitude(target.x, target.z);
-			
-			SplineDebugComponent sdc = SplineDebugComponent.components.get(entity);
-			if(sdc == null) entity.add(sdc = getEngine().createComponent(SplineDebugComponent.class));
-			sdc.dirty = true;
 			
 			// append point
 			pathBuilder.updateDynamicPath(spline.controlPoints, target);
 			path.length = spline.approxLength(100);
 			animal.pathTime -= 1;
+			
+			// XXX spline debug
+			SplineDebugComponent sdc = SplineDebugComponent.components.get(entity);
+			if(sdc == null) entity.add(sdc = getEngine().createComponent(SplineDebugComponent.class));
+			sdc.dirty = true;
 		}
 		
 		animal.pathTime = MathUtils.clamp(animal.pathTime, 0, 1); // clamp for security

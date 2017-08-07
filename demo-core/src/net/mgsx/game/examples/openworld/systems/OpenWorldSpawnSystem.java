@@ -10,6 +10,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 
 import net.mgsx.game.core.GamePipeline;
+import net.mgsx.game.core.PostInitializationListener;
 import net.mgsx.game.core.annotations.Inject;
 import net.mgsx.game.examples.openworld.components.ObjectMeshComponent;
 import net.mgsx.game.examples.openworld.components.SpawnComponent;
@@ -25,7 +26,7 @@ import net.mgsx.game.examples.openworld.utils.VirtualGrid;
  * @author mgsx
  *
  */
-public class OpenWorldSpawnSystem extends EntitySystem
+public class OpenWorldSpawnSystem extends EntitySystem implements PostInitializationListener
 {
 	public static class SpawnChunk {
 		public Array<Entity> entities = new Array<Entity>();
@@ -126,7 +127,11 @@ public class OpenWorldSpawnSystem extends EntitySystem
 		
 		spawnGrid.resize(spawnGridSize, spawnGridSize, spawnGridMargin, spawnGridMargin, spawnGridScale);
 		
-		spawnGenerator = new SpawnGenerator(SpawnGenerator.LAYER_ITEM);
+	}
+	
+	@Override
+	public void onPostInitialization() {
+		spawnGenerator = new SpawnGenerator(SpawnGenerator.LAYER_ITEM, getEngine());
 	}
 	
 	private void spawn(SpawnChunk chunk, float worldX, float worldY)
@@ -134,7 +139,7 @@ public class OpenWorldSpawnSystem extends EntitySystem
 		float centerX = worldX + spawnGridScale * (MathUtils.random() * .5f + .5f);
 		float centerY = worldY + spawnGridScale * (MathUtils.random() * .5f + .5f);
 		
-		spawnGenerator.generate(chunk.elements);
+		spawnGenerator.generate(chunk.elements, centerX, centerY);
 		
 		for(OpenWorldElement element : chunk.elements){
 			

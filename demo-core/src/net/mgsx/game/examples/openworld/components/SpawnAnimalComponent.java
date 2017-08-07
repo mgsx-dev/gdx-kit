@@ -26,4 +26,6 @@ public class SpawnAnimalComponent implements Component
 	public float pathTime;
 	
 	public float speed;
+	
+	public int directionBias;
 }
