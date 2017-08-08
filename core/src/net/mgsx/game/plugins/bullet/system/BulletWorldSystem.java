@@ -61,6 +61,8 @@ public class BulletWorldSystem extends EntitySystem
 		solver = new btSequentialImpulseConstraintSolver();
 		collisionWorld = new btDiscreteDynamicsWorld(dispatcher, broadphase, solver, collisionConfiguration);
 		((btDynamicsWorld)collisionWorld).setGravity(gravity);
+		
+		resultCallback = new ClosestRayResultCallback(Vector3.Zero, Vector3.Z);
 	}
 
 	@Override
@@ -78,11 +80,13 @@ public class BulletWorldSystem extends EntitySystem
 	 */
 	public Entity rayCast(Ray rayFrom, Ray rayResult){
 		Object o = rayCastObject(rayFrom, rayResult);
-		return o instanceof Entity ? (Entity)o : null;
+		return o instanceof Entity ? (Entity)o : null; 
 	}
 
+	private ClosestRayResultCallback resultCallback;
 	public Object rayCastObject(Ray rayFrom, Ray rayResult){
-		ClosestRayResultCallback resultCallback = new ClosestRayResultCallback(Vector3.Zero.cpy(), Vector3.Z.cpy());
+		resultCallback.setCollisionObject(null);
+		resultCallback.setClosestHitFraction(Float.MAX_VALUE);
 		collisionWorld.rayTest(rayFrom.origin, rayFrom.origin.cpy().add(rayFrom.direction), resultCallback);
 		boolean hasHit = resultCallback.hasHit();
 		if(hasHit){
@@ -92,7 +96,6 @@ public class BulletWorldSystem extends EntitySystem
 			resultCallback.getHitNormalWorld(rayResult.direction);
 			rayResult.origin.set(rayFrom.origin).add(rayFrom.direction);
 		}
-		resultCallback.release();
 		return hasHit ? resultCallback.getCollisionObject().userData : null;
 	}
 

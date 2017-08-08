@@ -175,7 +175,7 @@ public class G3DRendererSystem extends IteratingSystem
 				shadowLight.direction.set(dl.light.direction);
 				environment.add(shadowLight);
 			}else{
-				environment.add(dl.light);
+				environment.add(dl.light); // TODO cause array creation !
 			}
 		}
 		if(!shadow && shadowLight != null){
@@ -192,7 +192,7 @@ public class G3DRendererSystem extends IteratingSystem
 			environment.add(dl.light);
 		}
 		
-		// TODO cache attributes and set when required (avoid GC)
+		// TODO cache attributes and set when required (avoid GC), this is problematic !!
 		
 		environment.set(new ColorAttribute(ColorAttribute.AmbientLight, ambient));
 		
