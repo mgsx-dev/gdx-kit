@@ -5,6 +5,7 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntityListener;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
+import com.badlogic.ashley.utils.ImmutableArray;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -118,6 +119,10 @@ public class OpenWorldLandRenderSystem extends IteratingSystem
 			}
 		});
 		
+		allTrees = getEngine().getEntitiesFor(Family.all(TreesComponent.class).get());
+		allObjects = getEngine().getEntitiesFor(Family.all(ObjectMeshComponent.class).get());
+		allAnimals = getEngine().getEntitiesFor(Family.all(G3DModel.class).one(WildLifeComponent.class, SpawnAnimalComponent.class).get());
+		
 		loadShaders();
 	}
 	
@@ -214,6 +219,9 @@ public class OpenWorldLandRenderSystem extends IteratingSystem
 	}
 	
 	Matrix4 transform = new Matrix4();
+	ImmutableArray<Entity> allTrees;
+	ImmutableArray<Entity> allObjects;
+	ImmutableArray<Entity> allAnimals;
 	
 	public void renderHigh() {
 		
@@ -238,12 +246,12 @@ public class OpenWorldLandRenderSystem extends IteratingSystem
 				LandMeshComponent lmc = LandMeshComponent.components.get(entity);
 				lmc.mesh.render(depthShader, GL20.GL_TRIANGLES);
 			}
-			for(Entity entity : getEngine().getEntitiesFor(Family.all(TreesComponent.class).get())){
+			for(Entity entity : allTrees){
 				TreesComponent tmc = TreesComponent.components.get(entity);
 				tmc.mesh.render(depthShader, GL20.GL_TRIANGLES);
 			}
 			
-			for(Entity entity : getEngine().getEntitiesFor(Family.all(ObjectMeshComponent.class).get())){
+			for(Entity entity : allObjects){
 				ObjectMeshComponent omc = ObjectMeshComponent.components.get(entity);
 				transform.set(shadowLight.getCamera().combined).mul(omc.getWorldTransform());
 				depthShader.setUniformMatrix("u_projViewWorldTrans", transform);
@@ -255,7 +263,7 @@ public class OpenWorldLandRenderSystem extends IteratingSystem
 			
 			shadowBatch.begin(shadowLight.getCamera());
 			
-			for(Entity entity : getEngine().getEntitiesFor(Family.all(G3DModel.class).one(WildLifeComponent.class, SpawnAnimalComponent.class).get())){
+			for(Entity entity : allAnimals){
 				G3DModel model = G3DModel.components.get(entity);
 				shadowBatch.render(model.modelInstance);
 			}
@@ -326,7 +334,7 @@ public class OpenWorldLandRenderSystem extends IteratingSystem
 		shader.setUniformf("u_fogColor", environment.fogColor);
 		shader.setUniformf("u_camPosition", screen.camera.position);
 		sky.getCubeMap().bind();
-		for(Entity entity : getEngine().getEntitiesFor(Family.all(ObjectMeshComponent.class).get())){
+		for(Entity entity : allObjects){
 			ObjectMeshComponent omc = ObjectMeshComponent.components.get(entity);
 			render(omc.getInstance().nodes, omc.getInstance().transform, shader);
 			

@@ -46,6 +46,8 @@ public class OpenWorldMapSystem extends EntitySystem {
 	@Editable public Vector2 mapOffset = new Vector2(10, 10);
 	
 	private GameScreen screen;
+	private Color c1 = new Color();
+	private Color c2 = new Color();
 	
 	public OpenWorldMapSystem(GameScreen screen) {
 		super(GamePipeline.RENDER_TOOLS-1);
@@ -97,9 +99,9 @@ public class OpenWorldMapSystem extends EntitySystem {
 		float camX = renderSize * (manager.viewPoint.x / manager.worldCellScale - manager.getLogicOffsetX()) / manager.getLogicWidth();
 		float camY = renderSize - renderSize * (manager.viewPoint.y / manager.worldCellScale - manager.getLogicOffsetY())/ manager.getLogicHeight();
 		
-		Color c1 = new Color(Color.WHITE);
+		c1.set(Color.WHITE);
 		c1.a = 0.5f;
-		Color c2 = new Color(Color.WHITE);
+		c2.set(Color.WHITE);
 		c2.a = 0.0f;
 		
 		float fov = screen.camera instanceof PerspectiveCamera ? ((PerspectiveCamera)screen.camera).fieldOfView : 90;

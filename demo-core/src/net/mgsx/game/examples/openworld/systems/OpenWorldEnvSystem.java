@@ -3,6 +3,7 @@ package net.mgsx.game.examples.openworld.systems;
 import java.util.Calendar;
 import java.util.TimeZone;
 
+import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.ashley.core.Family;
@@ -53,8 +54,16 @@ public class OpenWorldEnvSystem extends EntitySystem
 	/** this is an offset time in hour relative to realtime */
 	@Editable public transient float timeOffset = 0;
 	
+	ImmutableArray<Entity> allDirLights;
+	
 	public OpenWorldEnvSystem() {
 		super(GamePipeline.LOGIC);
+	}
+	
+	@Override
+	public void addedToEngine(Engine engine) {
+		super.addedToEngine(engine);
+		allDirLights = getEngine().getEntitiesFor(Family.all(DirectionalLightComponent.class).get());
 	}
 	
 	@Override
@@ -69,6 +78,7 @@ public class OpenWorldEnvSystem extends EntitySystem
 			// This hardcoded value gives good value for france in summer ...
 			// Calendar.getInstance(TimeZone.getTimeZone("GMT+2")).get(Calendar.HOUR_OF_DAY);
 			
+			// TODO calendar and time zone generate GC
 			Calendar cal = Calendar.getInstance(TimeZone.getDefault());
 			float ms = cal.get(Calendar.MILLISECOND) / 1000f;
 			float secs = (cal.get(Calendar.SECOND) + ms) / 60f;
@@ -121,7 +131,7 @@ public class OpenWorldEnvSystem extends EntitySystem
 		g3dRender.ambient.set(fogColor).mul(luminosity);
 		
 		// create a directional light if needed
-		ImmutableArray<Entity> allDirLights = getEngine().getEntitiesFor(Family.all(DirectionalLightComponent.class).get());
+		
 		DirectionalLightComponent firstLight;
 		if(allDirLights.size() < 1){
 			firstLight = getEngine().createComponent(DirectionalLightComponent.class);

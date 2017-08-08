@@ -47,6 +47,8 @@ public class StatusView extends Table
 		
 		// TODO sync with logic values for some threashold
 		
+		// TODO string formatter generate lot of garbage ...
+		
 		double energyRate = gameSystem.player.energy / gameSystem.player.energyMax;
 		energyLabel.setText("Energy: " + String.format("%.0f", energyRate * 100) + "%");
 		if(energyRate <= 0.0) energyLabel.setColor(Color.RED);

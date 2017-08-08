@@ -53,9 +53,11 @@ public class OpenWorldCameraSystem extends EntitySystem
 	
 	private Vector2 dir = new Vector2();
 	private Vector2 pos = new Vector2();
+	private Vector2 tan = new Vector2();
 	
 	private Vector3 focus = new Vector3();
 	private Vector3 up = new Vector3();
+	private Vector3 rayTarget = new Vector3();
 
 	private Ray ray = new Ray();
 	@Editable(realtime=true, readonly=true) public float totalMove = 0;
@@ -92,6 +94,7 @@ public class OpenWorldCameraSystem extends EntitySystem
 	public void addedToEngine(Engine engine) {
 		super.addedToEngine(engine);
 		activeCameras = getEngine().getEntitiesFor(Family.all(OpenWorldCamera.class, CameraComponent.class, ActiveCamera.class).get());
+		resultCallback = new ClosestRayResultCallback(Vector3.Zero, Vector3.Z);
 	}
 	
 	@Override
@@ -194,7 +197,7 @@ public class OpenWorldCameraSystem extends EntitySystem
 				
 				pos.set(camera.position.x, camera.position.z);
 				
-				Vector2 tan = new Vector2(-dir.y, dir.x);
+				tan.set(-dir.y, dir.x);
 				
 				pos.mulAdd(dir, moveFront * speed * deltaTime);
 				pos.mulAdd(tan, moveSide * speed * deltaTime);
@@ -225,17 +228,15 @@ public class OpenWorldCameraSystem extends EntitySystem
 			ray.origin.y = 0;
 			ray.direction.set(0,-1, 0);
 			ray.origin.mulAdd(ray.direction, -20f);
+			ray.direction.scl(100);
 			
-			
-			resultCallback = new ClosestRayResultCallback(Vector3.Zero, Vector3.Z);
-			//resultCallback.setCollisionObject(null);
-			bulletWorld.collisionWorld.rayTest(ray.origin, ray.origin.cpy().mulAdd(ray.direction, 100), resultCallback);
+			resultCallback.setClosestHitFraction(1e30f);
+			resultCallback.setCollisionObject(null);
+			bulletWorld.collisionWorld.rayTest(ray.origin, rayTarget.set(ray.origin).add(ray.direction), resultCallback); //
 			
 			if(resultCallback.hasHit()){
-				Vector3 p = new Vector3();
-				resultCallback.getHitPointWorld(p);
-				Vector3 p2 = ray.origin.cpy().mulAdd(ray.direction, 100 * resultCallback.getClosestHitFraction());
-				float elevation = p2.y + offset;
+				rayTarget.set(ray.origin).mulAdd(ray.direction, resultCallback.getClosestHitFraction());
+				float elevation = rayTarget.y + offset;
 				
 				if(clipToWater){
 					float waterLimit = env.waterLevel + camera.near * (float)Math.sqrt(2);
@@ -247,7 +248,6 @@ public class OpenWorldCameraSystem extends EntitySystem
 				onGround = !flyingMode;
 				
 			}
-			resultCallback.release();
 			
 		}
 		

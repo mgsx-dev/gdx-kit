@@ -124,6 +124,8 @@ public class OpenWorldSkySystem extends EntitySystem implements PostInitializati
 	private Matrix4 backup = new Matrix4();
 	@Editable public Vector2 cloudDirection = new Vector2(Vector2.X);
 	
+	Color [] colors = {Color.RED, Color.GREEN, Color.BLUE, Color.YELLOW, Color.CYAN, Color.PURPLE};
+
 	@Override
 	public void update(float deltaTime) 
 	{
@@ -134,8 +136,6 @@ public class OpenWorldSkySystem extends EntitySystem implements PostInitializati
 			prepareSky();
 			
 			fboCubeMap.begin();
-			
-			Color [] colors = {Color.RED, Color.GREEN, Color.BLUE, Color.YELLOW, Color.CYAN, Color.PURPLE};
 			
 			backup.set(screen.camera.combined);
 			

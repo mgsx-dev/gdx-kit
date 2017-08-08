@@ -50,11 +50,11 @@ public class OpenWorldLensFlareSystem extends EntitySystem
 		loadShaders();
 	}
 	
+	Color[] colors = {Color.RED, Color.BLUE, Color.RED, Color.GREEN};
+
 	@Override
 	public void update(float deltaTime) 
 	{
-		
-		Color[] colors = {Color.RED, Color.BLUE, Color.RED, Color.GREEN};
 		
 		int num = 4;
 		for(int i=0 ; i<num ; i++){
