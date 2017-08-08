@@ -9,7 +9,10 @@ import net.mgsx.game.examples.openworld.systems.OpenWorldSpawnAnimalSystem.Spawn
 public class SpawnAnimalComponent implements Component
 {
 	public static enum State{
-		IDLE, FLEE, APPROACH, ATTACK, DIE, STROLL
+		STROLL, FLEE, IDLE // TODO, APPROACH, ATTACK, DIE
+	}
+	public static enum Environment{
+		WATER, LAND, AIR
 	}
 	
 	public final static ComponentMapper<SpawnAnimalComponent> components = ComponentMapper.getFor(SpawnAnimalComponent.class);
@@ -21,7 +24,11 @@ public class SpawnAnimalComponent implements Component
 	
 	public OpenWorldElement element;
 
+	/** current animal behavior state  */
 	public State state;
+	
+	/** current animal behavior environment mode */
+	public Environment environment;
 
 	public float pathTime;
 	

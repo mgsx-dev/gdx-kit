@@ -29,7 +29,7 @@ public class OpenWorldElement {
 	// volume
 	public transient float size;
 	
-	// TODO not all are dynamic ... store or not ?
+	// TODO shouldn't be stored : based on item definition
 	public boolean dynamic = false;
 
 	/** in Kg/m³ some examples could be found here :
@@ -41,4 +41,7 @@ public class OpenWorldElement {
 
 	/** optional model path for procedural models */
 	public transient String modelPath;
+
+	/** for moving elements ability in environment */
+	public transient boolean landAbility, airAbility, waterAbility;
 }

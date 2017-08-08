@@ -18,8 +18,11 @@ import com.badlogic.gdx.utils.Array;
 
 import net.mgsx.game.core.GamePipeline;
 import net.mgsx.game.core.PostInitializationListener;
+import net.mgsx.game.core.annotations.Editable;
+import net.mgsx.game.core.annotations.EditableSystem;
 import net.mgsx.game.core.annotations.Inject;
 import net.mgsx.game.examples.openworld.components.SpawnAnimalComponent;
+import net.mgsx.game.examples.openworld.components.SpawnAnimalComponent.Environment;
 import net.mgsx.game.examples.openworld.components.SpawnAnimalComponent.State;
 import net.mgsx.game.examples.openworld.model.OpenWorldElement;
 import net.mgsx.game.examples.openworld.model.OpenWorldPathBuilder;
@@ -36,6 +39,7 @@ import net.mgsx.game.plugins.spline.components.SplineDebugComponent;
  * @author mgsx
  *
  */
+@EditableSystem
 public class OpenWorldSpawnAnimalSystem extends IteratingSystem implements PostInitializationListener
 {
 	public static class SpawnAnimalChunk {
@@ -44,6 +48,9 @@ public class OpenWorldSpawnAnimalSystem extends IteratingSystem implements PostI
 		public Rectangle zone = new Rectangle();
 	}
 	
+	@Editable public transient boolean splineDebug =false;
+
+	
 	@Inject OpenWorldCameraSystem cameraSystem;
 	@Inject UserObjectSystem userObject;
 	@Inject OpenWorldGeneratorSystem generatorSystem;
@@ -51,9 +58,9 @@ public class OpenWorldSpawnAnimalSystem extends IteratingSystem implements PostI
 	
 	private VirtualGrid<SpawnAnimalChunk> spawnGrid;
 
-	private int spawnGridSize = 3; // 3 active chunks forming a minimal 3x3=9 chunks
-	private int spawnGridMargin = 2; // extra 2 chunks forming a maximal 5x5=25 chunks
-	private float spawnGridScale = 100; // 100m chunk size forming a 300m X 300m living grid, 500m X 500m memory
+	private int spawnGridSize = 10; //XXX 3; // 3 active chunks forming a minimal 3x3=9 chunks
+	private int spawnGridMargin = 2; // XXX 2; // extra 2 chunks forming a maximal 5x5=25 chunks
+	private float spawnGridScale = 30; //XXX 100; // 100m chunk size forming a 300m X 300m living grid, 500m X 500m memory
 	
 	private SpawnGenerator spawnGenerator;
 	private AssetManager assets;
@@ -138,13 +145,9 @@ public class OpenWorldSpawnAnimalSystem extends IteratingSystem implements PostI
 					
 					PathComponent path = getEngine().createComponent(PathComponent.class);
 					Vector3[] controlPoints = new Vector3[4];
-					// TODO limits are handled by update and initial points hould be same point
-					pathBuilder.set(generatorSystem, 30, 3, .5f);
-					pathBuilder.resetLimit().groundMin(0).groundMax(0).absoluteMin(envSystem.waterLevel - .5f);
-					pathBuilder.createPath(controlPoints, element.position);
-					
+					for(int i=0 ; i<controlPoints.length ; i++) controlPoints[i] = new Vector3();
 					path.path = new CatmullRomSpline<Vector3>(controlPoints , false);
-					path.length = path.path.approxLength(100);
+					
 					entity.add(path);
 					
 					// TODO add kinematic body in order to allow player selection/interaction ...
@@ -198,8 +201,13 @@ public class OpenWorldSpawnAnimalSystem extends IteratingSystem implements PostI
 	}
 	
 	private Vector3 playerPosition = new Vector3();
-	private Vector3 direction = new Vector3();
 	private Vector3 target = new Vector3();
+	private Vector3 xAxis = new Vector3();
+	private Vector3 yAxis = new Vector3();
+	private Vector3 zAxis = new Vector3();
+	private Vector3 up = new Vector3();
+	private Vector3 tan = new Vector3();
+	private Vector3 direction = new Vector3();
 	
 	@Override
 	public void update(float deltaTime) 
@@ -215,13 +223,71 @@ public class OpenWorldSpawnAnimalSystem extends IteratingSystem implements PostI
 		super.update(deltaTime);
 	}
 	
+	private void enterEnvironment(SpawnAnimalComponent animal, G3DModel model, Environment env)
+	{
+		animal.environment = env;
+		applyStateEnvironment(animal, model);
+	}
+	private void enterState(SpawnAnimalComponent animal, G3DModel model, State state)
+	{
+		animal.state = state;
+		applyStateEnvironment(animal, model);
+	}
+	private void applyStateEnvironment(SpawnAnimalComponent animal, G3DModel model)
+	{
+		// state enter logic : depends on new state and current environment.
+		// entering a state change : 
+		// - animation and animation speed
+		// - global speed
+		
+		if(animal.state == State.STROLL)
+		{
+			if(animal.environment == Environment.AIR)
+			{
+				animal.speed = 4;
+				model.animationController.setAnimation("Armature|fly-full", -1, 1f, null);
+			}
+			else if(animal.environment == Environment.LAND)
+			{
+				animal.speed = .5f;
+				model.animationController.setAnimation("Armature|walk", -1, 1f, null);
+			}
+			else if(animal.environment == Environment.WATER)
+			{
+				animal.speed = 2;
+				model.animationController.setAnimation("Armature|swim-speed", -1, 1f, null);
+			}
+		}
+		else if(animal.state == State.FLEE)
+		{
+			if(animal.environment == Environment.AIR)
+			{
+				animal.speed = 16;
+				model.animationController.setAnimation("Armature|fly-full", -1, 2f, null);
+			}
+			else if(animal.environment == Environment.LAND)
+			{
+				animal.speed = 8;
+				model.animationController.setAnimation("Armature|run", -1, 2f, null);
+			}
+			else if(animal.environment == Environment.WATER)
+			{
+				animal.speed = 8;
+			}
+		}
+		else if(animal.state == State.IDLE)
+		{
+			
+		}
+	}
+	
 	@Override
 	protected void processEntity(Entity entity, float deltaTime) 
 	{
-		// TODO animal has a range area and never leave it ! so path could be computed once ?
+		float airMaxAltitude = 30;
 		
 		
-		// TODO update animal logic and animations switch based on playerPosition
+		// update animal logic and animations switch based on playerPosition
 		SpawnAnimalComponent animal = SpawnAnimalComponent.components.get(entity);
 		G3DModel model = G3DModel.components.get(entity);
 		PathComponent path = PathComponent.components.get(entity);
@@ -231,42 +297,89 @@ public class OpenWorldSpawnAnimalSystem extends IteratingSystem implements PostI
 		// initial state, set it strolling
 		if(animal.state == null){
 			animal.state = State.STROLL;
+			animal.environment = Environment.AIR; // TODO remove this
+			
+			// compute initial altitude and path
+			float altitude = generatorSystem.getAltitude(animal.element.position.x, animal.element.position.z);
+			
+			// check for abilities, which are limits
+			float altitudeMin = altitude;
+			float altitudeMax = airMaxAltitude; // TODO configurable high limite
+			float groundMin = 0;
+			float groundMax = airMaxAltitude;
+			
+			if(altitude < envSystem.waterLevel){
+				if(!animal.element.waterAbility){
+					altitudeMin = envSystem.waterLevel + 4; // XXX flying offset
+				}
+				if(!animal.element.airAbility){
+					altitudeMax = envSystem.waterLevel;
+				}
+			}else{
+				if(!animal.element.airAbility){
+					groundMin = groundMax = 0;
+				}else{
+					groundMin = 4;
+				}
+			}
+			
+			float yMin = Math.max(altitudeMin, altitude+groundMin);
+			float yMax = Math.min(altitudeMax, altitude+groundMax);
+			
+			animal.element.position.y = MathUtils.random(yMin, yMax);
+			
+			// compute initial environment depending on where is spawn entity and which ability
+			// in some case animals could be just under/above water level whithout having ability.
+			if(animal.element.position.y < envSystem.waterLevel)
+			{
+				if(animal.element.waterAbility) animal.environment = Environment.WATER;
+				else if(animal.element.airAbility) animal.environment = Environment.AIR;
+				else animal.environment = Environment.LAND;
+			}
+			else
+			{
+				if(animal.element.airAbility) animal.environment = Environment.AIR;
+				else if(animal.element.landAbility) animal.environment = Environment.LAND;
+				else animal.environment = Environment.WATER;
+			}
+			
+			// TODO initial path should use same algo as for update path ...
+			CatmullRomSpline<Vector3> spline = (CatmullRomSpline<Vector3>)path.path;
+//			pathBuilder.set(generatorSystem, 40, 3.1f, .5f);
+//			// TODO set altitude relative to ground !
+//			pathBuilder.resetLimit().absoluteMin(altitudeMin).absoluteMax(altitudeMax)
+//			.groundMin(groundMin).groundMax(groundMax);
+//			pathBuilder.createPath(spline.controlPoints, animal.element.position);
+			spline.controlPoints[0].set(animal.element.position);
+			for(int i=1 ; i<spline.controlPoints.length ; i++){
+				spline.controlPoints[i].set(spline.controlPoints[i-1]).add(.01f, 0, 0);
+			}
+			
+			path.length = path.path.approxLength(100);
+			
+			applyStateEnvironment(animal, model);
 			animal.pathTime = 0;
-			animal.speed = 1;
-			
-			
-			// TODO animation depends on state (walking, running, ...etc)
-			model.animationController.setAnimation("Armature|walk", -1, 1.5f, null);
 		}
 		if(animal.state == State.STROLL)
 		{
 			float dst = playerPosition.dst(animal.element.position);
 			if(dst < 10){
-				model.animationController.setAnimation("Armature|run", -1, 1.5f, null);
-				animal.state = State.FLEE;
-				animal.speed = 8;
-			}else{
-				// update anim
-				model.animationController.current.speed = animal.speed;
+				enterState(animal, model, State.FLEE);
 			}
 		}
 		if(animal.state == State.FLEE)
 		{
-			// TODO maybe not flee in any directions, flee from player ...
 			float dst = playerPosition.dst(animal.element.position);
 			if(dst > 30){
-				model.animationController.setAnimation("Armature|walk", -1, 1.5f, null);
-				animal.state = State.STROLL;
-				animal.speed = .5f;
-			}else{
-				// update anim
-				model.animationController.current.speed = animal.speed / 4;
+				enterState(animal, model, State.STROLL);
 			}
 		}
 		
+		
+		// update motion on path
 		animal.pathTime += deltaTime * animal.speed / path.length;
 		
-		
+		// update path
 		if(animal.pathTime > 1){
 			CatmullRomSpline<Vector3> spline = (CatmullRomSpline<Vector3>)path.path;
 			
@@ -279,13 +392,59 @@ public class OpenWorldSpawnAnimalSystem extends IteratingSystem implements PostI
 			// else if bias not set then set a bias (random left or right).
 			// finally generate a direction around bias.
 			
+			float aheadDistance = 3;
+			float segmentDistance = 3; // XXX depends on env ...
+			
 			// Check 3 meters ahead of animal
 			direction.set(spline.controlPoints[3]).sub(spline.controlPoints[2]).nor();
-			target.set(animal.element.position).mulAdd(direction, 3);
+			target.set(animal.element.position).mulAdd(direction, aheadDistance);
 			float altitudeAhead = generatorSystem.getAltitude(target.x, target.z);
 			
-			// in water
-			if(altitudeAhead < envSystem.waterLevel || !animal.chunk.zone.contains(target.x, target.z)){
+			// compute appropriate status based on ability.
+			// and detect environment changes.
+			boolean isAppropriate = animal.chunk.zone.contains(target.x, target.z);
+			boolean isAquatic = altitudeAhead < envSystem.waterLevel;
+			if(animal.environment == Environment.LAND){
+				if(isAquatic){
+					if(animal.element.waterAbility){
+						enterEnvironment(animal, model, Environment.WATER);
+					}else if(animal.element.airAbility){
+						enterEnvironment(animal, model, Environment.AIR);
+					}else{
+						isAppropriate = false;
+					}
+				}
+			}
+			else if(animal.environment == Environment.WATER){
+				if(!isAquatic){
+					if(animal.element.landAbility){
+						enterEnvironment(animal, model, Environment.LAND);
+					}else if(animal.element.airAbility){
+						enterEnvironment(animal, model, Environment.AIR);
+					}else{
+						isAppropriate = false;
+					}
+				}
+			}
+			else if(animal.environment == Environment.AIR){
+				if(isAquatic){
+					if(animal.element.waterAbility){
+						enterEnvironment(animal, model, Environment.WATER);
+					}else{
+						isAppropriate = false;
+					}
+				}else{
+					if(animal.element.landAbility){
+						enterEnvironment(animal, model, Environment.LAND);
+					}else{
+						isAppropriate = false;
+					}
+				}
+			}
+			
+			
+			// if not appropritate then bias direction
+			if(!isAppropriate){
 				if(animal.directionBias == 0){
 					animal.directionBias = MathUtils.randomSign();
 				}
@@ -295,12 +454,32 @@ public class OpenWorldSpawnAnimalSystem extends IteratingSystem implements PostI
 				animal.directionBias = 0;
 			}
 			
-			// generate a random direction around direction and bias
+			// generate a random direction  :
+			// - around direction and bias (XZ plan)
+			// - around direction (Pitch)
 			direction.rotate(Vector3.Y, (animal.directionBias * 2 + MathUtils.random()) * 10);
+			direction.y += MathUtils.random(-.3f, .3f);
+			direction.nor();
 			
 			// compute final target : current position + 3 meters
-			target.set(animal.element.position).mulAdd(direction, 3);
-			target.y = generatorSystem.getAltitude(target.x, target.z);
+			target.set(animal.element.position).mulAdd(direction, segmentDistance);
+			
+			// clamp altitude based on animal environment mode
+			// TODO add some offsets
+			// TODO maybe have a pitchBias for non landbased and then appropriate status could be
+			// also checked about collision with ground...
+			float targetAltitude = generatorSystem.getAltitude(target.x, target.z);
+			if(animal.environment == Environment.LAND){
+				target.y = targetAltitude;
+			}
+			else if(animal.environment == Environment.WATER){
+				if(target.y < targetAltitude) target.y = targetAltitude;
+				else if(target.y > envSystem.waterLevel) target.y = envSystem.waterLevel;
+			}
+			else{
+				if(target.y < targetAltitude) target.y = targetAltitude;
+				else if(target.y > airMaxAltitude) target.y = airMaxAltitude; // TODO hard limit for flying animals
+			}
 			
 			// append point
 			pathBuilder.updateDynamicPath(spline.controlPoints, target);
@@ -308,24 +487,45 @@ public class OpenWorldSpawnAnimalSystem extends IteratingSystem implements PostI
 			animal.pathTime -= 1;
 			
 			// XXX spline debug
-			SplineDebugComponent sdc = SplineDebugComponent.components.get(entity);
-			if(sdc == null) entity.add(sdc = getEngine().createComponent(SplineDebugComponent.class));
-			sdc.dirty = true;
+			if(splineDebug){
+				SplineDebugComponent sdc = SplineDebugComponent.components.get(entity);
+				if(sdc == null) entity.add(sdc = getEngine().createComponent(SplineDebugComponent.class));
+				sdc.dirty = true;
+			}
 		}
 		
+		// update transform from path
 		animal.pathTime = MathUtils.clamp(animal.pathTime, 0, 1); // clamp for security
 		
 		path.path.valueAt(animal.element.position, animal.pathTime);
 		path.path.derivativeAt(direction , animal.pathTime);
 		
-		// update motion
-		model.modelInstance.transform.setToLookAt(direction.nor().scl(-1), Vector3.Y).inv();
-		model.modelInstance.transform.rotate(Vector3.Y, -90);			
-		model.modelInstance.transform.setTranslation(animal.element.position);
+		// update model transform depending on current environment :
+		// land and water animals keep head up.
+		// air animals could roll on spline.
+		if(animal.environment == Environment.AIR){
+			model.modelInstance.transform.setToRotation(Vector3.Z, direction.nor().scl(-1));
+			model.modelInstance.transform.setTranslation(animal.element.position);
+		}else{
+			// TODO find another way and sometimes matrix is not invertible and crash !
+			
+			direction.nor();
+			tan.set(Vector3.Y).crs(direction).nor();
+			up.set(tan).crs(direction).nor();
+			
+			xAxis.set(tan.x, direction.x, up.x);
+			yAxis.set(tan.y, direction.y, up.y);
+			zAxis.set(tan.z, direction.z, up.z);
+			
+			// TODO optimize : avoid post rotations by changing axis
+			model.modelInstance.transform.set(xAxis, yAxis, zAxis, animal.element.position);
+			model.modelInstance.transform.rotate(Vector3.Y, -90);
+			model.modelInstance.transform.rotate(Vector3.Z, 90);
+		}
 	
 		model.modelInstance.calculateTransforms();
 	}
-
+	
 	public void clear() 
 	{
 		spawnGrid.clear();

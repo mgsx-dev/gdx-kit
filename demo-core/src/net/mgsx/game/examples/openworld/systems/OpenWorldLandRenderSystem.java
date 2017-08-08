@@ -31,6 +31,7 @@ import net.mgsx.game.core.helpers.ShaderProgramHelper;
 import net.mgsx.game.examples.openworld.components.CellDataComponent;
 import net.mgsx.game.examples.openworld.components.LandMeshComponent;
 import net.mgsx.game.examples.openworld.components.ObjectMeshComponent;
+import net.mgsx.game.examples.openworld.components.SpawnAnimalComponent;
 import net.mgsx.game.examples.openworld.components.TreesComponent;
 import net.mgsx.game.examples.openworld.components.WildLifeComponent;
 import net.mgsx.game.examples.openworld.model.OpenWorldPool;
@@ -254,7 +255,7 @@ public class OpenWorldLandRenderSystem extends IteratingSystem
 			
 			shadowBatch.begin(shadowLight.getCamera());
 			
-			for(Entity entity : getEngine().getEntitiesFor(Family.all(WildLifeComponent.class, G3DModel.class).get())){
+			for(Entity entity : getEngine().getEntitiesFor(Family.all(G3DModel.class).one(WildLifeComponent.class, SpawnAnimalComponent.class).get())){
 				G3DModel model = G3DModel.components.get(entity);
 				shadowBatch.render(model.modelInstance);
 			}
