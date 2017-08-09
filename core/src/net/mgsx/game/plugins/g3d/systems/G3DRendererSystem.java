@@ -9,12 +9,11 @@ import com.badlogic.ashley.utils.ImmutableArray;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g3d.Environment;
-import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
-import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.BaseLight;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalShadowLight;
+import com.badlogic.gdx.graphics.g3d.utils.AnimationController;
 import com.badlogic.gdx.graphics.g3d.utils.DepthShaderProvider;
 import com.badlogic.gdx.graphics.g3d.utils.ShaderProvider;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
@@ -62,6 +61,7 @@ public class G3DRendererSystem extends IteratingSystem
 	@Editable
 	public Color ambient = new Color(0.4f, 0.4f, 0.4f, 1f);
 	
+	// TODO global listener
 	private EntityListener listener = new EntityListener() {
 		
 		@Override
@@ -70,6 +70,7 @@ public class G3DRendererSystem extends IteratingSystem
 		@Override
 		public void entityAdded(Entity entity) {
 			G3DModel model = G3DModel.components.get(entity);
+			model.animationController = new AnimationController(model.modelInstance);
 			model.applyBlending();
 		}
 	};
@@ -238,24 +239,6 @@ public class G3DRendererSystem extends IteratingSystem
 	protected void processEntity(Entity entity, float deltaTime) {
 		G3DModel model = G3DModel.components.get(entity);
 		if(model.inFrustum){
-			// XXX update blending
-			for(Material material : model.modelInstance.materials){
-				BlendingAttribute ba = null;
-				if(model.blended){
-					if(!material.has(BlendingAttribute.Type)){
-						ba = new BlendingAttribute();
-						material.set(ba);
-					}else{
-						ba = (BlendingAttribute)material.get(BlendingAttribute.Type);
-					}
-					ba.blended = model.blended;
-					ba.sourceFunction = model.blendSrc;
-					ba.destFunction = model.blendDst;
-					ba.opacity = model.opacity;
-				}else if(!model.blended && material.has(BlendingAttribute.Type)){
-					material.remove(BlendingAttribute.Type);
-				}
-			}
 			modelBatch.render(model.modelInstance, environment);
 		}
 	}
