@@ -9,9 +9,7 @@ import net.mgsx.game.plugins.ashley.systems.AshleyProfilerSystem;
 import net.mgsx.game.plugins.editor.KitEditorPlugin;
 import net.mgsx.game.plugins.editor.systems.EditorSystem;
 
-@PluginDef(dependencies={
-	KitEditorPlugin.class
-})
+@PluginDef(dependencies=KitEditorPlugin.class)
 public class AshleyEditorPlugin extends EditorPlugin
 {
 	@Override
