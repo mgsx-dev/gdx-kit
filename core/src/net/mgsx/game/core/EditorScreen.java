@@ -265,7 +265,11 @@ public class EditorScreen extends ScreenDelegate implements EditorContext // TOD
 		for(Tool tool : mainToolGroup.tools){
 			registry.inject(entityEngine, tool);
 		}
-		registry.inject(entityEngine, undoTool); // XXX special undoTool don't know why ?
+		for(Tool tool : globalTools){
+			registry.inject(entityEngine, tool);
+		}
+		// special injection for undoTool (not registered like others)
+		registry.inject(entityEngine, undoTool);
 		for(EntitySystem system : entityEngine.getSystems()){
 			registry.inject(entityEngine, system);
 		}
@@ -352,10 +356,13 @@ public class EditorScreen extends ScreenDelegate implements EditorContext // TOD
 		prependTools.add(g);
 		return g;
 	}
+	private Array<Tool> globalTools = new Array<Tool>();
+	
 	public void addGlobalTool(Tool tool) 
 	{
 		ToolGroup g = createToolGroup();
 		g.setActiveTool(tool);
+		globalTools.add(tool);
 	}
 	private Array<Actor> rootBackup;
 	final private Array<EntitySystem> processingDebugSystem = new Array<EntitySystem>();

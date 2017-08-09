@@ -18,7 +18,6 @@ import net.mgsx.game.core.annotations.Storable;
 import net.mgsx.game.core.helpers.ReflectionHelper;
 import net.mgsx.game.core.helpers.TypeMap;
 import net.mgsx.game.core.meta.ClassRegistry;
-import net.mgsx.game.core.meta.ReflectionCache;
 import net.mgsx.game.core.plugins.Plugin;
 import net.mgsx.game.core.storage.serializers.AnnotationBasedSerializer;
 import net.mgsx.game.core.ui.accessors.Accessor;
@@ -168,7 +167,7 @@ public class GameRegistry {
 		// scan all systems in order to inject assets
 		for(EntitySystem system : screen.entityEngine.getSystems())
 		{
-			for(Accessor accessor : ReflectionCache.fieldsFor(system, Asset.class)){
+			for(Accessor accessor : Kit.meta.accessorsFor(system, Asset.class)){
 				Asset asset = accessor.config(Asset.class);
 				if(asset != null && !asset.value().isEmpty()){
 					// FIXME unload when context is disposed !!
@@ -180,7 +179,7 @@ public class GameRegistry {
 
 	public void inject(Engine engine, Object system) 
 	{
-		for(Accessor accessor : ReflectionCache.fieldsFor(system, Inject.class)){
+		for(Accessor accessor : Kit.meta.accessorsFor(system, Inject.class)){
 			if(EntitySystem.class.isAssignableFrom(accessor.getType()))
 			{
 				EntitySystem dep = engine.getSystem(accessor.getType());
@@ -198,7 +197,7 @@ public class GameRegistry {
 	{
 		for(EntitySystem system : screen.entityEngine.getSystems())
 		{
-			for(Accessor accessor : ReflectionCache.fieldsFor(system, Asset.class)){
+			for(Accessor accessor : Kit.meta.accessorsFor(system, Asset.class)){
 				Asset asset = accessor.config(Asset.class);
 				if(asset != null && !asset.value().isEmpty()){
 					accessor.set(screen.assets.get(asset.value(), accessor.getType()));

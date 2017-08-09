@@ -7,9 +7,6 @@ import android.os.Bundle;
 import de.golfgl.gdxgamesvcs.GpgsClient;
 import net.mgsx.game.core.EditorApplication;
 import net.mgsx.game.core.EditorConfiguration;
-import net.mgsx.game.core.helpers.NativeService;
-import net.mgsx.game.core.helpers.NativeService.DialogCallback;
-import net.mgsx.game.core.helpers.NativeService.NativeServiceInterface;
 import net.mgsx.game.core.meta.ClassRegistry;
 import net.mgsx.game.core.meta.StaticClassRegistry;
 import net.mgsx.game.examples.openworld.OpenWorldEditorPlugin;
@@ -28,20 +25,6 @@ public class AndroidLauncher extends AndroidApplication {
 		gsc.initialize(this, false); // XXX disable drive API
 		
 		ClassRegistry.instance = new StaticClassRegistry(KitClass.class);
-		
-		// TODO refactor has default none service, just log some warning ?
-		NativeService.instance = new NativeServiceInterface() {
-			
-			@Override
-			public void openSaveDialog(DialogCallback callback) {
-				callback.cancel();
-			}
-			
-			@Override
-			public void openLoadDialog(DialogCallback callback) {
-				callback.cancel();
-			}
-		};
 		
 		EditorConfiguration editConfig = new EditorConfiguration();
 		editConfig.plugins.add(new OpenWorldEditorPlugin());

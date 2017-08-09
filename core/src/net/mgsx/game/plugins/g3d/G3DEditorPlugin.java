@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g3d.Model;
 import net.mgsx.game.core.EditorScreen;
 import net.mgsx.game.core.annotations.PluginDef;
 import net.mgsx.game.core.plugins.EditorPlugin;
+import net.mgsx.game.plugins.editor.KitEditorPlugin;
 import net.mgsx.game.plugins.g3d.components.G3DModel;
 import net.mgsx.game.plugins.g3d.editors.G3DNodeEditor;
 import net.mgsx.game.plugins.g3d.systems.G3DBoundaryDebugSystem;
@@ -15,7 +16,7 @@ import net.mgsx.game.plugins.g3d.tools.G3DModelReloader;
 import net.mgsx.game.plugins.g3d.tools.ImportFbxTool;
 import net.mgsx.game.plugins.g3d.tools.ModelSelector;
 
-@PluginDef(dependencies={G3DPlugin.class})
+@PluginDef(dependencies={G3DPlugin.class, KitEditorPlugin.class})
 public class G3DEditorPlugin extends EditorPlugin
 {
 	@Override

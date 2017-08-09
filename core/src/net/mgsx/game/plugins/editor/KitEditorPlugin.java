@@ -1,7 +1,9 @@
 package net.mgsx.game.plugins.editor;
 
 import net.mgsx.game.core.EditorScreen;
+import net.mgsx.game.core.annotations.PluginDef;
 import net.mgsx.game.core.plugins.EditorPlugin;
+import net.mgsx.game.plugins.core.CoreEditorPlugin;
 import net.mgsx.game.plugins.editor.systems.BindingSystem;
 import net.mgsx.game.plugins.editor.systems.DebugRenderSystem;
 import net.mgsx.game.plugins.editor.systems.EditorSystem;
@@ -10,6 +12,7 @@ import net.mgsx.game.plugins.editor.systems.SelectionSystem;
 import net.mgsx.game.plugins.editor.systems.ToolsRenderSystem;
 import net.mgsx.game.plugins.editor.tools.LearnTool;
 
+@PluginDef(dependencies=CoreEditorPlugin.class)
 public class KitEditorPlugin extends EditorPlugin
 {
 

@@ -11,9 +11,6 @@ import com.badlogic.gdx.graphics.g3d.utils.AnimationController;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.Json;
-import com.badlogic.gdx.utils.Json.Serializable;
-import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.Pool.Poolable;
 
 import net.mgsx.game.core.annotations.Editable;
@@ -24,17 +21,17 @@ import net.mgsx.game.core.components.Duplicable;
 
 @Storable("g3d")
 @EditableComponent(autoTool=false)
-public class G3DModel implements Component, Duplicable, Serializable, Poolable
+public class G3DModel implements Component, Duplicable, Poolable
 {
 	public final static ComponentMapper<G3DModel> components = ComponentMapper.getFor(G3DModel.class);
 
 	public ModelInstance modelInstance;
 	public Vector3 origin = new Vector3(0,0,0); // TODO introduce a pre matrix ... ?
-	public AnimationController animationController;
+	public transient AnimationController animationController;
 	public boolean blended;
-	public BoundingBox localBoundary, globalBoundary;
-	public boolean inFrustum;
-	public Array<NodeBoundary> boundary;
+	public transient BoundingBox localBoundary, globalBoundary;
+	public transient boolean inFrustum;
+	public transient Array<NodeBoundary> boundary;
 	public boolean culling = false;
 	
 	// TODO should be in blend component (can be applyed to G2D as well)
@@ -56,37 +53,30 @@ public class G3DModel implements Component, Duplicable, Serializable, Poolable
 			model.animationController = new AnimationController(model.modelInstance);
 		}
 		model.blended = blended;
+		model.blendSrc = blendSrc;
+		model.blendDst = blendDst;
+		model.opacity = opacity;
 		return model;
-	}
-
-	@Override
-	public void write(Json json) 
-	{
-		json.writeField(this, "modelInstance");
-		json.writeField(this, "origin");
-		json.writeField(this, "blended");
-		json.writeField(this, "culling");
-	}
-
-	@Override
-	public void read(Json json, JsonValue jsonData) 
-	{
-		json.readField(this, "modelInstance", jsonData);
-		json.readField(this, "origin", jsonData);
-		json.readField(this, "blended", jsonData);
-		json.readField(this, "culling", jsonData);
-		animationController = new AnimationController(modelInstance);
 	}
 
 	public void applyBlending() 
 	{
 		for(Material material : modelInstance.materials){
-			BlendingAttribute attr = (BlendingAttribute)material.get(BlendingAttribute.Type);
-			if(attr == null){
-				attr = new BlendingAttribute(1);
-				material.set(attr);
+			BlendingAttribute ba = null;
+			if(blended){
+				if(!material.has(BlendingAttribute.Type)){
+					ba = new BlendingAttribute();
+					material.set(ba);
+				}else{
+					ba = (BlendingAttribute)material.get(BlendingAttribute.Type);
+				}
+				ba.blended = blended;
+				ba.sourceFunction = blendSrc;
+				ba.destFunction = blendDst;
+				ba.opacity = opacity;
+			}else if(!blended && material.has(BlendingAttribute.Type)){
+				material.remove(BlendingAttribute.Type);
 			}
-			attr.blended = blended;
 		}
 	}
 

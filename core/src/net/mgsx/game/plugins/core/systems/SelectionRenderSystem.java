@@ -1,6 +1,5 @@
 package net.mgsx.game.plugins.core.systems;
 
-import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
@@ -25,6 +24,7 @@ public class SelectionRenderSystem extends IteratingSystem {
 	@Inject protected DebugRenderSystem render;
 	final private Vector3 pos = new Vector3();
 	
+	@Inject
 	private SelectionSystem selection;
 	
 	public SelectionRenderSystem(EditorScreen editor) {
@@ -32,12 +32,6 @@ public class SelectionRenderSystem extends IteratingSystem {
 		this.editor = editor;
 	}
 	
-	@Override
-	public void addedToEngine(Engine engine) {
-		super.addedToEngine(engine);
-		selection = engine.getSystem(SelectionSystem.class);
-	}
-
 	@Override
 	public void update(float deltaTime) {
 		

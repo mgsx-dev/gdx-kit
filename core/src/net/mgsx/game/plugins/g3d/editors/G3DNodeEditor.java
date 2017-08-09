@@ -91,7 +91,14 @@ public class G3DNodeEditor implements EntityEditorPlugin
 			}
 		});
 		
-		Table main = new Table(skin);
+		Table main = new Table(skin){
+			@Override
+			public void act(float delta) {
+				// hack to allow realtime blending changes
+				model.applyBlending();
+				super.act(delta);
+			}
+		};
 		
 		main.add("Animation");
 		main.add(animationSelector);
@@ -109,10 +116,7 @@ public class G3DNodeEditor implements EntityEditorPlugin
 		btBlend.addListener(new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
-				if(model.blended != btBlend.isChecked()){
-					model.blended = btBlend.isChecked();
-					model.applyBlending();
-				}
+				model.blended = btBlend.isChecked();
 			}
 		});
 

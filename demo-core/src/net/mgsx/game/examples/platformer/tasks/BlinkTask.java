@@ -37,12 +37,14 @@ public class BlinkTask extends EntityLeafTask
 				model.blended = true;
 				model.opacity = opacity;
 			}
+			model.applyBlending();
 		}
 		
 		if(time > duration){
 			if(model != null){
 				model.blended = false;
 				model.opacity = 1;
+				model.applyBlending();
 			}
 			time = 0;
 			return Status.SUCCEEDED;

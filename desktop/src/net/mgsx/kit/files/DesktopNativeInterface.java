@@ -17,6 +17,13 @@ public class DesktopNativeInterface implements NativeServiceInterface
 
 	public String path = ".";
 	
+	/**
+	 * reflection created by {@link net.mgsx.game.core.helpers.NativeService}
+	 */
+	public DesktopNativeInterface() {
+		super();
+	}
+	
 	private void openDialog(final DialogCallback callback, boolean save){
 		JApplet applet = new JApplet(); // TODO fail safe
 		final JFileChooser fc = new JFileChooser(new File(path));
