@@ -20,6 +20,7 @@ import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.ObjectSet;
 
 import net.mgsx.game.core.GamePipeline;
 import net.mgsx.game.core.GameScreen;
@@ -83,7 +84,8 @@ public class G3DRendererSystem extends IteratingSystem
 	private GameScreen engine;
 	private ModelBatch shadowBatch;
 	
-	private Array<BaseLight> lights = new Array<BaseLight>();
+	private ObjectSet<BaseLight> lights = new ObjectSet<BaseLight>();
+	private Array<BaseLight> lightsToAdd = new Array<BaseLight>();
 	
 	private ColorAttribute fogAttribute, ambientAttribute;
 	
@@ -153,11 +155,6 @@ public class G3DRendererSystem extends IteratingSystem
 	{
 		boolean shadow = false;
 		
-		// rebuild light list. This is better than ashley listeners where
-		// light references could be lost when components removed.
-		environment.remove(lights);
-		lights.clear();
-
 		// gather all lights
 		for(Entity entity : directionalLights)
 		{
@@ -169,11 +166,9 @@ public class G3DRendererSystem extends IteratingSystem
 				
 				shadowLight.color.set(dl.light.color);
 				shadowLight.direction.set(dl.light.direction);
-				environment.add(shadowLight);
-				lights.add(shadowLight);
+				lightsToAdd.add(shadowLight);
 			}else{
-				environment.add(dl.light);
-				lights.add(dl.light);
+				lightsToAdd.add(dl.light);
 			}
 		}
 		if(!shadow && shadowLight != null){
@@ -189,9 +184,26 @@ public class G3DRendererSystem extends IteratingSystem
 			PointLightComponent dl = PointLightComponent.components.get(entity);
 			Transform2DComponent transform = Transform2DComponent.components.get(entity);
 			if(transform != null) dl.light.position.set(transform.position, 0);
-			environment.add(dl.light);
-			lights.add(dl.light);
+			lightsToAdd.add(dl.light);
 		}
+		
+		// synchronize lights to environment (avoiding allocations)
+		// first remove new light from previous list
+		for(BaseLight light : lightsToAdd){
+			// light wasn't in environment
+			if(!lights.remove(light)){
+				environment.add(light);
+			}
+		}
+		// then remove remaining lights (lights to remove)
+		for(BaseLight light : lights){
+			environment.remove(light);
+		}
+		// finally store active lights
+		lights.clear();
+		lights.addAll(lightsToAdd);
+		lightsToAdd.clear();
+		
 		
 		// update attributes
 		updateAttribute(ambientAttribute, ambient);
