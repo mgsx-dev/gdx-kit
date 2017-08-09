@@ -41,6 +41,7 @@ abstract public class Tool extends AbstractInputSystem
 	
 	public Family activator; // TODO remove in favor to allowed method
 	
+	@Inject
 	private SelectionSystem selectionSystem;
 	
 	@Inject
@@ -53,7 +54,6 @@ abstract public class Tool extends AbstractInputSystem
 		super();
 		this.editor = editor;
 		this.name = name;
-		selectionSystem = editor.entityEngine.getSystem(SelectionSystem.class);
 	}
 
 	final protected void end(){
