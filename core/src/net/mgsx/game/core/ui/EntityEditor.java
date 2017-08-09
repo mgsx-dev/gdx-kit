@@ -2,6 +2,9 @@ package net.mgsx.game.core.ui;
 
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.math.Frustum;
+import com.badlogic.gdx.math.Matrix3;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -20,6 +23,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
+import com.badlogic.gdx.utils.ObjectSet;
 
 import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.core.annotations.EditableComponent;
@@ -38,6 +42,11 @@ import net.mgsx.game.core.ui.widgets.VoidWidget;
 
 public class EntityEditor extends Table
 {
+	public static ObjectSet<Class> excludedTypes = new ObjectSet<Class>();
+	static{
+		excludedTypes.addAll(Matrix4.class, Matrix3.class, Frustum.class);
+	}
+	
 	public static final ObjectMap<Class, FieldEditor> defaultTypeEditors = new ObjectMap<Class, FieldEditor>();
 	
 	public static class Config{
@@ -111,6 +120,10 @@ public class EntityEditor extends Table
 		// scan class to get all accessors
 		for(final Accessor accessor : AccessorScanner.scan(entity, annotationBased))
 		{
+			// filter arrays type and some predefined types.
+			if(accessor.getType().isArray()) continue;
+			if(excludedTypes.contains(accessor.getType())) continue;
+			
 			Label accessorLabel = new Label(accessor.getName(), table.getSkin());
 			table.add(accessorLabel).fill().left();
 			
@@ -127,6 +140,7 @@ public class EntityEditor extends Table
 				});
 			}
 			
+			// TODO this method never return false ...
 			if(!createControl(table, entity, accessor, stack, config))
 			{
 				// create recursively on missing type (object)
