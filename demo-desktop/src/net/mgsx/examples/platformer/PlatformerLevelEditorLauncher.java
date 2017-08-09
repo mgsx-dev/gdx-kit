@@ -4,11 +4,9 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 
 import net.mgsx.game.core.EditorApplication;
 import net.mgsx.game.core.EditorConfiguration;
-import net.mgsx.game.core.helpers.NativeService;
 import net.mgsx.game.core.meta.ClassRegistry;
 import net.mgsx.game.examples.platformer.PlatformerEditorPlugin;
 import net.mgsx.kit.config.ReflectionClassRegistry;
-import net.mgsx.kit.files.DesktopNativeInterface;
 import net.mgsx.kit.launcher.DesktopApplication;
 import net.mgsx.pd.Pd;
 import net.mgsx.pd.PdConfiguration;
@@ -28,9 +26,6 @@ public class PlatformerLevelEditorLauncher {
 				ReflectionClassRegistry.behaviorTree,
 				"net.mgsx.game.examples.platformer"
 				);
-		
-		DesktopNativeInterface nativeService = new DesktopNativeInterface(); 
-		NativeService.instance = nativeService; 
 		
 		PdConfiguration.remoteEnabled = true;
 		

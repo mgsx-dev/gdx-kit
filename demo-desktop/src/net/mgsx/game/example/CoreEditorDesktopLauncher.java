@@ -6,13 +6,11 @@ import net.mgsx.game.core.EditorApplication;
 import net.mgsx.game.core.EditorConfiguration;
 import net.mgsx.game.core.EditorScreen;
 import net.mgsx.game.core.annotations.PluginDef;
-import net.mgsx.game.core.helpers.NativeService;
 import net.mgsx.game.core.meta.ClassRegistry;
 import net.mgsx.game.core.plugins.EditorPlugin;
 import net.mgsx.game.examples.ui.CustomUIPlugin;
 import net.mgsx.game.plugins.DefaultEditorPlugin;
 import net.mgsx.kit.config.ReflectionClassRegistry;
-import net.mgsx.kit.files.DesktopNativeInterface;
 import net.mgsx.kit.launcher.DesktopApplication;
 import net.mgsx.pd.Pd;
 import net.mgsx.pd.PdConfiguration;
@@ -40,9 +38,6 @@ public class CoreEditorDesktopLauncher {
 				ReflectionClassRegistry.behaviorTree,
 				"net.mgsx.game.examples.ui"
 				);
-		
-		DesktopNativeInterface nativeService = new DesktopNativeInterface(); 
-		NativeService.instance = nativeService; 
 		
 		// set no Pd audio by default to allow running Pd and game at the same time.
 		// all real audio implementations (java or openAL) will lock audio.

@@ -5,13 +5,11 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import net.mgsx.game.core.EditorApplication;
 import net.mgsx.game.core.EditorConfiguration;
 import net.mgsx.game.core.EditorScreen;
-import net.mgsx.game.core.helpers.NativeService;
 import net.mgsx.game.core.meta.ClassRegistry;
 import net.mgsx.game.core.plugins.EditorPlugin;
 import net.mgsx.game.plugins.DefaultEditorPlugin;
 import net.mgsx.game.plugins.g3d.G3DPlugin;
 import net.mgsx.kit.config.ReflectionClassRegistry;
-import net.mgsx.kit.files.DesktopNativeInterface;
 import net.mgsx.kit.launcher.DesktopApplication;
 import net.mgsx.pd.Pd;
 import net.mgsx.pd.PdConfiguration;
@@ -35,9 +33,6 @@ public class DeferredLightingLauncher {
 				ReflectionClassRegistry.kitPlugins,
 				ReflectionClassRegistry.behaviorTree
 				);
-		
-		DesktopNativeInterface nativeService = new DesktopNativeInterface(); 
-		NativeService.instance = nativeService; 
 		
 		PdConfiguration.disabled = true;
 		

@@ -6,9 +6,6 @@ import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 import android.os.Bundle;
 import net.mgsx.game.core.EditorApplication;
 import net.mgsx.game.core.EditorConfiguration;
-import net.mgsx.game.core.helpers.NativeService;
-import net.mgsx.game.core.helpers.NativeService.DialogCallback;
-import net.mgsx.game.core.helpers.NativeService.NativeServiceInterface;
 import net.mgsx.game.core.meta.ClassRegistry;
 import net.mgsx.game.core.meta.StaticClassRegistry;
 import net.mgsx.game.examples.raycast.RayCastRemotePlugin;
@@ -21,20 +18,6 @@ public class SlaveAndroidLauncher extends AndroidApplication {
 	protected void onCreate (Bundle savedInstanceState) {
 		
 		ClassRegistry.instance = new StaticClassRegistry(KitClass.class);
-		
-		// TODO refactor has default none service, just log some warning ?
-		NativeService.instance = new NativeServiceInterface() {
-			
-			@Override
-			public void openSaveDialog(DialogCallback callback) {
-				callback.cancel();
-			}
-			
-			@Override
-			public void openLoadDialog(DialogCallback callback) {
-				callback.cancel();
-			}
-		};
 		
 //		PdConfiguration.remoteEnabled = true;
 //		PdConfiguration.remoteHost = "192.168.0.49";

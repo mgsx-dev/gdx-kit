@@ -5,10 +5,8 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.badlogic.gdx.graphics.Color;
 
 import net.mgsx.game.core.GameApplication;
-import net.mgsx.game.core.helpers.NativeService;
 import net.mgsx.game.core.screen.Transitions;
 import net.mgsx.game.tutorials.Tutorial;
-import net.mgsx.kit.files.DesktopNativeInterface;
 
 /**@md
 
@@ -31,8 +29,6 @@ public class LauncherTutorial
 	
 	public LauncherTutorial() {
 		//@code
-		NativeService.instance = new DesktopNativeInterface(); // TODO simplify this
-		
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		
 		new LwjglApplication(new TutorialGame(), config);
