@@ -9,15 +9,16 @@ import com.badlogic.ashley.utils.ImmutableArray;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g3d.Environment;
+import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
+import com.badlogic.gdx.graphics.g3d.environment.BaseLight;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalShadowLight;
-import com.badlogic.gdx.graphics.g3d.model.Node;
-import com.badlogic.gdx.graphics.g3d.model.NodePart;
 import com.badlogic.gdx.graphics.g3d.utils.DepthShaderProvider;
 import com.badlogic.gdx.graphics.g3d.utils.ShaderProvider;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 
@@ -27,6 +28,7 @@ import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.core.annotations.EditableSystem;
 import net.mgsx.game.core.annotations.Storable;
 import net.mgsx.game.core.components.Hidden;
+import net.mgsx.game.core.helpers.GLHelper;
 import net.mgsx.game.plugins.core.components.Transform2DComponent;
 import net.mgsx.game.plugins.g3d.components.DirectionalLightComponent;
 import net.mgsx.game.plugins.g3d.components.G3DModel;
@@ -80,6 +82,10 @@ public class G3DRendererSystem extends IteratingSystem
 	private GameScreen engine;
 	private ModelBatch shadowBatch;
 	
+	private Array<BaseLight> lights = new Array<BaseLight>();
+	
+	private ColorAttribute fogAttribute, ambientAttribute;
+	
 	@Override
 	public void addedToEngine(Engine engine) {
 		super.addedToEngine(engine);
@@ -87,6 +93,10 @@ public class G3DRendererSystem extends IteratingSystem
 		directionalLights = engine.getEntitiesFor(Family.all(DirectionalLightComponent.class).get());
 		pointLights = engine.getEntitiesFor(Family.all(PointLightComponent.class).exclude(Hidden.class).get());
 		shadowCasts = engine.getEntitiesFor(Family.all(G3DModel.class, ShadowCasting.class).get());
+		
+		ambientAttribute = new ColorAttribute(ColorAttribute.AmbientLight);
+		fogAttribute = new ColorAttribute(ColorAttribute.Fog);
+		
 	}
 	
 	@Override
@@ -100,15 +110,9 @@ public class G3DRendererSystem extends IteratingSystem
 		super(Family.all(G3DModel.class).exclude(Hidden.class).get(), GamePipeline.RENDER);
 		this.engine = engine;
 		
-		// TODO env should be configurable ... in some way but it's not 1-1 mapping !
-		
 		modelBatch = new ModelBatch();
-		
 		shadowBatch = new ModelBatch(new DepthShaderProvider());
-		
-		
 		environment = new Environment();
-        environment.set(new ColorAttribute(ColorAttribute.AmbientLight, ambient));
 	}
 	
 	public void setShaderProvider(ShaderProvider shaderProvider) {
@@ -116,22 +120,9 @@ public class G3DRendererSystem extends IteratingSystem
 		modelBatch = new ModelBatch(shaderProvider);
 	}
 	
-	@Editable
-	public void updateShadowSettings()
-	{
-		if(shadowLight != null){
-			shadowLight.dispose();
-			shadowLight = null;
-		}
-		configureShadowLight();
-	}
-
 	private void configureShadowLight()
 	{
-		// TODO check max render buffer size instead
-		if(shadowQuality < 0) shadowQuality = 0;
-		if(shadowQuality > 12) shadowQuality = 12;
-		int qualitySize = 1 << shadowQuality;
+		int qualitySize = MathUtils.clamp(1 << shadowQuality, GLHelper.getTextureMinSize(), GLHelper.getTextureMaxSize());
 		
 		if(shadowLight == null)
 		{
@@ -160,9 +151,13 @@ public class G3DRendererSystem extends IteratingSystem
 	public void update(float deltaTime) 
 	{
 		boolean shadow = false;
+		
+		// rebuild light list. This is better than ashley listeners where
+		// light references could be lost when components removed.
+		environment.remove(lights);
+		lights.clear();
 
 		// gather all lights
-		environment.clear();
 		for(Entity entity : directionalLights)
 		{
 			DirectionalLightComponent dl = DirectionalLightComponent.components.get(entity);
@@ -174,13 +169,17 @@ public class G3DRendererSystem extends IteratingSystem
 				shadowLight.color.set(dl.light.color);
 				shadowLight.direction.set(dl.light.direction);
 				environment.add(shadowLight);
+				lights.add(shadowLight);
 			}else{
-				environment.add(dl.light); // TODO cause array creation !
+				environment.add(dl.light);
+				lights.add(dl.light);
 			}
 		}
 		if(!shadow && shadowLight != null){
 			// dispose providers since environement has changed
 			// TODO use 2 versions instead !
+			shadowLight.dispose();
+			shadowLight = null;
 			modelBatch.dispose();
 		}
 		
@@ -190,13 +189,12 @@ public class G3DRendererSystem extends IteratingSystem
 			Transform2DComponent transform = Transform2DComponent.components.get(entity);
 			if(transform != null) dl.light.position.set(transform.position, 0);
 			environment.add(dl.light);
+			lights.add(dl.light);
 		}
 		
-		// TODO cache attributes and set when required (avoid GC), this is problematic !!
-		
-		environment.set(new ColorAttribute(ColorAttribute.AmbientLight, ambient));
-		
-		if(fog.a > 0) environment.set(new ColorAttribute(ColorAttribute.Fog, fog));
+		// update attributes
+		updateAttribute(ambientAttribute, ambient);
+		updateAttribute(fogAttribute, fog);
 		
 		Camera camera = engine.camera;
 		
@@ -211,7 +209,7 @@ public class G3DRendererSystem extends IteratingSystem
 	
 	        for(Entity instance : shadowCasts){
 	        	G3DModel model = G3DModel.components.get(instance);
-	        	if(model.inFrustum ){
+	        	if(model.inFrustum ){ // TODO not true !
 	        		shadowBatch.render(model.modelInstance);
 	        	}
 	        }
@@ -221,7 +219,7 @@ public class G3DRendererSystem extends IteratingSystem
 	        
 	        environment.shadowMap = shadowLight;
 	        
-	        // TODO restore FBO
+	        // restore FBO
 	        if(fboStack.size > 0){
 	        	fboStack.peek().begin();
 	        }
@@ -240,19 +238,38 @@ public class G3DRendererSystem extends IteratingSystem
 	protected void processEntity(Entity entity, float deltaTime) {
 		G3DModel model = G3DModel.components.get(entity);
 		if(model.inFrustum){
-			
-			for(Node node : model.modelInstance.nodes)
-				for(NodePart part : node.parts){
-					BlendingAttribute ba = (BlendingAttribute)part.material.get(BlendingAttribute.Type);
-					if(ba != null){
-						ba.blended = model.blended;
-						ba.sourceFunction = model.blendSrc;
-						ba.destFunction = model.blendDst;
-						ba.opacity = model.opacity; //TODO !
+			// XXX update blending
+			for(Material material : model.modelInstance.materials){
+				BlendingAttribute ba = null;
+				if(model.blended){
+					if(!material.has(BlendingAttribute.Type)){
+						ba = new BlendingAttribute();
+						material.set(ba);
+					}else{
+						ba = (BlendingAttribute)material.get(BlendingAttribute.Type);
 					}
+					ba.blended = model.blended;
+					ba.sourceFunction = model.blendSrc;
+					ba.destFunction = model.blendDst;
+					ba.opacity = model.opacity;
+				}else if(!model.blended && material.has(BlendingAttribute.Type)){
+					material.remove(BlendingAttribute.Type);
 				}
-			
+			}
 			modelBatch.render(model.modelInstance, environment);
+		}
+	}
+	
+	private void updateAttribute(ColorAttribute attribute, Color color){
+		if(color.a > 0){
+			attribute.color.set(color);
+			if(!environment.has(attribute.type)){
+				environment.set(attribute);
+			}
+		}else{
+			if(environment.has(attribute.type)){
+				environment.remove(attribute.type);
+			}
 		}
 	}
 }
