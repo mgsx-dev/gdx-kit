@@ -44,4 +44,7 @@ public class OpenWorldElement {
 
 	/** for moving elements ability in environment */
 	public transient boolean landAbility, airAbility, waterAbility;
+	
+	/** optional animal life points (below zero, animal is dying) */
+	public transient int life;
 }

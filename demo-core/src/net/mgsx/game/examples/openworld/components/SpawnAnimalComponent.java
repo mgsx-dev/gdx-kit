@@ -9,7 +9,7 @@ import net.mgsx.game.examples.openworld.systems.OpenWorldSpawnAnimalSystem.Spawn
 public class SpawnAnimalComponent implements Component
 {
 	public static enum State{
-		STROLL, FLEE, IDLE // TODO, APPROACH, ATTACK, DIE
+		STROLL, FLEE, IDLE, DYING // TODO, APPROACH, ATTACK, DIE
 	}
 	public static enum Environment{
 		WATER, LAND, AIR

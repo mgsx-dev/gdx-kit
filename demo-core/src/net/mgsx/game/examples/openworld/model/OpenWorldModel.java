@@ -122,22 +122,70 @@ public class OpenWorldModel {
 		return new Color(r / 255.0f, g / 255.0f, b / 255.0f, 1);
 	}
 
-	public static OpenWorldElement useTool(String toolName, String targetName) 
+	/**
+	 * use a tool on target type
+	 * @param created elements created by interaction (could be empty even if return true)
+	 * @param toolName
+	 * @param targetName
+	 * @return true if action is allowed
+	 */
+	public static boolean useTool(Array<OpenWorldElement> created, String toolName, String targetName) 
 	{
+		boolean actionPerformed = false;
+		
 		// find all cases
-		Array<FreemindNode> names = map.root().child("items").child(targetName).child("actions").child(toolName).children();
+		FreemindNode rules = map.root().child("items").child(targetName).child("actions").child(toolName);
 		
-		// no cases available
-		if(names == null || names.size == 0) return null;
+		if(rules.exists()){
+			applyRules(created, rules);
+			actionPerformed = true;
+		}
 		
-		// pickup random item
-		String name = ArrayHelper.any(names).asString();
-		
-		// find item
-		FreemindNode item = map.root().child("items").child(name);
-		
-		// generate
-		return generateNewElement(item);
+		return actionPerformed;
+	}
+	
+	private static void applyRules(Array<OpenWorldElement> created, FreemindNode rules)
+	{
+		// apply rules
+		FreemindNode anyRule = rules.child("any");
+		FreemindNode allRule = rules.child("all");
+		if(anyRule.exists()){
+			// pickup random item
+			String name = ArrayHelper.any(anyRule.children()).asString();
+			created.add(generateNewElement(name));
+		}
+		else if(allRule.exists()){
+			// pickup all items
+			for(FreemindNode item : allRule.children()){
+				created.add(generateNewElement(item.asString()));
+			}
+		}
+	}
+	
+	/**
+	 * use a weapon on target
+	 * @param toolName
+	 * @param targetName
+	 * @return damage points if tool is a weapon, target has life and weapon is better than target resistence.
+	 */
+	public static int useWeapon(String toolName, String targetName){
+		FreemindNode targetNode = map.root().child("items").child(targetName);
+		FreemindNode attackableNode = targetNode.child("attackable");
+		FreemindNode weaponNode = map.root().child("items").child(toolName).child("weapon");
+		if(attackableNode.exists() && weaponNode.exists()){
+			int damage = weaponNode.child("damage").first().asInt(1);
+			int shield = attackableNode.child("shield").first().asInt(0);
+			if(shield <= damage){
+				return damage;
+			}
+		}
+		return 0;
+	}
+	
+	public static void death(Array<OpenWorldElement> created, String type) 
+	{
+		FreemindNode rules = map.root().child("items").child(type).child("death");
+		applyRules(created, rules);
 	}
 
 	public static OpenWorldElement generateNewElement(String UID) 
@@ -188,6 +236,8 @@ public class OpenWorldModel {
 		// stone like : 1500 to 2500
 		// default is water density
 		element.density = item.child("density").first().asFloat(1000);
+		
+		element.life = item.child("attackable").child("life").first().asInt(1);
 	}
 	private static OpenWorldElement generateElement(FreemindNode item, long seed) 
 	{

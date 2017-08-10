@@ -22,6 +22,7 @@ import com.badlogic.gdx.utils.ObjectMap;
 
 import net.mgsx.game.core.Kit;
 import net.mgsx.game.examples.openworld.components.ObjectMeshComponent;
+import net.mgsx.game.examples.openworld.components.SpawnAnimalComponent;
 import net.mgsx.game.examples.openworld.components.TreesComponent;
 import net.mgsx.game.examples.openworld.model.Compound;
 import net.mgsx.game.examples.openworld.model.GameAction;
@@ -56,6 +57,7 @@ public class OpenWorldHUD extends Table
 		public Vector3 position = new Vector3();
 		public Vector3 normal = new Vector3();
 		public Object object;
+		public OpenWorldElement element;
 	}
 	
 	private WorldSelection worldSelection;
@@ -117,7 +119,13 @@ public class OpenWorldHUD extends Table
 							if(omc.userObject != null){
 								worldSelection.uo = omc.userObject;
 								worldSelection.elementName = omc.userObject.element.type;
+								worldSelection.element = omc.userObject.element;
 							}
+						}
+						SpawnAnimalComponent animal = SpawnAnimalComponent.components.get(e);
+						if(animal != null){
+							worldSelection.elementName = animal.element.type;
+							worldSelection.element = animal.element;
 						}
 					}
 					else if(o instanceof TreesComponent){
@@ -364,13 +372,24 @@ public class OpenWorldHUD extends Table
 		}
 		else if(action == GameAction.USE){
 			if(backpackSelection != null && worldSelection != null && worldSelection.elementName != null){
-				OpenWorldElement element = OpenWorldModel.useTool(backpackSelection.type, worldSelection.elementName);
-				if(element != null){
-					element.position.set(worldSelection.position);
-					userObject.appendObject(element);
-					infoLabel.setText(OpenWorldModel.name(element.type) + " just spawned!");
+				Array<OpenWorldElement> created = new Array<OpenWorldElement>();
+				if(OpenWorldModel.useTool(created, backpackSelection.type, worldSelection.elementName)){
+					// TODO multi element support should be better
+					for(OpenWorldElement element : created){
+						element.position.set(worldSelection.position);
+						userObject.appendObject(element);
+						infoLabel.setText(OpenWorldModel.name(element.type) + " just spawned!");
+					}
 					actionPerformed = backpackSelection.type;
-				}else{
+				}
+				int damage = OpenWorldModel.useWeapon(backpackSelection.type, worldSelection.elementName);
+				if(damage > 0 && worldSelection.element != null){
+					worldSelection.element.life -= damage;
+					infoLabel.setText(OpenWorldModel.name(worldSelection.elementName) + " was hurt!");
+					actionPerformed = backpackSelection.type;
+				}
+				
+				if(actionPerformed == null){
 					infoLabel.setText("Nothing happens...");
 					actionCanceled = true;
 				}

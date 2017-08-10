@@ -25,9 +25,14 @@ import net.mgsx.game.examples.openworld.components.SpawnAnimalComponent;
 import net.mgsx.game.examples.openworld.components.SpawnAnimalComponent.Environment;
 import net.mgsx.game.examples.openworld.components.SpawnAnimalComponent.State;
 import net.mgsx.game.examples.openworld.model.OpenWorldElement;
+import net.mgsx.game.examples.openworld.model.OpenWorldModel;
 import net.mgsx.game.examples.openworld.model.OpenWorldPathBuilder;
 import net.mgsx.game.examples.openworld.model.SpawnGenerator;
+import net.mgsx.game.examples.openworld.utils.BulletBuilder;
 import net.mgsx.game.examples.openworld.utils.VirtualGrid;
+import net.mgsx.game.plugins.bullet.components.BulletComponent;
+import net.mgsx.game.plugins.bullet.components.BulletKinematicComponent;
+import net.mgsx.game.plugins.bullet.system.BulletWorldSystem;
 import net.mgsx.game.plugins.g3d.components.G3DModel;
 import net.mgsx.game.plugins.spline.components.PathComponent;
 import net.mgsx.game.plugins.spline.components.SplineDebugComponent;
@@ -55,6 +60,9 @@ public class OpenWorldSpawnAnimalSystem extends IteratingSystem implements PostI
 	@Inject UserObjectSystem userObject;
 	@Inject OpenWorldGeneratorSystem generatorSystem;
 	@Inject OpenWorldEnvSystem envSystem;
+	@Inject BulletWorldSystem bulletSystem;
+	
+	private BulletBuilder bulletBuilder = new BulletBuilder();
 	
 	private VirtualGrid<SpawnAnimalChunk> spawnGrid;
 
@@ -151,6 +159,24 @@ public class OpenWorldSpawnAnimalSystem extends IteratingSystem implements PostI
 					entity.add(path);
 					
 					// TODO add kinematic body in order to allow player selection/interaction ...
+					BulletComponent bullet = getEngine().createComponent(BulletComponent.class);
+					bullet.object = bulletBuilder
+							.beginKinematic(model.modelInstance.transform)
+							.sphere(1)
+//							.filterGroup(0) // TODO group for raycast only ?
+//							.filterMask(0)
+							.commit(bulletSystem.collisionWorld);
+					bullet.shape = bullet.object.getCollisionShape();
+					bullet.world = bulletSystem.collisionWorld;
+					bullet.object.userData = entity;
+					entity.add(bullet);
+					
+					BulletKinematicComponent kinematic = getEngine().createComponent(BulletKinematicComponent.class);
+					kinematic.transform = model.modelInstance.transform;
+					entity.add(kinematic);
+					
+					
+					// bulletSystem.cre
 					
 					getEngine().addEntity(entity);
 				}
@@ -279,6 +305,27 @@ public class OpenWorldSpawnAnimalSystem extends IteratingSystem implements PostI
 		{
 			
 		}
+		else if(animal.state == State.DYING)
+		{
+			// TODO death animations
+			// XXX we set loop count to 1 to catch animation end without listener.
+			if(animal.environment == Environment.AIR)
+			{
+				animal.speed = .5f;
+				model.animationController.setAnimation("Armature|fly-full", 1, 1f, null);
+			}
+			else if(animal.environment == Environment.LAND)
+			{
+				animal.speed = .5f;
+				model.animationController.allowSameAnimation = true;
+				model.animationController.setAnimation("Armature|run", 1, 1f, null);
+			}
+			else if(animal.environment == Environment.WATER)
+			{
+				animal.speed = .5f;
+				model.animationController.setAnimation("Armature|swim-speed", 1, 1f, null);
+			}
+		}
 	}
 	
 	@Override
@@ -375,6 +422,22 @@ public class OpenWorldSpawnAnimalSystem extends IteratingSystem implements PostI
 			}
 		}
 		
+		// check death
+		if(animal.state == State.DYING){
+			if(model.animationController.current == null || model.animationController.current.loopCount <= 0){ // XXX
+				// apply logic
+				Array<OpenWorldElement> created = new Array<OpenWorldElement>();
+				OpenWorldModel.death(created, animal.element.type);
+				for(OpenWorldElement element : created){
+					element.position.set(animal.element.position);
+					userObject.appendObject(element);
+				}
+				getEngine().removeEntity(entity);
+			}
+		}
+		else if(animal.element.life <= 0) {
+			enterState(animal, model, State.DYING);
+		}
 		
 		// update motion on path
 		animal.pathTime += deltaTime * animal.speed / path.length;

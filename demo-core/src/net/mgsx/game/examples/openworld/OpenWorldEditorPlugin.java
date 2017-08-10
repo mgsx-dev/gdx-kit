@@ -44,6 +44,7 @@ import net.mgsx.game.examples.openworld.tools.MoveElementTool;
 import net.mgsx.game.examples.openworld.tools.RemoveElementTool;
 import net.mgsx.game.plugins.DefaultEditorPlugin;
 import net.mgsx.game.plugins.bullet.system.BulletWorldDebugSystem;
+import net.mgsx.game.plugins.editor.systems.SelectionSystem;
 import net.mgsx.game.plugins.g3d.systems.G3DCullingSystem;
 import net.mgsx.game.plugins.procedural.systems.HeightFieldDebugSystem;
 
@@ -121,6 +122,10 @@ public class OpenWorldEditorPlugin extends EditorPlugin implements DefaultEditor
 		editor.entityEngine.getSystem(HeightFieldDebugSystem.class).setProcessing(false);
 		editor.entityEngine.getSystem(OpenWorldMapSystem.class).setProcessing(false);
 		editor.entityEngine.getSystem(G3DCullingSystem.class).culling = false;
+		
+		// XXX disable default selectors !
+		// best way would be to disable select tool instead ...
+		editor.entityEngine.getSystem(SelectionSystem.class).selectors.clear();
 	}
 
 }
