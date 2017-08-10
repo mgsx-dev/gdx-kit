@@ -3,6 +3,8 @@ package net.mgsx.game.plugins.bullet.system;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntitySystem;
+import com.badlogic.ashley.core.Family;
+import com.badlogic.ashley.utils.ImmutableArray;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.math.MathUtils;
@@ -30,6 +32,7 @@ import com.badlogic.gdx.physics.bullet.linearmath.btMotionState;
 
 import net.mgsx.game.core.GamePipeline;
 import net.mgsx.game.plugins.bullet.components.BulletComponent;
+import net.mgsx.game.plugins.bullet.components.BulletKinematicComponent;
 
 public class BulletWorldSystem extends EntitySystem
 {
@@ -47,6 +50,8 @@ public class BulletWorldSystem extends EntitySystem
 	public int maxSubSteps = 5;
 	public float fixedTimeStep = 1f / 60f;
 
+	private ImmutableArray<Entity> kinematics;
+	
 	public BulletWorldSystem() {
 		super(GamePipeline.PHYSICS);
 	}
@@ -63,13 +68,21 @@ public class BulletWorldSystem extends EntitySystem
 		((btDynamicsWorld)collisionWorld).setGravity(gravity);
 		
 		resultCallback = new ClosestRayResultCallback(Vector3.Zero, Vector3.Z);
+		
+		kinematics = getEngine().getEntitiesFor(Family.all(BulletKinematicComponent.class, BulletComponent.class).get());
 	}
 
 	@Override
 	public void update(float deltaTime)
 	{
+		// update kinematics
+		for(Entity entity : kinematics){
+			BulletKinematicComponent kinematic = BulletKinematicComponent.components.get(entity);
+			BulletComponent bullet = BulletComponent.components.get(entity);
+			bullet.object.setWorldTransform(kinematic.transform);
+		}
+		// update world
 		((btDynamicsWorld)collisionWorld).stepSimulation(deltaTime, maxSubSteps, fixedTimeStep);
-
 	}
 	
 	/**
