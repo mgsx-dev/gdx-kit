@@ -8,11 +8,19 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.utils.ImmutableArray;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g3d.Renderable;
+import com.badlogic.gdx.graphics.g3d.Shader;
+import com.badlogic.gdx.graphics.g3d.shaders.DefaultShader;
+import com.badlogic.gdx.graphics.g3d.utils.DefaultShaderProvider;
+import com.badlogic.gdx.graphics.g3d.utils.RenderContext;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
 
 import net.mgsx.game.core.GamePipeline;
+import net.mgsx.game.core.PostInitializationListener;
 import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.core.annotations.EditableSystem;
 import net.mgsx.game.core.annotations.EnumType;
@@ -23,7 +31,7 @@ import net.mgsx.game.plugins.g3d.systems.G3DRendererSystem;
 
 @Storable(value="ow.env")
 @EditableSystem
-public class OpenWorldEnvSystem extends EntitySystem
+public class OpenWorldEnvSystem extends EntitySystem implements PostInitializationListener
 {
 	@Inject OpenWorldGeneratorSystem generator;
 	@Inject G3DRendererSystem g3dRender;
@@ -44,6 +52,9 @@ public class OpenWorldEnvSystem extends EntitySystem
 	@Editable public Color sunsetColor = new Color(.9f, .85f, .70f, 1f);
 	@Editable public Color sunriseColor = new Color(.1f, .1f, .1f, 1f);
 		
+	
+	@Editable public float fogExponent = 10f;
+	
 	@Inject public WeatherSystem weather;
 	@Editable public boolean autoSun, autoTime;
 
@@ -64,6 +75,32 @@ public class OpenWorldEnvSystem extends EntitySystem
 	public void addedToEngine(Engine engine) {
 		super.addedToEngine(engine);
 		allDirLights = getEngine().getEntitiesFor(Family.all(DirectionalLightComponent.class).get());
+	}
+	
+	@Override
+	public void onPostInitialization() {
+		g3dRender.setShaderProvider(new DefaultShaderProvider(
+				Gdx.files.internal("shaders/default-openworld.vs"),
+				Gdx.files.internal("shaders/default-openworld.fs")){
+			
+			@Override
+			protected Shader createShader(Renderable renderable) {
+				return new DefaultShader(renderable, config){
+					{
+						fogExponentLocation = register(new Uniform("u_fogExponent"));
+					}
+					private int fogExponentLocation;
+					
+					@Override
+					public void begin(Camera camera, RenderContext context) {
+						super.begin(camera, context);
+						set(fogExponentLocation, fogExponent);
+					}
+				};
+			}
+			
+		});
+		
 	}
 	
 	@Override
@@ -104,6 +141,8 @@ public class OpenWorldEnvSystem extends EntitySystem
 		
 		sunDirection.nor();
 		
+		float fogAlpha = fogColor.a;
+		
 		if(angle < 0.2f){
 			float t = MathUtils.clamp((angle + .2f)/0.4f, 0, 1);
 			fogColor.set(nightColor).lerp(sunriseColor, t);
@@ -120,6 +159,7 @@ public class OpenWorldEnvSystem extends EntitySystem
 			float t = MathUtils.clamp((angle - 1.2f) / 0.1f, 0, 1);
 			fogColor.set(sunsetColor).lerp(nightColor, t);
 		}
+		fogColor.a = fogAlpha;
 		
 		waterLevel = generator.scale * waterLevelRate;
 		
@@ -127,7 +167,7 @@ public class OpenWorldEnvSystem extends EntitySystem
 		float luminosity = MathUtils.clamp(timeOfDay * (1-timeOfDay) * 4, 0, 1) * 2;
 		
 		// synchronize G3DRendering
-		g3dRender.fog.set(fogColor);
+		g3dRender.fog.set(fogColor).mul(luminosity);
 		g3dRender.ambient.set(fogColor).mul(luminosity);
 		
 		// create a directional light if needed
