@@ -26,6 +26,7 @@ import net.mgsx.game.examples.openworld.systems.OpenWorldLensFlareSystem;
 import net.mgsx.game.examples.openworld.systems.OpenWorldManagerSystem;
 import net.mgsx.game.examples.openworld.systems.OpenWorldMapSystem;
 import net.mgsx.game.examples.openworld.systems.OpenWorldPhysicSystem;
+import net.mgsx.game.examples.openworld.systems.OpenWorldPlayerSensorSystem;
 import net.mgsx.game.examples.openworld.systems.OpenWorldRainSystem;
 import net.mgsx.game.examples.openworld.systems.OpenWorldSkySystem;
 import net.mgsx.game.examples.openworld.systems.OpenWorldSpawnAnimalSystem;
@@ -71,6 +72,7 @@ public class OpenWorldEditorPlugin extends EditorPlugin implements DefaultEditor
 		}
 		OpenWorldRuntimeSettings.highQuality = highQuality;
 		
+		editor.entityEngine.addSystem(new OpenWorldPlayerSensorSystem());
 		
 		editor.entityEngine.addSystem(new OpenWorldGameSystem());
 		
