@@ -212,7 +212,7 @@ public class OpenWorldGameSystem extends EntitySystem implements PostInitializat
 		
 		OpenWorldGame gameData = json.fromJson(OpenWorldGame.class, stream);
 		
-		cameraSystem.getCamera().position.set(gameData.position);
+		cameraSystem.setPosition(gameData.position);
 		
 		generator.seed = gameData.seed;
 		generator.reset();

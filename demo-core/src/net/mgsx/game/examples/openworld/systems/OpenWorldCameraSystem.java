@@ -10,10 +10,12 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.physics.bullet.collision.ClosestRayResultCallback;
+import com.badlogic.gdx.physics.bullet.dynamics.btRigidBody;
 
 import net.mgsx.game.core.GamePipeline;
 import net.mgsx.game.core.annotations.Editable;
@@ -21,6 +23,7 @@ import net.mgsx.game.core.annotations.EditableSystem;
 import net.mgsx.game.core.annotations.Inject;
 import net.mgsx.game.core.annotations.Storable;
 import net.mgsx.game.examples.openworld.components.OpenWorldCamera;
+import net.mgsx.game.examples.openworld.utils.BulletBuilder;
 import net.mgsx.game.plugins.bullet.system.BulletWorldSystem;
 import net.mgsx.game.plugins.camera.components.ActiveCamera;
 import net.mgsx.game.plugins.camera.components.CameraComponent;
@@ -29,6 +32,9 @@ import net.mgsx.game.plugins.camera.components.CameraComponent;
 @EditableSystem
 public class OpenWorldCameraSystem extends EntitySystem
 {
+	private static final float capsuleHeight = 1.7f;
+	private static final float capsuleRadius = .4f;
+	
 	public static interface CameraMatrixProvider {
 		public float getAzymuth();
 		public float getPitch();
@@ -48,11 +54,11 @@ public class OpenWorldCameraSystem extends EntitySystem
 	@Editable public boolean clipToWater = true; 
 	@Editable public boolean clipToGround = true; 
 	@Editable public boolean flyingMode = false; 
+	@Editable public boolean useCollider = true; 
 	
 	@Editable public float smoothing = 10;
 	
 	private Vector2 dir = new Vector2();
-	private Vector2 pos = new Vector2();
 	private Vector2 tan = new Vector2();
 	
 	private Vector3 focus = new Vector3();
@@ -60,7 +66,6 @@ public class OpenWorldCameraSystem extends EntitySystem
 	private Vector3 rayTarget = new Vector3();
 
 	private Ray ray = new Ray();
-	@Editable(realtime=true, readonly=true) public float totalMove = 0;
 	
 	private boolean enableControl = true, buttonWasPressed;
 	private int prevX, prevY;
@@ -69,6 +74,11 @@ public class OpenWorldCameraSystem extends EntitySystem
 
 	public transient float currentMove;
 	public transient boolean onGround;
+	
+	private Vector3 playerTargetVelocity = new Vector3();
+	private Vector3 playerColliderPosition = new Vector3();
+	private Matrix4 playerColliderTransform = new Matrix4();
+	private btRigidBody playerCollider;
 	
 	public OpenWorldCameraSystem() {
 		super(GamePipeline.INPUT);
@@ -88,6 +98,17 @@ public class OpenWorldCameraSystem extends EntitySystem
 	public void resetPosition(){
 		Camera camera = getCamera();
 		if(camera != null) camera.position.setZero();
+		playerColliderPosition.set(camera.position);
+		playerColliderPosition.y = 10; // TODO raycast for ground !
+		playerCollider.setWorldTransform(playerColliderTransform.setToTranslation(playerColliderPosition));
+		playerCollider.setLinearVelocity(Vector3.Zero);
+	}
+	
+	public void setPosition(Vector3 position) {
+		// no need to raycast here because it's recovery from previous saved position.
+		playerColliderPosition.set(position);
+		playerCollider.setWorldTransform(playerColliderTransform.setToTranslation(playerColliderPosition));
+		playerCollider.setLinearVelocity(Vector3.Zero);
 	}
 
 	@Override
@@ -95,12 +116,6 @@ public class OpenWorldCameraSystem extends EntitySystem
 		super.addedToEngine(engine);
 		activeCameras = getEngine().getEntitiesFor(Family.all(OpenWorldCamera.class, CameraComponent.class, ActiveCamera.class).get());
 		resultCallback = new ClosestRayResultCallback(Vector3.Zero, Vector3.Z);
-	}
-	
-	@Override
-	public void removedFromEngine(Engine engine) {
-		// resultCallback.release();
-		super.removedFromEngine(engine);
 	}
 	
 	@Override
@@ -112,6 +127,18 @@ public class OpenWorldCameraSystem extends EntitySystem
 		
 		Camera camera = getCamera();
 		if(camera == null) return;
+		
+		if(playerCollider == null){
+			playerColliderPosition.set(camera.position);
+			playerColliderPosition.y -= offset - capsuleHeight/2;
+			playerColliderTransform.setToTranslation(playerColliderPosition);
+			playerCollider = (btRigidBody)new BulletBuilder()
+					.beginDynamic(playerColliderTransform, 100) // 100 kg
+					.capsule(capsuleRadius, capsuleHeight)
+					.commit(bulletWorld.collisionWorld);
+		}
+		
+		playerTargetVelocity.setZero();
 		
 		if(enableControl){
 			
@@ -195,15 +222,10 @@ public class OpenWorldCameraSystem extends EntitySystem
 			if(!flyingMode){
 				dir.set(camera.direction.x, camera.direction.z).nor();
 				
-				pos.set(camera.position.x, camera.position.z);
-				
 				tan.set(-dir.y, dir.x);
 				
-				pos.mulAdd(dir, moveFront * speed * deltaTime);
-				pos.mulAdd(tan, moveSide * speed * deltaTime);
-				
-				camera.position.x = pos.x;
-				camera.position.z = pos.y;
+				playerTargetVelocity.x = dir.x * moveFront + tan.x * moveSide;
+				playerTargetVelocity.z = dir.y * moveFront + tan.y * moveSide;
 			}
 			// move camera 3D space (flying)
 			else{
@@ -211,18 +233,55 @@ public class OpenWorldCameraSystem extends EntitySystem
 				Vector3 tan3d = camera.direction.cpy().crs(camera.up).nor();
 				Vector3 nor3d = tan3d.cpy().crs(camera.direction).nor();
 				
-				camera.position.mulAdd(camera.direction, moveFront * speed * deltaTime);
-				camera.position.mulAdd(tan3d, moveSide * speed * deltaTime);
-				camera.position.mulAdd(nor3d, moveTop * speed * deltaTime);
+				playerTargetVelocity.mulAdd(camera.direction, moveFront);
+				playerTargetVelocity.mulAdd(tan3d, moveSide);
+				playerTargetVelocity.mulAdd(nor3d, moveTop);
 			}
-			
-			
-			currentMove = (moveFront + moveSide) * speed * deltaTime;
-			totalMove += Math.abs(currentMove);
 		}
 		
+		if(useCollider){
+			
+			// update camera
+			playerColliderTransform.getTranslation(playerColliderPosition);
+			playerColliderPosition.y -= (capsuleHeight - capsuleRadius)/2 - offset;
+			camera.position.set(playerColliderPosition);
+			
+			// update collider speed
+			playerTargetVelocity.nor().scl(speed);
+			
+			// apply gravity by copying Y velocity (if not flying mode)
+			Vector3 currentVelocity = playerCollider.getLinearVelocity();
+			
+			// XXX diving/swiming fixed here, have to sync with player control in game logic ...
+			if(flyingMode){
+				if(playerColliderPosition.y < env.waterLevel){
+					playerTargetVelocity.y += .5f;
+					playerCollider.setGravity(new Vector3(0,0,0));
+				}else if(playerColliderPosition.y > env.waterLevel + .2f){
+					playerTargetVelocity.y = currentVelocity.y;
+					playerCollider.setGravity(new Vector3(0,-9.8f,0));
+				}
+			}else{
+				playerCollider.setGravity(new Vector3(0,-9.8f,0));
+				playerTargetVelocity.y = currentVelocity.y; // TODO GC ?
+				playerTargetVelocity.lerp(currentVelocity, .9f);
+			}
+			playerCollider.setLinearVelocity(playerTargetVelocity);
+			playerCollider.activate(true); // TODO disable desactivation in flags
+			playerCollider.setFriction(.5f);
+			playerCollider.setRestitution(0);
+			
+		}else{
+			playerColliderPosition.mulAdd(playerTargetVelocity, deltaTime * speed);
+			camera.position.set(playerColliderPosition);
+			playerColliderTransform.setToTranslation(playerColliderPosition);
+		}
+		
+		// TODO maybe not accurate
+		currentMove = playerTargetVelocity.len() * speed * deltaTime;
+		
 		// ray cast for Y
-		if(clipToGround){
+		if(clipToGround && !useCollider){
 			
 			ray.origin.set(camera.position);
 			ray.origin.y = 0;

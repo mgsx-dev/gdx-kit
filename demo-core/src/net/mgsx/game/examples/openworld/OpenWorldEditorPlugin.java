@@ -73,6 +73,9 @@ public class OpenWorldEditorPlugin extends EditorPlugin implements DefaultEditor
 		OpenWorldRuntimeSettings.highQuality = highQuality;
 		
 		editor.entityEngine.addSystem(new OpenWorldPlayerSensorSystem());
+		// XXX
+		editor.entityEngine.getSystem(OpenWorldPlayerSensorSystem.class).setProcessing(false);
+		
 		
 		editor.entityEngine.addSystem(new OpenWorldGameSystem());
 		

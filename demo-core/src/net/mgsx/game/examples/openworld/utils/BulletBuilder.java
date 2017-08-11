@@ -2,6 +2,7 @@ package net.mgsx.game.examples.openworld.utils;
 
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.physics.bullet.collision.btCapsuleShape;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionObject;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionShape;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionWorld;
@@ -62,6 +63,22 @@ public class BulletBuilder {
 		return this;
 	}
 	
+	public BulletBuilder beginDynamic(final Matrix4 transform, float mass){
+		reset();
+		this.mass = mass;
+		motionState = new btMotionState(){
+			@Override
+			public void getWorldTransform(Matrix4 worldTrans) {
+				worldTrans.set(transform);
+			}
+			@Override
+			public void setWorldTransform(Matrix4 worldTrans) {
+				transform.set(worldTrans);
+			}
+		};
+		return this;
+	}
+	
 	public btCollisionObject end(){
 		btCollisionShape finalShape = compoundShape != null ? compoundShape : shape;
 		if(finalShape == null){
@@ -72,7 +89,7 @@ public class BulletBuilder {
 		if(collisionObject != null){
 			collisionObject.setCollisionShape(finalShape);
 		}
-		// dynamic/kinematic object
+		// dynamic/kinematic object TODO local inertia for true dynamic object
 		else{
 			collisionObject = new btRigidBody(mass, motionState, finalShape);
 		}
@@ -132,6 +149,10 @@ public class BulletBuilder {
 	}
 	public BulletBuilder sphere(float radius) {
 		shape = new btSphereShape(radius);
+		return this;
+	}
+	public BulletBuilder capsule(float radius, float height) {
+		shape = new btCapsuleShape(radius, height);
 		return this;
 	}
 	
