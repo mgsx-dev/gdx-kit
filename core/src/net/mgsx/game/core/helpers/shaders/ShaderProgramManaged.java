@@ -632,8 +632,10 @@ abstract public class ShaderProgramManaged implements Serializable {
 		}
 		String[] cfg = json.readValue("config", String[].class, jsonData);
 		currentConfig.clear();
-		for(String c : cfg){
-			currentConfig.add(c);
+		if(cfg != null){
+			for(String c : cfg){
+				currentConfig.add(c);
+			}
 		}
 		for(Accessor accessor : AccessorScanner.scan(this, true, false)){
 			json.readField(this, accessor.getName(), jsonData);
