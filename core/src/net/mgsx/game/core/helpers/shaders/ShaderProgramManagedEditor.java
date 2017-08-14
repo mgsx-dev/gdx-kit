@@ -58,7 +58,7 @@ public class ShaderProgramManagedEditor implements FieldEditor
 			@Override
 			public void loaded() 
 			{
-				if(configCell.getActor() == null){
+				if(configCell.getActor() == null && spm.configs != null){
 					Table cTable = new Table(skin);
 					configCell.setActor(cTable);
 					for(final String config : spm.configs){
@@ -124,6 +124,8 @@ public class ShaderProgramManagedEditor implements FieldEditor
 				});
 			}
 		});
+		
+		spm.handler.loaded();
 		
 		return table;
 	}

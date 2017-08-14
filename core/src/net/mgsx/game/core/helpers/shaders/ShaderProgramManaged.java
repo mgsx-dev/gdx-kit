@@ -16,17 +16,20 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.BufferUtils;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.Json;
+import com.badlogic.gdx.utils.Json.Serializable;
+import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.ObjectMap.Entry;
 import com.badlogic.gdx.utils.ObjectSet;
 
 import net.mgsx.game.core.Kit;
 import net.mgsx.game.core.annotations.Editable;
-import net.mgsx.game.core.annotations.NotEditable;
 import net.mgsx.game.core.helpers.FileHelper;
 import net.mgsx.game.core.helpers.ShaderProgramHelper;
 import net.mgsx.game.core.helpers.StringHelper;
 import net.mgsx.game.core.ui.accessors.Accessor;
+import net.mgsx.game.core.ui.accessors.AccessorScanner;
 
 /**
  * Easy {@link ShaderProgram} editor wrapper.
@@ -53,7 +56,7 @@ import net.mgsx.game.core.ui.accessors.Accessor;
  *
  */
 // TODO allow #include and other features (#define switches, #version injection ...)
-abstract public class ShaderProgramManaged {
+abstract public class ShaderProgramManaged implements Serializable {
 
 	static interface ControlHandler {
 		void loaded();
@@ -286,31 +289,27 @@ abstract public class ShaderProgramManaged {
 	}
 
 	// fields used for path persistence
-	@NotEditable
-	public String vs, fs;
+	private String vs, fs;
 	
-	@NotEditable
-	public String [] config;
+	ObjectSet<String> currentConfig = new ObjectSet<String>();
 	
-	transient ObjectSet<String> currentConfig = new ObjectSet<String>();
+	ShaderInfo shaderInfo;
 	
-	transient ShaderInfo shaderInfo;
+	protected FileHandle vertexShader;
+	protected FileHandle fragmentShader;
 	
-	transient protected FileHandle vertexShader;
-	transient protected FileHandle fragmentShader;
+	private ShaderProgram shaderProgram;
 	
-	transient private ShaderProgram shaderProgram;
+	private IntBuffer result = BufferUtils.newIntBuffer(16);
+	private IntBuffer type = BufferUtils.newIntBuffer(1);
+	private boolean frozen = true;
 	
-	transient private IntBuffer result = BufferUtils.newIntBuffer(16);
-	transient private IntBuffer type = BufferUtils.newIntBuffer(1);
-	transient private boolean frozen = true;
-	
-	transient private Array<UniformAccessor> allUniformAccessors;
-	transient private Array<UniformAccessor> activeUniformAccessors;
+	private Array<UniformAccessor> allUniformAccessors;
+	private Array<UniformAccessor> activeUniformAccessors;
 
-	transient private int samplerUnits;
+	private int samplerUnits;
 	
-	transient ObjectSet<String> configs;
+	ObjectSet<String> configs;
 
 	private boolean invalidated;
 	
@@ -419,13 +418,10 @@ abstract public class ShaderProgramManaged {
 		String preVertCode = "";
 		String preFragCode = "";
 		
-		config = new String[currentConfig.size];
-		int j=0;
 		for(String cfg : currentConfig){
 			String code = "#define " + StringHelper.camelCaseToUnderScoreUpperCase(cfg) + "\n";
 			preVertCode += code;
 			preFragCode += code;
-			config[j++] = cfg;
 		}
 		
 		for(UniformAccessor ua : allUniformAccessors) {
@@ -434,7 +430,7 @@ abstract public class ShaderProgramManaged {
 			}else{
 				ua.enabled = false;
 				for(String only : ua.only){
-					for(String cfg : config){
+					for(String cfg : currentConfig){
 						if(cfg.equals(only)){
 							ua.enabled = true;
 						}
@@ -625,6 +621,44 @@ abstract public class ShaderProgramManaged {
 		this.currentConfig.clear();
 		for(String c : configs) this.currentConfig.add(c);
 		invalidate();
+	}
+	
+	@Override
+	public void read(Json json, JsonValue jsonData) {
+		ShaderInfo info = this.getClass().getAnnotation(ShaderInfo.class);
+		if(info != null && info.storable()){
+			json.readField(this, "vs", jsonData);
+			json.readField(this, "fs", jsonData);
+		}
+		String[] cfg = json.readValue("config", String[].class, jsonData);
+		currentConfig.clear();
+		for(String c : cfg){
+			currentConfig.add(c);
+		}
+		for(Accessor accessor : AccessorScanner.scan(this, true, false)){
+			json.readField(this, accessor.getName(), jsonData);
+		}
+		invalidate();
+	}
+	
+	@Override
+	public void write(Json json) {
+		ShaderInfo info = this.getClass().getAnnotation(ShaderInfo.class);
+		if(info != null && info.storable()){
+			json.writeField(this, "vs");
+			json.writeField(this, "fs");
+		}
+		if(currentConfig.size > 0){
+			String[] cfg = new String[currentConfig.size];
+			int i=0;
+			for(String c : currentConfig){
+				cfg[i++] = c;
+			}
+			json.writeValue("config", cfg);
+		}
+		for(Accessor accessor : AccessorScanner.scan(this, true, false)){
+			json.writeField(this, accessor.getName());
+		}
 	}
 	
 }
