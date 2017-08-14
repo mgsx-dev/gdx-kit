@@ -27,6 +27,15 @@ task dist(type: Jar) {
     }
 }
 
+task genTutorials(dependsOn: classes, type: JavaExec, group: "kit") {
+    main = "net.mgsx.game.tutorials.TutorialGenerator"
+    args = ["-jekyll", "-path", "$projectDir/../../gdx-kit-ghpages/tuto"]
+    classpath = sourceSets.test.runtimeClasspath
+    standardInput = System.in
+    ignoreExitValue = false
+}
+
+
 dist.dependsOn classes
 
 eclipse {

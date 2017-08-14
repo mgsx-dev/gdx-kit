@@ -47,11 +47,17 @@ public class TutorialGenerator {
 			tutorial(config.id() + ".md", type);
 		}
 		
-		generate(args.length > 0 && args[0].equals("-dry"));
+		generate(Arrays.asList(args));
 	}
 	
-	private static void generate(boolean dry) throws Exception
+	private static void generate(List<String> parameters) throws Exception
 	{
+		boolean dry = parameters.contains("-dry");
+		String path = "tutorial-gen/";
+		if(parameters.contains("-path")){
+			path = parameters.get(parameters.indexOf("-path")+1);
+		}
+		
 		for(int i=0 ; i<tutorials.size() ; i++)
 		{
 			String name = names.get(i);
@@ -60,9 +66,9 @@ public class TutorialGenerator {
 			if(dry)
 				writer = new StringWriter();
 			else
-				writer = new FileWriter("tutorial-gen/" + name);
+				writer = new FileWriter(path + "/" + name);
 			for(Class<?> type : tutorial){
-				generate(new PrintWriter(writer), type);
+				generate(new PrintWriter(writer), type, parameters);
 			}
 			
 			System.out.println("File : " + name);
@@ -74,12 +80,20 @@ public class TutorialGenerator {
 		}
 	}
 		
-	private static void generate(PrintWriter writer, Class<?> type) throws Exception{
+	private static void generate(PrintWriter writer, Class<?> type, List<String> parameters) throws Exception{
         FileInputStream in = new FileInputStream("tutorial/" + 
         		type.getName().replaceAll("\\.", "/") + ".java");
 
         BufferedReader br = new BufferedReader(new InputStreamReader(in, "UTF8"));         
 
+        Tutorial config = type.getAnnotation(Tutorial.class);
+        
+        if(parameters.contains("-jekyll")){
+        	writer.println("---");
+        	writer.println("title: \"" + config.title() + "\"");
+        	writer.println("---");
+        }
+        
         boolean md = false;
         boolean code = false;
         String line;
