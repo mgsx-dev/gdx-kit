@@ -13,6 +13,7 @@ import net.mgsx.game.examples.openworld.components.OpenWorldCamera;
 import net.mgsx.game.examples.openworld.components.TreesComponent;
 import net.mgsx.game.examples.openworld.model.OpenWorldRuntimeSettings;
 import net.mgsx.game.examples.openworld.systems.OpenLifeAnimalSystem;
+import net.mgsx.game.examples.openworld.systems.OpenWorldAudioSystem;
 import net.mgsx.game.examples.openworld.systems.OpenWorldCameraPathSystem;
 import net.mgsx.game.examples.openworld.systems.OpenWorldCameraSystem;
 import net.mgsx.game.examples.openworld.systems.OpenWorldDebugSystem;
@@ -71,7 +72,8 @@ public class OpenWorldEditorPlugin extends EditorPlugin implements DefaultEditor
 			}
 		}
 		OpenWorldRuntimeSettings.highQuality = highQuality;
-		
+		editor.entityEngine.addSystem(new OpenWorldAudioSystem());
+
 		editor.entityEngine.addSystem(new OpenWorldPlayerSensorSystem());
 		// XXX
 		editor.entityEngine.getSystem(OpenWorldPlayerSensorSystem.class).setProcessing(false);

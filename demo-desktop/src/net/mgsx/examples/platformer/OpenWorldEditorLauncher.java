@@ -33,7 +33,8 @@ public class OpenWorldEditorLauncher {
 				"net.mgsx.game.examples.openworld"
 				);
 		
-		PdConfiguration.disabled = true;
+		PdConfiguration.remoteEnabled = true;
+//		PdConfiguration.remoteHost = "192.168.0.34";
 		
 		LwjglApplicationConfiguration.disableAudio = true;
 

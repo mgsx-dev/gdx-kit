@@ -89,6 +89,9 @@ public class OpenWorldHUD extends Table
 			public void onSecretUnlocked(String itemId) {
 				questStatusPopup.pushSecretStatus(itemId);
 			}
+			@Override
+			public void onPlayerAction(GameAction action, String type) {
+			}
 		});
 		
 		build();
