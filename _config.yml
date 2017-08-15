@@ -17,7 +17,7 @@ title: GDX-KIT
 email: info@mgsx.net
 description: > # this means to ignore newlines until "baseurl:"
   LibGDX based game engine framework.
-baseurl: "" # the subpath of your site, e.g. /blog
+baseurl: "/gdx-kit" # the subpath of your site, e.g. /blog
 url: "" # the base hostname & protocol for your site, e.g. http://example.com
 twitter_username: jekyllrb
 github_username:  jekyll
