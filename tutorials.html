@@ -1,0 +1,20 @@
+---
+layout: page
+---
+
+<h1 class="page-heading">Tutorials</h1>
+
+<p>Most of following tutorials are generated from KIT example source code. The source files used to generate tutorial pages are fully runnable, you can found them in the <a href="https://github.com/mgsx-dev/gdx-kit/tree/master/demo-desktop/tutorial/net/mgsx/game/tutorials/chapters">tutorials source folder</a>.</p>
+
+<h1 class="page-heading">Contents</h1>
+
+<ul class="post-list">
+  {% assign sorted_tutorials = site.tutorials | sort: 'key' %}
+  {% for post in sorted_tutorials %}
+    <li>
+      <h2>
+        <a class="post-link" href="{{ post.url | relative_url }}">{{ post.title | escape }}</a>
+      </h2>
+    </li>
+  {% endfor %}
+</ul>

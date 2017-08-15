@@ -1,0 +1,38 @@
+---
+layout: default
+---
+
+<div class="home">
+
+
+  <div style="position: absolute; width: 1024px; padding-top: 200px; text-align: center;">
+  <div id="title">
+    <h1><span style="color: #777;">GDX - </span><span>KIT</span></h1>
+    <p>{{ site.description | default: site.github.project_tagline }}</p>
+  </div>
+</div>
+  <img src="{{ site.baseurl }}/img/banner.png" style="opacity: 0.3; padding-bottom: 30px;">
+<br style="">
+
+<p>
+KIT is not a game engine but a game engine framework in the same way LibGDX is more a game framework than a game engine. 
+</p>
+<p>
+Conviction behind this is that games are most of the time so specific that they deserve a specific engine and specific editors. Developing editors for each games is a huge spent of time and often limited to a simple debug view. In another hand, general purpose game editor does not always fit your needs. More, such engine become a labyrinthine system and reduce games diversity in some way... That's an opinion, not a truth!
+</p>
+<p>
+KIT try to answer this problem by providing a tiny core for the games runtime, a tooling frameworks for game editors and a bunch of plugins for both. When starting a new project, you may pickup some built-in plugins and/or develop your own. Plugins come with their game editor parts so you already have a game editor. But what about game specifics ?<br>
+A game is actually a plugin, you code your game as a KIT plugin. This is the same if you need specific editor parts : you have to code it too but KIT provides all you need to speed up the things.
+</p>
+<p>
+KIT is based on LibGDX and Ashley (The LibGDX ECS library) and provides plugins for both LibGDX core features and some extensions
+<a href="{{ site.baseurl }}/overview">Read more...</a>
+</p>
+
+
+  {{ content }}
+
+<!--
+  <p class="rss-subscribe">subscribe <a href="{{ "/feed.xml" | relative_url }}">via RSS</a></p>
+-->
+</div>
