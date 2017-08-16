@@ -1,0 +1,19 @@
+---
+layout: page
+---
+<article class="post">
+    
+    <!-- link to the sketch -->
+    {% assign identifier = page.id | replace: "/tutorials/", "/sketches/" %}
+    {% for sketch in site.sketches %}
+        {% if sketch.id == identifier%}
+            <p>
+                You can take a look at the <a href="{{ sketch.url | relative_url }}">"{{ sketch.title }}"</a> sketch to preview the result.
+            </p>
+            <hr>
+        {% endif %}
+    {% endfor %}
+
+    {{ content }}
+
+</article>

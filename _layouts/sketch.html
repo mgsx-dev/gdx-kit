@@ -1,0 +1,34 @@
+---
+layout: default
+---
+<article class="post">
+
+    <h1 style="text-align: center;">{{ page.title }}</h1>
+    <p style="color: #aa9977; text-align: center;">{{ page.description }}</p>
+
+    <!-- link to the tutorial -->
+    {% assign identifier = page.id | replace: "/sketches/", "/tutorials/" %}
+    {% for tutorial in site.tutorials %}
+        {% if tutorial.id == identifier%}
+            <p>
+                This sketch illustrates the <a href="{{ tutorial.url | relative_url }}">"{{ tutorial.title }}"</a> tutorial.
+            </p>
+        {% endif %}
+    {% endfor %}
+
+    <p>{{ content }}</p>
+
+    {% if page.video %}
+        <div>
+            <iframe width="1000" height="720" src="http://www.youtube.com/embed/{{ page.video }}?autoplay=0"></iframe>
+        </div>
+
+    {% elsif page.image %}
+
+    {% else %}
+        <div style="display: inline-block; border: 1px solid #444444; background-color: #111111; color: #444444; float left; width: 1000px; text-align: center;  padding-top: 350px; padding-bottom: 350px; margin: 2px;">
+            Video preview soon...
+        </div>
+    {% endif %}
+
+</article>

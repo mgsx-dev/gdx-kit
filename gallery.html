@@ -1,0 +1,38 @@
+---
+layout: "page"
+title: "Gallery"
+---
+
+<center>
+<p>
+Here is some small KIT experimentations I made during KIT development.
+</p>
+
+{% assign sorted_sketches = site.sketches | sort: 'date' %}
+{% for post in sorted_sketches %}
+<div style="display: inline-block; border: 1px solid #443311; float left; width: 460px; padding: 10px; margin: 10px;">
+    <h3>{{ post.title }}</h3>
+    
+    {% if post.video %}
+        <div>
+            <iframe width="400" height="260" src="http://www.youtube.com/embed/{{ post.video }}?autoplay=0"></iframe>
+        </div>
+
+    {% elsif post.image %}
+
+    {% else %}
+        <div style="display: inline-block; border: 1px solid #444444; background-color: #111111; color: #444444; float left; width: 400px; text-align: center;  padding-top: 130px; padding-bottom: 130px; margin: 2px;">
+            Video preview soon...
+        </div>
+    {% endif %}
+
+    
+
+    <p style="color: #aa9977;">{{ post.description }}</p>
+
+    <p>
+        <a href="{{ post.url | relative_url }}">read more...</a>
+    </p>
+
+</div>
+{% endfor %}

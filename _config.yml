@@ -31,14 +31,20 @@ plugins:
 collections:
   tutorials:
     output: true
+  sketches:
+    output: true
 
 defaults:
   - scope:
       path: ""
       type: tutorials
     values:
-      layout: page
-
+      layout: tutorial
+  - scope:
+      path: ""
+      type: sketches
+    values:
+      layout: sketch
 
 # Exclude from processing.
 # The following items will not be processed, by default. Create a custom list
