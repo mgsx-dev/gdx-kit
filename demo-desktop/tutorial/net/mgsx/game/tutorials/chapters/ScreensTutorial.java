@@ -1,12 +1,9 @@
 package net.mgsx.game.tutorials.chapters;
 
-import com.badlogic.gdx.ApplicationListener;
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.badlogic.gdx.graphics.Color;
@@ -32,7 +29,6 @@ import net.mgsx.game.core.Kit;
 import net.mgsx.game.core.screen.ScreenClip;
 import net.mgsx.game.core.screen.StageScreen;
 import net.mgsx.game.core.screen.TransitionDesc;
-import net.mgsx.game.core.screen.TransitionScreen;
 import net.mgsx.game.core.screen.Transitions;
 import net.mgsx.game.tutorials.Tutorial;
 
@@ -40,49 +36,47 @@ import net.mgsx.game.tutorials.Tutorial;
 // TODO maybe separate in 2 tutorials : workflow and customization (from custom shader, ... to custom transition)
 /**@md
 This tutorial desmonstrate use of screens in KIT.
-KIT screen API is based on LibGDX screen API so if your familiar with {@link Game} and {@link Screen} you
+KIT screen API is based on LibGDX screen API so if your familiar with {@link com.badlogic.gdx.Game} and {@link com.badlogic.gdx.Screen} you
 won't be lost in here.
 KIT screens API provides usefull tools to easily build screen workflow including transitions.
 All built-in transitions can be accessed throw {@link Transitions} like you do with {@link Actions} in scene 2D.
-In order to use KIT screen API, we need to extends {@link GameApplication} which is no more than a {@link Game} with
+In order to use KIT screen API, we need to extends {@link GameApplication} which is no more than a {@link com.badlogic.gdx.Game} with
 KIT screens features, it is a screen management implementation.
 
 **Note about screens workflow** : Screens have 3 nested states : living, displayed, paused.
-{@link ApplicationListener} describes events occuring when transiting.
+{@link com.badlogic.gdx.ApplicationListener} describes events occuring when transiting.
 
-First living state start when screen is created (new Screen()) and end when it is disposed ({@link Screen#dispose()}.
-As {@link Game}, {@link GameApplication} won't automatically dispose your screens because sometime you want to reuse
+First living state start when screen is created (new Screen()) and end when it is disposed ({@link com.badlogic.gdx.Screen#dispose()}.
+As {@link com.badlogic.gdx.Game}, {@link GameApplication} won't automatically dispose your screens because sometime you want to reuse
 some screens (loaders, menus...) and some you don't (in game level screen). This is the responsability of your
 {@link GameApplication} sub class. Usually you create some long living screens at creation time on ({@link #create()}
 and create others when needed. You may also want to lazy create screen but cache them for futur uses. Since strategy is
 game specific, you'll have to decide yourself.
 
-Then display state is trigger by {@link Screen#show()} and exited with {@link Screen#hide()} method. For long living
+Then display state is trigger by {@link com.badlogic.gdx.Screen#show()} and exited with {@link com.badlogic.gdx.Screen#hide()} method. For long living
 screen, some resources may be released when hidden and recreated when shown. This is the case with {@link StageScreen} which
 create scene2D object when shown and clear state when hidden. You can override this behavior if for instance your GUI take
 long time to build.
 
 With transition from screen A to screen B, display states are handled as follow : 
 * initially A is shown and B is hidden.
-* when transition starts, B is shown ({@link Screen#show()} is called)
+* when transition starts, B is shown ({@link com.badlogic.gdx.Screen#show()} is called)
 * during transitions, both A and B screens are rendered
-* when transitions ends, A is hidden ({@link Screen#hide()} is called)
+* when transitions ends, A is hidden ({@link com.badlogic.gdx.Screen#hide()} is called)
 * after transition, only B screen is rendered.
 
 Finally paused state occurs when application is minimized (on Android when activity leave foreground). In this case
 current screen is paused and resume when going back in foreground.
 
-During transitions all displayed screens goes to background and {@link Screen#pause()} is called for all of them
-(including {@link TransitionScreen} itself). When application goes foreground, {@link Screen#resume()} is called for
-all screens (including {@link TransitionScreen} itself) and all can continue their animations.
+During transitions all displayed screens goes to background and {@link com.badlogic.gdx.Screen#pause()} is called for all of them
+(including {@link net.mgsx.game.core.screen.TransitionScreen} itself). When application goes foreground, {@link com.badlogic.gdx.Screen#resume()} is called for
+all screens (including {@link net.mgsx.game.core.screen.TransitionScreen} itself) and all can continue their animations.
 
 @md*/
 
 @Tutorial(id="screens", title="Using KIT Screen API")
 
-//@code
 public class ScreensTutorial extends GameApplication
-//@code
 {
 	public static void main (final String[] args) 
 	{
