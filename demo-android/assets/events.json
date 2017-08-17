@@ -1,0 +1,20 @@
+[
+	{
+		name: "None"
+		description: "All is fine"
+		chance: 100
+	}
+	{
+		name: "Police"
+		description: ""
+		chance: 20
+		money: -0.5
+	}
+	{
+		name: "Robery"
+		description: ""
+		chance: 60
+		money: -0.5
+		goods: -0.8
+	}
+]

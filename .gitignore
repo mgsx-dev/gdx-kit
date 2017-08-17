@@ -9,7 +9,7 @@ hs_err_pid*
 robovm-build/
 
 ## GWT
-war/
+# war/
 html/war/gwt_bree/
 html/gwt-unitCache/
 .apt_generated/
