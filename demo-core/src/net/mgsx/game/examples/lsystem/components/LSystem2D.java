@@ -5,7 +5,9 @@ import com.badlogic.ashley.core.ComponentMapper;
 
 import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.core.annotations.EditableComponent;
+import net.mgsx.game.core.annotations.Storable;
 
+@Storable("lsystem.2d")
 @EditableComponent
 public class LSystem2D implements Component
 {

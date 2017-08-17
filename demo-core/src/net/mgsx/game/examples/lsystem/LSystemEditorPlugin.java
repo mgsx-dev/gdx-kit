@@ -1,14 +1,16 @@
 package net.mgsx.game.examples.lsystem;
 
 import net.mgsx.game.core.EditorScreen;
+import net.mgsx.game.core.annotations.PluginDef;
 import net.mgsx.game.core.plugins.EditorPlugin;
 import net.mgsx.game.examples.lsystem.components.LSystem3D;
 import net.mgsx.game.examples.lsystem.editors.LSystemEditor;
 import net.mgsx.game.examples.lsystem.systems.LSystem2DRenderer;
 import net.mgsx.game.examples.lsystem.systems.LSystem3DRender;
-import net.mgsx.game.plugins.DefaultEditorPlugin;
+import net.mgsx.game.plugins.editor.KitEditorPlugin;
 
-public class LSystemEditorPlugin extends EditorPlugin implements DefaultEditorPlugin
+@PluginDef(dependencies=KitEditorPlugin.class)
+public class LSystemEditorPlugin extends EditorPlugin
 {
 
 	@Override
