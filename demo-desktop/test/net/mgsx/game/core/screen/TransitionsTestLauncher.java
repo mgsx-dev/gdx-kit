@@ -1,9 +1,6 @@
-package net.mgsx.box2d.editor.desktop;
+package net.mgsx.game.core.screen;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.assets.loaders.resolvers.ClasspathFileHandleResolver;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.badlogic.gdx.graphics.Color;
@@ -16,12 +13,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Array;
 
+import net.mgsx.game.core.GameApplication;
 import net.mgsx.game.core.helpers.AssetHelper;
-import net.mgsx.game.core.screen.ScreenTransition;
-import net.mgsx.game.core.screen.StageScreen;
-import net.mgsx.game.core.screen.TransitionDesc;
-import net.mgsx.game.core.screen.TransitionScreen;
-import net.mgsx.game.core.screen.Transitions;
 
 public class TransitionsTestLauncher 
 {
@@ -98,13 +91,12 @@ public class TransitionsTestLauncher
 		
 	}
 	
-	private static class TransitionsTestApplication extends Game
+	private static class TransitionsTestApplication extends GameApplication
 	{
-		private AssetManager assets;
 		@Override
 		public void create() 
 		{
-			assets = new AssetManager(new ClasspathFileHandleResolver());
+			super.create();
 			Skin skin = AssetHelper.loadAssetNow(assets, "uiskin.json", Skin.class);
 			setScreen(new TransitionsTestScreen(skin));
 		}

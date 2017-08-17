@@ -1,5 +1,7 @@
 package net.mgsx.game.examples;
 
+import java.util.Comparator;
+
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
@@ -11,6 +13,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.ObjectSet;
 
 import net.mgsx.game.core.EditorApplication;
 import net.mgsx.game.core.EditorConfiguration;
@@ -20,27 +24,49 @@ import net.mgsx.game.core.helpers.ReflectionHelper;
 import net.mgsx.game.core.meta.ClassRegistry;
 import net.mgsx.game.core.plugins.EditorPlugin;
 import net.mgsx.game.core.screen.StageScreen;
+import net.mgsx.game.plugins.ashley.AshleyEditorPlugin;
+import net.mgsx.game.plugins.editor.KitEditorPlugin;
 import net.mgsx.kit.config.ReflectionClassRegistry;
+import net.mgsx.pd.Pd;
 import net.mgsx.pd.PdConfiguration;
 
 public class ExamplesEditorDesktopLauncher {
 
 	private static class MenuScreen extends StageScreen
 	{
-		public MenuScreen(final ApplicationWrapper wrapper) {
+		private ApplicationWrapper wrapper;
+
+		public MenuScreen(ApplicationWrapper wrapper) {
 			super(new Skin(Gdx.files.classpath("uiskin.json")));
+			this.wrapper = wrapper;
 			
 			Table root = new Table(getSkin());
 			root.setFillParent(true);
 			getStage().addActor(root);
 			
+			root.add("Examples");
+			root.add("Plugins");
+			root.row();
+			root.add(new ScrollPane(createLaunchers("net.mgsx.game.examples"), getSkin())).expandY().top();
+			root.add(new ScrollPane(createLaunchers("net.mgsx.game.plugins"), getSkin())).expandY().top();
+			
+			// XXX Workaround since Kit.inputs is not set out of GameApplication context ...
+			Gdx.input.setInputProcessor(getStage());
+		}
+		
+		private Table createLaunchers(String forPackage){
 			Table table = new Table(getSkin());
 			
-			root.add(new ScrollPane(table, getSkin()));
-			
 			// scan example plugins package
-			ReflectionClassRegistry scanner = new ReflectionClassRegistry("net.mgsx.game.examples");
-			for(final Class plugin : scanner.getSubTypesOf(EditorPlugin.class)){
+			ReflectionClassRegistry scanner = new ReflectionClassRegistry(forPackage);
+			Array<Class> plugins = scanner.getSubTypesOf(EditorPlugin.class);
+			plugins.sort(new Comparator<Class>() {
+				@Override
+				public int compare(Class o1, Class o2) {
+					return o1.getSimpleName().compareTo(o2.getSimpleName());
+				}
+			});
+			for(final Class plugin : plugins){
 				
 				TextButton bt = new TextButton(plugin.getSimpleName(), getSkin());
 				table.add(bt).fillX().row();
@@ -48,8 +74,17 @@ public class ExamplesEditorDesktopLauncher {
 				bt.addListener(new ChangeListener() {
 					@Override
 					public void changed(ChangeEvent event, Actor actor) {
+						// configure classpath scanner for this plugin
+						// TODO is it really necessary ? should we force plugin to declare components ?
+						// Couldn't this be done automatically for each plugins and dependent plugings ?
 						ClassRegistry.instance = new ReflectionClassRegistry(plugin.getPackage().getName());
 						EditorConfiguration editConfig = new EditorConfiguration();
+						
+						// XXX patch for individual plugins
+						editConfig.plugins.add(new KitEditorPlugin());
+						editConfig.plugins.add(new AshleyEditorPlugin());
+						
+						// instanciate selected plugin
 						EditorPlugin pluginInstance = ReflectionHelper.newInstance(plugin);
 						editConfig.plugins.add(pluginInstance);
 						// boot file from classpath if exists
@@ -64,21 +99,18 @@ public class ExamplesEditorDesktopLauncher {
 				});
 			}
 			
-			// XXX Workaround
-			Gdx.input.setInputProcessor(getStage());
+			return table;
 		}
 	}
 	
 	private ApplicationWrapper wrapper;
 	
-	public ExamplesEditorDesktopLauncher() 
+	public ExamplesEditorDesktopLauncher(final boolean pd) 
 	{
-		// TODO how to configure disabled, remote, enabled ...
-		PdConfiguration.disabled = true;
-		
 		Game menuApplication = new Game() {
 			@Override
 			public void create() {
+				if(pd) Pd.audio.create(new PdConfiguration());
 				setScreen(new MenuScreen(wrapper));
 			}
 		};
@@ -88,6 +120,24 @@ public class ExamplesEditorDesktopLauncher {
 	
 	public static void main (String[] args) 
 	{
-		new ExamplesEditorDesktopLauncher();
+		ObjectSet<String> parameters = new ObjectSet<String>();
+		parameters.addAll(args);
+		
+		// TODO could we abstract a little the pd things with the Pd Plugin ?
+		// process arguments. Default configuration is Gdx audio and no Pd at all.
+		boolean pd = false;
+		if(parameters.contains("-pd")){
+			pd = true;
+			PdConfiguration.disabled = false;
+		} else if(parameters.contains("-pd-remote")){
+			PdConfiguration.remoteEnabled = true;
+		} else {
+			PdConfiguration.disabled = true;
+		}
+		if(parameters.contains("-no-audio")){
+			LwjglApplicationConfiguration.disableAudio = true;
+		}
+		
+		new ExamplesEditorDesktopLauncher(pd);
 	}
 }

@@ -14,6 +14,7 @@ import net.mgsx.game.plugins.editor.KitEditorPlugin;
 import net.mgsx.kit.config.ReflectionClassRegistry;
 import net.mgsx.kit.launcher.DesktopApplication;
 
+// TODO tutorial instead !
 public class KitSystemTest
 {
 	@PluginDef(category="test")
