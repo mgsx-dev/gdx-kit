@@ -1,0 +1,56 @@
+{
+entities: [
+	{
+		id: 0
+		2d: {
+			position: {
+				x: -3.5914984
+				y: 2.0683932
+			}
+		}
+		war.zone: {}
+	}
+	{
+		id: 1
+		2d: {
+			position: {
+				x: -0.4073217
+				y: 0.40112555
+			}
+		}
+		war.zone: {}
+	}
+	{
+		id: 2
+		2d: {
+			position: {
+				x: 0.4450302
+				y: 3.9110982
+			}
+		}
+		war.zone: {}
+	}
+]
+systems: [
+	{
+		type: core.bindings
+		enabled: true
+		bindings: []
+	}
+	{
+		type: core.clearScreen
+		enabled: true
+		color: {
+			r: 0.2
+			g: 0.2
+			b: 0.2
+			a: 1
+		}
+		clearColor: true
+		clearDepth: true
+	}
+]
+views: [
+	net.mgsx.game.examples.war.system.WarLogicSystem
+]
+}
