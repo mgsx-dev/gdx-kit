@@ -10,10 +10,10 @@ uniform sampler2D u_texture;
 
 void main() {
 
-    vec3 c = texture2D(u_texture, v_texCoords);
+    vec3 c = texture2D(u_texture, v_texCoords).rgb;
 
     float distance = length(v_texCoords);
-    float angle = atan2(v_texCoords.y, v_texCoords.x) / 3.1415;
+    float angle = atan(v_texCoords.y, v_texCoords.x) / 3.1415;
 
     float rayFeq = 8.0;
     float circleFreq = 4.0;

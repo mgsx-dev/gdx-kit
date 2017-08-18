@@ -16,7 +16,7 @@ void main() {
 
 	vec4 c1 = texture2D(u_texture, v_texCoords);
 	vec4 c2 = texture2D(u_textureOver, v_texCoords);
-	c1.rgb = round(c1.rgb * u_decimate) / u_decimate;
+	c1.rgb = floor(c1.rgb * u_decimate) / u_decimate;
 	vec3 c = c1.rgb * c1.a + c2.rgb * u_boost;
     gl_FragColor = vec4(c, 1.0);
 }
