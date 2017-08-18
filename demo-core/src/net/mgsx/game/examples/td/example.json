@@ -1,0 +1,298 @@
+{
+entities: [
+	{
+		id: 0
+		g3d: {
+			modelInstance: td/navmesh3.g3dj
+			culling: true
+		}
+		td.navMesh: {}
+	}
+	{
+		id: 1
+		g3d: {
+			modelInstance: td/backmesh3.g3dj
+			culling: true
+		}
+	}
+	{
+		id: 2
+		g3d.light.dir: {
+			light: {
+				color: {
+					r: 0.3818396
+					g: 0.23256265
+					a: 1
+				}
+				direction: {
+					x: 0.24208695
+					y: -0.83035207
+					z: 0.50190586
+				}
+			}
+			shadow: false
+		}
+	}
+	{
+		id: 3
+		td.shooter: {}
+		td.aim: {
+			angle: -60.40051
+			inSights: true
+		}
+		td.target: {}
+		td.load: {
+			reloadRequired: 0.10097663
+		}
+		td.range: {
+			distance: 2.0056357
+		}
+		2d: {
+			position: {
+				x: 5.9286375
+				y: -0.64920664
+			}
+			depth: 0.6690538
+		}
+		td.tower: {}
+		td.life: {
+			current: 0.77659994
+		}
+		td.speed: {
+			base: 1.2941991
+		}
+		g3d: {
+			modelInstance: td/tower.g3dj
+			culling: true
+		}
+		td.damage: {
+			amount: 0.98109555
+		}
+		core.orientation3: {}
+		td.nav: {}
+		spline: {
+			path: {
+				class: com.badlogic.gdx.math.BSpline
+				controlPoints: [
+					{
+						x: 5.3999977
+						y: 2.4649544
+						z: 0.9147445
+					}
+					{
+						x: 5.3999977
+						y: 2.4649544
+						z: 0.9147445
+					}
+					{
+						x: 5.3999977
+						y: 2.4649544
+						z: 0.9147445
+					}
+					{
+						x: 6.0349746
+						y: -1.7871364
+						z: 0.61963266
+					}
+					{
+						x: 5.9286375
+						y: -0.64920664
+						z: 0.66905403
+					}
+					{
+						x: 5.9286375
+						y: -0.64920664
+						z: 0.66905403
+					}
+					{
+						x: 5.9286375
+						y: -0.64920664
+						z: 0.66905403
+					}
+				]
+				continuous: false
+			}
+		}
+	}
+	{
+		id: 4
+		td.shooter: {}
+		td.aim: {
+			angle: 413.15335
+			inSights: true
+		}
+		td.target: {}
+		td.load: {
+			reloadRequired: 0.10097663
+		}
+		td.range: {
+			distance: 2.0056357
+		}
+		2d: {
+			position: {
+				x: 5.9637055
+				y: -3.6663775
+			}
+			depth: 0.6527556
+		}
+		td.tower: {}
+		td.life: {
+			current: 0.77659994
+		}
+		td.speed: {
+			base: 1.2941991
+		}
+		g3d: {
+			modelInstance: td/tower.g3dj
+			culling: true
+		}
+		td.nav: {}
+		td.damage: {
+			amount: 0.98109555
+		}
+		spline: {
+			path: {
+				class: com.badlogic.gdx.math.BSpline
+				controlPoints: [
+					{
+						x: 5.4080653
+						y: 3.1804404
+						z: 0.9109951
+					}
+					{
+						x: 5.4080653
+						y: 3.1804404
+						z: 0.9109951
+					}
+					{
+						x: 5.4080653
+						y: 3.1804404
+						z: 0.9109951
+					}
+					{
+						x: 6.0349746
+						y: -1.7871364
+						z: 0.61963266
+					}
+					{
+						x: 5.9637055
+						y: -3.666377
+						z: 0.65275574
+					}
+					{
+						x: 5.9637055
+						y: -3.666377
+						z: 0.65275574
+					}
+					{
+						x: 5.9637055
+						y: -3.666377
+						z: 0.65275574
+					}
+				]
+				continuous: false
+			}
+		}
+	}
+	{
+		id: 5
+		2d: {
+			position: {
+				x: -8
+				y: -1
+			}
+			depth: 1.9949726
+		}
+		td.nav: {}
+		btree: {
+			library: td/entry.btree
+		}
+	}
+]
+systems: [
+	{
+		type: core.bindings
+		enabled: true
+		bindings: [
+			net.mgsx.game.examples.td.tools.GameTool#activate:kc:36
+			net.mgsx.game.plugins.core.tools.OpenTool#activate:kc:247
+			net.mgsx.game.core.tools.NoTool#activate:kc:51
+			net.mgsx.game.examples.td.tools.FollowPathTool#activate:kc:44
+		]
+	}
+	{
+		type: box2d.world
+		enabled: true
+		runSimulation: true
+		gravity: {
+			y: -9.807
+		}
+		timeStep: 0.033333335
+		velocityIterations: 8
+		positionIterations: 3
+	}
+	{
+		type: core.clearScreen
+		enabled: true
+		color: {
+			r: 0.2
+			g: 0.2
+			b: 0.2
+			a: 1
+		}
+		clearColor: true
+		clearDepth: true
+	}
+	{
+		type: g3d.rendering
+		enabled: true
+		shadowQuality: 10
+		shadowSize: {
+			x: 50
+			y: 50
+		}
+		shadowNear: 0.1
+		shadowFar: 100
+		fog: {}
+		ambient: {
+			r: 0.1789209
+			g: 0.16421829
+			b: 0.29402414
+			a: 1
+		}
+	}
+	{
+		type: g2d.render
+		enabled: true
+		culling: false
+	}
+]
+views: [
+	net.mgsx.game.plugins.g3d.systems.G3DCullingSystem
+	net.mgsx.game.examples.td.systems.EmissiveSystem
+	g3d.rendering
+	net.mgsx.game.examples.td.systems.TowerRangeRenderer
+]
+assets: [
+	{
+		type: net.mgsx.game.core.storage.EntityGroup
+		name: td/monster1.json
+	}
+	{
+		type: com.badlogic.gdx.graphics.g3d.Model
+		name: td/backmesh3.g3dj
+	}
+	{
+		type: com.badlogic.gdx.ai.btree.BehaviorTree
+		name: td/entry.btree
+	}
+	{
+		type: com.badlogic.gdx.graphics.g3d.Model
+		name: td/tower.g3dj
+	}
+	{
+		type: com.badlogic.gdx.graphics.g3d.Model
+		name: td/navmesh3.g3dj
+	}
+]
+}
