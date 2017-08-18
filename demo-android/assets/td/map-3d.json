@@ -1,0 +1,1748 @@
+{
+entities: [
+	{
+		id: 0
+		g3d.light.dir: {
+			light: {
+				color: {
+					g: 0.1648898
+					b: 0.294818
+					a: 1
+				}
+				direction: {
+					x: 0.87829167
+					y: 0.447974
+					z: -0.16710219
+				}
+			}
+			shadow: false
+		}
+		td.navMesh: {}
+		g3d: {
+			modelInstance: td/navmesh2.g3dj
+			origin: {}
+			blended: false
+			culling: false
+		}
+	}
+	{
+		id: 1
+		td.shooter: {}
+		td.aim: {
+			angle: 69.84325
+			inSights: true
+		}
+		td.target: {}
+		td.load: {
+			reload: 0.06361122
+			reloadRequired: 0.06361122
+		}
+		td.range: {
+			distance: 4.4014745
+		}
+		2d: {
+			position: {
+				x: 0.4375164
+				y: -2.7869868
+			}
+			depth: 1
+			angle: 109.98301
+		}
+		td.tower: {}
+		td.life: {
+			current: 0.77659994
+		}
+		td.speed: {
+			base: 1.2941991
+		}
+		g3d: {
+			modelInstance: td/tower.g3dj
+			origin: {}
+			blended: false
+			culling: false
+		}
+		td.nav: {}
+	}
+	{
+		id: 2
+		2d: {
+			position: {
+				x: 2.7970586
+				y: 1.390594
+			}
+			depth: -0.60147095
+			angle: 110.98465
+		}
+		td.enemy: {
+			type: HEXAGON
+		}
+		td.speed: {
+			base: 0.8559628
+		}
+		btree: {
+			library: td/enemy-random.btree
+		}
+		td.life: {
+			current: 0.68347895
+			max: 1.2058299
+		}
+		td.range: {
+			distance: 1.4392649
+		}
+		td.shooter: {}
+		td.aim: {
+			angle: 276.87436
+			inSights: true
+		}
+		td.target: {}
+		td.load: {}
+		g3d: {
+			modelInstance: td/monster.g3dj
+			origin: {}
+			blended: false
+			culling: false
+		}
+		td.nav: {}
+		spline: {
+			path: {
+				class: com.badlogic.gdx.math.BSpline
+				controlPoints: [
+					{
+						x: 5.571293
+						y: -4.1175675
+						z: -1.2121165
+					}
+					{
+						x: 5.571293
+						y: -4.1175675
+						z: -1.2121165
+					}
+					{
+						x: 5.571293
+						y: -4.1175675
+						z: -1.2121165
+					}
+					{
+						x: 6.578004
+						y: -2.4754682
+						z: -0.6024007
+					}
+					{
+						x: 5.9183726
+						y: -1.2377341
+						z: 0.051368676
+					}
+					{
+						x: 5.9183726
+						y: 0.6666667
+						z: 0.7051381
+					}
+					{
+						x: 4.839161
+						y: 1.3333334
+						z: 0.47009203
+					}
+					{
+						x: 4.4195805
+						y: 0.6666667
+						z: 0.23504601
+					}
+					{
+						x: 3.3333335
+						y: 0.6666667
+						z: -0.33333334
+					}
+					{
+						x: 2.6666667
+						y: 1.3333334
+						z: -0.6666667
+					}
+					{
+						x: 2.6666667
+						y: 2.6666667
+						z: -0.33333334
+					}
+					{
+						x: 1.3333334
+						y: 2.6666667
+						z: -0.6666667
+					}
+					{
+						x: 0.6666667
+						y: 3.3333335
+						z: -0.33333334
+					}
+					{
+						x: -0.6666667
+						y: 3.3333335
+						z: -0.33333334
+					}
+				]
+				continuous: false
+			}
+		}
+	}
+	{
+		id: 3
+		td.shooter: {}
+		td.aim: {
+			angle: 55.83415
+			inSights: true
+		}
+		td.target: {}
+		td.load: {
+			reloadRequired: 0.10097663
+		}
+		td.range: {
+			distance: 2.0056357
+		}
+		2d: {
+			position: {
+				x: 2.342739
+				y: -6.217033
+			}
+			depth: 3.228363
+			angle: 107.208755
+		}
+		td.tower: {}
+		td.life: {
+			current: 0.77659994
+		}
+		td.speed: {
+			base: 1.2941991
+		}
+		g3d: {
+			modelInstance: td/tower.g3dj
+			origin: {}
+			blended: false
+			culling: false
+		}
+		td.nav: {}
+		spline: {
+			path: {
+				class: com.badlogic.gdx.math.CatmullRomSpline
+				controlPoints: [
+					{
+						x: 2.9753594
+						y: -7.9373536
+					}
+					{
+						x: 2.9753594
+						y: -7.9373536
+					}
+					{
+						x: 3.020601
+						y: -7.955136
+					}
+					{
+						x: 2.5924768
+						y: -7.023369
+					}
+					{
+						x: 2.342739
+						y: -6.217033
+					}
+					{
+						x: 2.342739
+						y: -6.217033
+					}
+				]
+				continuous: false
+			}
+		}
+	}
+	{
+		id: 4
+		2d: {
+			position: {
+				x: 2.380604
+				y: 6.6910973
+			}
+			depth: 0.06568146
+			angle: 181.70427
+		}
+		td.enemy: {
+			type: HEXAGON
+		}
+		td.speed: {
+			base: 0.8559628
+		}
+		btree: {
+			library: td/enemy-random.btree
+		}
+		td.life: {
+			current: 0.68347895
+			max: 1.2058299
+		}
+		td.range: {
+			distance: 1.4392649
+		}
+		td.shooter: {}
+		td.aim: {
+			angle: 349.77167
+			inSights: true
+		}
+		td.target: {}
+		td.load: {}
+		g3d: {
+			modelInstance: td/monster.g3dj
+			origin: {}
+			blended: false
+			culling: false
+		}
+		td.nav: {}
+		spline: {
+			path: {
+				class: com.badlogic.gdx.math.BSpline
+				controlPoints: [
+					{
+						x: 2.978434
+						y: 6.7192645
+						z: 0.18803702
+					}
+					{
+						x: 2.978434
+						y: 6.7192645
+						z: 0.18803702
+					}
+					{
+						x: 2.978434
+						y: 6.7192645
+						z: 0.18803702
+					}
+					{
+						x: 1.3333334
+						y: 6.634145
+					}
+					{
+						x: 0.6666667
+						y: 7.144861
+					}
+					{
+						x: -1.735411
+						y: 7.144861
+						z: -0.472777
+					}
+					{
+						x: -3.470822
+						y: 6.634145
+						z: -0.945554
+					}
+					{
+						x: -5.8896666
+						y: 7.144861
+						z: -1.418331
+					}
+					{
+						x: -6.573099
+						y: 6.634145
+						z: -1.418331
+					}
+					{
+						x: -6.026347
+						y: 4.0822854
+						z: -0.945554
+					}
+					{
+						x: -6.7600975
+						y: 2.0411427
+						z: -0.472777
+					}
+					{
+						x: -6.213346
+						y: -0.6666667
+					}
+					{
+						x: -6.8104153
+						y: -1.3333334
+					}
+					{
+						x: -6.8104153
+						y: -3.0534837
+						z: 0.23450735
+					}
+					{
+						x: -6.213346
+						y: -4.1069674
+						z: 0.4690147
+					}
+					{
+						x: -6.8104153
+						y: -5.9033012
+						z: 0.7035221
+					}
+					{
+						x: -6.213346
+						y: -6.6461515
+						z: 0.7035221
+					}
+					{
+						x: -4.5291452
+						y: -6.6461515
+						z: 1.0204277
+					}
+					{
+						x: -3.4420147
+						y: -5.9033012
+						z: 1.3373334
+					}
+					{
+						x: -1.847439
+						y: -6.6461515
+						z: 1.654239
+					}
+					{
+						x: -1.339994
+						y: -5.9033012
+						z: 1.654239
+					}
+					{
+						x: -0.15839164
+						y: -6.6461515
+						z: 2.1789498
+					}
+					{
+						x: 0.5157657
+						y: -5.9033012
+						z: 2.7036605
+					}
+				]
+				continuous: false
+			}
+		}
+	}
+	{
+		id: 5
+		2d: {
+			position: {
+				x: 1.2627686
+				y: 2.4914742
+			}
+			depth: -0.75426483
+			angle: 242.76486
+		}
+		td.enemy: {
+			type: HEXAGON
+		}
+		td.speed: {
+			base: 1.348919
+		}
+		btree: {
+			library: td/enemy-attacker.btree
+		}
+		td.life: {
+			current: 0.68347895
+			max: 1.2058299
+		}
+		td.range: {
+			distance: 1.4392649
+		}
+		td.shooter: {}
+		td.aim: {
+			angle: -122.78415
+			inSights: true
+		}
+		td.target: {}
+		td.load: {}
+		g3d: {
+			modelInstance: td/monster.g3dj
+			origin: {}
+			blended: false
+			culling: false
+		}
+		td.nav: {}
+		spline: {
+			path: {
+				class: com.badlogic.gdx.math.BSpline
+				controlPoints: [
+					{
+						x: 1.314815
+						y: 2.592593
+						z: -0.7037045
+					}
+					{
+						x: 1.314815
+						y: 2.592593
+						z: -0.7037045
+					}
+					{
+						x: 1.314815
+						y: 2.592593
+						z: -0.7037045
+					}
+					{
+						x: 0.6666667
+						y: 1.3333334
+						z: -1
+					}
+					{
+						x: -0.6666667
+						y: 0.6666667
+						z: -0.6666667
+					}
+					{
+						x: -1.3333334
+						y: 1.3333334
+						z: -0.33333334
+					}
+					{
+						x: -2.6666667
+						y: 0.6666667
+					}
+					{
+						x: -3.3333335
+						y: -0.6666667
+					}
+					{
+						x: -2.6666667
+						y: -1.3333334
+					}
+					{
+						x: -1.3333334
+						y: -1.3333334
+						z: 0.33333334
+					}
+					{
+						x: -1.3333334
+						y: -2.6666667
+						z: 0.33333334
+					}
+					{
+						x: -0.6666667
+						y: -3.3333335
+						z: 0.6666667
+					}
+					{
+						x: 0.6666667
+						y: -2.6666667
+						z: 1
+					}
+				]
+				continuous: false
+			}
+		}
+	}
+	{
+		id: 6
+		2d: {
+			position: {
+				x: 1.0617661
+				y: 6.2255306
+			}
+			angle: 74.572365
+		}
+		td.enemy: {
+			type: HEXAGON
+		}
+		td.speed: {
+			base: 0.8559628
+		}
+		btree: {
+			library: td/enemy-random.btree
+		}
+		td.life: {
+			current: 0.68347895
+			max: 1.2058299
+		}
+		td.range: {
+			distance: 1.4392649
+		}
+		td.shooter: {}
+		td.aim: {
+			angle: -12.211711
+			inSights: true
+		}
+		td.target: {}
+		td.load: {}
+		g3d: {
+			modelInstance: td/monster.g3dj
+			origin: {}
+			blended: false
+			culling: false
+		}
+		td.nav: {}
+		spline: {
+			path: {
+				class: com.badlogic.gdx.math.BSpline
+				controlPoints: [
+					{
+						x: 3.2862003
+						y: -4.568118
+						z: -1.6456184
+					}
+					{
+						x: 3.2862003
+						y: -4.568118
+						z: -1.6456184
+					}
+					{
+						x: 3.2862003
+						y: -4.568118
+						z: -1.6456184
+					}
+					{
+						x: 5.9183726
+						y: -4.445987
+						z: -1.25617
+					}
+					{
+						x: 6.578004
+						y: -2.4754682
+						z: -0.6024007
+					}
+					{
+						x: 5.9183726
+						y: -1.2377341
+						z: 0.051368676
+					}
+					{
+						x: 5.9183726
+						y: 0.6666667
+						z: 0.7051381
+					}
+					{
+						x: 4.839161
+						y: 1.3333334
+						z: 0.47009203
+					}
+					{
+						x: 4.4195805
+						y: 0.6666667
+						z: 0.23504601
+					}
+					{
+						x: 3.3333335
+						y: 0.6666667
+						z: -0.33333334
+					}
+					{
+						x: 2.6666667
+						y: 1.3333334
+						z: -0.6666667
+					}
+					{
+						x: 2.6666667
+						y: 2.6666667
+						z: -0.33333334
+					}
+					{
+						x: 1.3333334
+						y: 2.6666667
+						z: -0.6666667
+					}
+					{
+						x: 0.6666667
+						y: 3.3333335
+						z: -0.33333334
+					}
+					{
+						x: 1.3333334
+						y: 4.7078094
+					}
+					{
+						x: 0.6666667
+						y: 5.415619
+					}
+					{
+						x: 1.3333334
+						y: 6.634145
+					}
+					{
+						x: 0.6666667
+						y: 7.144861
+					}
+					{
+						x: -1.735411
+						y: 7.144861
+						z: -0.472777
+					}
+					{
+						x: -3.470822
+						y: 6.634145
+						z: -0.945554
+					}
+					{
+						x: -5.8896666
+						y: 7.144861
+						z: -1.418331
+					}
+					{
+						x: -6.573099
+						y: 6.634145
+						z: -1.418331
+					}
+				]
+				continuous: false
+			}
+		}
+	}
+	{
+		id: 7
+		2d: {
+			position: {
+				x: 1.6863542
+				y: 2.1519322
+			}
+			depth: -0.9240341
+			angle: 37.26085
+		}
+		td.enemy: {
+			type: HEXAGON
+		}
+		td.speed: {
+			base: 0.20425375
+		}
+		btree: {
+			library: td/enemy-attacker.btree
+		}
+		td.life: {
+			current: 0.68347895
+			max: 1.2058299
+		}
+		td.range: {
+			distance: 1.4392649
+		}
+		td.shooter: {}
+		td.aim: {
+			angle: -221.36958
+			inSights: true
+		}
+		td.target: {}
+		td.load: {}
+		g3d: {
+			modelInstance: td/monster.g3dj
+			origin: {}
+			blended: false
+			culling: false
+		}
+		td.nav: {}
+	}
+	{
+		id: 8
+		2d: {
+			position: {
+				x: -0.7972998
+				y: -3.356078
+			}
+			depth: 0.6013489
+			angle: 24.74361
+		}
+		td.enemy: {
+			type: HEXAGON
+		}
+		td.speed: {
+			base: 0
+		}
+		btree: {
+			library: td/enemy-attacker.btree
+		}
+		td.life: {
+			current: 0.68347895
+			max: 1.2058299
+		}
+		td.range: {
+			distance: 1.4392649
+		}
+		td.shooter: {}
+		td.aim: {
+			angle: 384.9237
+			inSights: true
+		}
+		td.target: {}
+		td.load: {
+			reload: 1
+		}
+		g3d: {
+			modelInstance: td/monster.g3dj
+			origin: {}
+			blended: false
+			culling: false
+		}
+		td.nav: {}
+	}
+	{
+		id: 9
+		camera: {
+			camera: {
+				fieldOfView: 81.37519
+				position: {
+					x: 1.6584705
+					y: -8.518709
+					z: 8.942268
+				}
+				direction: {
+					x: 0.16743766
+					y: 0.8930886
+					z: -1.1711206
+				}
+				up: {
+					y: 0.34873462
+					z: 0.67915225
+				}
+				near: 1
+				far: 3000
+				viewportWidth: 1855
+				viewportHeight: 1056
+			}
+		}
+		active: {}
+	}
+	{
+		id: 10
+		2d: {
+			position: {
+				x: 5.6829543
+				y: 0.57629
+			}
+			depth: 0.70513916
+			angle: 118.48245
+		}
+		td.enemy: {
+			type: HEXAGON
+		}
+		td.speed: {
+			base: 0.46943113
+		}
+		btree: {
+			library: td/enemy-random.btree
+		}
+		td.life: {
+			current: 0.68347895
+			max: 1.2058299
+		}
+		td.range: {
+			distance: 1.4392649
+		}
+		td.shooter: {}
+		td.aim: {
+			angle: -413.95822
+		}
+		td.target: {}
+		td.load: {}
+		g3d: {
+			modelInstance: td/monster.g3dj
+			origin: {}
+			blended: false
+			culling: false
+		}
+		td.nav: {}
+		spline: {
+			path: {
+				class: com.badlogic.gdx.math.BSpline
+				controlPoints: [
+					{
+						x: -1.2553176
+						y: -4.6902494
+						z: -2.1855981
+					}
+					{
+						x: -1.2553176
+						y: -4.6902494
+						z: -2.1855981
+					}
+					{
+						x: -1.2553176
+						y: -4.6902494
+						z: -2.1855981
+					}
+					{
+						x: 1.0937823
+						y: -5.178773
+						z: -2.0350666
+					}
+					{
+						x: 3.1762617
+						y: -4.445987
+						z: -1.6456184
+					}
+					{
+						x: 5.9183726
+						y: -4.445987
+						z: -1.25617
+					}
+					{
+						x: 6.578004
+						y: -2.4754682
+						z: -0.6024007
+					}
+					{
+						x: 5.9183726
+						y: -1.2377341
+						z: 0.051368676
+					}
+					{
+						x: 5.9183726
+						y: 0.6666667
+						z: 0.7051381
+					}
+					{
+						x: 4.839161
+						y: 1.3333334
+						z: 0.47009203
+					}
+					{
+						x: 4.4195805
+						y: 0.6666667
+						z: 0.23504601
+					}
+					{
+						x: 3.3333335
+						y: 0.6666667
+						z: -0.33333334
+					}
+					{
+						x: 2.6666667
+						y: 1.3333334
+						z: -0.6666667
+					}
+					{
+						x: 1.3333334
+						y: 0.6666667
+						z: -1
+					}
+					{
+						x: 0.6666667
+						y: 1.3333334
+						z: -1
+					}
+					{
+						x: -0.6666667
+						y: 0.6666667
+						z: -0.6666667
+					}
+					{
+						x: -1.3333334
+						y: 1.3333334
+						z: -0.33333334
+					}
+					{
+						x: -2.6666667
+						y: 0.6666667
+					}
+					{
+						x: -3.3333335
+						y: -0.6666667
+					}
+					{
+						x: -4.5387588
+						y: -0.6666667
+					}
+					{
+						x: -5.0775175
+						y: -1.3333334
+					}
+					{
+						x: -6.213346
+						y: -0.6666667
+					}
+					{
+						x: -6.8104153
+						y: -1.3333334
+					}
+					{
+						x: -6.8104153
+						y: -3.0534837
+						z: 0.23450735
+					}
+					{
+						x: -6.213346
+						y: -4.1069674
+						z: 0.4690147
+					}
+					{
+						x: -6.8104153
+						y: -5.9033012
+						z: 0.7035221
+					}
+					{
+						x: -6.213346
+						y: -6.6461515
+						z: 0.7035221
+					}
+					{
+						x: -4.5291452
+						y: -6.6461515
+						z: 1.0204277
+					}
+					{
+						x: -3.4420147
+						y: -5.9033012
+						z: 1.3373334
+					}
+					{
+						x: -1.847439
+						y: -6.6461515
+						z: 1.654239
+					}
+					{
+						x: -1.339994
+						y: -5.9033012
+						z: 1.654239
+					}
+					{
+						x: -0.15839164
+						y: -6.6461515
+						z: 2.1789498
+					}
+					{
+						x: 0.5157657
+						y: -5.9033012
+						z: 2.7036605
+					}
+					{
+						x: 2.0285869
+						y: -6.6461515
+						z: 3.2283711
+					}
+				]
+				continuous: false
+			}
+		}
+	}
+	{
+		id: 11
+		2d: {
+			position: {
+				x: 6.3340845
+				y: -2.9083774
+			}
+			depth: -0.83106995
+			angle: 261.2459
+		}
+		td.enemy: {
+			type: HEXAGON
+		}
+		td.speed: {
+			base: 1.4412644
+		}
+		btree: {
+			library: td/enemy-random.btree
+		}
+		td.life: {
+			current: 0.68347895
+			max: 1.2058299
+		}
+		td.range: {
+			distance: 1.4392649
+		}
+		td.shooter: {}
+		td.aim: {
+			angle: 81.99521
+		}
+		td.target: {}
+		td.load: {}
+		g3d: {
+			modelInstance: td/monster.g3dj
+			origin: {}
+			blended: false
+			culling: false
+		}
+		td.nav: {}
+		spline: {
+			path: {
+				class: com.badlogic.gdx.math.BSpline
+				controlPoints: [
+					{
+						x: -1.5555557
+						y: 1.4444447
+						z: -0.2777778
+					}
+					{
+						x: -1.5555557
+						y: 1.4444447
+						z: -0.2777778
+					}
+					{
+						x: -1.5555557
+						y: 1.4444447
+						z: -0.2777778
+					}
+					{
+						x: -0.6666667
+						y: 0.6666667
+						z: -0.6666667
+					}
+					{
+						x: 0.6666667
+						y: 1.3333334
+						z: -1
+					}
+					{
+						x: 1.3333334
+						y: 0.6666667
+						z: -1
+					}
+					{
+						x: 2.6666667
+						y: 1.3333334
+						z: -0.6666667
+					}
+					{
+						x: 3.3333335
+						y: 0.6666667
+						z: -0.33333334
+					}
+					{
+						x: 4.4195805
+						y: 0.6666667
+						z: 0.23504601
+					}
+					{
+						x: 4.839161
+						y: 1.3333334
+						z: 0.47009203
+					}
+					{
+						x: 5.9183726
+						y: 0.6666667
+						z: 0.7051381
+					}
+					{
+						x: 5.9183726
+						y: -1.2377341
+						z: 0.051368676
+					}
+					{
+						x: 6.578004
+						y: -2.4754682
+						z: -0.6024007
+					}
+					{
+						x: 5.9183726
+						y: -4.445987
+						z: -1.25617
+					}
+					{
+						x: 3.1762617
+						y: -4.445987
+						z: -1.6456184
+					}
+					{
+						x: 1.0937823
+						y: -5.178773
+						z: -2.0350666
+					}
+					{
+						x: -1.6023973
+						y: -4.445987
+						z: -2.2505062
+					}
+					{
+						x: -2.2160978
+						y: -5.178773
+						z: -2.076497
+					}
+				]
+				continuous: false
+			}
+		}
+	}
+	{
+		id: 12
+		2d: {
+			position: {
+				x: 3.0303016
+				y: 6.728984
+			}
+			depth: 0.17781067
+			angle: 191.04347
+		}
+		td.enemy: {
+			type: HEXAGON
+		}
+		td.speed: {
+			base: 3.577529
+		}
+		btree: {
+			library: td/enemy-random.btree
+		}
+		td.life: {
+			current: 0.68347895
+			max: 1.2058299
+		}
+		td.range: {
+			distance: 1.4392649
+		}
+		td.shooter: {}
+		td.aim: {
+			angle: 333.98642
+		}
+		td.target: {}
+		td.load: {}
+		g3d: {
+			modelInstance: td/monster.g3dj
+			origin: {}
+			blended: false
+			culling: false
+		}
+		td.nav: {}
+		spline: {
+			path: {
+				class: com.badlogic.gdx.math.BSpline
+				controlPoints: [
+					{
+						x: 6.089394
+						y: 5.582554
+						z: 0.37607405
+					}
+					{
+						x: 6.089394
+						y: 5.582554
+						z: 0.37607405
+					}
+					{
+						x: 6.089394
+						y: 5.582554
+						z: 0.37607405
+					}
+					{
+						x: 5.9721427
+						y: 6.634145
+						z: 0.564111
+					}
+					{
+						x: 4.17909
+						y: 7.144861
+						z: 0.37607402
+					}
+					{
+						x: 3.089545
+						y: 6.634145
+						z: 0.18803701
+					}
+					{
+						x: 1.3333334
+						y: 6.634145
+					}
+					{
+						x: 0.6666667
+						y: 5.415619
+					}
+					{
+						x: 1.3333334
+						y: 4.7078094
+					}
+					{
+						x: 0.6666667
+						y: 3.3333335
+						z: -0.33333334
+					}
+					{
+						x: 1.3333334
+						y: 2.6666667
+						z: -0.6666667
+					}
+					{
+						x: 0.6666667
+						y: 1.3333334
+						z: -1
+					}
+				]
+				continuous: false
+			}
+		}
+	}
+	{
+		id: 13
+		2d: {
+			position: {
+				x: -6.50065
+				y: 1.0331662
+			}
+			depth: -0.23930359
+			angle: 97.6478
+		}
+		td.enemy: {
+			type: HEXAGON
+		}
+		td.speed: {
+			base: 0.8559628
+		}
+		btree: {
+			library: td/enemy-random.btree
+		}
+		td.life: {
+			current: 0.68347895
+			max: 1.2058299
+		}
+		td.range: {
+			distance: 1.4392649
+		}
+		td.shooter: {}
+		td.aim: {
+			angle: 344.72736
+		}
+		td.target: {}
+		td.load: {}
+		g3d: {
+			modelInstance: td/monster.g3dj
+			origin: {}
+			blended: false
+			culling: false
+		}
+		td.nav: {}
+		spline: {
+			path: {
+				class: com.badlogic.gdx.math.BSpline
+				controlPoints: [
+					{
+						x: -5.177029
+						y: -1.1111113
+					}
+					{
+						x: -5.177029
+						y: -1.1111113
+					}
+					{
+						x: -5.177029
+						y: -1.1111113
+					}
+					{
+						x: -6.213346
+						y: -0.6666667
+					}
+					{
+						x: -6.7600975
+						y: 2.0411427
+						z: -0.472777
+					}
+					{
+						x: -6.026347
+						y: 4.0822854
+						z: -0.945554
+					}
+					{
+						x: -6.573099
+						y: 6.634145
+						z: -1.418331
+					}
+				]
+				continuous: false
+			}
+		}
+	}
+	{
+		id: 14
+		2d: {
+			position: {
+				x: -3.5847278
+				y: 6.8043838
+			}
+			depth: -0.97657776
+			angle: 180
+		}
+		td.enemy: {
+			home: 0.30676275
+			type: HEXAGON
+		}
+		td.speed: {
+			base: 4.310203
+		}
+		btree: {
+			library: td/enemy-random.btree
+		}
+		td.life: {
+			current: 0.68347895
+			max: 1.2058299
+		}
+		td.range: {
+			distance: 1.4392649
+		}
+		td.shooter: {}
+		td.aim: {
+			angle: 1.9449242
+		}
+		td.target: {}
+		td.load: {}
+		g3d: {
+			modelInstance: td/monster.g3dj
+			origin: {}
+			blended: false
+			culling: false
+		}
+		td.nav: {}
+		spline: {
+			path: {
+				class: com.badlogic.gdx.math.BSpline
+				controlPoints: [
+					{
+						x: 3.2862003
+						y: -4.568118
+						z: -1.6456184
+					}
+					{
+						x: 3.2862003
+						y: -4.568118
+						z: -1.6456184
+					}
+					{
+						x: 3.2862003
+						y: -4.568118
+						z: -1.6456184
+					}
+					{
+						x: 5.9183726
+						y: -4.445987
+						z: -1.25617
+					}
+					{
+						x: 6.578004
+						y: -2.4754682
+						z: -0.6024007
+					}
+					{
+						x: 5.9183726
+						y: -1.2377341
+						z: 0.051368676
+					}
+					{
+						x: 5.9183726
+						y: 0.6666667
+						z: 0.7051381
+					}
+					{
+						x: 4.839161
+						y: 1.3333334
+						z: 0.47009203
+					}
+					{
+						x: 4.4195805
+						y: 0.6666667
+						z: 0.23504601
+					}
+					{
+						x: 3.3333335
+						y: 0.6666667
+						z: -0.33333334
+					}
+					{
+						x: 2.6666667
+						y: 1.3333334
+						z: -0.6666667
+					}
+					{
+						x: 2.6666667
+						y: 2.6666667
+						z: -0.33333334
+					}
+					{
+						x: 1.3333334
+						y: 2.6666667
+						z: -0.6666667
+					}
+					{
+						x: 0.6666667
+						y: 3.3333335
+						z: -0.33333334
+					}
+					{
+						x: 1.3333334
+						y: 4.7078094
+					}
+					{
+						x: 0.6666667
+						y: 5.415619
+					}
+					{
+						x: 1.3333334
+						y: 6.634145
+					}
+					{
+						x: 0.6666667
+						y: 7.144861
+					}
+					{
+						x: -1.735411
+						y: 7.144861
+						z: -0.472777
+					}
+					{
+						x: -3.470822
+						y: 6.634145
+						z: -0.945554
+					}
+					{
+						x: -5.8896666
+						y: 7.144861
+						z: -1.418331
+					}
+				]
+				continuous: false
+			}
+		}
+	}
+	{
+		id: 15
+		2d: {
+			position: {
+				x: 1.7992504
+				y: 0.9446175
+			}
+			depth: -1
+			angle: 14.352099
+		}
+		td.enemy: {
+			type: HEXAGON
+		}
+		td.speed: {
+			base: 0.25826603
+		}
+		btree: {
+			library: td/enemy-random.btree
+		}
+		td.life: {
+			current: 0.68347895
+			max: 1.2058299
+		}
+		td.range: {
+			distance: 1.4392649
+		}
+		td.shooter: {}
+		td.aim: {
+			angle: 168.99974
+			inSights: true
+		}
+		td.target: {}
+		td.load: {}
+		g3d: {
+			modelInstance: td/monster.g3dj
+			origin: {}
+			blended: false
+			culling: false
+		}
+		td.nav: {}
+		spline: {
+			path: {
+				class: com.badlogic.gdx.math.BSpline
+				controlPoints: [
+					{
+						x: -6.4123697
+						y: -4.230776
+						z: 0.46901473
+					}
+					{
+						x: -6.4123697
+						y: -4.230776
+						z: 0.46901473
+					}
+					{
+						x: -6.4123697
+						y: -4.230776
+						z: 0.46901473
+					}
+					{
+						x: -6.8104153
+						y: -3.0534837
+						z: 0.23450735
+					}
+					{
+						x: -6.8104153
+						y: -1.3333334
+					}
+					{
+						x: -6.213346
+						y: -0.6666667
+					}
+					{
+						x: -5.0775175
+						y: -1.3333334
+					}
+					{
+						x: -4.5387588
+						y: -0.6666667
+					}
+					{
+						x: -3.3333335
+						y: -0.6666667
+					}
+					{
+						x: -2.6666667
+						y: 0.6666667
+					}
+					{
+						x: -1.3333334
+						y: 1.3333334
+						z: -0.33333334
+					}
+					{
+						x: -0.6666667
+						y: 0.6666667
+						z: -0.6666667
+					}
+					{
+						x: 0.6666667
+						y: 1.3333334
+						z: -1
+					}
+					{
+						x: 1.3333334
+						y: 0.6666667
+						z: -1
+					}
+					{
+						x: 2.6666667
+						y: 1.3333334
+						z: -0.6666667
+					}
+					{
+						x: 3.3333335
+						y: 0.6666667
+						z: -0.33333334
+					}
+					{
+						x: 4.4195805
+						y: 0.6666667
+						z: 0.23504601
+					}
+					{
+						x: 4.839161
+						y: 1.3333334
+						z: 0.47009203
+					}
+					{
+						x: 5.9183726
+						y: 0.6666667
+						z: 0.7051381
+					}
+					{
+						x: 5.9183726
+						y: -1.2377341
+						z: 0.051368676
+					}
+					{
+						x: 6.578004
+						y: -2.4754682
+						z: -0.6024007
+					}
+					{
+						x: 5.9183726
+						y: -4.445987
+						z: -1.25617
+					}
+					{
+						x: 3.1762617
+						y: -4.445987
+						z: -1.6456184
+					}
+					{
+						x: 1.0937823
+						y: -5.178773
+						z: -2.0350666
+					}
+					{
+						x: -1.6023973
+						y: -4.445987
+						z: -2.2505062
+					}
+					{
+						x: -2.2160978
+						y: -5.178773
+						z: -2.076497
+					}
+					{
+						x: -3.3925471
+						y: -4.445987
+						z: -1.9024881
+					}
+					{
+						x: -3.3925471
+						y: -1.3392118
+						z: -1.9024881
+					}
+					{
+						x: -3.955296
+						y: 1.0347786
+						z: -1.9024881
+					}
+				]
+				continuous: false
+			}
+		}
+	}
+]
+systems: [
+	{
+		type: core.bindings
+		enabled: true
+		bindings: [
+			net.mgsx.game.examples.td.tools.GameTool#activate:kc:36
+			net.mgsx.game.plugins.core.tools.OpenTool#activate:kc:247
+			net.mgsx.game.core.tools.NoTool#activate:kc:51
+			net.mgsx.game.examples.td.tools.FollowPathTool#activate:kc:44
+		]
+	}
+	{
+		type: box2d.world
+		enabled: true
+		runSimulation: true
+		gravity: {
+			y: -9.807
+		}
+		timeStep: 0.033333335
+		velocityIterations: 8
+		positionIterations: 3
+	}
+	{
+		type: core.clearScreen
+		enabled: true
+		color: {
+			r: 0.2
+			g: 0.2
+			b: 0.2
+			a: 1
+		}
+		clearColor: true
+		clearDepth: true
+	}
+	{
+		type: g3d.rendering
+		enabled: true
+		shadowQuality: 10
+		shadowSize: {
+			x: 50
+			y: 50
+		}
+		shadowNear: 0.1
+		shadowFar: 100
+		ambient: {
+			r: 0.5
+			g: 0.5
+			b: 0.5
+			a: 1
+		}
+	}
+	{
+		type: g2d.render
+		enabled: true
+		culling: false
+	}
+]
+views: [
+	net.mgsx.game.plugins.g3d.systems.G3DCullingSystem
+	net.mgsx.game.examples.td.systems.EmissiveSystem
+	g3d.rendering
+	net.mgsx.game.examples.td.systems.TowerRangeRenderer
+]
+assets: [
+	{
+		type: com.badlogic.gdx.graphics.g3d.Model
+		name: td/monster.g3dj
+	}
+	{
+		type: com.badlogic.gdx.graphics.g3d.Model
+		name: td/navmesh2.g3dj
+	}
+	{
+		type: com.badlogic.gdx.ai.btree.BehaviorTree
+		name: td/enemy-attacker.btree
+	}
+	{
+		type: com.badlogic.gdx.graphics.g3d.Model
+		name: td/tower.g3dj
+	}
+	{
+		type: com.badlogic.gdx.ai.btree.BehaviorTree
+		name: td/enemy-random.btree
+	}
+]
+}

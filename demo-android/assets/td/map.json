@@ -1,0 +1,294 @@
+{
+entities: [
+	{
+		id: 0
+		td.tile: {
+			x: 3
+			y: 2
+		}
+		td.road: {
+			home: 20
+		}
+		td.entry: {}
+		btree: {
+			library: td/entry.btree
+		}
+	}
+	{
+		id: 1
+		td.tile: {
+			x: 3
+			y: 3
+		}
+		td.road: {
+			home: 19
+		}
+	}
+	{
+		id: 2
+		td.tile: {
+			x: 3
+			y: 4
+		}
+		td.road: {
+			home: 18
+		}
+	}
+	{
+		id: 3
+		td.tile: {
+			x: 3
+			y: 5
+		}
+		td.road: {
+			home: 17
+		}
+	}
+	{
+		id: 4
+		td.tile: {
+			x: 4
+			y: 5
+		}
+		td.road: {
+			home: 16
+		}
+	}
+	{
+		id: 5
+		td.tile: {
+			x: 5
+			y: 5
+		}
+		td.road: {
+			home: 15
+		}
+	}
+	{
+		id: 6
+		td.tile: {
+			x: 6
+			y: 5
+		}
+		td.road: {
+			home: 14
+		}
+	}
+	{
+		id: 7
+		td.tile: {
+			x: 6
+			y: 4
+		}
+		td.road: {
+			home: 13
+		}
+	}
+	{
+		id: 8
+		td.tile: {
+			x: 6
+			y: 3
+		}
+		td.road: {
+			home: 12
+		}
+	}
+	{
+		id: 9
+		td.tile: {
+			x: 7
+			y: 3
+		}
+		td.road: {
+			home: 11
+		}
+	}
+	{
+		id: 10
+		td.tile: {
+			x: 8
+			y: 3
+		}
+		td.road: {
+			home: 10
+		}
+	}
+	{
+		id: 11
+		td.tile: {
+			x: 9
+			y: 3
+		}
+		td.road: {
+			home: 9
+		}
+	}
+	{
+		id: 12
+		td.tile: {
+			x: 10
+			y: 3
+		}
+		td.road: {
+			home: 8
+		}
+	}
+	{
+		id: 13
+		td.tile: {
+			x: 10
+			y: 4
+		}
+		td.road: {
+			home: 7
+		}
+	}
+	{
+		id: 14
+		td.tile: {
+			x: 10
+			y: 5
+		}
+		td.road: {
+			home: 6
+		}
+	}
+	{
+		id: 15
+		td.tile: {
+			x: 10
+			y: 6
+		}
+		td.road: {
+			home: 5
+		}
+	}
+	{
+		id: 16
+		td.tile: {
+			x: 10
+			y: 7
+		}
+		td.road: {
+			home: 4
+		}
+	}
+	{
+		id: 17
+		td.tile: {
+			x: 10
+			y: 8
+		}
+		td.road: {
+			home: 3
+		}
+	}
+	{
+		id: 18
+		td.tile: {
+			x: 9
+			y: 8
+		}
+		td.road: {
+			home: 2
+		}
+	}
+	{
+		id: 19
+		td.tile: {
+			x: 8
+			y: 8
+		}
+		td.road: {
+			home: 1
+		}
+	}
+	{
+		id: 20
+		td.tile: {
+			x: 7
+			y: 8
+		}
+		td.road: {}
+		td.home: {}
+	}
+	{
+		id: 21
+		td.tile: {
+			x: 2
+			y: 4
+		}
+		td.platform: {}
+		td.shooter: {}
+		td.aim: {
+			angle: 395.34146
+			inSights: true
+		}
+		td.target: {}
+		td.load: {
+			reload: 1
+		}
+		td.range: {
+			distance: 2.0056357
+		}
+		2d: {
+			position: {
+				x: 2.5104527
+				y: 4.491081
+			}
+		}
+		td.damage: {
+			amount: 1.0241088
+		}
+	}
+	{
+		id: 22
+		td.tile: {
+			x: 6
+			y: 6
+		}
+		td.platform: {}
+	}
+	{
+		id: 23
+		td.tile: {
+			x: 9
+			y: 2
+		}
+		td.platform: {}
+	}
+	{
+		id: 24
+		td.tile: {
+			x: 11
+			y: 6
+		}
+		td.platform: {}
+	}
+	{
+		id: 25
+		td.tile: {
+			x: 9
+			y: 9
+		}
+		td.platform: {}
+	}
+	{
+		id: 26
+		2d: {
+			position: {
+				x: 1.3659532
+				y: 2.0752926
+			}
+		}
+		td.enemy: {}
+	}
+]
+assets: [
+	{
+		type: com.badlogic.gdx.ai.btree.BehaviorTree
+		name: td/entry.btree
+	}
+]
+}

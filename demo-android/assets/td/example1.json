@@ -1,0 +1,1502 @@
+{
+entities: [
+	{
+		id: 0
+		td.tile: {
+			x: 3
+			y: 2
+		}
+		td.road: {
+			home: 20
+		}
+		td.entry: {}
+		btree: {
+			library: td/entry.btree
+		}
+	}
+	{
+		id: 1
+		td.tile: {
+			x: 3
+			y: 3
+		}
+		td.road: {
+			home: 19
+		}
+	}
+	{
+		id: 2
+		td.tile: {
+			x: 3
+			y: 4
+		}
+		td.road: {
+			home: 18
+		}
+	}
+	{
+		id: 3
+		td.tile: {
+			x: 3
+			y: 5
+		}
+		td.road: {
+			home: 17
+		}
+	}
+	{
+		id: 4
+		td.tile: {
+			x: 4
+			y: 5
+		}
+		td.road: {
+			home: 16
+		}
+	}
+	{
+		id: 5
+		td.tile: {
+			x: 5
+			y: 5
+		}
+		td.road: {
+			home: 15
+		}
+	}
+	{
+		id: 6
+		td.tile: {
+			x: 6
+			y: 5
+		}
+		td.road: {
+			home: 14
+		}
+	}
+	{
+		id: 7
+		td.tile: {
+			x: 6
+			y: 4
+		}
+		td.road: {
+			home: 13
+		}
+	}
+	{
+		id: 8
+		td.tile: {
+			x: 6
+			y: 3
+		}
+		td.road: {
+			home: 12
+		}
+	}
+	{
+		id: 9
+		td.tile: {
+			x: 7
+			y: 3
+		}
+		td.road: {
+			home: 11
+		}
+	}
+	{
+		id: 10
+		td.tile: {
+			x: 8
+			y: 3
+		}
+		td.road: {
+			home: 10
+		}
+	}
+	{
+		id: 11
+		td.tile: {
+			x: 9
+			y: 3
+		}
+		td.road: {
+			home: 9
+		}
+	}
+	{
+		id: 12
+		td.tile: {
+			x: 10
+			y: 3
+		}
+		td.road: {
+			home: 8
+		}
+	}
+	{
+		id: 13
+		td.tile: {
+			x: 10
+			y: 4
+		}
+		td.road: {
+			home: 7
+		}
+	}
+	{
+		id: 14
+		td.tile: {
+			x: 10
+			y: 5
+		}
+		td.road: {
+			home: 6
+		}
+	}
+	{
+		id: 15
+		td.tile: {
+			x: 10
+			y: 6
+		}
+		td.road: {
+			home: 5
+		}
+	}
+	{
+		id: 16
+		td.tile: {
+			x: 10
+			y: 7
+		}
+		td.road: {
+			home: 4
+		}
+	}
+	{
+		id: 17
+		td.tile: {
+			x: 10
+			y: 8
+		}
+		td.road: {
+			home: 3
+		}
+	}
+	{
+		id: 18
+		td.tile: {
+			x: 9
+			y: 8
+		}
+		td.road: {
+			home: 2
+		}
+	}
+	{
+		id: 19
+		td.tile: {
+			x: 8
+			y: 8
+		}
+		td.road: {
+			home: 1
+		}
+	}
+	{
+		id: 20
+		td.tile: {
+			x: 7
+			y: 8
+		}
+		td.road: {}
+		td.home: {}
+	}
+	{
+		id: 21
+		td.tile: {
+			x: 2
+			y: 4
+		}
+		td.platform: {}
+		td.shooter: {}
+		td.aim: {
+			angle: 344.626
+		}
+		td.enemy: {
+			type: HEXAGON
+		}
+		td.load: {}
+		td.range: {
+			distance: 2.0056357
+		}
+		2d: {
+			position: {
+				x: -2.609809
+				y: 3.0351055
+			}
+		}
+		td.target: {}
+		td.priority: {
+			rule: STRONG
+			current: STRONG
+		}
+		td.life: {
+			current: 0.7944761
+		}
+	}
+	{
+		id: 22
+		td.tile: {
+			x: 6
+			y: 6
+		}
+		td.platform: {}
+	}
+	{
+		id: 23
+		td.tile: {
+			x: 9
+			y: 2
+		}
+		td.platform: {}
+	}
+	{
+		id: 24
+		td.tile: {
+			x: 11
+			y: 6
+		}
+		td.platform: {}
+	}
+	{
+		id: 25
+		td.tile: {
+			x: 9
+			y: 9
+		}
+		td.platform: {}
+	}
+	{
+		id: 26
+		2d: {
+			position: {
+				x: 0.79560614
+				y: 12.120905
+			}
+			angle: 290.63147
+		}
+		td.enemy: {}
+		spline: {
+			path: {
+				class: com.badlogic.gdx.math.CatmullRomSpline
+				controlPoints: [
+					{
+						x: 1
+						y: 1
+					}
+					{
+						x: 1
+						y: 1
+					}
+					{
+						x: 1.3977913
+						y: 1.4791725
+					}
+					{
+						x: 1.4228628
+						y: 2.4820309
+					}
+					{
+						x: 1.4353982
+						y: 3.5475671
+					}
+					{
+						x: 1.2849697
+						y: 4.6005673
+					}
+					{
+						x: 1.1721488
+						y: 5.6410327
+					}
+					{
+						x: 1.3601837
+						y: 6.631355
+					}
+					{
+						x: 2.1875415
+						y: 7.195462
+					}
+					{
+						x: 3.1778624
+						y: 7.019962
+					}
+					{
+						x: 3.8798625
+						y: 6.3054247
+					}
+					{
+						x: 4.2308626
+						y: 5.365247
+					}
+					{
+						x: 4.6445417
+						y: 4.2997103
+					}
+					{
+						x: 5.1208987
+						y: 3.3846018
+					}
+					{
+						x: 5.5721855
+						y: 2.444424
+					}
+					{
+						x: 5.9357204
+						y: 1.6672086
+					}
+					{
+						x: 5.9357204
+						y: 1.6672086
+					}
+				]
+				continuous: false
+			}
+		}
+		td.speed: {}
+	}
+	{
+		id: 27
+		td.tile: {
+			x: 2
+			y: 4
+		}
+		td.platform: {}
+		td.shooter: {}
+		td.aim: {
+			angle: 256.71216
+			inSights: true
+		}
+		td.load: {
+			reloadRequired: 0.06652533
+		}
+		td.range: {
+			distance: 2.0056357
+		}
+		2d: {
+			position: {
+				x: 5.0096593
+				y: 10.526137
+			}
+		}
+		td.target: {}
+		td.life: {
+			current: 0.22310035
+		}
+	}
+	{
+		id: 28
+		td.tile: {
+			x: 2
+			y: 4
+		}
+		td.platform: {}
+		td.shooter: {}
+		td.aim: {
+			angle: 433.17654
+		}
+		td.load: {}
+		td.range: {
+			distance: 2.0056357
+		}
+		2d: {
+			position: {
+				x: 5.2953563
+				y: 2.8791418
+			}
+			angle: 145.09747
+		}
+		td.target: {}
+		td.life: {
+			current: 0.8214477
+		}
+		spline: {
+			path: {
+				class: com.badlogic.gdx.math.CatmullRomSpline
+				controlPoints: [
+					{
+						x: 1.3976526
+						y: 5.2273903
+					}
+					{
+						x: 1.3976526
+						y: 5.2273903
+					}
+					{
+						x: 0.8963245
+						y: 5.3652015
+					}
+					{
+						x: 1.7236814
+						y: 4.7509513
+					}
+					{
+						x: 2.7390745
+						y: 4.851236
+					}
+					{
+						x: 3.478682
+						y: 5.7287374
+					}
+					{
+						x: 3.641646
+						y: 6.869488
+					}
+					{
+						x: 3.4410746
+						y: 7.9224877
+					}
+					{
+						x: 2.9271104
+						y: 8.837596
+					}
+					{
+						x: 2.3880744
+						y: 9.213668
+					}
+					{
+						x: 2.3880744
+						y: 9.213668
+					}
+				]
+				continuous: false
+			}
+		}
+		td.poisoning: {
+			damageSpeed: 0.3403933
+			damageDuration: 3.0312753
+		}
+	}
+	{
+		id: 29
+		td.tile: {
+			x: 2
+			y: 4
+		}
+		td.platform: {}
+		td.shooter: {
+			speed: 1.290165
+		}
+		td.aim: {
+			angle: 203.06241
+		}
+		td.load: {
+			reloadRequired: 0.20067188
+		}
+		td.range: {
+			distance: 2.0056357
+		}
+		2d: {
+			position: {
+				x: -2.076919
+				y: 8.523757
+			}
+		}
+		td.target: {}
+		td.life: {
+			current: 0.5550192
+		}
+		td.priority: {
+			rule: STRONG
+			current: STRONG
+		}
+		td.stunning: {
+			duration: 0.6829921
+			chance: 0.55078155
+		}
+	}
+	{
+		id: 30
+		td.tile: {
+			x: 2
+			y: 4
+		}
+		td.platform: {}
+		td.shooter: {}
+		td.aim: {
+			angle: -141.81952
+			inSights: true
+		}
+		td.load: {}
+		td.range: {
+			distance: 2.0056357
+		}
+		2d: {
+			position: {
+				x: 3.4035301
+				y: 4.8638196
+			}
+		}
+		td.target: {}
+		td.life: {
+			current: 0.5550192
+		}
+		td.priority: {
+			rule: STRONG
+			current: STRONG
+		}
+	}
+	{
+		id: 31
+		2d: {
+			position: {
+				x: -1.0475566
+				y: 5.992703
+			}
+			angle: 211.76549
+		}
+		td.enemy: {}
+		spline: {
+			path: {
+				class: com.badlogic.gdx.math.CatmullRomSpline
+				controlPoints: [
+					{
+						x: 0.20192207
+						y: 3.9316442
+					}
+					{
+						x: 0.20192207
+						y: 3.9316442
+					}
+					{
+						x: -0.41427925
+						y: 4.341306
+					}
+					{
+						x: -1.3104972
+						y: 4.9128065
+					}
+					{
+						x: -2.2586691
+						y: 4.5491242
+					}
+					{
+						x: -3.0639665
+						y: 3.8217592
+					}
+					{
+						x: -3.453627
+						y: 2.8086433
+					}
+					{
+						x: -3.427649
+						y: 1.7046068
+					}
+					{
+						x: -2.8691375
+						y: 0.71746886
+					}
+					{
+						x: -1.998897
+						y: -0.009896156
+					}
+					{
+						x: -1.1026785
+						y: -0.5554212
+					}
+					{
+						x: -0.063585155
+						y: -0.607376
+					}
+					{
+						x: 0.4819386
+						y: -0.29564705
+					}
+					{
+						x: 0.4819386
+						y: -0.29564705
+					}
+				]
+				continuous: false
+			}
+		}
+		td.speed: {}
+		td.life: {
+			current: 29.334785
+			max: 45.79778
+		}
+		sprite: {
+			sprite: {
+				u: 0
+				v: 0
+				u2: 1
+				v2: 1
+				x: -1.0475566
+				y: 5.992703
+				width: 0.29873872
+				height: 0.31172872
+				sx: 1
+				sy: 1
+				rotation: 211.76549
+				texture: bg-sky.png
+				color: {
+					r: 1
+					g: 1
+					b: 1
+					a: 0.99607843
+				}
+			}
+		}
+	}
+	{
+		id: 32
+		td.tile: {
+			x: 2
+			y: 4
+		}
+		td.platform: {}
+		td.shooter: {}
+		td.aim: {
+			angle: 404.72455
+		}
+		td.load: {
+			reloadRequired: 0.06652533
+		}
+		td.range: {
+			distance: 2.0056357
+		}
+		2d: {
+			position: {
+				x: 8.336849
+				y: 7.669546
+			}
+		}
+		td.target: {}
+		td.life: {
+			current: 0.22310035
+		}
+	}
+	{
+		id: 33
+		td.tile: {
+			x: 2
+			y: 4
+		}
+		td.platform: {}
+		td.shooter: {}
+		td.aim: {
+			angle: 510.98798
+			inSights: true
+		}
+		td.load: {
+			reloadRequired: 0.06652533
+		}
+		td.range: {
+			distance: 2.0056357
+		}
+		2d: {
+			position: {
+				x: 12.371853
+				y: 2.9894762
+			}
+		}
+		td.target: {}
+		td.life: {
+			current: 0.22310035
+		}
+	}
+	{
+		id: 34
+		td.tile: {
+			x: 2
+			y: 4
+		}
+		td.platform: {}
+		td.shooter: {}
+		td.aim: {
+			angle: 292.57208
+		}
+		td.load: {
+			reloadRequired: 0.06652533
+		}
+		td.range: {
+			distance: 2.0056357
+		}
+		2d: {
+			position: {
+				x: 8.423758
+				y: 9.494401
+			}
+		}
+		td.target: {}
+		td.life: {
+			current: 0.22310035
+		}
+	}
+	{
+		id: 35
+		td.tile: {
+			x: 2
+			y: 4
+		}
+		td.platform: {}
+		td.shooter: {}
+		td.aim: {
+			angle: 172.09676
+			inSights: true
+		}
+		td.load: {
+			reloadRequired: 0.06652533
+		}
+		td.range: {
+			distance: 2.0056357
+		}
+		2d: {
+			position: {
+				x: 11.552429
+				y: 7.9054117
+			}
+		}
+		td.target: {}
+		td.life: {
+			current: 0.22310035
+		}
+	}
+	{
+		id: 36
+		td.tile: {
+			x: 2
+			y: 4
+		}
+		td.platform: {}
+		td.shooter: {}
+		td.aim: {
+			angle: 464.58804
+		}
+		td.load: {
+			reloadRequired: 0.06652533
+		}
+		td.range: {
+			distance: 2.0056357
+		}
+		2d: {
+			position: {
+				x: 4.637048
+				y: 7.3840246
+			}
+		}
+		td.target: {}
+		td.life: {
+			current: 0.22310035
+		}
+	}
+	{
+		id: 37
+		td.tile: {
+			x: 2
+			y: 4
+		}
+		td.platform: {}
+		td.shooter: {}
+		td.aim: {
+			angle: -115.0396
+		}
+		td.load: {
+			reloadRequired: 0.06652533
+		}
+		td.range: {
+			distance: 2.0056357
+		}
+		2d: {
+			position: {
+				x: 7.4085045
+				y: 5.131211
+			}
+		}
+		td.target: {}
+		td.life: {
+			current: 0.22310035
+		}
+	}
+	{
+		id: 38
+		td.tile: {
+			x: 2
+			y: 4
+		}
+		td.platform: {}
+		td.shooter: {}
+		td.aim: {
+			angle: 480.35855
+		}
+		td.load: {
+			reloadRequired: 0.06652533
+		}
+		td.range: {
+			distance: 2.0056357
+		}
+		2d: {
+			position: {
+				x: -2.7225118
+				y: 12.448655
+			}
+			angle: 325.1178
+		}
+		td.target: {}
+		td.life: {
+			current: 0.22310035
+		}
+		spline: {
+			path: {
+				class: com.badlogic.gdx.math.CatmullRomSpline
+				controlPoints: [
+					{
+						x: -3.0510237
+						y: 5.3285675
+					}
+					{
+						x: -3.0510237
+						y: 5.3285675
+					}
+					{
+						x: -0.7389954
+						y: 5.56224
+					}
+					{
+						x: -1.7651002
+						y: 5.6531615
+					}
+					{
+						x: -2.7652278
+						y: 5.4972963
+					}
+					{
+						x: -3.5575366
+						y: 4.821886
+					}
+					{
+						x: -3.8692644
+						y: 3.834747
+					}
+					{
+						x: -4.0511055
+						y: 2.8216324
+					}
+					{
+						x: -4.064094
+						y: 1.7955273
+					}
+					{
+						x: -3.9861617
+						y: 0.7954005
+					}
+					{
+						x: -3.453627
+						y: -0.074839994
+					}
+					{
+						x: -2.7912047
+						y: -0.84117085
+					}
+					{
+						x: -1.9469415
+						y: -1.3866959
+					}
+					{
+						x: -1.6092365
+						y: -1.6204919
+					}
+					{
+						x: -1.6092365
+						y: -1.6204919
+					}
+				]
+				continuous: false
+			}
+		}
+		td.speed: {
+			base: 0.93459064
+		}
+	}
+	{
+		id: 39
+		td.tile: {
+			x: 2
+			y: 4
+		}
+		td.platform: {}
+		td.shooter: {}
+		td.aim: {
+			angle: 386.85886
+		}
+		td.load: {
+			reloadRequired: 0.06652533
+		}
+		td.range: {
+			distance: 2.0056357
+		}
+		2d: {
+			position: {
+				x: 9.193495
+				y: 5.0626106
+			}
+		}
+		td.target: {}
+		td.life: {
+			current: 0.22310035
+		}
+	}
+	{
+		id: 40
+		td.tile: {
+			x: 2
+			y: 4
+		}
+		td.platform: {}
+		td.shooter: {}
+		td.aim: {
+			angle: 437.4239
+		}
+		td.load: {
+			reloadRequired: 0.06652533
+		}
+		td.range: {
+			distance: 2.0056357
+		}
+		2d: {
+			position: {
+				x: 9.081757
+				y: 7.036433
+			}
+		}
+		td.target: {}
+		td.life: {
+			current: 0.22310035
+		}
+	}
+	{
+		id: 41
+		td.tile: {
+			x: 2
+			y: 4
+		}
+		td.platform: {}
+		td.shooter: {}
+		td.aim: {
+			angle: 317.6277
+		}
+		td.load: {
+			reloadRequired: 0.5271807
+		}
+		td.range: {
+			distance: 2.0056357
+		}
+		2d: {
+			position: {
+				x: -6
+				y: 11
+			}
+		}
+		td.target: {}
+		td.life: {
+			current: 0.22310035
+		}
+	}
+	{
+		id: 42
+		td.tile: {
+			x: 2
+			y: 4
+		}
+		td.platform: {}
+		td.shooter: {}
+		td.aim: {
+			angle: 145.7071
+		}
+		td.load: {
+			reloadRequired: 0.06652533
+		}
+		td.range: {
+			distance: 2.0056357
+		}
+		2d: {
+			position: {
+				x: 12.123528
+				y: 4.863987
+			}
+		}
+		td.target: {}
+		td.life: {
+			current: 0.22310035
+		}
+	}
+	{
+		id: 43
+		td.tile: {
+			x: 2
+			y: 4
+		}
+		td.platform: {}
+		td.shooter: {}
+		td.aim: {
+			angle: 122.49734
+		}
+		td.load: {
+			reloadRequired: 0.06652533
+		}
+		td.range: {
+			distance: 2.0056357
+		}
+		2d: {
+			position: {
+				x: 7.458872
+				y: 2.16913
+			}
+		}
+		td.target: {}
+		td.life: {
+			current: 0.22310035
+		}
+	}
+	{
+		id: 44
+		td.tile: {
+			x: 2
+			y: 4
+		}
+		td.platform: {}
+		td.shooter: {}
+		td.aim: {
+			angle: 459.73788
+		}
+		td.load: {
+			reloadRequired: 0.06652533
+		}
+		td.range: {
+			distance: 2.0056357
+		}
+		2d: {
+			position: {
+				x: 6.2397795
+				y: 2.3907897
+			}
+		}
+		td.target: {}
+		td.life: {
+			current: 0.22310035
+		}
+	}
+	{
+		id: 45
+		td.tile: {
+			x: 2
+			y: 4
+		}
+		td.platform: {}
+		td.shooter: {}
+		td.aim: {
+			angle: 391.85013
+		}
+		td.load: {
+			reloadRequired: 0.06652533
+		}
+		td.range: {
+			distance: 2.0056357
+		}
+		2d: {
+			position: {
+				x: 3.9542017
+				y: 6.564702
+			}
+		}
+		td.target: {}
+		td.life: {
+			current: 0.22310035
+		}
+	}
+	{
+		id: 46
+		td.tile: {
+			x: 2
+			y: 4
+		}
+		td.platform: {}
+		td.shooter: {}
+		td.aim: {
+			angle: 467.67407
+		}
+		td.load: {
+			reloadRequired: 0.06652533
+		}
+		td.range: {
+			distance: 2.0056357
+		}
+		2d: {
+			position: {
+				x: 8.163034
+				y: 2.0584278
+			}
+		}
+		td.target: {}
+		td.life: {
+			current: 0.22310035
+		}
+	}
+	{
+		id: 47
+		td.tile: {
+			x: 2
+			y: 4
+		}
+		td.platform: {}
+		td.shooter: {}
+		td.aim: {
+			angle: 295.42776
+		}
+		td.load: {
+			reloadRequired: 0.06652533
+		}
+		td.range: {
+			distance: 2.0056357
+		}
+		2d: {
+			position: {
+				x: 5.009521
+				y: 4.206046
+			}
+		}
+		td.target: {}
+		td.life: {
+			current: 0.22310035
+		}
+	}
+	{
+		id: 48
+		td.tile: {
+			x: 2
+			y: 4
+		}
+		td.platform: {}
+		td.shooter: {}
+		td.aim: {
+			angle: 458.91202
+		}
+		td.load: {
+			reloadRequired: 0.06652533
+		}
+		td.range: {
+			distance: 2.0056357
+		}
+		2d: {
+			position: {
+				x: 10.782686
+				y: 2.1329117
+			}
+		}
+		td.target: {}
+		td.life: {
+			current: 0.22310035
+		}
+	}
+	{
+		id: 49
+		td.tile: {
+			x: 2
+			y: 4
+		}
+		td.platform: {}
+		td.shooter: {}
+		td.aim: {
+			angle: 218.70502
+		}
+		td.load: {
+			reloadRequired: 0.06652533
+		}
+		td.range: {
+			distance: 2.0056357
+		}
+		2d: {
+			position: {
+				x: 8.100946
+				y: 4.6281214
+			}
+		}
+		td.target: {}
+		td.life: {
+			current: 0.22310035
+		}
+	}
+	{
+		id: 50
+		td.tile: {
+			x: 2
+			y: 4
+		}
+		td.platform: {}
+		td.shooter: {}
+		td.aim: {
+			angle: 427.64767
+		}
+		td.load: {
+			reloadRequired: 0.06652533
+		}
+		td.range: {
+			distance: 2.0056357
+		}
+		2d: {
+			position: {
+				x: 7.567087
+				y: 7.123331
+			}
+		}
+		td.target: {}
+		td.life: {
+			current: 0.22310035
+		}
+	}
+	{
+		id: 51
+		sprite: {
+			sprite: {
+				u: 0
+				v: 0
+				u2: 1
+				v2: 1
+				x: 2.149293
+				y: 9.553524
+				width: 1.5475585
+				height: 0.8886967
+				sx: 1
+				sy: 1
+				rotation: 52.05627
+				texture: bg-sky.png
+				color: {
+					r: 1
+					g: 1
+					b: 1
+					a: 0.99607843
+				}
+			}
+		}
+		2d: {
+			position: {
+				x: 2.149293
+				y: 9.553524
+			}
+			depth: 0.07432956
+			angle: 52.05627
+		}
+		td.tower: {}
+		td.speed: {}
+		spline: {
+			path: {
+				class: com.badlogic.gdx.math.CatmullRomSpline
+				controlPoints: [
+					{
+						x: 2.9553878
+						y: 3.4331412
+					}
+					{
+						x: 2.9553878
+						y: 3.4331412
+					}
+					{
+						x: 2.623415
+						y: 3.5321717
+					}
+					{
+						x: 2.3654594
+						y: 2.5598752
+					}
+					{
+						x: 1.9090748
+						y: 1.6669497
+					}
+					{
+						x: 0.9566225
+						y: 1.1708798
+					}
+					{
+						x: -0.035516422
+						y: 1.3693075
+					}
+					{
+						x: -0.8093865
+						y: 2.16302
+					}
+					{
+						x: -1.2062414
+						y: 3.095631
+					}
+					{
+						x: -1.3451407
+						y: 4.246513
+					}
+					{
+						x: -1.4245139
+						y: 5.2981806
+					}
+					{
+						x: -1.3054578
+						y: 6.3498497
+					}
+					{
+						x: -0.82922983
+						y: 7.4015174
+					}
+					{
+						x: -0.15457626
+						y: 8.2746
+					}
+					{
+						x: 0.7581932
+						y: 8.98894
+					}
+					{
+						x: 1.3534772
+						y: 9.445324
+					}
+					{
+						x: 1.3534772
+						y: 9.445324
+					}
+				]
+				continuous: false
+			}
+		}
+	}
+	{
+		id: 52
+		td.tile: {
+			x: 2
+			y: 4
+		}
+		td.platform: {}
+		td.shooter: {}
+		td.aim: {
+			angle: 101.56791
+			inSights: true
+		}
+		td.load: {
+			reload: 0.5271807
+			reloadRequired: 0.5271807
+		}
+		td.range: {
+			distance: 2.0056357
+		}
+		2d: {
+			position: {
+				x: 1.1492931
+				y: 10.389325
+			}
+		}
+		td.target: {}
+		td.life: {
+			current: 0.22310035
+		}
+		td.attachement: {
+			offset: {
+				x: 0.04423845
+				y: 1.3025386
+			}
+			parent: 51
+		}
+	}
+	{
+		id: 53
+		td.tile: {
+			x: 2
+			y: 4
+		}
+		td.platform: {}
+		td.shooter: {}
+		td.aim: {
+			angle: 536.672
+			inSights: true
+		}
+		td.load: {
+			reload: 0.5271807
+			reloadRequired: 0.5271807
+		}
+		td.range: {
+			distance: 2.0056357
+		}
+		2d: {
+			position: {
+				x: 2.1233435
+				y: 12.043711
+			}
+		}
+		td.target: {}
+		td.life: {
+			current: 0.22310035
+		}
+		td.attachement: {
+			offset: {
+				x: 1.9478422
+				y: 1.5516479
+			}
+			parent: 51
+		}
+	}
+]
+systems: [
+	{
+		type: box2d.world
+		enabled: true
+		runSimulation: true
+		gravity: {
+			y: -1.8131763
+		}
+		timeStep: 0.033333335
+		velocityIterations: 8
+		positionIterations: 3
+	}
+	{
+		type: core.clearScreen
+		enabled: true
+		color: {
+			r: 0.2
+			g: 0.2
+			b: 0.2
+			a: 1
+		}
+		clearColor: true
+		clearDepth: true
+	}
+	{
+		type: g3d.rendering
+		enabled: true
+		shadowQuality: 10
+		shadowSize: {
+			x: 50
+			y: 50
+		}
+		shadowNear: 0.1
+		shadowFar: 100
+		ambient: {
+			r: 0.4
+			g: 0.4
+			b: 0.4
+			a: 1
+		}
+	}
+	{
+		type: g2d.render
+		enabled: true
+		culling: false
+	}
+]
+views: []
+assets: [
+	{
+		type: com.badlogic.gdx.graphics.Texture
+		name: bg-sky.png
+	}
+	{
+		type: com.badlogic.gdx.ai.btree.BehaviorTree
+		name: td/entry.btree
+	}
+]
+}

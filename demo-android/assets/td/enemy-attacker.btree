@@ -1,0 +1,16 @@
+# import behaviorTree:"com.badlogic.gdx.ai.btree.BehaviorTree"
+# import selector:"com.badlogic.gdx.ai.btree.branch.Selector"
+# import sequence:"com.badlogic.gdx.ai.btree.branch.Sequence"
+import life?:"net.mgsx.game.examples.td.tasks.LifeCondition"
+import moveTarget:"net.mgsx.game.examples.td.tasks.MoveTask"
+import moveToHome:"net.mgsx.game.examples.td.tasks.MoveToHomeTask"
+
+selector
+  sequence
+    life? max:0.2
+    moveTarget target:"ALLY" rangeRatio:0.35920566
+  sequence
+    life? max:0.5039425
+    moveTarget direction:"FROM" rangeRatio:1.5997785
+  moveTarget rangeRatio:0.94495296
+  moveToHome

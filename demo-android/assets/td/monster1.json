@@ -1,0 +1,126 @@
+{
+entities: [
+	{
+		id: 0
+		2d: {
+			depth: -1
+			angle: 72.8551
+		}
+		td.enemy: {
+			type: HEXAGON
+		}
+		td.speed: {
+			base: 0.8559628
+		}
+		btree: {
+			library: td/enemy-random.btree
+		}
+		td.life: {
+			current: 0.68347895
+			max: 1.2058299
+		}
+		td.range: {
+			distance: 1.4392649
+		}
+		td.shooter: {}
+		td.aim: {
+			angle: 15.052703
+		}
+		td.target: {}
+		td.load: {}
+		g3d: {
+			modelInstance: td/monster.g3dj
+			origin: {}
+			blended: false
+			culling: false
+		}
+		td.nav: {}
+		spline: {
+			path: {
+				class: com.badlogic.gdx.math.BSpline
+				controlPoints: [
+					{
+						x: -3.4231267
+						y: -0.77777785
+					}
+					{
+						x: -3.4231267
+						y: -0.77777785
+					}
+					{
+						x: -3.4231267
+						y: -0.77777785
+					}
+					{
+						x: -2.6666667
+						y: 0.6666667
+					}
+					{
+						x: -1.3333334
+						y: 1.3333334
+						z: -0.33333334
+					}
+					{
+						x: -1.3333334
+						y: 2.6666667
+						z: -0.33333334
+					}
+					{
+						x: -0.6666667
+						y: 3.3333335
+						z: -0.33333334
+					}
+					{
+						x: 0.6666667
+						y: 3.3333335
+						z: -0.33333334
+					}
+					{
+						x: 1.3333334
+						y: 4.7078094
+					}
+					{
+						x: 0.6666667
+						y: 5.415619
+					}
+					{
+						x: 1.3333334
+						y: 6.634145
+					}
+					{
+						x: 3.089545
+						y: 6.634145
+						z: 0.18803701
+					}
+					{
+						x: 4.17909
+						y: 7.144861
+						z: 0.37607402
+					}
+					{
+						x: 5.9721427
+						y: 6.634145
+						z: 0.564111
+					}
+					{
+						x: 5.9721427
+						y: 5.497434
+						z: 0.37607402
+					}
+				]
+				continuous: false
+			}
+		}
+	}
+]
+assets: [
+	{
+		type: com.badlogic.gdx.graphics.g3d.Model
+		name: td/monster.g3dj
+	}
+	{
+		type: com.badlogic.gdx.ai.btree.BehaviorTree
+		name: td/enemy-random.btree
+	}
+]
+}

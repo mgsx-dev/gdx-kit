@@ -1,0 +1,4 @@
+# import behaviorTree:"com.badlogic.gdx.ai.btree.BehaviorTree"
+import randomPath:"net.mgsx.game.examples.td.tasks.PathTask"
+
+randomPath

@@ -1,0 +1,43 @@
+# import behaviorTree:"com.badlogic.gdx.ai.btree.BehaviorTree"
+# import sequence:"com.badlogic.gdx.ai.btree.branch.Sequence"
+# import repeat:"com.badlogic.gdx.ai.btree.decorator.Repeat"
+# import wait:"com.badlogic.gdx.ai.btree.leaf.Wait"
+import enemy:"net.mgsx.game.examples.td.tasks.EmitEnemyTask"
+import nextWave:"net.mgsx.game.examples.td.tasks.NextWaveTask"
+
+sequence
+  sequence
+    repeat times:4
+      sequence
+        wait seconds:1.0085958
+        enemy enemy:"td/monster1.json"
+    wait seconds:3.0
+    nextWave
+  sequence
+    repeat times:4
+      sequence
+        wait seconds:2.0
+        enemy enemy:"td/monster1.json"
+    wait seconds:3.0
+    nextWave
+  sequence
+    repeat times:4
+      sequence
+        wait seconds:2.9703572
+        enemy enemy:"td/monster1.json"
+    wait seconds:3.0
+    nextWave
+  sequence
+    repeat times:4
+      sequence
+        wait seconds:4.1698804
+        enemy enemy:"td/monster1.json"
+    wait seconds:3.0
+    nextWave
+  sequence
+    repeat times:4
+      sequence
+        wait seconds:5.3056927
+        enemy enemy:"td/monster1.json"
+    wait seconds:3.0
+    nextWave
