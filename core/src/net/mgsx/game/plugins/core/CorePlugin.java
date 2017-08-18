@@ -6,16 +6,19 @@ import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 
 import net.mgsx.game.core.GameScreen;
 import net.mgsx.game.core.annotations.PluginDef;
+import net.mgsx.game.core.components.Hidden;
 import net.mgsx.game.core.plugins.Plugin;
 import net.mgsx.game.core.storage.AssetSerializer;
 import net.mgsx.game.core.storage.EntityGroupRef;
 import net.mgsx.game.core.storage.EntityGroupRefSerializer;
 import net.mgsx.game.plugins.core.components.EntityEmitter;
+import net.mgsx.game.plugins.core.components.Orientation3D;
 import net.mgsx.game.plugins.core.components.PolygonComponent;
 import net.mgsx.game.plugins.core.components.ProxyComponent;
 import net.mgsx.game.plugins.core.components.Rotate2DAnimation;
 import net.mgsx.game.plugins.core.components.SlavePhysics;
 import net.mgsx.game.plugins.core.components.Transform2DComponent;
+import net.mgsx.game.plugins.core.components.Transform3DComponent;
 import net.mgsx.game.plugins.core.storage.ProxySerializer;
 import net.mgsx.game.plugins.core.systems.ClearScreenSystem;
 import net.mgsx.game.plugins.core.systems.DependencySystem;
@@ -30,7 +33,10 @@ import net.mgsx.game.plugins.core.systems.Translation3DSystem;
 		PolygonComponent.class,
 		Rotate2DAnimation.class,
 		EntityEmitter.class,
-		SlavePhysics.class})
+		SlavePhysics.class,
+		Transform3DComponent.class,
+		Orientation3D.class,
+		Hidden.class})
 public class CorePlugin implements Plugin
 {
 
