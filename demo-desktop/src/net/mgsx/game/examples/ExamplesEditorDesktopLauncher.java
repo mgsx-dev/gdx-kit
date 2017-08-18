@@ -105,12 +105,12 @@ public class ExamplesEditorDesktopLauncher {
 	
 	private ApplicationWrapper wrapper;
 	
-	public ExamplesEditorDesktopLauncher(final boolean pd) 
+	public ExamplesEditorDesktopLauncher(LwjglApplicationConfiguration config, final PdConfiguration pdConfig) 
 	{
 		Game menuApplication = new Game() {
 			@Override
 			public void create() {
-				if(pd) Pd.audio.create(new PdConfiguration());
+				if(pdConfig != null) Pd.audio.create(pdConfig);
 				setScreen(new MenuScreen(wrapper));
 			}
 		};
@@ -125,9 +125,10 @@ public class ExamplesEditorDesktopLauncher {
 		
 		// TODO could we abstract a little the pd things with the Pd Plugin ?
 		// process arguments. Default configuration is Gdx audio and no Pd at all.
-		boolean pd = false;
+		PdConfiguration pdConfig = null;
+		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		if(parameters.contains("-pd")){
-			pd = true;
+			pdConfig = new PdConfiguration();
 			PdConfiguration.disabled = false;
 		} else if(parameters.contains("-pd-remote")){
 			PdConfiguration.remoteEnabled = true;
@@ -137,7 +138,16 @@ public class ExamplesEditorDesktopLauncher {
 		if(parameters.contains("-no-audio")){
 			LwjglApplicationConfiguration.disableAudio = true;
 		}
+		if(parameters.contains("-gl")){
+			Array<String> argList = new Array<String>(args);
+			String [] version = argList.get(argList.indexOf("-gl", false)+1).split("\\.");
+			int major = Integer.parseInt(version[0]);
+			int minor = Integer.parseInt(version[1]);
+			config.useGL30 = true;
+			config.gles30ContextMajorVersion = major;
+			config.gles30ContextMinorVersion = minor;
+		}
 		
-		new ExamplesEditorDesktopLauncher(pd);
+		new ExamplesEditorDesktopLauncher(config, pdConfig);
 	}
 }

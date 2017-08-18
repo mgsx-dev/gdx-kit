@@ -1,0 +1,90 @@
+{
+entities: [
+	{
+		id: 0
+		g3d: {
+			modelInstance: "monkey.g3dj"
+			origin: {}
+			blended: false
+			culling: false
+		}
+		example.pick: {
+			transform: {
+				val: [ 1, 0, 0, 0, 0, -5.9604645E-7, -1.0000006, 0, 0, 1.0000006, -5.9604645E-7, 0, 0, 0, 0, 1 ]
+			}
+		}
+	}
+	{
+		id: 1
+		g3d.light.dir: {
+			light: {
+				direction: {
+					x: 0.3728513
+					y: 0.8175187
+					z: -0.4389135
+				}
+			}
+			shadow: false
+		}
+	}
+]
+systems: [
+	{
+		type: core.bindings
+		enabled: true
+		bindings: []
+	}
+	{
+		type: box2d.world
+		enabled: true
+		runSimulation: true
+		gravity: {
+			y: -9.807
+		}
+		timeStep: 0.033333335
+		velocityIterations: 8
+		positionIterations: 3
+	}
+	{
+		type: core.clearScreen
+		enabled: true
+		color: {
+			r: 0.2
+			g: 0.2
+			b: 0.2
+			a: 1
+		}
+		clearColor: true
+		clearDepth: true
+	}
+	{
+		type: g3d.rendering
+		enabled: true
+		shadowQuality: 10
+		shadowSize: {
+			x: 50
+			y: 50
+		}
+		shadowNear: 0.1
+		shadowFar: 100
+		ambient: {
+			a: 1
+		}
+	}
+	{
+		type: g2d.render
+		enabled: true
+		culling: false
+	}
+]
+views: [
+	g3d.rendering
+	net.mgsx.game.examples.foliage.systems.PickSystem
+]
+assets: [
+	{
+		type: com.badlogic.gdx.graphics.g3d.Model
+		name: "monkey.g3dj"
+	}
+]
+}

@@ -1,0 +1,93 @@
+{
+entities: [
+	{
+		id: 0
+		g3d: {
+			modelInstance: gpu/land.g3dj
+		}
+		gpu.tess: {
+			transform: {
+				val: [ 1, 0, 0, 0, 0, -5.9604645E-7, -1.0000006, 0, 0, 1.0000006, -5.9604645E-7, 0, 0, 0, 0, 1 ]
+			}
+		}
+		gpu.foliage: {
+			asLine: false
+		}
+	}
+]
+systems: [
+	{
+		type: core.bindings
+		enabled: true
+		bindings: []
+	}
+	{
+		type: box2d.world
+		enabled: true
+		runSimulation: true
+		gravity: {
+			y: -9.807
+		}
+		timeStep: 0.033333335
+		velocityIterations: 8
+		positionIterations: 3
+	}
+	{
+		type: core.clearScreen
+		enabled: true
+		color: {
+			r: 0.2
+			g: 0.2
+			b: 0.2
+			a: 1
+		}
+		clearColor: true
+		clearDepth: true
+	}
+	{
+		type: g3d.rendering
+		enabled: true
+		shadowQuality: 10
+		shadowSize: {
+			x: 50
+			y: 50
+		}
+		shadowNear: 0.1
+		shadowFar: 100
+		fog: {}
+		ambient: {
+			r: 0.4
+			g: 0.4
+			b: 0.4
+			a: 1
+		}
+	}
+	{
+		type: gpu.landscape
+		enabled: false
+		height: 5
+		frequency: 0.2
+		speed: 0.2
+		length: 10
+		texScale: 1
+		roughness: 1
+		roadScale: 1
+		roadWidth: 0.1
+		slices: 5
+	}
+	{
+		type: g2d.render
+		enabled: true
+		culling: false
+	}
+]
+views: [
+	net.mgsx.game.examples.gpu.systems.GPUFoliageSystem
+]
+assets: [
+	{
+		type: com.badlogic.gdx.graphics.g3d.Model
+		name: gpu/land.g3dj
+	}
+]
+}
