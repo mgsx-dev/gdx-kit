@@ -86,6 +86,8 @@ project(":demo-core") {
         compile project(":core")
         compile "net.mgsx.gdx:gdx-pd:$pdVersion"
         
+        compile "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
+        
         testCompile "junit:junit:$junitVersion"
     }
 }
@@ -109,6 +111,8 @@ project(":demo-desktop") {
         
         compile "com.badlogicgames.gdx:gdx-bullet:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-bullet-platform:$gdxVersion:natives-desktop"
+        
+        compile "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-desktop"
         
         compile "com.google.apis:google-api-services-games:v1-rev239-$gapiVersion"
         compile "com.google.oauth-client:google-oauth-client-jetty:$gapiVersion"
@@ -145,6 +149,13 @@ project(":demo-android") {
         natives "net.mgsx.gdx:gdx-pd-platform:$pdVersion:natives-x86_64"
         
         compile "com.badlogicgames.gdx:gdx-controllers-android:$gdxVersion"
+        
+        compile "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
+		natives "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-armeabi"
+		natives "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-armeabi-v7a"
+		natives "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-arm64-v8a"
+		natives "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-x86"
+		natives "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-x86_64"
         
     }
 

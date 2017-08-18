@@ -1,0 +1,261 @@
+{
+    teams: {
+        heroes: ["warrior", "dwarf", "elfe", "wizard"]
+        "warrior-only": ["warrior"]
+        "warrior-elfe": ["warrior", "elfe"]
+        "monsters-1.1": ["bat", "bat", "bat"]
+        "monsters-1.2": ["bat", "bat", "bat", "skeleton", "skeleton"]
+        "monsters-1.3": ["bat", "skeleton", "skeleton", "ork"]
+        "monsters-1.4": ["dragon"]
+        "monsters-1.5": ["dragon", "skeleton", "skeleton", "ork", "bat", "bat", "bat"]
+        "test-ai": ["dark-wizard", "bat", "bat", "bat"]
+        "test-ai2": ["dark-wizard", "dark-wizard"]
+    }
+    factions: {
+        "evil": {
+            icon: "ra-broken-skull"
+            color: "#000000"
+        }
+        "holy": {
+            icon: "ra-helmet"
+            color: "#ffffff"
+        }
+        "dragon": {
+            icon: "ra-two-dragons"
+            color: "#ff7f00"
+        }
+    }
+    cards: [
+        {
+            id: "sword"
+            dmg: {min: 3, max: 12}
+            at: {min: -3, max: -5}
+            wait: 3
+            critical: 5
+        }
+        {
+            id: "battle-axe"
+            dmg: {min: 3, max: 12}
+            at: {min: -3, max: -5}
+            wait: 5
+            critical: 10
+        }
+        {
+            id: "double-sword"
+            dmg: {min: 3, max: 12}
+            at: {min: -3, max: -5}
+            wait: 5
+        }
+        {
+            id: "axe"
+            dmg: {min: 3, max: 12}
+            at: {min: -3, max: -5}
+            wait: 6
+        }
+        {
+            id: "long-bow"
+            dmg: {min: 3, max: 12}
+            at: {min: -3, max: -5}
+            wait: 4
+        }
+        {
+            id: "stick"
+            dmg: {min: 3, max: 12}
+            at: {min: -3, max: -5}
+            wait: 2
+        }
+        {
+            id: "fire-ball"
+            dmg: {min: 3, max: 12}
+            at: {min: -3, max: -5}
+            wait: 8
+        }
+        {
+            id: "earthquake"
+            dmg: {min: 30, max: 60}
+            at: {min: -3, max: -5}
+            wait: 12
+        }
+        {
+            id: "heal"
+            team: true
+            self: true
+            dmg: {min: -5, max: -7}
+            poison: null
+            heal: null
+            protection: null
+            wait: 6
+
+        }
+        {
+            id: "mushroom"
+            team: true
+            self: true
+            dmg: {min: -2, max: -2}
+            wait: 6
+            turns: {min: 4, max: 6}
+        }
+        {
+            id: "poison-arrows"
+            dmg: {min: 2, max: 2}
+            wait: 3
+            turns: {min: 4, max: 6}
+        }
+        {
+            id: "spell-protect"
+            team: true
+            self: true
+            pr: {min: 3, max: 3}
+            turns: {min: 4, max: 5}
+            wait: 8
+        }
+        {
+            id: "feng"
+            dmg: {min: 1, max: 2}
+            wait: 2
+        }
+        {
+            id: "club"
+            dmg: {min: 2, max: 12}
+            wait: 6
+        }
+        {
+            id: "tail"
+            dmg: {min: 2, max: 12}
+            wait: 3
+            critical: 5
+        }
+        {
+            id: "head"
+            dmg: {min: 10, max: 10}
+            wait: 6
+            critical: 20
+        }
+        {
+            id: "claws"
+            dmg: {min: 3, max: 4}
+            wait: 1
+        }
+        {
+            id: "poison-feng"
+            dmg: {min: 1, max: 1}
+            turns: {min: 3, max: 3}
+            wait: 5
+        }
+        {
+            id: "armor"
+            protection: {min: 1, max: 1}
+            turns: {min: 8, max: 8}
+            wait: 10
+        }
+    ]
+    characters: [
+
+        {
+            id: "dark-wizard"
+            name: "Dark Wizard"
+            life: 30
+            cards: [
+                "heal", "poison-feng", "mushroom", "stick"
+            ]
+            faction: "evil"
+        }
+        {
+            id: "dragon"
+            name: "Dragon"
+            life: 120
+            at: 10
+            prd: 10
+            speed: 1
+            cards: [
+                "tail", "poison-feng", "poison-feng", "head", "claws"
+            ]
+            faction: "dragon"
+        }
+        {
+            id: "warrior"
+            name: "Warrior"
+            life: 30
+            at: 10
+            prd: 10
+            speed: 1
+            cards: [
+                "sword", "double-sword", "armor"
+            ]
+            faction: "holy"
+        }
+        {
+            id: "dwarf"
+            name: "Dwarf"
+            life: 35
+            at: 10
+            prd: 10
+            speed: 1
+            cards: [
+                "axe", "battle-axe", "armor"
+            ]
+            faction: "holy"
+        }
+        {
+            id: "elfe"
+            name: "Elfe"
+            life: 25
+            at: 10
+            prd: 10
+            speed: 1
+            cards: [
+                "sword", "long-bow", "heal", "poison-arrows", "mushroom"
+            ]
+            faction: "holy"
+        }
+        {
+            id: "wizard"
+            name: "Wizard"
+            life: 20
+            at: 10
+            prd: 10
+            speed: 1
+            cards: [
+                "stick", "heal", "fire-ball", "earthquake"
+            ]
+            faction: "holy"
+        }
+        {
+            id: "bat"
+            name: "Bat"
+            life: 5
+            at: 10
+            prd: 10
+            speed: 2
+            cards: [
+                "feng", "poison-feng"
+            ]
+            faction: "evil"
+        }
+        {
+            id: "skeleton"
+            name: "Skeleton"
+            life: 15
+            at: 10
+            prd: 10
+            speed: 2
+            cards: [
+                "sword"
+            ]
+            faction: "evil"
+        }
+        {
+            id: "ork"
+            name: "Ork"
+            life: 40
+            at: 10
+            prd: 10
+            speed: 2
+            cards: [
+                "club"
+            ]
+            faction: "evil"
+        }
+
+    ]
+}

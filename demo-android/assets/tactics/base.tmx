@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" renderorder="left-down" width="32" height="32" tilewidth="32" tileheight="32" nextobjectid="1">
+ <tileset firstgid="1" name="terrain_atlas" tilewidth="32" tileheight="32" tilecount="1024" columns="32">
+  <image source="terrain_atlas.png" width="1024" height="1024"/>
+  <tile id="112">
+   <properties>
+    <property name="name" value="mountain"/>
+   </properties>
+  </tile>
+  <tile id="181">
+   <properties>
+    <property name="name" value="forest"/>
+   </properties>
+  </tile>
+  <tile id="304">
+   <properties>
+    <property name="name" value="lava"/>
+   </properties>
+  </tile>
+  <tile id="385">
+   <properties>
+    <property name="name" value="sand"/>
+   </properties>
+  </tile>
+  <tile id="391">
+   <properties>
+    <property name="name" value="water"/>
+   </properties>
+  </tile>
+  <tile id="433">
+   <properties>
+    <property name="name" value="city"/>
+   </properties>
+  </tile>
+  <tile id="565">
+   <properties>
+    <property name="name" value="water2"/>
+   </properties>
+  </tile>
+  <tile id="598">
+   <properties>
+    <property name="name" value="bonus"/>
+   </properties>
+  </tile>
+  <tile id="724">
+   <properties>
+    <property name="name" value="hero"/>
+   </properties>
+  </tile>
+  <tile id="937">
+   <properties>
+    <property name="name" value="mission"/>
+   </properties>
+  </tile>
+  <tile id="947">
+   <properties>
+    <property name="name" value="discovered"/>
+   </properties>
+  </tile>
+  <tile id="966">
+   <properties>
+    <property name="name" value="gray"/>
+   </properties>
+  </tile>
+  <tile id="998">
+   <properties>
+    <property name="name" value="red"/>
+   </properties>
+  </tile>
+  <tile id="1011">
+   <properties>
+    <property name="name" value="zodiac"/>
+   </properties>
+  </tile>
+ </tileset>
+ <layer name="Tile Layer 1" width="32" height="32">
+  <data encoding="base64" compression="zlib">
+   eJztwQENAAAAwqD3T20PBxQAAADwbhAAAAE=
+  </data>
+ </layer>
+</map>

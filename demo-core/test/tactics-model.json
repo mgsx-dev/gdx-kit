@@ -1,0 +1,40 @@
+{
+    cards: [
+        {
+            id: "sword"
+            dmg: {min: 10, max: 10}
+            at: {min: -3, max: -5}
+            wait: 3
+        }
+        {
+            id: "feng"
+            dmg: {min: 1, max: 1}
+            wait: 2
+        }
+    ]
+    characters: [
+        {
+            id: "warrior"
+            name: "Warrior"
+            life: 30
+            at: 10
+            prd: 10
+            speed: 1
+            cards: [
+                "sword"
+            ]
+        }
+        {
+            id: "bat"
+            name: "Bat"
+            life: 5
+            at: 10
+            prd: 10
+            speed: 2
+            cards: [
+                "feng"
+            ]
+        }
+
+    ]
+}
