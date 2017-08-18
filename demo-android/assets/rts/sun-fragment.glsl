@@ -24,7 +24,7 @@ void main() {
 
 	float rate = smoothstep(0.2, 0.3, distance);
 
-	color = mix(vec4(v_color.rgb, 1.0), vec4(v_color.rgb * color * alpha, alpha), rate);
+	color = mix(vec4(v_color.rgb, 1.0), vec4(v_color.rgb * color.rgb * alpha, alpha), rate);
 
 	gl_FragColor = color;
 }
