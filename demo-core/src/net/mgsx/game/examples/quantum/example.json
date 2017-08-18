@@ -1,0 +1,75 @@
+{
+entities: [
+	{
+		id: 0
+		2d: {
+			position: {
+				x: -4.3029547
+				y: 3.2378695
+			}
+		}
+		quantum.planet: {
+			radius: 2.3249354
+		}
+	}
+	{
+		id: 1
+		2d: {
+			position: {
+				x: 14.770389
+				y: -0.5809339
+			}
+		}
+		quantum.planet: {
+			id: 1
+			radius: 6.9208007
+		}
+	}
+	{
+		id: 2
+		2d: {
+			position: {
+				x: 0.06445861
+				y: -5.074981
+			}
+		}
+		quantum.planet: {
+			id: 2
+			radius: 4.6700053
+		}
+	}
+	{
+		id: 3
+		2d: {
+			position: {
+				x: 2.0688725
+				y: 7.626437
+			}
+		}
+		quantum.planet: {
+			id: 3
+			radius: 2.2669277
+		}
+	}
+]
+systems: [
+	{
+		type: core.bindings
+		enabled: true
+		bindings: []
+	}
+	{
+		type: core.clearScreen
+		enabled: true
+		color: {
+			r: 0.2
+			g: 0.2
+			b: 0.2
+			a: 1
+		}
+		clearColor: true
+		clearDepth: true
+	}
+]
+views: []
+}
