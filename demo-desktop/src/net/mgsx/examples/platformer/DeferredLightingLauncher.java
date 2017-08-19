@@ -28,11 +28,7 @@ public class DeferredLightingLauncher {
 	}
 	public static void main (String[] args) 
 	{
-		ClassRegistry.instance = new ReflectionClassRegistry(
-				ReflectionClassRegistry.kitCore,
-				ReflectionClassRegistry.kitPlugins,
-				ReflectionClassRegistry.behaviorTree
-				);
+		ClassRegistry.instance = new ReflectionClassRegistry();
 		
 		PdConfiguration.disabled = true;
 		

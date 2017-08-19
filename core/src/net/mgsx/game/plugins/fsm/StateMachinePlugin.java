@@ -12,7 +12,7 @@ import net.mgsx.game.plugins.fsm.components.EntityStateMachine;
 import net.mgsx.game.plugins.fsm.components.StateMachineComponent;
 import net.mgsx.game.plugins.fsm.systems.StateMachineSystem;
 
-@PluginDef(category="state machine", components={StateMachineComponent.class})
+@PluginDef(category="state machine", components={StateMachineComponent.class}, requires="com.badlogic.gdx.ai.GdxAI")
 public class StateMachinePlugin implements Plugin
 {
 	final public static TypeMap<EntityState> states = new TypeMap<EntityState>();

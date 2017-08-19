@@ -30,7 +30,8 @@ import net.mgsx.game.plugins.box2d.tools.BodyMove;
 import net.mgsx.game.plugins.box2d.tools.Box2DJointMovable;
 import net.mgsx.game.plugins.core.components.Transform2DComponent;
 
-@PluginDef(components={Box2DBodyModel.class, Box2DJointModel.class})
+@PluginDef(components={Box2DBodyModel.class, Box2DJointModel.class}, 
+	requires="com.badlogic.gdx.physics.box2d.Box2D")
 public class Box2DPlugin implements Plugin
 {
 	

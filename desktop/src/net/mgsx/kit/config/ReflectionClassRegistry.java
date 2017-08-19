@@ -21,10 +21,7 @@ import net.mgsx.game.core.meta.ClassRegistry;
 
 public class ReflectionClassRegistry extends ClassRegistry
 {
-	public static final String kitCore = "net.mgsx.game.core";
-	public static final String kitCorePlugin = "net.mgsx.game.plugins.core";
-	public static final String kitBehaviorTreePlugin = "net.mgsx.game.plugins.btree"; // XXX necessary to perform reflection on custom tasks ... maybe because of EntityLeafTask ...
-	public static final String kitPlugins = "net.mgsx.game.plugins";
+	/** required in order to scan EntityLeafTask */
 	public static final String behaviorTree = "com.badlogic.gdx.ai.btree";
 	
 	private Reflections reflections;

@@ -49,15 +49,17 @@ project(":core") {
 
 
     dependencies {
+    	
+    	// mandatory dependencies
         compile "com.badlogicgames.gdx:gdx:$gdxVersion"
-        compile "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
-        compile "com.badlogicgames.gdx:gdx-ai:$aiVersion"
         compile "com.badlogicgames.ashley:ashley:$ashleyVersion"
-        compile "com.badlogicgames.gdx:gdx-controllers:$gdxVersion"
         
+        // optional dependencies
+        compileOnly "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
+        compileOnly "com.badlogicgames.gdx:gdx-ai:$aiVersion"
+        compileOnly "com.badlogicgames.gdx:gdx-controllers:$gdxVersion"
         compileOnly "com.badlogicgames.gdx:gdx-bullet:$gdxVersion"
-        
-        compile "net.mgsx.gdx:gdx-pd:$pdVersion"
+        compileOnly "net.mgsx.gdx:gdx-pd:$pdVersion"
         
         testCompile "junit:junit:$junitVersion"
     }
@@ -85,6 +87,12 @@ project(":demo-core") {
 
     dependencies {
         compile project(":core")
+        
+        // inlude all optional dependencies
+        compile "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
+        compile "com.badlogicgames.gdx:gdx-ai:$aiVersion"
+        compile "com.badlogicgames.gdx:gdx-controllers:$gdxVersion"
+        compile "com.badlogicgames.gdx:gdx-bullet:$gdxVersion"
         compile "net.mgsx.gdx:gdx-pd:$pdVersion"
         
         compile "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"

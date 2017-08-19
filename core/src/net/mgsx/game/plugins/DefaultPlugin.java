@@ -2,25 +2,20 @@ package net.mgsx.game.plugins;
 
 import net.mgsx.game.core.annotations.PluginDef;
 import net.mgsx.game.plugins.boundary.BoundaryPlugin;
-import net.mgsx.game.plugins.box2d.Box2DPlugin;
-import net.mgsx.game.plugins.btree.BTreePlugin;
-import net.mgsx.game.plugins.bullet.BulletPlugin;
 import net.mgsx.game.plugins.camera.CameraPlugin;
 import net.mgsx.game.plugins.controller.ControllerPlugin;
 import net.mgsx.game.plugins.core.CorePlugin;
-import net.mgsx.game.plugins.fsm.StateMachinePlugin;
 import net.mgsx.game.plugins.g2d.G2DPlugin;
 import net.mgsx.game.plugins.g3d.G3DPlugin;
 import net.mgsx.game.plugins.graphics.GraphicsPlugin;
 import net.mgsx.game.plugins.p3d.Particle3DPlugin;
 import net.mgsx.game.plugins.parallax.ParallaxPlugin;
 import net.mgsx.game.plugins.particle2d.Particle2DPlugin;
-import net.mgsx.game.plugins.pd.PdPlugin;
 import net.mgsx.game.plugins.spline.SplinePlugin;
 import net.mgsx.game.plugins.tiles.TilesPlugin;
 
 /**
- * Default plugin configuration, import all "built-in" plugins
+ *  Default plugin configuration, import all available runtime plugins
  * 
  * @author mgsx
  *
@@ -28,11 +23,8 @@ import net.mgsx.game.plugins.tiles.TilesPlugin;
 @PluginDef(dependencies={
 	GraphicsPlugin.class,
 	BoundaryPlugin.class,
-	Box2DPlugin.class,
-	BTreePlugin.class,
 	ControllerPlugin.class,
 	CorePlugin.class,
-	StateMachinePlugin.class,
 	G2DPlugin.class,
 	G3DPlugin.class,
 	ParallaxPlugin.class,
@@ -40,10 +32,7 @@ import net.mgsx.game.plugins.tiles.TilesPlugin;
 	SplinePlugin.class,
 	TilesPlugin.class,
 	CameraPlugin.class,
-	BTreePlugin.class,
 	ControllerPlugin.class,
-	PdPlugin.class,
-	BulletPlugin.class,
 	Particle3DPlugin.class
 })
 public interface DefaultPlugin {

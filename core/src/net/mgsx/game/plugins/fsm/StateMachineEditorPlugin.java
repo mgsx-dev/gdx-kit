@@ -10,7 +10,7 @@ import net.mgsx.game.plugins.fsm.components.EntityState;
 import net.mgsx.game.plugins.fsm.components.StateMachineComponent;
 import net.mgsx.game.plugins.fsm.editors.StateMachineEditor;
 
-@PluginDef(dependencies=StateMachinePlugin.class)
+@PluginDef(dependencies=StateMachinePlugin.class, requires="com.badlogic.gdx.ai.GdxAI")
 public class StateMachineEditorPlugin extends EditorPlugin
 {
 

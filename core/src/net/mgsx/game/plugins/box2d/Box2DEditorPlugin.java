@@ -33,7 +33,8 @@ import net.mgsx.game.plugins.box2d.tools.shapes.CreateLoopTool;
 import net.mgsx.game.plugins.box2d.tools.shapes.CreatePolygonTool;
 import net.mgsx.game.plugins.box2d.tools.shapes.CreateRectangleTool;
 
-@PluginDef(dependencies={Box2DPlugin.class})
+@PluginDef(dependencies={Box2DPlugin.class},
+requires="com.badlogic.gdx.physics.box2d.Box2D")
 public class Box2DEditorPlugin extends EditorPlugin 
 {
 	@Override

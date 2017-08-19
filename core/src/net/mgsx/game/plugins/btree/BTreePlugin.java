@@ -27,7 +27,9 @@ import net.mgsx.game.plugins.btree.tools.BTreeTool;
 import net.mgsx.game.plugins.btree.ui.FloatDistributionEditor;
 import net.mgsx.game.plugins.btree.ui.IntegerDistributionEditor;
 
-@PluginDef(category="behavior tree", components={BTreeModel.class})
+// TODO should be separated in plugin and editor plugin ...
+@PluginDef(category="behavior tree", components={BTreeModel.class}, 
+	requires="com.badlogic.gdx.ai.GdxAI")
 public class BTreePlugin extends EditorPlugin
 {
 	public final static BehaviorTreeRepository library = new BehaviorTreeRepository();

@@ -70,8 +70,10 @@ import net.mgsx.game.examples.platformer.states.FlyingState;
 import net.mgsx.game.examples.platformer.ui.PlatformerHUDSystem;
 import net.mgsx.game.plugins.DefaultPlugin;
 import net.mgsx.game.plugins.boundary.systems.AbstractBoundaryLogicSystem;
+import net.mgsx.game.plugins.box2d.Box2DPlugin;
 import net.mgsx.game.plugins.box2d.components.Box2DBodyModel;
 import net.mgsx.game.plugins.g3d.components.G3DModel;
+import net.mgsx.game.plugins.pd.PdPlugin;
 import net.mgsx.game.plugins.pd.midi.SequenceDesc;
 import net.mgsx.game.plugins.pd.midi.SequenceMarker;
 import net.mgsx.game.plugins.pd.systems.MidiSequencerSystem;
@@ -111,7 +113,12 @@ import net.mgsx.pd.patch.PdPatch;
 		MagnetComponent.class,
 		WalkingComponent.class,
 		FallingPlatform.class
-})
+	},
+	dependencies={
+		Box2DPlugin.class,
+		PdPlugin.class
+	}
+)
 public class PlatformerPlugin implements Plugin, DefaultPlugin
 {
 	public GameScreen engine;

@@ -37,7 +37,7 @@ public class KitSystemTest
 	public KitSystemTest(EntitySystem system) {
 		
 		ClassRegistry.instance = new ReflectionClassRegistry(
-				ReflectionClassRegistry.kitCorePlugin
+				"net.mgsx.game.core"
 				);
 		
 

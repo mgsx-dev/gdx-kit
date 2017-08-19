@@ -45,6 +45,7 @@ import net.mgsx.game.examples.openworld.tools.CraftTransformTool;
 import net.mgsx.game.examples.openworld.tools.MoveElementTool;
 import net.mgsx.game.examples.openworld.tools.RemoveElementTool;
 import net.mgsx.game.plugins.DefaultEditorPlugin;
+import net.mgsx.game.plugins.bullet.BulletEditorPlugin;
 import net.mgsx.game.plugins.bullet.system.BulletWorldDebugSystem;
 import net.mgsx.game.plugins.editor.systems.SelectionSystem;
 import net.mgsx.game.plugins.g3d.systems.G3DCullingSystem;
@@ -55,7 +56,10 @@ import net.mgsx.game.plugins.procedural.systems.HeightFieldDebugSystem;
 		ObjectMeshComponent.class,
 		OpenWorldCamera.class,
 		TreesComponent.class
-})
+	},
+	dependencies={
+		BulletEditorPlugin.class
+	})
 public class OpenWorldEditorPlugin extends EditorPlugin implements DefaultEditorPlugin
 {
 	@Override

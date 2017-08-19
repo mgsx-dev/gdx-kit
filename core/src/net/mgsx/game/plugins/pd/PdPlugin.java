@@ -10,7 +10,7 @@ import net.mgsx.pd.midi.MidiMusicLoader;
 import net.mgsx.pd.patch.PatchLoader;
 import net.mgsx.pd.patch.PdPatch;
 
-@PluginDef
+@PluginDef(requires="net.mgsx.pd.Pd")
 public class PdPlugin implements Plugin
 {
 
