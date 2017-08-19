@@ -1,0 +1,385 @@
+{
+entities: [
+	{
+		id: 0
+		camera: {
+			camera: {
+				fieldOfView: 67
+				position: {
+					x: 851.7501
+					y: 21.904886
+					z: -1609.7854
+				}
+				direction: {
+					x: 0.9907161
+					y: 0.014196144
+					z: -0.1352038
+				}
+				up: {
+					y: 1
+				}
+				near: 1
+				far: 2534.658
+				viewportWidth: 1855
+				viewportHeight: 1056
+			}
+		}
+		active: {}
+		ow.camera: {}
+		spline: {
+			path: {
+				class: com.badlogic.gdx.math.CatmullRomSpline
+				controlPoints: [
+					{
+						x: -7309.841
+						y: 12.39109
+						z: -1006.0499
+					}
+					{
+						x: -7307.5674
+						y: 9.970485
+						z: -876.4198
+					}
+					{
+						x: -7278.392
+						y: 14.76638
+						z: -750.0951
+					}
+					{
+						x: -7291.9336
+						y: 6.373457
+						z: -621.1542
+					}
+				]
+				continuous: false
+			}
+		}
+	}
+	{
+		id: 1
+		active: {}
+		ow.camera: {}
+		camera: {
+			camera: {
+				fieldOfView: 67
+				position: {
+					x: 131.97958
+					y: -2.440534
+					z: 818.54065
+				}
+				direction: {
+					x: 0.78787345
+					y: 0.30106172
+					z: -0.53700054
+				}
+				up: {
+					y: 1
+				}
+				near: 1
+				far: 3000
+				viewportWidth: 1855
+				viewportHeight: 1056
+			}
+		}
+	}
+	{
+		id: 2
+		g3d.light.dir: {
+			light: {
+				color: {
+					r: 1
+					g: 0.5905708
+					b: 0.37730333
+					a: 1
+				}
+				direction: {
+					x: 0.97123474
+					y: -0.216338
+					z: 0.09950372
+				}
+			}
+			shadow: false
+		}
+	}
+]
+systems: [
+	{
+		type: core.bindings
+		enabled: true
+		bindings: []
+	}
+	{
+		type: ow.generator
+		enabled: true
+		seed: 7909278423671834624
+		scale: 50.730873
+		frequency: 0.011501056
+		persistence: 0.5
+		octaves: 8
+		floraFrequency: 0.07906775
+	}
+	{
+		type: ow.camera.path
+		enabled: false
+		speed: 5.376805
+		distance: 11.061202
+		offsetMin: 9.219147
+		offsetRange: 0
+	}
+	{
+		type: ow.camera
+		enabled: true
+		speed: 9.500027
+		offset: 1.7565315
+		clipToWater: false
+		clipToGround: false
+		flyingMode: true
+		smoothing: 5.5434685
+		totalMove: 77287.836
+	}
+	{
+		type: box2d.world
+		enabled: true
+		runSimulation: true
+		gravity: {
+			y: -9.807
+		}
+		timeStep: 0.033333335
+		velocityIterations: 8
+		positionIterations: 3
+	}
+	{
+		type: ow.manager
+		enabled: true
+		logicSize: 12
+		viewPoint: {
+			x: 851.7501
+			y: -1609.7854
+		}
+	}
+	{
+		type: ow.env
+		enabled: true
+		fogColor: {
+			r: 0.9
+			g: 0.44456387
+			b: 0.28402257
+			a: 1
+		}
+		sunDirection: {
+			x: 0.97123474
+			y: -0.216338
+			z: 0.09950372
+		}
+		waterLevelRate: -0.02746237
+		timeOfDay: 0.7897354
+		temperature: 23.918077
+		nightColor: {
+			r: 0.35890388
+			g: 0.09683616
+			b: 0.50989515
+		}
+		dayColor: {
+			r: 0.47384626
+			g: 0.71243423
+			b: 0.71179485
+			a: 1
+		}
+		sunsetColor: {
+			r: 0.9
+			g: 0.44456387
+			b: 0.28402257
+			a: 1
+		}
+		sunriseColor: {
+			r: 0.3341804
+			g: 0.6053924
+			b: 0.6542551
+			a: 1
+		}
+		autoSun: true
+		autoTime: true
+		time: 72668.914
+		waterColor: {
+			r: 0.07466493
+			g: 0.16609122
+			b: 0.38695836
+			a: 1
+		}
+	}
+	{
+		type: ow.user-objects
+		enabled: true
+	}
+	{
+		type: core.clearScreen
+		enabled: true
+		color: {
+			r: 0.61938274
+			g: 0.78065103
+			b: 0.9495174
+			a: 1
+		}
+		clearColor: true
+		clearDepth: true
+	}
+	{
+		type: g3d.rendering
+		enabled: true
+		shadowQuality: 10
+		shadowSize: {
+			x: 50
+			y: 50
+		}
+		shadowNear: 0.1
+		shadowFar: 100
+		fog: {
+			r: 0.9
+			g: 0.44456387
+			b: 0.28402257
+			a: 1
+		}
+		ambient: {
+			r: 1
+			g: 0.5905708
+			b: 0.37730333
+			a: 1
+		}
+	}
+	{
+		type: ow.lands
+		enabled: true
+		shadowEnabled: true
+		shadowMapSize: 1024
+		shadowViewportWidth: 137.38762
+		shadowViewportHeight: 45.445225
+		shadowNear: 5.692509
+		shadowFar: 493.88745
+		shadowPCFOffset: 1.0E-4
+	}
+	{
+		type: ow.sky
+		enabled: true
+		debugFaces: false
+		cubeMapSize: 512
+		realtime: true
+		cloudSpeed: 0.020999998
+		cloudRate: 999.99994
+		cloudDarkness: 10
+		parallax: 1
+		cloudDirection: {
+			x: 0.8660253
+			y: -0.5000002
+		}
+	}
+	{
+		type: ow.water.lq
+		enabled: false
+		waterShaderLQ: {
+			vs: shaders/water-lq.vert
+			fs: shaders/water-lq.frag
+			config: []
+			frequency: 14.392651
+			amplitude: 0.01931457
+		}
+	}
+	{
+		type: ow.trees
+		enabled: true
+		densityMax: 0.87293386
+		shader: {
+			vs: shaders/tree.vert
+			fs: shaders/tree.frag
+			config: [
+				highQuality
+			]
+		}
+	}
+	{
+		type: ow.animals
+		enabled: false
+		maxAnimals: 512
+		speed: 5.576491
+		distance: 10.935022
+		flyingGroundMin: 10.320384
+		flyingGroundRange: 51.88323
+		aquaticOffset: 1
+		randomness: 0.5059484
+	}
+	{
+		type: g2d.render
+		enabled: true
+		culling: false
+	}
+	{
+		type: ow.water
+		enabled: true
+		mirrorSize: 1024
+		waterShader: {
+			vs: shaders/water.vert
+			fs: shaders/water.frag
+			config: []
+			speed: 1.3779422
+			frequency: 2.1973495
+			amplitude: 0.0026492302
+			transparency: 0.4169126
+			translucency: {
+				r: 0.519522
+				g: 0.79482836
+				b: 1
+				a: 0.83518225
+			}
+		}
+		lands: true
+		trees: true
+		objects: false
+	}
+	{
+		type: ow.rain
+		enabled: false
+		resolution: 256
+		rainShader: {
+			vs: shaders/rain.vert
+			fs: shaders/rain.frag
+			config: []
+			color: {
+				r: 0.33777687
+				g: 0.5230103
+				b: 0.78558815
+				a: 0.34925547
+			}
+			size: 221.1884
+			length: 1.2719538
+			speed: 2.131688
+		}
+	}
+	{
+		type: ow.fauna
+		enabled: false
+		resolution: 64
+		speed: 0.12383472
+	}
+	{
+		type: ow.map
+		enabled: true
+		shader: {
+			vs: shaders/map.vert
+			fs: shaders/map.frag
+			config: []
+		}
+		mapSize: 0.21645907
+		mapOffset: {
+			x: 10
+			y: 10
+		}
+	}
+]
+views: [
+	ow.generator
+	ow.manager
+	ow.map
+	net.mgsx.game.examples.openworld.systems.WeatherSystem
+	ow.sky
+	ow.lands
+]
+}

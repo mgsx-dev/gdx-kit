@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Copied from com.google.android.gms-play-services-basement-8.4.0/res/values/version.xml -->
+    <integer name="google_play_services_version">8487000</integer>
+</resources>

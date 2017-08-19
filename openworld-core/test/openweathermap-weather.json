@@ -1,0 +1,42 @@
+{
+coord: {
+	lon: -1.55
+	lat: 47.29
+}
+weather: [
+	{
+		id: 800
+		main: Clear
+		description: clear sky
+		icon: 01n
+	}
+]
+base: stations
+main: {
+	temp: 292.12
+	pressure: 1024
+	humidity: 52
+	temp_min: 291.15
+	temp_max: 293.15
+}
+visibility: 10000
+wind: {
+	speed: 2.1
+	deg: 330
+}
+clouds: {
+	all: 0
+}
+dt: 1500154200
+sys: {
+	type: 1
+	id: 5641
+	message: 0.0026
+	country: FR
+	sunrise: 1500092774
+	sunset: 1500148665
+}
+id: 3010237
+name: La Chapelle-sur-Erdre
+cod: 200
+}

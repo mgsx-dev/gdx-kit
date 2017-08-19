@@ -1,0 +1,105 @@
+
+allprojects {
+    apply plugin: "eclipse"
+    apply plugin: "idea"
+	
+    ext {
+        gdxVersion = '1.9.6'
+        pdVersion = '0.6.0'
+        junitVersion = '4.12'
+        gapiVersion = '1.22.0'
+        gamesvcsVersion = '0.0.1'
+    }
+
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+        maven { url "https://oss.sonatype.org/content/repositories/releases/" }
+        maven { url "https://jitpack.io" }
+    }
+}
+
+project(":openworld-core") {
+    apply plugin: "java"
+
+
+    dependencies {
+        compile project(":core")
+        compile "net.mgsx.gdx:gdx-pd:$pdVersion"
+        compile "com.badlogicgames.gdx:gdx-bullet:$gdxVersion"
+        
+        // TODO workaround on issue https://github.com/libgdx/libgdx/issues/4831
+        compile 'org.apache.commons:commons-text:1.1'
+        
+        compile "de.golfgl.gdxgamesvcs:gdx-gamesvcs-core:$gamesvcsVersion"
+                
+        testCompile "junit:junit:$junitVersion"
+    }
+}
+
+project(":openworld-desktop") {
+    apply plugin: "java"
+
+    dependencies {
+        compile project(":openworld-core")
+        compile project(":desktop")
+        
+        compile "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
+        compile "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
+        
+        compile "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-desktop"
+        
+        compile "net.mgsx.gdx:gdx-pd-platform:$pdVersion:desktop"
+        compile "net.mgsx.gdx:gdx-pd-platform:$pdVersion:natives-desktop"    
+                
+        compile "com.badlogicgames.gdx:gdx-bullet:$gdxVersion"
+        compile "com.badlogicgames.gdx:gdx-bullet-platform:$gdxVersion:natives-desktop"
+        
+        compile "com.google.apis:google-api-services-games:v1-rev239-$gapiVersion"
+        compile "com.google.oauth-client:google-oauth-client-jetty:$gapiVersion"
+        compile "com.google.apis:google-api-services-drive:v3-rev77-$gapiVersion"
+    }
+}
+
+project(":openworld-android") {
+    apply plugin: "android"
+
+    configurations { natives }
+
+    dependencies {
+        compile project(":openworld-core")
+        compile "com.badlogicgames.gdx:gdx-backend-android:$gdxVersion"
+        natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi"
+        natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi-v7a"
+        natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-arm64-v8a"
+        natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-x86"
+        natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-x86_64"
+        
+        compile "net.mgsx.gdx:gdx-pd-backend-android:$pdVersion"
+        natives "net.mgsx.gdx:gdx-pd-platform:$pdVersion:natives-armeabi"
+        natives "net.mgsx.gdx:gdx-pd-platform:$pdVersion:natives-armeabi-v7a"
+        natives "net.mgsx.gdx:gdx-pd-platform:$pdVersion:natives-arm64-v8a"
+        natives "net.mgsx.gdx:gdx-pd-platform:$pdVersion:natives-x86"
+        natives "net.mgsx.gdx:gdx-pd-platform:$pdVersion:natives-x86_64"
+        
+        compile "com.badlogicgames.gdx:gdx-bullet:$gdxVersion"
+		natives "com.badlogicgames.gdx:gdx-bullet-platform:$gdxVersion:natives-armeabi"
+		natives "com.badlogicgames.gdx:gdx-bullet-platform:$gdxVersion:natives-armeabi-v7a"
+		natives "com.badlogicgames.gdx:gdx-bullet-platform:$gdxVersion:natives-arm64-v8a"
+		natives "com.badlogicgames.gdx:gdx-bullet-platform:$gdxVersion:natives-x86"
+		natives "com.badlogicgames.gdx:gdx-bullet-platform:$gdxVersion:natives-x86_64"
+
+        compile "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
+		natives "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-armeabi"
+		natives "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-armeabi-v7a"
+		natives "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-arm64-v8a"
+		natives "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-x86"
+		natives "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-x86_64"
+        
+        // AAR dependency
+        compile "de.golfgl.gdxgamesvcs:gdx-gamesvcs-android-gpgs:$gamesvcsVersion"
+        
+    }
+
+}

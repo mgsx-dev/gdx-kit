@@ -12,6 +12,8 @@ buildscript {
 
 apply from: 'gradle/assets.gradle'
 
+apply from: 'openworld.gradle'
+
 allprojects {
     apply plugin: "eclipse"
     apply plugin: "idea"
@@ -21,9 +23,8 @@ allprojects {
     	groupName = "net.mgsx.gdx"
         appName = "gdx-kit"
         gdxVersion = '1.9.6'
-        gdxAiVersion = '1.7.0'
         ashleyVersion = '1.7.3'
-        aiVersion = '1.8.0'
+        aiVersion = '1.7.0'
         pdVersion = '0.6.0'
         junitVersion = '4.12'
         gapiVersion = '1.22.0'
@@ -50,7 +51,7 @@ project(":core") {
     dependencies {
         compile "com.badlogicgames.gdx:gdx:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
-        compile "com.badlogicgames.gdx:gdx-ai:$gdxAiVersion"
+        compile "com.badlogicgames.gdx:gdx-ai:$aiVersion"
         compile "com.badlogicgames.ashley:ashley:$ashleyVersion"
         compile "com.badlogicgames.gdx:gdx-controllers:$gdxVersion"
         
@@ -147,6 +148,13 @@ project(":demo-android") {
         natives "net.mgsx.gdx:gdx-pd-platform:$pdVersion:natives-arm64-v8a"
         natives "net.mgsx.gdx:gdx-pd-platform:$pdVersion:natives-x86"
         natives "net.mgsx.gdx:gdx-pd-platform:$pdVersion:natives-x86_64"
+        
+        compile "com.badlogicgames.gdx:gdx-bullet:$gdxVersion"
+		natives "com.badlogicgames.gdx:gdx-bullet-platform:$gdxVersion:natives-armeabi"
+		natives "com.badlogicgames.gdx:gdx-bullet-platform:$gdxVersion:natives-armeabi-v7a"
+		natives "com.badlogicgames.gdx:gdx-bullet-platform:$gdxVersion:natives-arm64-v8a"
+		natives "com.badlogicgames.gdx:gdx-bullet-platform:$gdxVersion:natives-x86"
+		natives "com.badlogicgames.gdx:gdx-bullet-platform:$gdxVersion:natives-x86_64"
         
         compile "com.badlogicgames.gdx:gdx-controllers-android:$gdxVersion"
         
