@@ -2,8 +2,6 @@ package net.mgsx.game.core;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Graphics.DisplayMode;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
@@ -18,7 +16,7 @@ import net.mgsx.game.core.screen.Transitions;
 
 public abstract class GameApplication extends Game implements ScreenManager
 {
-	public AssetManager assets;
+	protected AssetManager assets;
 	
 	private Array<Screen> sequences = new Array<Screen>();
 	
@@ -46,21 +44,19 @@ public abstract class GameApplication extends Game implements ScreenManager
 	@Override
 	public void render() 
 	{
-		if(Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT) && Gdx.input.isKeyPressed(Input.Keys.ENTER)){
-			if(Gdx.graphics.isFullscreen()){
-				Gdx.graphics.setWindowedMode(640, 480);
-				// TODO Gdx.graphics.setSystemCursor(SystemCursor.Arrow);
-			}
-			else{
-				DisplayMode dm = Gdx.graphics.getDisplayMode();
-				Gdx.graphics.setFullscreenMode(dm);
-				// TODO Gdx.graphics.setSystemCursor(null);
-			}
-			
+		try
+		{
+			super.render();
+			updateTransitions();
+		} 
+		catch (Throwable e) 
+		{
+			Kit.exit(e);
 		}
-		
-		super.render();
-		
+	}
+	
+	private void updateTransitions()
+	{
 		// check complete status for clips
 		if(screen instanceof ScreenClip)
 		{
@@ -160,6 +156,12 @@ public abstract class GameApplication extends Game implements ScreenManager
 		if (this.screen instanceof ScreenTransitionListener) {
 			((ScreenTransitionListener) this.screen).postShow();
 		}
+	}
+	
+	@Override
+	public void dispose() {
+		Kit.exit(null);
+		super.dispose();
 	}
 	
 }

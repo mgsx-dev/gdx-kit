@@ -24,8 +24,8 @@ public enum PlatformerGameState implements State<PlatformerGame>
 		public void update(PlatformerGame entity) {
 			
 			// create game loading screen, force asset loading and show it
-			entity.gameLoadingScreen = new GameLoadingScreen(entity.assets);
-			entity.assets.finishLoading();
+			entity.gameLoadingScreen = new GameLoadingScreen(entity.getAssets());
+			entity.getAssets().finishLoading();
 			
 			// set this screen as recovery screen as well.
 			entity.setDefaultLoadingScreen(entity.gameLoadingScreen);
@@ -43,7 +43,7 @@ public enum PlatformerGameState implements State<PlatformerGame>
 		}
 		@Override
 		public void update(PlatformerGame entity) {
-			if(entity.assets.update()){
+			if(entity.getAssets().update()){
 				entity.fsm.changeState(MENU_SCREEN);
 			}
 		}

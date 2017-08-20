@@ -1,10 +1,10 @@
 package net.mgsx.kit.launcher;
 
+import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
-import com.badlogic.gdx.utils.GdxRuntimeException;
 
-import net.mgsx.game.core.EditorApplication;
+import net.mgsx.game.core.Kit;
 
 /**
  * Override {@link LwjglApplication} in order to catch errors during runnables executions.
@@ -14,12 +14,9 @@ import net.mgsx.game.core.EditorApplication;
  */
 public class DesktopApplication extends LwjglApplication
 {
-	protected EditorApplication editor;
-	
-	public DesktopApplication(EditorApplication editor, LwjglApplicationConfiguration config) 
+	public DesktopApplication(ApplicationListener listener, LwjglApplicationConfiguration config) 
 	{
-		super(editor, config);
-		this.editor = editor;
+		super(listener, config);
 	}
 	
 	@Override
@@ -27,8 +24,8 @@ public class DesktopApplication extends LwjglApplication
 		try{
 			return super.executeRunnables();
 		}catch(Throwable e){
-			editor.backupWork();
-			throw new GdxRuntimeException(e);
+			Kit.exit(e);
+			return true;
 		}
 	}
 }

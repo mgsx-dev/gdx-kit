@@ -2,27 +2,23 @@ package net.mgsx.game.core;
 
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.PooledEngine;
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.utils.GdxRuntimeException;
 
 import net.mgsx.game.core.helpers.EditorAssetManager;
 import net.mgsx.game.core.plugins.Plugin;
 import net.mgsx.game.core.screen.ScreenManager;
-import net.mgsx.game.core.screen.TransitionDesc;
 import net.mgsx.game.core.storage.EntityGroup;
 import net.mgsx.game.core.storage.EntityGroupLoader;
 import net.mgsx.game.core.storage.EntityGroupStorage;
 import net.mgsx.game.core.storage.LoadConfiguration;
 import net.mgsx.game.core.storage.SaveConfiguration;
 
-public class EditorApplication extends Game implements ScreenManager
+public class EditorApplication extends GameApplication implements ScreenManager, KitGameListener
 {
 	final private EditorConfiguration config;
 	
-	protected EditorAssetManager assetManager;
 	private Engine engine;
 	private EditorScreen editorScreen;
 	
@@ -36,10 +32,10 @@ public class EditorApplication extends Game implements ScreenManager
 	{
 		Gdx.input.setInputProcessor(Kit.inputs);
 		
-		assetManager = new EditorAssetManager();
-		assetManager.setLoader(EntityGroup.class, new EntityGroupLoader(assetManager.getFileHandleResolver()));
+		assets = new EditorAssetManager();
+		assets.setLoader(EntityGroup.class, new EntityGroupLoader(assets.getFileHandleResolver()));
 		
-		Texture.setAssetManager(assetManager);
+		Texture.setAssetManager(assets);
 		
 		engine = new PooledEngine();
 		
@@ -47,28 +43,27 @@ public class EditorApplication extends Game implements ScreenManager
 			config.registry.registerPlugin(plugin);
 		}
 		
-		GameScreen screen = new GameScreen(this, assetManager, config.registry, engine);
+		GameScreen screen = new GameScreen(this, assets, config.registry, engine);
 
-		editorScreen = new EditorScreen(config, screen, assetManager, engine);
+		// XXX fortunately, EditorScreen is not a clip so no chance to be wiped out by transitions !
+		// but it might be the case if we want an editor with transitions !!!
+		editorScreen = new EditorScreen(config, screen, (EditorAssetManager)assets, engine);
 		
 		if(config.path != null) {
 			loadWork(Gdx.files.internal(config.path));
 		}else{
 			restoreWork();
 		}
-		assetManager.finishLoading(); // required when no restoration
+		assets.finishLoading(); // required when no restoration
+		
+		Kit.gameListeners.add(this);
 		
 		setScreen(editorScreen);
 	}
 	
 	@Override
-	public void render() {
-		try{
-			super.render();
-		}catch(Throwable e){
-			backupWork();
-			throw new GdxRuntimeException(e);
-		}
+	public void exit(Throwable e) {
+		backupWork();
 	}
 	
 	public void backupWork() 
@@ -77,7 +72,7 @@ public class EditorApplication extends Game implements ScreenManager
 		{
 			// save all to temp dir
 			SaveConfiguration config = new SaveConfiguration();
-			config.assets = assetManager;
+			config.assets = assets;
 			config.engine = engine;
 			config.registry = this.config.registry;
 			
@@ -102,7 +97,7 @@ public class EditorApplication extends Game implements ScreenManager
 	private void loadWork(FileHandle file)
 	{
 		final LoadConfiguration cfg = new LoadConfiguration();
-		cfg.assets = assetManager;
+		cfg.assets = assets;
 		cfg.registry = config.registry;
 		cfg.engine = engine;
 		cfg.failSafe = true; 
@@ -115,21 +110,5 @@ public class EditorApplication extends Game implements ScreenManager
 		}
 	}
 
-	@Override
-	public void dispose() 
-	{
-		backupWork();
-		
-		super.dispose();
-	}
-
-	@Override
-	public void addTransition(TransitionDesc desc) {
-		Gdx.app.log("Screen", "transtion added : " + desc.toString());
-	}
-
-	public void setTransition(TransitionDesc desc) {
-		Gdx.app.log("Screen", "transtion set : " + desc.toString());
-	}
 
 }
