@@ -3,7 +3,6 @@ package net.mgsx.game.examples.lsystem.model.l3d;
 import net.mgsx.game.examples.lsystem.model.Generator;
 import net.mgsx.game.examples.lsystem.model.Parameter;
 import net.mgsx.game.examples.lsystem.model.Rule;
-import net.mgsx.game.examples.lsystem.model.Rule.RuleBase;
 
 public class Rules3D 
 {

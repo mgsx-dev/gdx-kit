@@ -3,7 +3,6 @@ package com.badlogic.gdx.ai.btree;
 import java.lang.reflect.Field;
 
 import com.badlogic.gdx.ai.btree.annotation.TaskAttribute;
-import com.badlogic.gdx.ai.btree.utils.BehaviorTreeLibrary;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.Pool;
 

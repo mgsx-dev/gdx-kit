@@ -9,7 +9,6 @@ import net.mgsx.game.core.EditorScreen;
 import net.mgsx.game.core.GameApplication;
 import net.mgsx.game.core.annotations.PluginDef;
 import net.mgsx.game.core.plugins.EditorPlugin;
-import net.mgsx.game.examples.tactics.TacticsGameScreen;
 import net.mgsx.game.examples.ui.CustomUIPlugin;
 import net.mgsx.game.plugins.DefaultEditorPlugin;
 

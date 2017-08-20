@@ -11,8 +11,8 @@ import com.badlogic.gdx.math.Interpolation;
 import net.mgsx.game.core.helpers.EntityHelper;
 import net.mgsx.game.examples.platformer.inputs.KeyboardControllerSystem;
 import net.mgsx.game.examples.platformer.ui.PlatformerHUDSystem;
-import net.mgsx.game.plugins.camera.components.CameraComponent;
 import net.mgsx.game.plugins.camera.components.ActiveCamera;
+import net.mgsx.game.plugins.camera.components.CameraComponent;
 import net.mgsx.game.plugins.core.components.Transform3DComponent;
 import net.mgsx.game.plugins.core.components.Translation3D;
 

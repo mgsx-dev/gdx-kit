@@ -1,18 +1,12 @@
 package net.mgsx.game.examples.lsystem.model;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 import org.junit.Before;
 import org.junit.Test;
 
 import com.badlogic.gdx.utils.Array;
 
-import net.mgsx.game.examples.lsystem.model.Context;
-import net.mgsx.game.examples.lsystem.model.Formula;
-import net.mgsx.game.examples.lsystem.model.FormulaParser;
-import net.mgsx.game.examples.lsystem.model.Generator;
-import net.mgsx.game.examples.lsystem.model.LSystem;
-import net.mgsx.game.examples.lsystem.model.Rule;
 import net.mgsx.game.examples.lsystem.model.Rule.RuleBase;
 
 public class LSystemTest {

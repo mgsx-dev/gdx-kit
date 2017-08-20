@@ -5,10 +5,9 @@ import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.Json.Serializable;
+import com.badlogic.gdx.utils.JsonValue;
 
 import net.mgsx.game.plugins.box2d.tools.Box2DShapeFactory;
-
-import com.badlogic.gdx.utils.JsonValue;
 
 public class Box2DFixtureModel implements Serializable
 {

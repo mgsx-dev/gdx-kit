@@ -1,16 +1,10 @@
 package net.mgsx.game.examples.lsystem.model;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 import org.junit.Before;
 import org.junit.Test;
 
-import net.mgsx.game.examples.lsystem.model.Formula;
-import net.mgsx.game.examples.lsystem.model.FormulaParser;
-import net.mgsx.game.examples.lsystem.model.LSystem;
-import net.mgsx.game.examples.lsystem.model.Parameter;
-import net.mgsx.game.examples.lsystem.model.Rule;
 import net.mgsx.game.examples.lsystem.model.l2d.Rules2D;
 
 public class FormulaParserTest {

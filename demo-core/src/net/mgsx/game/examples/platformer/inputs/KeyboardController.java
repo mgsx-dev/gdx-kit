@@ -3,7 +3,6 @@ package net.mgsx.game.examples.platformer.inputs;
 import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.Input.Keys;
 
 import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.core.annotations.EditableComponent;

@@ -1,7 +1,5 @@
 package net.mgsx.game.core;
 
-import com.badlogic.ashley.core.EntitySystem;
-
 /**
  * see {@link EntitySystem#priority}
  */
