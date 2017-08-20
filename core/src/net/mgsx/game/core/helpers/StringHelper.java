@@ -27,6 +27,25 @@ public class StringHelper {
 		return result;
 	}
 
+	public static String humanJavaTypeName(String camelCase)
+	{
+		String result = "";
+		boolean prevUpperCase = false;
+		for(int i=0 ; i<camelCase.length() ; i++){
+			char c = camelCase.charAt(i);
+			if(!Character.isLetter(c)) return camelCase;
+			if(Character.isUpperCase(c) && !prevUpperCase){
+				if(i>0) result += " ";
+				result += c;
+				prevUpperCase = true;
+			}else{
+				result += c;
+				prevUpperCase = false;
+			}
+		}
+		return result;
+	}
+
 	public static String humanBytes(double value) {
 		String suffix = " B";
 		if(value > 1024){

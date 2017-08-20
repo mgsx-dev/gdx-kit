@@ -23,7 +23,7 @@ abstract public class ComponentTool extends Tool
 		Component component = createComponent(entity);
 		if(component != null)
 		{
-			if(component instanceof Initializable) ((Initializable) component).initialize(editor.entityEngine, entity);
+			if(component instanceof Initializable) ((Initializable) component).initialize(getEngine(), entity);
 			entity.add(component);
 		}
 		end();

@@ -28,7 +28,7 @@ public class RtsGameTool extends RectangleTool
 	@Override
 	protected void begin(Vector2 startPoint) 
 	{
-		for(Entity entity : editor.entityEngine.getEntitiesFor(Family.all(PlanetComponent.class, Transform2DComponent.class).get())){
+		for(Entity entity : getEngine().getEntitiesFor(Family.all(PlanetComponent.class, Transform2DComponent.class).get())){
 			PlanetComponent planet = entity.getComponent(PlanetComponent.class);
 			Transform2DComponent transform = Transform2DComponent.components.get(entity);
 			if(startPoint.dst2(transform.position) <= planet.size * planet.size){
@@ -67,7 +67,7 @@ public class RtsGameTool extends RectangleTool
 			
 			// ray cast on planets
 			Entity closestPlanet = null;
-			for(Entity planetEntity : editor.entityEngine.getEntitiesFor(Family.all(PlanetComponent.class, Transform2DComponent.class).get())){
+			for(Entity planetEntity : getEngine().getEntitiesFor(Family.all(PlanetComponent.class, Transform2DComponent.class).get())){
 				if(planetEntity == selectedPlanet) continue;
 				PlanetComponent planet = planetEntity.getComponent(PlanetComponent.class);
 				Transform2DComponent transform = Transform2DComponent.components.get(planetEntity);

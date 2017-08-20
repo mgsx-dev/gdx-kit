@@ -23,7 +23,7 @@ public class MoveToPlanetTool extends RectangleTool
 	@Override
 	protected void begin(Vector2 startPoint) 
 	{
-		for(Entity entity : editor.entityEngine.getEntitiesFor(Family.all(PlanetComponent.class, Transform2DComponent.class).get())){
+		for(Entity entity : getEngine().getEntitiesFor(Family.all(PlanetComponent.class, Transform2DComponent.class).get())){
 			PlanetComponent planet = entity.getComponent(PlanetComponent.class);
 			Transform2DComponent transform = Transform2DComponent.components.get(entity);
 			if(startPoint.dst2(transform.position) <= planet.size * planet.size){
@@ -39,7 +39,7 @@ public class MoveToPlanetTool extends RectangleTool
 	protected void create(Vector2 startPoint, Vector2 endPoint) 
 	{
 		Entity targetPlanet = null;
-		for(Entity entity : editor.entityEngine.getEntitiesFor(Family.all(PlanetComponent.class, Transform2DComponent.class).get())){
+		for(Entity entity : getEngine().getEntitiesFor(Family.all(PlanetComponent.class, Transform2DComponent.class).get())){
 			PlanetComponent planet = entity.getComponent(PlanetComponent.class);
 			Transform2DComponent transform = Transform2DComponent.components.get(entity);
 			if(endPoint.dst2(transform.position) <= planet.size * planet.size){

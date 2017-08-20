@@ -21,7 +21,7 @@ public class CreateColonyTool extends RectangleTool
 	protected void begin(Vector2 startPoint) 
 	{
 		Entity selectedPlanet = null;
-		for(Entity entity : editor.entityEngine.getEntitiesFor(Family.all(PlanetComponent.class, Transform2DComponent.class).get())){
+		for(Entity entity : getEngine().getEntitiesFor(Family.all(PlanetComponent.class, Transform2DComponent.class).get())){
 			PlanetComponent planet = entity.getComponent(PlanetComponent.class);
 			Transform2DComponent transform = Transform2DComponent.components.get(entity);
 			if(startPoint.dst2(transform.position) <= planet.size * planet.size){

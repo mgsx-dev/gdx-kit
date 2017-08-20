@@ -15,6 +15,7 @@ import com.badlogic.gdx.utils.Array;
 
 import net.mgsx.game.core.EditorScreen;
 import net.mgsx.game.core.annotations.Inject;
+import net.mgsx.game.core.helpers.StringHelper;
 import net.mgsx.game.plugins.core.systems.GridDebugSystem;
 import net.mgsx.game.plugins.editor.systems.HistorySystem;
 import net.mgsx.game.plugins.editor.systems.SelectionSystem;
@@ -36,7 +37,8 @@ import net.mgsx.game.plugins.editor.systems.SelectionSystem;
  */
 abstract public class Tool extends AbstractInputSystem
 {
-	final protected EditorScreen editor;
+	final public String name;
+	protected EditorScreen editor;
 	ToolGroup group;
 	
 	public Family activator; // TODO remove in favor to allowed method
@@ -47,13 +49,40 @@ abstract public class Tool extends AbstractInputSystem
 	@Inject
 	protected HistorySystem historySystem;
 	
+	public Tool() {
+		name = makeName(this.getClass());
+	}
+	
+	private static String makeName(Class<? extends Tool> type){
+		// TODO allow override from annotation
+		// TODO remove Tool suffix ?
+		return StringHelper.humanJavaTypeName(type.getSimpleName());
+	}
+	
+	/**
+	 * use {@link Tool#Tool()} instead
+	 * @param editor
+	 */
+	@Deprecated
 	public Tool(EditorScreen editor) {
 		this("no name", editor);
 	}
+	
+	/**
+	 * use {@link Tool#Tool()} instead
+	 * @param editor
+	 * @param name
+	 */
+	@Deprecated
 	public Tool(String name, EditorScreen editor) {
 		super();
-		this.editor = editor;
 		this.name = name;
+		// XXX editor is injected later
+	}
+	
+	// XXX temporary, shouldn't be called by other than EditorScreen for now
+	public void setEditor(EditorScreen editor) {
+		this.editor = editor;
 	}
 
 	final protected void end(){
@@ -69,6 +98,11 @@ abstract public class Tool extends AbstractInputSystem
 	public Engine getEngine()
 	{
 		return editor.entityEngine; // XXX override for now, to be removed latter
+	}
+	
+	// XXX wrapper
+	protected void setInfo(String message){
+		editor.setInfo(message);
 	}
 	
 	/**
@@ -89,7 +123,8 @@ abstract public class Tool extends AbstractInputSystem
 	
 
 	protected void activate(){
-		editor.setInfo("This tool doesn't provide help. Call editor.setInfo in activate method.");
+		if(editor != null) // XXX it happens for global tools but it doesn't make sense !
+			editor.setInfo("This tool doesn't provide help. Call editor.setInfo in activate method.");
 	}
 	protected void desactivate(){
 		editor.setInfo("");
@@ -161,8 +196,6 @@ abstract public class Tool extends AbstractInputSystem
 	protected Camera camera(){
 		return editor.getGameCamera();
 	}
-	
-	final public String name;
 	
 	public void update(float deltaTime){
 		

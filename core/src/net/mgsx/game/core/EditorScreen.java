@@ -262,14 +262,20 @@ public class EditorScreen extends ScreenDelegate implements EditorContext // TOD
 		
 		editor.addTools(prependTools);
 		
-		for(Tool tool : mainToolGroup.tools){
-			registry.inject(entityEngine, tool);
-		}
-		for(Tool tool : globalTools){
-			registry.inject(entityEngine, tool);
-		}
+		// make the all tools list
+		Array<Tool> allTools = new Array<Tool>();
+		allTools.addAll(mainToolGroup.tools);
+		allTools.addAll(globalTools);
 		// special injection for undoTool (not registered like others)
-		registry.inject(entityEngine, undoTool);
+		allTools.add(undoTool);
+		
+		// inject in all tools and set this !
+		for(Tool tool : allTools){
+			registry.inject(entityEngine, tool);
+			tool.setEditor(this);
+		}
+
+		// inject in systems
 		for(EntitySystem system : entityEngine.getSystems()){
 			registry.inject(entityEngine, system);
 		}

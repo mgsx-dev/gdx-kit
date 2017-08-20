@@ -20,7 +20,7 @@ abstract public class RectangleTool extends Tool
 	@Override
 	protected void activate() {
 		super.activate();
-		editor.setInfo("Draw a rectangle by dragging mouse.");
+		setInfo("Draw a rectangle by dragging mouse.");
 	}
 	
 	@Override

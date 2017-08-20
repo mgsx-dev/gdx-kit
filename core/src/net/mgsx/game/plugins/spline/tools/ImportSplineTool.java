@@ -26,7 +26,7 @@ public class ImportSplineTool extends Tool {
 				for(AbstractBlenderCurve c : curve.splines){
 					PathComponent path = new PathComponent();
 					path.path = c.toPath();
-					editor.entityEngine.addEntity(editor.entityEngine.createEntity().add(path));
+					getEngine().addEntity(getEngine().createEntity().add(path));
 				}
 				end();
 			}

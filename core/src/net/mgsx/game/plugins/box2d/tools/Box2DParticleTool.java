@@ -77,7 +77,7 @@ public class Box2DParticleTool  extends Tool
 			float period = 1.f / rate;
 			if(time > period){
 				time -= period;
-				Entity entity = EntityHelper.clone(editor.entityEngine, base);
+				Entity entity = EntityHelper.clone(getEngine(), base);
 				ExpiryComponent expiry = getEngine().createComponent(ExpiryComponent.class);
 				expiry.time = expiryDelay;
 				entity.add(expiry);

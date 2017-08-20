@@ -18,8 +18,8 @@ public class KeyboardPlayerTool extends Tool {
 	{
 		Entity entity = currentEntity();
 		
-		entity.add(editor.entityEngine.createComponent(PlayerController.class));
-		KeyboardController keys = editor.entityEngine.createComponent(KeyboardController.class);
+		entity.add(getEngine().createComponent(PlayerController.class));
+		KeyboardController keys = getEngine().createComponent(KeyboardController.class);
 		keys.up = Input.Keys.UP;
 		keys.down = Input.Keys.DOWN;
 		keys.left = Input.Keys.LEFT;

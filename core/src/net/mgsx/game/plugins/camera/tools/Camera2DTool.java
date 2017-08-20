@@ -17,7 +17,7 @@ public class Camera2DTool extends Tool {
 	protected void activate() {
 		
 		Entity entity = currentEntity();
-		CameraComponent camera = editor.entityEngine.createComponent(CameraComponent.class);
+		CameraComponent camera = getEngine().createComponent(CameraComponent.class);
 		
 		PerspectiveCamera pc = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		pc.position.set(0, 0, 10);

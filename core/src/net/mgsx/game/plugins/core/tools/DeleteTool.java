@@ -35,7 +35,7 @@ public class DeleteTool extends Tool {
 				// remove netities
 				for(Entity entity : entities){
 					backup.add(ArrayHelper.array(entity.getComponents()));
-					editor.entityEngine.removeEntity(entity);
+					getEngine().removeEntity(entity);
 				}
 				entities.clear();
 			}
@@ -43,15 +43,15 @@ public class DeleteTool extends Tool {
 			public void rollback() 
 			{
 				while(backup.size > 0){
-					Entity entity = editor.entityEngine.createEntity();
+					Entity entity = getEngine().createEntity();
 					for(Component component : backup.pop()){
 						if(component instanceof Initializable){
-							((Initializable) component).initialize(editor.entityEngine, entity);
+							((Initializable) component).initialize(getEngine(), entity);
 						}
 						entity.add(component);
 					}
 					entities.add(entity);
-					editor.entityEngine.addEntity(entity);
+					getEngine().addEntity(entity);
 				}
 				// restore selection
 				selection().addAll(entities);

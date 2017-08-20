@@ -44,7 +44,7 @@ public class SelectTool extends Tool
 			// TODO select by knot only if not in selection ?
 			// then add selection for movables : TODO use engine query instead
 			// TODO make selector instead !
-			for(Entity entity : editor.entityEngine.getEntities()){
+			for(Entity entity : getEngine().getEntities()){
 				Vector3 pos = new Vector3();
 				Movable movable = entity.getComponent(Movable.class);
 				Transform2DComponent transform = Transform2DComponent.components.get(entity);

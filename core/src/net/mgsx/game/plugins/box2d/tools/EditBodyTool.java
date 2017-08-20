@@ -54,10 +54,10 @@ public class EditBodyTool extends Tool
 		for(Box2DFixtureModel fixture : body.fixtures)
 		{
 			Entity fixtureEntity = getEngine().createEntity();
-			ShapeComponent shapeComponent = editor.entityEngine.createComponent(ShapeComponent.class);
+			ShapeComponent shapeComponent = getEngine().createComponent(ShapeComponent.class);
 			fixtureEntity.add(shapeComponent);
 			shapeComponent.fixture = fixture;
-			PolygonComponent polygon = editor.entityEngine.createComponent(PolygonComponent.class);
+			PolygonComponent polygon = getEngine().createComponent(PolygonComponent.class);
 			
 			// TODO other : circle, loop, edge ...etc
 			if(fixture.def.shape instanceof PolygonShape){
@@ -65,7 +65,7 @@ public class EditBodyTool extends Tool
 				PolygonShape shape = ((PolygonShape)fixture.def.shape);
 				for(int i=0 ; i<shape.getVertexCount() ; i++){
 					Entity vertexEntity = getEngine().createEntity();
-					Transform2DComponent transform = editor.entityEngine.createComponent(Transform2DComponent.class);
+					Transform2DComponent transform = getEngine().createComponent(Transform2DComponent.class);
 					shape.getVertex(i, transform.position);
 					vertexEntity.add(transform);
 					vertexEntities.add(vertexEntity);
@@ -83,7 +83,7 @@ public class EditBodyTool extends Tool
 				int vcount = shape.getVertexCount() + (polygon.loop ? -1 : 0); // don't copy last vertex (same as first)
 				for(int i=0 ; i<vcount ; i++){
 					Entity vertexEntity = getEngine().createEntity();
-					Transform2DComponent transform = editor.entityEngine.createComponent(Transform2DComponent.class);
+					Transform2DComponent transform = getEngine().createComponent(Transform2DComponent.class);
 					shape.getVertex(i, transform.position);
 					vertexEntity.add(transform);
 					vertexEntities.add(vertexEntity);
@@ -164,11 +164,11 @@ public class EditBodyTool extends Tool
 			}
 			// TODO other shapes again
 			
-			editor.entityEngine.removeEntity(entity);
+			getEngine().removeEntity(entity);
 		}
 		for(Entity entity : vertexEntities)
 		{
-			editor.entityEngine.removeEntity(entity);
+			getEngine().removeEntity(entity);
 		}
 		
 		selection().clear();

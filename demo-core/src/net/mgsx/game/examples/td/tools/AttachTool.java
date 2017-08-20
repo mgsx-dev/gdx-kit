@@ -23,7 +23,7 @@ public class AttachTool extends Tool
 	
 	@Override
 	protected void activate() {
-		editor.setInfo("Attach to last selected entities other selected entities.");
+		setInfo("Attach to last selected entities other selected entities.");
 		
 		// get mother ship (selection.last)
 		Entity parentEntity = selection().selection.peek();
