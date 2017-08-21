@@ -10,25 +10,23 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 
 import net.mgsx.game.core.GamePipeline;
-import net.mgsx.game.core.GameScreen;
 import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.core.annotations.EditableSystem;
 import net.mgsx.game.core.annotations.Inject;
 import net.mgsx.game.core.helpers.ShaderProgramHelper;
+import net.mgsx.game.plugins.camera.model.POVModel;
 
 @EditableSystem
 public class OpenWorldLensFlareSystem extends EntitySystem
 {
 	@Inject OpenWorldEnvSystem environment;
+	@Inject POVModel pov;
 	
 	private ShaderProgram shader;
 	private ShapeRenderer renderer;
 	
-	private GameScreen screen;
-	
-	public OpenWorldLensFlareSystem(GameScreen screen) {
+	public OpenWorldLensFlareSystem() {
 		super(GamePipeline.RENDER_TRANSPARENT);
-		this.screen = screen;
 	}
 	
 	
@@ -62,7 +60,7 @@ public class OpenWorldLensFlareSystem extends EntitySystem
 			Color color = colors[i%colors.length];
 			shader.begin();
 			shader.setUniformf("u_sunDirection", environment.sunDirection);
-			shader.setUniformf("u_camDirection", screen.camera.direction);
+			shader.setUniformf("u_camDirection", pov.camera.direction);
 			shader.setUniformf("u_color", color);
 			shader.setUniformf("u_size", (i+1) / (float)num);
 			shader.setUniformf("u_ratio", Gdx.graphics.getWidth() / (float)Gdx.graphics.getHeight());
@@ -72,7 +70,7 @@ public class OpenWorldLensFlareSystem extends EntitySystem
 			float h = 1; //Gdx.graphics.getWidth() / (float)Gdx.graphics.getHeight();
 			float w = -h;
 			
-			renderer.setProjectionMatrix(screen.camera.combined);
+			renderer.setProjectionMatrix(pov.camera.combined);
 			renderer.begin(ShapeType.Filled);
 			Gdx.gl.glEnable(GL20.GL_BLEND);
 			Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE);

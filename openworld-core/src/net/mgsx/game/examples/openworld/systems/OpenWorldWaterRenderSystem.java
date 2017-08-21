@@ -19,7 +19,6 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 
 import net.mgsx.game.core.GamePipeline;
-import net.mgsx.game.core.GameScreen;
 import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.core.annotations.EditableSystem;
 import net.mgsx.game.core.annotations.Inject;
@@ -31,6 +30,7 @@ import net.mgsx.game.core.helpers.shaders.Uniform;
 import net.mgsx.game.examples.openworld.components.LandMeshComponent;
 import net.mgsx.game.examples.openworld.components.ObjectMeshComponent;
 import net.mgsx.game.examples.openworld.components.TreesComponent;
+import net.mgsx.game.plugins.camera.model.POVModel;
 
 @Storable(value="ow.water")
 @EditableSystem
@@ -39,6 +39,7 @@ public class OpenWorldWaterRenderSystem extends EntitySystem
 	@Inject OpenWorldLandRenderSystem landerRendering;
 	@Inject OpenWorldEnvSystem environment;
 	@Inject OpenWorldSkySystem sky;
+	@Inject POVModel pov;
 	
 	@Editable public int mirrorSize = 1024;
 
@@ -68,11 +69,8 @@ public class OpenWorldWaterRenderSystem extends EntitySystem
 	
 	private FrameBuffer mirrorBuffer;
 
-	private GameScreen screen;
-	
-	public OpenWorldWaterRenderSystem(GameScreen screen) {
+	public OpenWorldWaterRenderSystem() {
 		super(GamePipeline.RENDER_TRANSPARENT);
-		this.screen = screen;
 		loadShader();
 	}
 	
@@ -111,24 +109,24 @@ public class OpenWorldWaterRenderSystem extends EntitySystem
 			Gdx.gl.glCullFace(GL20.GL_FRONT);
 			 
 			// TODO setup camera
-			backup.set(screen.camera.combined);
+			backup.set(pov.camera.combined);
 			
-			mirrorCamera.position.set(screen.camera.position);
+			mirrorCamera.position.set(pov.camera.position);
 			mirrorCamera.position.y = 2 * environment.waterLevel - mirrorCamera.position.y;
 
-			mirrorCamera.direction.set(screen.camera.direction);
-			mirrorCamera.direction.y = -screen.camera.direction.y;
-			mirrorCamera.near = screen.camera.near;
-			mirrorCamera.far = screen.camera.far;
-			mirrorCamera.up.set(screen.camera.up);
+			mirrorCamera.direction.set(pov.camera.direction);
+			mirrorCamera.direction.y = -pov.camera.direction.y;
+			mirrorCamera.near = pov.camera.near;
+			mirrorCamera.far = pov.camera.far;
+			mirrorCamera.up.set(pov.camera.up);
 
-			mirrorCamera.viewportWidth = screen.camera.viewportWidth;
-			mirrorCamera.viewportHeight = screen.camera.viewportHeight;
-			mirrorCamera.fieldOfView = ((PerspectiveCamera)screen.camera).fieldOfView;
+			mirrorCamera.viewportWidth = pov.camera.viewportWidth;
+			mirrorCamera.viewportHeight = pov.camera.viewportHeight;
+			mirrorCamera.fieldOfView = ((PerspectiveCamera)pov.camera).fieldOfView;
 			
 			mirrorCamera.update();
 			
-			screen.camera.combined.set(mirrorCamera.combined);
+			pov.camera.combined.set(mirrorCamera.combined);
 			
 			// bind FBO
 			mirrorBuffer.begin();
@@ -136,7 +134,7 @@ public class OpenWorldWaterRenderSystem extends EntitySystem
 			Gdx.gl.glClear(GL20.GL_DEPTH_BUFFER_BIT | GL20.GL_COLOR_BUFFER_BIT);
 			
 			reflectionShader.begin();
-			reflectionShader.setUniformMatrix("u_projTrans", screen.camera.combined);
+			reflectionShader.setUniformMatrix("u_projTrans", pov.camera.combined);
 			reflectionShader.setUniformMatrix("u_worldTrans", transform.idt());
 			reflectionShader.setUniformf("u_sunDirection", environment.sunDirection);
 			reflectionShader.setUniformf("u_fogColor", environment.fogColor);
@@ -156,7 +154,7 @@ public class OpenWorldWaterRenderSystem extends EntitySystem
 			if(objects){
 				for(Entity entity : getEngine().getEntitiesFor(Family.all(ObjectMeshComponent.class).get())){
 					ObjectMeshComponent omc = ObjectMeshComponent.components.get(entity);
-					transform.set(screen.camera.combined).mul(omc.getWorldTransform());
+					transform.set(pov.camera.combined).mul(omc.getWorldTransform());
 					reflectionShader.setUniformMatrix("u_worldTrans", omc.getWorldTransform());
 					reflectionShader.setUniformMatrix("u_projTrans", transform);
 					omc.getMeshToRender().render(reflectionShader, GL20.GL_TRIANGLES);
@@ -167,14 +165,14 @@ public class OpenWorldWaterRenderSystem extends EntitySystem
 			// unbind FBO
 			mirrorBuffer.end();
 			
-			screen.camera.combined.set(backup);
+			pov.camera.combined.set(backup);
 			
 			Gdx.gl.glCullFace(GL20.GL_BACK);
 			Gdx.gl.glDisable(GL20.GL_CULL_FACE);
 		}
 		
 		waterShader.time += deltaTime * waterShader.speed;
-		waterShader.camPos.set(screen.camera.position);
+		waterShader.camPos.set(pov.camera.position);
 		waterShader.texture = sky.getCubeMap();
 		
 		if(mirror){
@@ -187,9 +185,9 @@ public class OpenWorldWaterRenderSystem extends EntitySystem
 			renderer = new ImmediateModeRenderer20(4, false, false, 0, waterShader.program());
 		}
 		
-		renderer.begin(screen.camera.combined, GL20.GL_TRIANGLE_STRIP);
+		renderer.begin(pov.camera.combined, GL20.GL_TRIANGLE_STRIP);
 		
-		float s = screen.camera.far;
+		float s = pov.camera.far;
 		
 		Gdx.gl.glEnable(GL20.GL_DEPTH_TEST);
 
@@ -199,9 +197,9 @@ public class OpenWorldWaterRenderSystem extends EntitySystem
 			Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 		}
 		
-		float x = screen.camera.position.x;
+		float x = pov.camera.position.x;
 		float y = environment.waterLevel;
-		float z = screen.camera.position.z;
+		float z = pov.camera.position.z;
 		
 		renderer.vertex(x-s, y, z-s);
 		renderer.vertex(x+s, y, z-s);

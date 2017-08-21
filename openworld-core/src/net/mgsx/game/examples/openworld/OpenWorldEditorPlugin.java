@@ -102,26 +102,26 @@ public class OpenWorldEditorPlugin extends EditorPlugin implements DefaultEditor
 		editor.addTool(new CraftTransformTool(editor));
 		
 		// TODO non edit part
-		editor.entityEngine.addSystem(new OpenWorldLandRenderSystem(editor.game));
+		editor.entityEngine.addSystem(new OpenWorldLandRenderSystem());
 		editor.entityEngine.addSystem(new OpenWorldCameraPathSystem());
 		editor.entityEngine.addSystem(new OpenWorldCameraSystem());
-		editor.entityEngine.addSystem(new OpenWorldSkySystem(editor.game));
+		editor.entityEngine.addSystem(new OpenWorldSkySystem());
 		editor.entityEngine.addSystem(new OpenWorldEnvSystem());
 		
-		editor.entityEngine.addSystem(new OpenWorldWaterLQRenderSystem(editor.game));
+		editor.entityEngine.addSystem(new OpenWorldWaterLQRenderSystem());
 		if(highQuality){
-			editor.entityEngine.addSystem(new OpenWorldWaterRenderSystem(editor.game));
+			editor.entityEngine.addSystem(new OpenWorldWaterRenderSystem());
 			editor.entityEngine.getSystem(OpenWorldWaterLQRenderSystem.class).setProcessing(false);
 		}
 		
-		editor.entityEngine.addSystem(new OpenWorldLensFlareSystem(editor.game));
-		editor.entityEngine.addSystem(new OpenWorldTreeSystem(editor.game));
-		editor.entityEngine.addSystem(new OpenWorldMapSystem(editor.game));
+		editor.entityEngine.addSystem(new OpenWorldLensFlareSystem());
+		editor.entityEngine.addSystem(new OpenWorldTreeSystem());
+		editor.entityEngine.addSystem(new OpenWorldMapSystem());
 		editor.entityEngine.addSystem(new WeatherSystem());
-		editor.entityEngine.addSystem(new UserObjectSystem(editor.game));
-		editor.entityEngine.addSystem(new OpenWorldRainSystem(editor.game));
+		editor.entityEngine.addSystem(new UserObjectSystem());
+		editor.entityEngine.addSystem(new OpenWorldRainSystem());
 		editor.entityEngine.addSystem(new OpenWorldTimeSystem());
-		editor.entityEngine.addSystem(new OpenWorldFaunaSystem(editor.game));
+		editor.entityEngine.addSystem(new OpenWorldFaunaSystem());
 		editor.entityEngine.addSystem(new UserObjectUpdateSystem());
 		
 		editor.entityEngine.addSystem(new OpenLifeAnimalSystem());

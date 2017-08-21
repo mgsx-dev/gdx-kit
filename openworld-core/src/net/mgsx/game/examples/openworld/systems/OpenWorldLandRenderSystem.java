@@ -23,7 +23,6 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 
 import net.mgsx.game.core.GamePipeline;
-import net.mgsx.game.core.GameScreen;
 import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.core.annotations.EditableSystem;
 import net.mgsx.game.core.annotations.Inject;
@@ -37,6 +36,7 @@ import net.mgsx.game.examples.openworld.components.TreesComponent;
 import net.mgsx.game.examples.openworld.components.WildLifeComponent;
 import net.mgsx.game.examples.openworld.model.OpenWorldPool;
 import net.mgsx.game.examples.openworld.model.OpenWorldRuntimeSettings;
+import net.mgsx.game.plugins.camera.model.POVModel;
 import net.mgsx.game.plugins.core.components.HeightFieldComponent;
 import net.mgsx.game.plugins.g3d.components.G3DModel;
 
@@ -47,11 +47,10 @@ public class OpenWorldLandRenderSystem extends IteratingSystem
 {
 	@Inject OpenWorldEnvSystem environment;
 	@Inject OpenWorldSkySystem sky;
+	@Inject POVModel pov;
 	
 	private ShaderProgram shader;
 	private ShaderProgram shaderHigh, shaderHighShadows, shaderHighNoShadows, objectsShader, depthShader;
-	
-	private GameScreen screen;
 	
 	private DirectionalShadowLight shadowLight;
 	
@@ -65,9 +64,8 @@ public class OpenWorldLandRenderSystem extends IteratingSystem
 	@Editable public float shadowFar = 500;
 	@Editable public float shadowPCFOffset = 0.0001f;
 	
-	public OpenWorldLandRenderSystem(GameScreen screen) {
+	public OpenWorldLandRenderSystem() {
 		super(Family.all(LandMeshComponent.class).get(), GamePipeline.RENDER);
-		this.screen = screen;
 	}
 	
 	@Editable
@@ -208,7 +206,7 @@ public class OpenWorldLandRenderSystem extends IteratingSystem
 	public void renderLow() {
 		Gdx.gl.glEnable(GL20.GL_DEPTH_TEST);
 		shader.begin();
-		shader.setUniformMatrix("u_projTrans", screen.camera.combined);
+		shader.setUniformMatrix("u_projTrans", pov.camera.combined);
 		shader.setUniformf("u_sunDirection", environment.sunDirection);
 		shader.setUniformf("u_fogColor", environment.fogColor);
 		for(Entity entity : getEntities()){
@@ -235,7 +233,7 @@ public class OpenWorldLandRenderSystem extends IteratingSystem
 			shadowLight.getCamera().viewportWidth = shadowViewportWidth;
 			shadowLight.getCamera().viewportHeight = shadowViewportHeight;
 			
-			shadowLight.begin(screen.camera.position, screen.camera.direction);
+			shadowLight.begin(pov.camera.position, pov.camera.direction);
 			
 			// FrameBuffer.unbind();
 			Gdx.gl.glEnable(GL20.GL_DEPTH_TEST); // XXX
@@ -294,13 +292,13 @@ public class OpenWorldLandRenderSystem extends IteratingSystem
 		
 		Gdx.gl.glEnable(GL20.GL_DEPTH_TEST);
 		shaderHigh.begin();
-		shaderHigh.setUniformMatrix("u_projTrans", screen.camera.combined);
+		shaderHigh.setUniformMatrix("u_projTrans", pov.camera.combined);
 		shaderHigh.setUniformf("u_sunDirection", environment.sunDirection);
 		shaderHigh.setUniformf("u_fogColor", environment.fogColor);
 		shaderHigh.setUniformf("u_waterColor", environment.waterColor);
 		shaderHigh.setUniformf("u_waterLevel", environment.waterLevel);
-		shaderHigh.setUniformf("u_camDirection", screen.camera.direction);
-		shaderHigh.setUniformf("u_camPosition", screen.camera.position);
+		shaderHigh.setUniformf("u_camDirection", pov.camera.direction);
+		shaderHigh.setUniformf("u_camPosition", pov.camera.position);
 		
 		if(shadowEnabled){
 			shadowLight.getFrameBuffer().getColorBufferTexture().bind(1);
@@ -332,7 +330,7 @@ public class OpenWorldLandRenderSystem extends IteratingSystem
 		shader.begin();
 		shader.setUniformf("u_sunDirection", environment.sunDirection);
 		shader.setUniformf("u_fogColor", environment.fogColor);
-		shader.setUniformf("u_camPosition", screen.camera.position);
+		shader.setUniformf("u_camPosition", pov.camera.position);
 		sky.getCubeMap().bind();
 		for(Entity entity : allObjects){
 			ObjectMeshComponent omc = ObjectMeshComponent.components.get(entity);
@@ -354,7 +352,7 @@ public class OpenWorldLandRenderSystem extends IteratingSystem
 		for(Node node : nodes){
 			worldTransform.set(rootTransform).mul(node.globalTransform);
 			// setup matrices
-			transform.set(screen.camera.combined).mul(worldTransform);
+			transform.set(pov.camera.combined).mul(worldTransform);
 			shader.setUniformMatrix("u_projTrans", transform);
 			shader.setUniformMatrix("u_worldTrans", worldTransform);
 			

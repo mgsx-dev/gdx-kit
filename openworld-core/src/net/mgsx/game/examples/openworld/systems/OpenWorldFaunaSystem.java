@@ -10,30 +10,29 @@ import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.RandomXS128;
 
 import net.mgsx.game.core.GamePipeline;
-import net.mgsx.game.core.GameScreen;
 import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.core.annotations.EditableSystem;
 import net.mgsx.game.core.annotations.Inject;
 import net.mgsx.game.core.annotations.Storable;
 import net.mgsx.game.core.helpers.ShaderProgramHelper;
 import net.mgsx.game.core.storage.SystemSettingsListener;
+import net.mgsx.game.plugins.camera.model.POVModel;
 
 @Storable("ow.fauna")
 @EditableSystem
 public class OpenWorldFaunaSystem extends EntitySystem implements SystemSettingsListener
 {
 	@Inject OpenWorldTimeSystem timeSystem;
+	@Inject POVModel pov;
 	
 	private ShaderProgram shader;
 	private Mesh mesh;
-	private GameScreen screen;
 	
 	@Editable public int resolution = 64;
 	@Editable public float speed = 1;
 	
-	public OpenWorldFaunaSystem(GameScreen screen) {
+	public OpenWorldFaunaSystem() {
 		super(GamePipeline.RENDER_TRANSPARENT);
-		this.screen = screen;
 	}
 	
 	@Override
@@ -128,8 +127,8 @@ public class OpenWorldFaunaSystem extends EntitySystem implements SystemSettings
 		
 		// TODO maybe render 4 times around camera with different camera offset
 		
-		shader.setUniformMatrix("u_projTrans", screen.camera.combined);
-		shader.setUniformf("u_camPosition", screen.camera.position);
+		shader.setUniformMatrix("u_projTrans", pov.camera.combined);
+		shader.setUniformf("u_camPosition", pov.camera.position);
 		shader.setUniformf("u_time", timeSystem.time * speed);
 		mesh.render(shader, GL20.GL_TRIANGLES);
 		

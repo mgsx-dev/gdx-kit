@@ -4,6 +4,7 @@ import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
@@ -22,7 +23,6 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonReader;
 
 import net.mgsx.game.core.GamePipeline;
-import net.mgsx.game.core.GameScreen;
 import net.mgsx.game.core.annotations.Asset;
 import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.core.annotations.Inject;
@@ -47,6 +47,7 @@ public class UserObjectSystem extends EntitySystem
 	public Model missingModel;
 	
 	@Inject BulletWorldSystem bulletWorld;
+	@Inject AssetManager assets;
 	
 	private Array<UserObject> userObjects = new Array<UserObject>();
 	
@@ -59,14 +60,11 @@ public class UserObjectSystem extends EntitySystem
 	
 	private Mesh icosa1;
 
-	private GameScreen screen;
-	
 	private Material defaultMaterial;
 
 	
-	public UserObjectSystem(GameScreen screen) {
+	public UserObjectSystem() {
 		super(GamePipeline.LOGIC);
-		this.screen = screen;
 		
 		defaultMaterial = new Material();
 		defaultMaterial.set(new ColorAttribute(ColorAttribute.Diffuse, new Color(1,1,1,1)));
@@ -184,14 +182,14 @@ public class UserObjectSystem extends EntitySystem
 			String fileName = "openworld/" + element.type + ".g3dj"; // TODO try g3db first
 			// find model (load it if necessary) TODO pre load ...
 			Model model;
-			if(screen.assets.getAssetType(fileName) == null){
+			if(assets.getAssetType(fileName) == null){
 				if(!Gdx.files.internal(fileName).exists()){
 					model = missingModel;
 				}else{
-					model = AssetHelper.loadAssetNow(screen.assets, fileName, Model.class);
+					model = AssetHelper.loadAssetNow(assets, fileName, Model.class);
 				}
 			}else{
-				model = screen.assets.get(fileName, Model.class);
+				model = assets.get(fileName, Model.class);
 			}
 			lmc.setInstance(new ModelInstance(model));
 			bulletWorld.createFromModel(newEntity, model, lmc.getTransform(), element.dynamic, element.density);

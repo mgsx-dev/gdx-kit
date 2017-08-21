@@ -20,13 +20,13 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.BufferUtils;
 
 import net.mgsx.game.core.GamePipeline;
-import net.mgsx.game.core.GameScreen;
 import net.mgsx.game.core.PostInitializationListener;
 import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.core.annotations.EditableSystem;
 import net.mgsx.game.core.annotations.Inject;
 import net.mgsx.game.core.annotations.Storable;
 import net.mgsx.game.core.helpers.ShaderProgramHelper;
+import net.mgsx.game.plugins.camera.model.POVModel;
 
 @Storable(value="ow.sky")
 @EditableSystem
@@ -35,6 +35,7 @@ public class OpenWorldSkySystem extends EntitySystem implements PostInitializati
 	@Inject OpenWorldLandRenderSystem landRenderer;
 	@Inject OpenWorldEnvSystem environment;
 	@Inject WeatherSystem weather;
+	@Inject POVModel pov;
 	
 	@Editable public boolean debugFaces = false;
 	
@@ -54,13 +55,11 @@ public class OpenWorldSkySystem extends EntitySystem implements PostInitializati
 	private ShapeRenderer skyRenderer;
 	
 	private ShapeRenderer renderer;
-	private GameScreen screen;
 	
 	private float cloudTime; // TODO should trace offset, since direction can change (need shader modifictions)
 	
-	public OpenWorldSkySystem(GameScreen screen) {
+	public OpenWorldSkySystem() {
 		super(GamePipeline.RENDER);
-		this.screen = screen;
 	}
 	
 	public Cubemap getCubeMap() {
@@ -137,7 +136,7 @@ public class OpenWorldSkySystem extends EntitySystem implements PostInitializati
 			
 			fboCubeMap.begin();
 			
-			backup.set(screen.camera.combined);
+			backup.set(pov.camera.combined);
 			
 			while(fboCubeMap.nextSide()) {
 				
@@ -151,16 +150,16 @@ public class OpenWorldSkySystem extends EntitySystem implements PostInitializati
 				}
 				
 				// TODO render geometries
-				fboCam.position.set(screen.camera.position);
+				fboCam.position.set(pov.camera.position);
 				//fboCam.position.y = 3; // XXX offset
-				fboCam.near = screen.camera.far/2;
+				fboCam.near = pov.camera.far/2;
 				fboCam.far = 3000;
 				
 				fboCubeMap.getSide().getUp(fboCam.up);
 				fboCubeMap.getSide().getDirection(fboCam.direction);
 				fboCam.update();
 				
-				screen.camera.combined.set(fboCam.combined);
+				pov.camera.combined.set(fboCam.combined);
 				
 				landRenderer.renderLow();
 				
@@ -170,7 +169,7 @@ public class OpenWorldSkySystem extends EntitySystem implements PostInitializati
 				
 			}
 			
-			screen.camera.combined.set(backup);
+			pov.camera.combined.set(backup);
 			
 			fboCubeMap.end();
 			
@@ -181,20 +180,20 @@ public class OpenWorldSkySystem extends EntitySystem implements PostInitializati
 		bgShader.setUniformi("u_texture", 0);
 		bgShader.end();
 		
-		boolean parallaxEffect = parallax != 1 && screen.camera instanceof PerspectiveCamera;
+		boolean parallaxEffect = parallax != 1 && pov.camera instanceof PerspectiveCamera;
 		float oldFOV = 0;
 		if(parallaxEffect){
-			oldFOV = ((PerspectiveCamera)screen.camera).fieldOfView;
-			((PerspectiveCamera)screen.camera).fieldOfView *= parallax;
-			screen.camera.update();
+			oldFOV = ((PerspectiveCamera)pov.camera).fieldOfView;
+			((PerspectiveCamera)pov.camera).fieldOfView *= parallax;
+			pov.camera.update();
 		}
 		
 		Gdx.gl.glDisable(GL20.GL_CULL_FACE); // XXX issue with render box !
 		
 		// render background
-		float s = screen.camera.far / 2; // TODO not really that ...
-		renderer.setTransformMatrix(renderer.getTransformMatrix().setToTranslation(screen.camera.position));
-		renderer.setProjectionMatrix(screen.camera.combined);
+		float s = pov.camera.far / 2; // TODO not really that ...
+		renderer.setTransformMatrix(renderer.getTransformMatrix().setToTranslation(pov.camera.position));
+		renderer.setProjectionMatrix(pov.camera.combined);
 		renderer.begin(ShapeType.Filled);
 		fboCubeMap.getColorBufferTexture().bind();
 		renderer.box(
@@ -204,8 +203,8 @@ public class OpenWorldSkySystem extends EntitySystem implements PostInitializati
 		renderer.end();
 		
 		if(parallaxEffect){
-			((PerspectiveCamera)screen.camera).fieldOfView = oldFOV;
-			screen.camera.update();
+			((PerspectiveCamera)pov.camera).fieldOfView = oldFOV;
+			pov.camera.update();
 		}
 		
 		Gdx.gl.glEnable(GL20.GL_CULL_FACE); // XXX issue with render box !
@@ -227,10 +226,10 @@ public class OpenWorldSkySystem extends EntitySystem implements PostInitializati
 		
 		
 		// simple "infinite" quad
-		float s = 2000; // screen.camera.far/2; //(3000 + 50) / 2; //screen.camera.far + 1; // TODO not really that ...
+		float s = 2000; // pov.camera.far/2; //(3000 + 50) / 2; //pov.camera.far + 1; // TODO not really that ...
 		
-		skyRenderer.setTransformMatrix(skyRenderer.getTransformMatrix().setToTranslation(screen.camera.position));
-		skyRenderer.setProjectionMatrix(screen.camera.combined);
+		skyRenderer.setTransformMatrix(skyRenderer.getTransformMatrix().setToTranslation(pov.camera.position));
+		skyRenderer.setProjectionMatrix(pov.camera.combined);
 		skyRenderer.begin(ShapeType.Filled);
 		
 		Gdx.gl.glDisable(GL20.GL_CULL_FACE); // XXX issue with render box !

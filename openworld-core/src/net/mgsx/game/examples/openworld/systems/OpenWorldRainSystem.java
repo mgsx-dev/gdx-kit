@@ -10,7 +10,6 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 
 import net.mgsx.game.core.GamePipeline;
-import net.mgsx.game.core.GameScreen;
 import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.core.annotations.EditableSystem;
 import net.mgsx.game.core.annotations.Inject;
@@ -19,6 +18,7 @@ import net.mgsx.game.core.helpers.shaders.ShaderInfo;
 import net.mgsx.game.core.helpers.shaders.ShaderProgramManaged;
 import net.mgsx.game.core.helpers.shaders.Uniform;
 import net.mgsx.game.core.storage.SystemSettingsListener;
+import net.mgsx.game.plugins.camera.model.POVModel;
 
 @Storable("ow.rain")
 @EditableSystem
@@ -26,9 +26,9 @@ public class OpenWorldRainSystem extends EntitySystem implements SystemSettingsL
 {
 	@Inject OpenWorldTimeSystem timeSystem;
 	@Inject WeatherSystem weather;
+	@Inject POVModel pov;
 	
 	private Mesh mesh;
-	private GameScreen screen;
 	
 	@Editable public int resolution = 64;
 	
@@ -57,9 +57,8 @@ public class OpenWorldRainSystem extends EntitySystem implements SystemSettingsL
 	@Editable public RainShader rainShader = new RainShader();
 	
 	
-	public OpenWorldRainSystem(GameScreen screen) {
+	public OpenWorldRainSystem() {
 		super(GamePipeline.RENDER_TRANSPARENT);
-		this.screen = screen;
 	}
 	
 	@Override
@@ -118,8 +117,8 @@ public class OpenWorldRainSystem extends EntitySystem implements SystemSettingsL
 		
 		// update values
 		rainShader.time = timeSystem.time * rainShader.speed;
-		rainShader.projTrans = screen.camera.combined;
-		rainShader.camPosition = screen.camera.position;
+		rainShader.projTrans = pov.camera.combined;
+		rainShader.camPosition = pov.camera.position;
 		
 		rainShader.begin();
 		

@@ -9,7 +9,6 @@ import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer20;
 import com.badlogic.gdx.math.Vector3;
 
 import net.mgsx.game.core.GamePipeline;
-import net.mgsx.game.core.GameScreen;
 import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.core.annotations.EditableSystem;
 import net.mgsx.game.core.annotations.Inject;
@@ -17,6 +16,7 @@ import net.mgsx.game.core.annotations.Storable;
 import net.mgsx.game.core.helpers.shaders.ShaderInfo;
 import net.mgsx.game.core.helpers.shaders.ShaderProgramManaged;
 import net.mgsx.game.core.helpers.shaders.Uniform;
+import net.mgsx.game.plugins.camera.model.POVModel;
 
 @Storable(value="ow.water.lq")
 @EditableSystem
@@ -24,6 +24,7 @@ public class OpenWorldWaterLQRenderSystem extends EntitySystem
 {
 	@Inject OpenWorldSkySystem sky;
 	@Inject OpenWorldEnvSystem env;
+	@Inject POVModel pov;
 	
 	@ShaderInfo(vs="shaders/water-lq.vert", fs="shaders/water-lq.frag")
 	public static class WaterShaderLQ extends ShaderProgramManaged
@@ -42,11 +43,8 @@ public class OpenWorldWaterLQRenderSystem extends EntitySystem
 	
 	private ImmediateModeRenderer renderer;
 	
-	private GameScreen screen;
-	
-	public OpenWorldWaterLQRenderSystem(GameScreen screen) {
+	public OpenWorldWaterLQRenderSystem() {
 		super(GamePipeline.RENDER);
-		this.screen = screen;
 	}
 	
 	@Override
@@ -55,7 +53,7 @@ public class OpenWorldWaterLQRenderSystem extends EntitySystem
 		Gdx.gl.glDisable(GL20.GL_CULL_FACE);
 		
 		waterShaderLQ.time += deltaTime * waterShaderLQ.speed;
-		waterShaderLQ.camPos.set(screen.camera.position);
+		waterShaderLQ.camPos.set(pov.camera.position);
 		waterShaderLQ.texture = sky.getCubeMap();
 		
 		if(waterShaderLQ.begin()){
@@ -63,13 +61,13 @@ public class OpenWorldWaterLQRenderSystem extends EntitySystem
 			renderer = new ImmediateModeRenderer20(4, false, false, 0, waterShaderLQ.program());
 		}
 		
-		renderer.begin(screen.camera.combined, GL20.GL_TRIANGLE_STRIP);
+		renderer.begin(pov.camera.combined, GL20.GL_TRIANGLE_STRIP);
 
-		float s = screen.camera.far;
+		float s = pov.camera.far;
 		
-		float x = screen.camera.position.x;
+		float x = pov.camera.position.x;
 		float y = env.waterLevel;
-		float z = screen.camera.position.z;
+		float z = pov.camera.position.z;
 		
 		renderer.vertex(x-s, y, z-s);
 		renderer.vertex(x+s, y, z-s);

@@ -20,6 +20,7 @@ import net.mgsx.game.core.storage.EntityGroup;
 import net.mgsx.game.core.storage.EntityGroupLoader;
 import net.mgsx.game.core.storage.EntityGroupStorage;
 import net.mgsx.game.core.storage.LoadConfiguration;
+import net.mgsx.game.plugins.camera.model.POVModel;
 
 /**
  * Base screen for managed game scene.
@@ -40,7 +41,9 @@ public class GameScreen extends ScreenClipAdapter implements ScreenManager
 	final public Engine entityEngine;
 	public GameRegistry registry;
 	
-	public Camera camera;
+	/** @deprecated inject {@link POVModel} instead */
+	@Deprecated
+	public final Camera camera;
 	
 	/**
 	 * create game screen with default engine.
@@ -71,6 +74,10 @@ public class GameScreen extends ScreenClipAdapter implements ScreenManager
 		gameCamera.update(true);
 		
 		camera = gameCamera;
+		
+		POVModel pov = new POVModel();
+		pov.camera = gameCamera;
+		registry.registerModel(POVModel.class, pov);
 		
 		registry.init(this);
 	}

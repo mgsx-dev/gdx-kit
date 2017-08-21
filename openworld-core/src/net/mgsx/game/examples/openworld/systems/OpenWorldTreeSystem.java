@@ -17,7 +17,6 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionObject;
 
 import net.mgsx.game.core.GamePipeline;
-import net.mgsx.game.core.GameScreen;
 import net.mgsx.game.core.PostInitializationListener;
 import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.core.annotations.EditableSystem;
@@ -31,6 +30,7 @@ import net.mgsx.game.examples.openworld.model.OpenWorldPool;
 import net.mgsx.game.examples.openworld.model.OpenWorldRuntimeSettings;
 import net.mgsx.game.examples.openworld.utils.BulletBuilder;
 import net.mgsx.game.plugins.bullet.system.BulletWorldSystem;
+import net.mgsx.game.plugins.camera.model.POVModel;
 import net.mgsx.game.plugins.core.components.HeightFieldComponent;
 import net.mgsx.game.plugins.procedural.model.ClassicalPerlinNoise;
 
@@ -42,14 +42,13 @@ public class OpenWorldTreeSystem extends IteratingSystem implements PostInitiali
 	@Inject OpenWorldManagerSystem manager;
 	@Inject OpenWorldGeneratorSystem generator;
 	@Inject BulletWorldSystem bulletSystem;
+	@Inject POVModel pov;
 
 	/** how many tree per meter (max) */
 	@Editable public float densityMax = 1f / 3f;
 	
 	@Editable public boolean collisions = false;
 	
-	private GameScreen screen;
-
 	private ClassicalPerlinNoise noise = new ClassicalPerlinNoise();
 	
 	Vector3 vp = new Vector3();
@@ -65,9 +64,8 @@ public class OpenWorldTreeSystem extends IteratingSystem implements PostInitiali
 	@Editable public TreeShader shader = new TreeShader();
 	
 	
-	public OpenWorldTreeSystem(GameScreen screen) {
+	public OpenWorldTreeSystem() {
 		super(Family.all(TreesComponent.class).get(), GamePipeline.RENDER);
-		this.screen = screen;
 	}
 	
 	@Override
@@ -252,7 +250,7 @@ public class OpenWorldTreeSystem extends IteratingSystem implements PostInitiali
 		Gdx.gl.glCullFace(GL20.GL_FRONT); // XXX workaround
 		
 		
-		shader.projTrans = screen.camera.combined;
+		shader.projTrans = pov.camera.combined;
 		shader.sunDirection = environment.sunDirection;
 		shader.fogColor = environment.fogColor;
 		
