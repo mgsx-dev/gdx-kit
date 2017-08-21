@@ -4,7 +4,6 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.collision.Ray;
 
-import net.mgsx.game.core.EditorScreen;
 import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.core.annotations.Inject;
 import net.mgsx.game.core.tools.Tool;
@@ -26,10 +25,6 @@ public class AddElementTool extends Tool
 	@Editable(editor=OpenWorldTypeSelector.class)
 	public String type;
 	
-	public AddElementTool(EditorScreen editor) {
-		super("Add Element", editor);
-	}
-
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
 		

@@ -5,7 +5,6 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
 
-import net.mgsx.game.core.EditorScreen;
 import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.core.annotations.Inject;
 import net.mgsx.game.core.tools.Tool;
@@ -18,10 +17,6 @@ public class AlignMeshTool extends Tool
 	@Inject BulletWorldSystem bulletWorld;
 	@Editable public float angle;
 	
-	public AlignMeshTool(EditorScreen editor) {
-		super("Align mesh", editor);
-	}
-
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
 		

@@ -8,7 +8,6 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.ObjectSet;
 
-import net.mgsx.game.core.EditorScreen;
 import net.mgsx.game.core.annotations.Inject;
 import net.mgsx.game.core.tools.Tool;
 import net.mgsx.game.examples.openworld.components.ObjectMeshComponent;
@@ -23,10 +22,6 @@ public class CraftTransformTool extends Tool
 
 	@Inject BulletWorldSystem bulletWorld;
 	@Inject UserObjectSystem userObjectSystem;
-	
-	public CraftTransformTool(EditorScreen editor) {
-		super("Craft Transform", editor);
-	}
 	
 	private static class Pair{
 		Entity e1, e2;

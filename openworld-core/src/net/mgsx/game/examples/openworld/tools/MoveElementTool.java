@@ -8,7 +8,6 @@ import com.badlogic.gdx.physics.bullet.collision.Collision;
 import com.badlogic.gdx.physics.bullet.dynamics.btDiscreteDynamicsWorld;
 import com.badlogic.gdx.physics.bullet.dynamics.btRigidBody;
 
-import net.mgsx.game.core.EditorScreen;
 import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.core.annotations.Inject;
 import net.mgsx.game.core.tools.Tool;
@@ -27,10 +26,6 @@ public class MoveElementTool extends Tool
 	@Editable
 	public Axis axis = Axis.Y;
 	
-	public MoveElementTool(EditorScreen editor) {
-		super("Move element", editor);
-	}
-
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
 		if(button != Input.Buttons.LEFT) return false;

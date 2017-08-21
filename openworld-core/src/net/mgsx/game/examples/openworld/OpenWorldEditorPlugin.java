@@ -95,11 +95,11 @@ public class OpenWorldEditorPlugin extends EditorPlugin implements DefaultEditor
 
 		
 		
-		editor.addTool(new AlignMeshTool(editor));
-		editor.addTool(new AddElementTool(editor));
-		editor.addTool(new RemoveElementTool(editor));
-		editor.addTool(new MoveElementTool(editor));
-		editor.addTool(new CraftTransformTool(editor));
+		editor.addTool(new AlignMeshTool());
+		editor.addTool(new AddElementTool());
+		editor.addTool(new RemoveElementTool());
+		editor.addTool(new MoveElementTool());
+		editor.addTool(new CraftTransformTool());
 		
 		// TODO non edit part
 		editor.entityEngine.addSystem(new OpenWorldLandRenderSystem());

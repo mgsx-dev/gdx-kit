@@ -3,7 +3,6 @@ package net.mgsx.game.examples.openworld.tools;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.math.collision.Ray;
 
-import net.mgsx.game.core.EditorScreen;
 import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.core.annotations.Inject;
 import net.mgsx.game.core.tools.Tool;
@@ -18,10 +17,6 @@ public class RemoveElementTool extends Tool
 	@Inject BulletWorldSystem bulletWorld;
 	@Inject UserObjectSystem userObject;
 	
-	public RemoveElementTool(EditorScreen editor) {
-		super("Remove Element", editor);
-	}
-
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
 		
