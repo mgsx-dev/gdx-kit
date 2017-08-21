@@ -39,6 +39,10 @@ public class EditorApplication extends GameApplication implements ScreenManager,
 		
 		engine = new PooledEngine();
 		
+		// register assets manager as model accessible by its special type EditorAssetManager
+		// game screen will register it again with AssetManager type.
+		config.registry.registerModel(EditorAssetManager.class, (EditorAssetManager)assets);
+		
 		for(Plugin plugin : config.plugins){
 			config.registry.registerPlugin(plugin);
 		}

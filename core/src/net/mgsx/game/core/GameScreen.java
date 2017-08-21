@@ -58,6 +58,9 @@ public class GameScreen extends ScreenClipAdapter implements ScreenManager
 		this.entityEngine = engine;
 		this.screenManager = screenManager;
 		
+		// register the asset manager
+		registry.registerModel(AssetManager.class, assets);
+		
 		// TODO default camera with magic numbers ... how to configure ?
 		Camera gameCamera = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		gameCamera.position.set(0, 0, 10);
