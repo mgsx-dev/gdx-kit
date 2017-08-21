@@ -152,8 +152,8 @@ public class OpenWorldSkySystem extends EntitySystem implements PostInitializati
 				
 				// TODO render geometries
 				fboCam.position.set(screen.camera.position);
-				fboCam.position.y = 3; // XXX offset
-				fboCam.near = 50;
+				//fboCam.position.y = 3; // XXX offset
+				fboCam.near = screen.camera.far/2;
 				fboCam.far = 3000;
 				
 				fboCubeMap.getSide().getUp(fboCam.up);
@@ -227,7 +227,7 @@ public class OpenWorldSkySystem extends EntitySystem implements PostInitializati
 		
 		
 		// simple "infinite" quad
-		float s = screen.camera.far / 2; // TODO not really that ...
+		float s = 2000; // screen.camera.far/2; //(3000 + 50) / 2; //screen.camera.far + 1; // TODO not really that ...
 		
 		skyRenderer.setTransformMatrix(skyRenderer.getTransformMatrix().setToTranslation(screen.camera.position));
 		skyRenderer.setProjectionMatrix(screen.camera.combined);
