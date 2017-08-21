@@ -28,6 +28,7 @@ public class GameRegistry {
 	public final ObjectMap<Class, Serializer> serializers = new ObjectMap<Class, Serializer>();
 	public Array<Class<? extends Component>> components = new Array<Class<? extends Component>>();
 
+	private final ObjectMap<Class, Object> models = new ObjectMap<Class, Object>();
 	
 	public void registerPlugin(Class plugin) 
 	{
@@ -162,6 +163,14 @@ public class GameRegistry {
 		collect(screen);
 	}
 	
+	public <T> void registerModel(T model){
+		registerModel((Class<T>)model.getClass(), model);
+	}
+	
+	public <T, V extends T> void registerModel(Class<T> type, V object){
+		models.put(type, object);
+	}
+	
 	void collect(GameScreen screen)
 	{
 		// scan all systems in order to inject assets
@@ -177,14 +186,18 @@ public class GameRegistry {
 		}
 	}
 
-	public void inject(Engine engine, Object system) 
+	public void inject(Engine engine, Object target) 
 	{
-		for(Accessor accessor : Kit.meta.accessorsFor(system, Inject.class)){
-			if(EntitySystem.class.isAssignableFrom(accessor.getType()))
+		for(Accessor accessor : Kit.meta.accessorsFor(target, Inject.class)){
+			Object model = models.get(accessor.getType());
+			if(model != null){
+				accessor.set(model);
+			}
+			else if(EntitySystem.class.isAssignableFrom(accessor.getType()))
 			{
 				EntitySystem dep = engine.getSystem(accessor.getType());
 				if(dep == null){
-					Gdx.app.error("reflection", "system " + accessor.getType().getSimpleName() + " cannot be injected in " + system.getClass().getSimpleName() + " : not found in engine");
+					Gdx.app.error("reflection", "system " + accessor.getType().getSimpleName() + " cannot be injected in " + target.getClass().getSimpleName() + " : not found in engine");
 				}
 				accessor.set(dep);
 			}else{
