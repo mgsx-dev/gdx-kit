@@ -71,13 +71,13 @@ public class OpenWorldSpawnAnimalSystem extends IteratingSystem implements PostI
 	private float spawnGridScale = 30; //XXX 100; // 100m chunk size forming a 300m X 300m living grid, 500m X 500m memory
 	
 	private SpawnGenerator spawnGenerator;
-	private AssetManager assets;
+	
+	@Inject private AssetManager assets;
 	
 	private OpenWorldPathBuilder pathBuilder = new OpenWorldPathBuilder();
 
-	public OpenWorldSpawnAnimalSystem(AssetManager assets) {
+	public OpenWorldSpawnAnimalSystem() {
 		super(Family.all(SpawnAnimalComponent.class, G3DModel.class).get(), GamePipeline.LOGIC);
-		this.assets = assets;
 	}
 	
 	@Override

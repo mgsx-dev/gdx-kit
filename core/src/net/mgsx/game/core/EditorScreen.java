@@ -444,7 +444,7 @@ public class EditorScreen extends ScreenDelegate implements EditorContext // TOD
 	}
 
 	private String pluginFilter;
-	public boolean showAllTools = false;
+	private boolean showAllTools = false;
 	
 	// TODO will be part of system save !
 	public final Array<EntitySystem> pinnedSystems = new Array<EntitySystem>();
@@ -742,7 +742,7 @@ public class EditorScreen extends ScreenDelegate implements EditorContext // TOD
 	
 	private boolean displayEnabled = true; // true by default
 
-	public Table toolOutline;
+	private Table toolOutline;
 
 
 	public void addTool(Tool tool) {

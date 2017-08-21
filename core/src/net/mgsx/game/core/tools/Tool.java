@@ -5,6 +5,7 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -48,6 +49,9 @@ abstract public class Tool extends AbstractInputSystem
 	
 	@Inject
 	protected HistorySystem historySystem;
+	
+	@Inject
+	protected AssetManager assets;
 	
 	public Tool() {
 		name = makeName(this.getClass());

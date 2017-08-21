@@ -88,7 +88,7 @@ public class OpenWorldEditorPlugin extends EditorPlugin implements DefaultEditor
 		editor.entityEngine.addSystem(new OpenWorldGeneratorSystem());
 		editor.entityEngine.addSystem(new OpenWorldManagerSystem());
 		editor.entityEngine.addSystem(new OpenWorldSpawnSystem());
-		editor.entityEngine.addSystem(new OpenWorldSpawnAnimalSystem(editor.assets));
+		editor.entityEngine.addSystem(new OpenWorldSpawnAnimalSystem());
 		editor.entityEngine.addSystem(new OpenWorldDebugSystem());
 		
 		editor.entityEngine.addSystem(new OpenWorldPhysicSystem());
