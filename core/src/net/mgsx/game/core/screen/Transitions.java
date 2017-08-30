@@ -78,6 +78,9 @@ public class Transitions
 		return swapTransition;
 	}
 	
+	public static TransitionDesc fade(float duration){
+		return fade(null, duration, null);
+	} 
 	public static TransitionDesc fade(Screen destination, float duration){
 		return fade(destination, duration, null);
 	} 
