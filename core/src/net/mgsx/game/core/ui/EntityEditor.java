@@ -36,6 +36,7 @@ import net.mgsx.game.core.ui.events.AccessorHelpEvent;
 import net.mgsx.game.core.ui.widgets.BitsWidget;
 import net.mgsx.game.core.ui.widgets.BlendWidget;
 import net.mgsx.game.core.ui.widgets.BooleanWidget;
+import net.mgsx.game.core.ui.widgets.ColorWidget;
 import net.mgsx.game.core.ui.widgets.FloatWidget;
 import net.mgsx.game.core.ui.widgets.IntegerWidget;
 import net.mgsx.game.core.ui.widgets.VoidWidget;
@@ -311,19 +312,7 @@ public class EntityEditor extends Table
 			Quaternion q = (Quaternion)accessor.get();
 			createSlider2D(table, entity, accessor.getName(), q);
 		}else if(accessor.getType() == Color.class){
-			Color c = (Color)accessor.get();
-			
-			Table sub = new Table(table.getSkin());
-			sub.add("(");
-			createSlider(sub, entity, accessor, c, new FieldAccessorWrapper(accessor, "r"));
-			sub.add(",");
-			createSlider(sub, entity, accessor, c, new FieldAccessorWrapper(accessor, "g"));
-			sub.add(",");
-			createSlider(sub, entity, accessor, c, new FieldAccessorWrapper(accessor, "b"));
-			sub.add(",");
-			createSlider(sub, entity, accessor, c, new FieldAccessorWrapper(accessor, "a"));
-			sub.add(")");
-			table.add(sub);
+			table.add(ColorWidget.instance.create(accessor, skin));
 		}else if(accessor.getType().isEnum()){
 			// TODO EnumWidget
 			final SelectBox<Object> selector = new SelectBox<Object>(skin);
