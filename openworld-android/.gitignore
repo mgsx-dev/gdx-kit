@@ -5,3 +5,6 @@ client_secrets.json
 /aarDependencies/
 /assets/kit-autosave.json
 /local/
+/assets/pd/rjlib
+/assets/**/*.wav
+
