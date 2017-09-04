@@ -10,6 +10,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 import net.mgsx.game.core.helpers.ArrayHelper;
+import net.mgsx.game.core.helpers.ColorHelper;
 import net.mgsx.game.examples.openworld.model.OpenWorldElement.GeometryType;
 import net.mgsx.game.examples.openworld.utils.FreeMindReader;
 import net.mgsx.game.examples.openworld.utils.FreeMindReader.FreemindMap;
@@ -67,61 +68,6 @@ public class OpenWorldModel {
 		return null;
 	}
 	
-	// TODO pullup to LibGDX
-	/** Converts HSV color sytem to RGB
-	 * 
-	 * @return RGB values in Libgdx Color class */
-	public static Color HSV_to_RGB (float h, float s, float v) {
-		int r, g, b;
-		int i;
-		float f, p, q, t;
-		h = (float)Math.max(0.0, Math.min(360.0, h));
-		s = (float)Math.max(0.0, Math.min(100.0, s));
-		v = (float)Math.max(0.0, Math.min(100.0, v));
-		s /= 100;
-		v /= 100;
-
-		h /= 60;
-		i = (int)Math.floor(h);
-		f = h - i;
-		p = v * (1 - s);
-		q = v * (1 - s * f);
-		t = v * (1 - s * (1 - f));
-		switch (i) {
-		case 0:
-			r = Math.round(255 * v);
-			g = Math.round(255 * t);
-			b = Math.round(255 * p);
-			break;
-		case 1:
-			r = Math.round(255 * q);
-			g = Math.round(255 * v);
-			b = Math.round(255 * p);
-			break;
-		case 2:
-			r = Math.round(255 * p);
-			g = Math.round(255 * v);
-			b = Math.round(255 * t);
-			break;
-		case 3:
-			r = Math.round(255 * p);
-			g = Math.round(255 * q);
-			b = Math.round(255 * v);
-			break;
-		case 4:
-			r = Math.round(255 * t);
-			g = Math.round(255 * p);
-			b = Math.round(255 * v);
-			break;
-		default:
-			r = Math.round(255 * v);
-			g = Math.round(255 * p);
-			b = Math.round(255 * q);
-		}
-
-		return new Color(r / 255.0f, g / 255.0f, b / 255.0f, 1);
-	}
-
 	/**
 	 * use a tool on target type
 	 * @param created elements created by interaction (could be empty even if return true)
@@ -261,10 +207,10 @@ public class OpenWorldModel {
 	private static Color generateColor(FreemindNode color) 
 	{
 		float h = generateFloat(color.child("hue"), 0);
-		float s = generateFloat(color.child("sat"), 50);
-		float l = generateFloat(color.child("lum"), 50);
+		float s = generateFloat(color.child("sat"), 50) / 100f;
+		float l = generateFloat(color.child("lum"), 50) / 100f;
 		
-		return HSV_to_RGB(h,s,l);
+		return ColorHelper.hsvToColor(new Color(Color.BLACK), h,s,l);
 	}
 
 	private static float generateFloat(FreemindNode node, float defaultValue) {

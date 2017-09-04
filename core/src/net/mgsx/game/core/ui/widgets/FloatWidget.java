@@ -134,7 +134,7 @@ public class FloatWidget extends Label
 		setValue(value);
 	}
 	
-	private void updateValue(){
+	public void updateValue(){
 		if(type == EnumType.BYTES){
 			setText(StringHelper.humanBytes(getValue()));
 		}else{
