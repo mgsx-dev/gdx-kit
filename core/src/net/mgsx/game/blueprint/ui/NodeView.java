@@ -1,4 +1,4 @@
-package net.mgsx.game.blueprint;
+package net.mgsx.game.blueprint.ui;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
@@ -10,6 +10,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Array;
 
+import net.mgsx.game.blueprint.Graph;
+import net.mgsx.game.blueprint.GraphNode;
+import net.mgsx.game.blueprint.Portlet;
 import net.mgsx.game.blueprint.annotations.Node;
 import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.core.ui.EntityEditor;

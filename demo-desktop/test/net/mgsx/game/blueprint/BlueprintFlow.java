@@ -13,6 +13,7 @@ import net.mgsx.game.blueprint.Graph.CopyStrategy;
 import net.mgsx.game.blueprint.annotations.Inlet;
 import net.mgsx.game.blueprint.annotations.Node;
 import net.mgsx.game.blueprint.annotations.Outlet;
+import net.mgsx.game.blueprint.ui.GraphView;
 import net.mgsx.game.core.GameApplication;
 import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.core.helpers.AssetHelper;

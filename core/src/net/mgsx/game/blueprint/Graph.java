@@ -6,6 +6,7 @@ import com.badlogic.gdx.utils.ObjectSet;
 
 import net.mgsx.game.blueprint.annotations.Inlet;
 import net.mgsx.game.blueprint.annotations.Outlet;
+import net.mgsx.game.blueprint.ui.NodeView;
 import net.mgsx.game.core.ui.accessors.Accessor;
 import net.mgsx.game.core.ui.accessors.AccessorBase;
 import net.mgsx.game.core.ui.accessors.AccessorScanner;

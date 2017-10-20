@@ -1,4 +1,4 @@
-package net.mgsx.game.blueprint;
+package net.mgsx.game.blueprint.ui;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -21,6 +21,10 @@ import com.badlogic.gdx.scenes.scene2d.utils.Layout;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 
+import net.mgsx.game.blueprint.Graph;
+import net.mgsx.game.blueprint.GraphNode;
+import net.mgsx.game.blueprint.Link;
+import net.mgsx.game.blueprint.Portlet;
 import net.mgsx.game.core.helpers.ReflectionHelper;
 
 public class GraphView extends WidgetGroup
