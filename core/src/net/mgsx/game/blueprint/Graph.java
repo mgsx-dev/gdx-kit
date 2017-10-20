@@ -150,7 +150,7 @@ public class Graph
 		addLink(getInlet(dst, dstIn), getOutlet(src, srcOut));
 	}
 
-	public void addLink(Portlet src, Portlet dst) 
+	public Link addLink(Portlet src, Portlet dst) 
 	{
 		switch(copyStrategy){
 		case FROM_DST:
@@ -170,25 +170,35 @@ public class Graph
 		dst.inputLinks.add(link);
 		links.add(link);
 		
+		return link;
+		
 	}
 	
-	public void removeLinksFrom(Portlet portlet) {
-		for(int i=0 ; i<links.size ; ){
-			if(links.get(i).src == portlet){
-				unlink(links.removeIndex(i));
-			}else{
-				i++;
+	public Array<Link> removeLinksFrom(Portlet portlet) {
+		Array<Link> removedLinks = new Array<Link>();
+		for(Link link : links){
+			if(link.src == portlet){
+				removedLinks.add(link);
 			}
 		}
+		for(Link link : removedLinks){
+			unlink(link);
+		}
+		links.removeAll(removedLinks, true);
+		return removedLinks;
 	}
-	public void removeLinksTo(Portlet portlet) {
-		for(int i=0 ; i<links.size ; ){
-			if(links.get(i).dst == portlet){
-				unlink(links.removeIndex(i));
-			}else{
-				i++;
+	public Array<Link> removeLinksTo(Portlet portlet) {
+		Array<Link> removedLinks = new Array<Link>();
+		for(Link link : links){
+			if(link.dst == portlet){
+				removedLinks.add(link);
 			}
 		}
+		for(Link link : removedLinks){
+			unlink(link);
+		}
+		links.removeAll(removedLinks, true);
+		return removedLinks;
 	}
 
 	private void unlink(Link link){

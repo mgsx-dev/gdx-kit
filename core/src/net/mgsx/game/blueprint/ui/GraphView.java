@@ -25,6 +25,9 @@ import net.mgsx.game.blueprint.Graph;
 import net.mgsx.game.blueprint.GraphNode;
 import net.mgsx.game.blueprint.Link;
 import net.mgsx.game.blueprint.Portlet;
+import net.mgsx.game.blueprint.annotations.Node;
+import net.mgsx.game.blueprint.events.GraphEvent.LinkAddedEvent;
+import net.mgsx.game.blueprint.events.GraphEvent.NodeMovedEvent;
 import net.mgsx.game.core.helpers.ReflectionHelper;
 
 public class GraphView extends WidgetGroup
@@ -34,7 +37,9 @@ public class GraphView extends WidgetGroup
 	}
 	
 	public LinkLayout linkLayout = LinkLayout.ORTHO;
-	public Array<Class> types = new Array<Class>();
+	
+	private Array<NodeFactory> nodeFactories = new Array<NodeFactory>();
+	
 	private Graph graph;
 	private ShapeRenderer renderer;
 	private Skin skin;
@@ -69,10 +74,10 @@ public class GraphView extends WidgetGroup
 					selector = new SelectBox<String>(skin);
 					Array<String> items = new Array<String>();
 					items.add("");
-					final ObjectMap<String, Class> map = new ObjectMap<String, Class>();
-					for(Class type : types){
-						String key = NodeView.getTypeName(type);
-						map.put(key, type);
+					final ObjectMap<String, NodeFactory> map = new ObjectMap<String, NodeFactory>();
+					for(NodeFactory factory : nodeFactories){
+						String key = factory.displayName();
+						map.put(key, factory);
 						items.add(key);
 					}
 					selector.setItems(items);
@@ -83,7 +88,8 @@ public class GraphView extends WidgetGroup
 					selector.addListener(new ChangeListener() {
 						@Override
 						public void changed(ChangeEvent event, Actor actor) {
-							Object object = ReflectionHelper.newInstance(map.get(selector.getSelected()));
+							NodeFactory factory = map.get(selector.getSelected());
+							Object object = factory.create();
 							selector.remove();
 							selector = null;
 							addNode(graph.addNode(object, pos.x, pos.y));
@@ -185,17 +191,22 @@ public class GraphView extends WidgetGroup
 			}
 
 			private void end() {
+				if(dragNode != null){
+					fire(new NodeMovedEvent(dragNode.node));
+				}
 				dragNode = null;
 				if(dropPortlet != null) dropPortlet.actor.setColor(Color.WHITE);
 				if(dragPortlet != null && dropPortlet != null){
 					
+					Link link = null;
 					if(dragPortlet.outlet != null && dropPortlet.inlet != null){
-						graph.addLink(dragPortlet, dropPortlet);
+						link = graph.addLink(dragPortlet, dropPortlet);
 					}else if(dragPortlet.inlet != null && dropPortlet.outlet != null){
-						graph.addLink(dropPortlet, dragPortlet);
+						link = graph.addLink(dropPortlet, dragPortlet);
 					}
-					
-					
+					if(link != null){
+						fire(new LinkAddedEvent(link));
+					}
 					
 				}
 				else if(dragPortlet != null){
@@ -317,11 +328,38 @@ public class GraphView extends WidgetGroup
 		
 	}
 	
-	public void addNodeType(Class ...types) {
-		this.types.addAll(types);
+	public void addNodeType(Class<?> ...types) {
+		for(final Class<?> type : types) addType(type);
 	}
 	public void addNodeType(Array<Class<?>> types) {
-		this.types.addAll(types);
+		for(final Class<?> type : types) addType(type);
+	}
+	
+	private void addType(final Class<?> type){
+		addNodeFactory(new NodeFactory() {
+			@Override
+			public String displayName() {
+				Node node = type.getAnnotation(Node.class);
+				if(node != null && !node.value().isEmpty()){
+					return node.value();
+				}
+				return type.getSimpleName();
+			}
+			
+			@Override
+			public Object create() {
+				return ReflectionHelper.newInstance(type);
+			}
+		});
+	}
+	
+	public static interface NodeFactory {
+		public Object create();
+		public String displayName();
+	}
+	
+	public void addNodeFactory(NodeFactory nodeFactory){
+		nodeFactories.add(nodeFactory);
 	}
 
 }

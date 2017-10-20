@@ -10,10 +10,13 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Array;
 
+import net.mgsx.game.blueprint.DynamicNode;
 import net.mgsx.game.blueprint.Graph;
 import net.mgsx.game.blueprint.GraphNode;
+import net.mgsx.game.blueprint.Link;
 import net.mgsx.game.blueprint.Portlet;
 import net.mgsx.game.blueprint.annotations.Node;
+import net.mgsx.game.blueprint.events.GraphEvent;
 import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.core.ui.EntityEditor;
 
@@ -34,17 +37,11 @@ public class NodeView extends Table
 		this.graph = graph;
 		this.node = node;
 		
-		Node meta = node.object.getClass().getAnnotation(Node.class);
-		String name = meta != null ? meta.value() : "";
-		name = name.isEmpty() ? node.object.getClass().getName() : name;
-		
 		setBackground("default-round");
-		
-//		debug();
 		
 		header = new HorizontalGroup();
 		add(header).colspan(2).expandX().center();
-		header.addActor(new Label(getTypeName(node.object.getClass()), skin));
+		header.addActor(new Label(displayName(node.object), skin));
 		row();
 		inletList = new Table(skin);
 		outletList = new Table(skin);
@@ -64,6 +61,17 @@ public class NodeView extends Table
 		
 	}
 	
+	private String displayName(Object object) {
+		if(object instanceof DynamicNode){
+			return ((DynamicNode) object).displayName();
+		}
+		Node node = object.getClass().getAnnotation(Node.class);
+		if(node != null && !node.value().isEmpty()){
+			return node.value();
+		}
+		return object.getClass().getSimpleName();
+	}
+
 	public void addInlet(final Portlet portlet){
 		
 		TextButton bt = new TextButton("", getSkin());
@@ -88,7 +96,8 @@ public class NodeView extends Table
 			
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
-				graph.removeLinksTo(portlet);
+				Array<Link> links = graph.removeLinksTo(portlet);
+				for(Link link : links) fire(new GraphEvent.LinkRemovedEvent(link));
 			}
 		});
 
@@ -118,24 +127,12 @@ public class NodeView extends Table
 			
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
-				graph.removeLinksFrom(portlet);
+				Array<Link> links = graph.removeLinksFrom(portlet);
+				for(Link link : links) fire(new GraphEvent.LinkRemovedEvent(link));
 			}
 		});
 		
 	}
 
-	public void addPortlet(final Portlet portlet){
-		
-		
-		
-		
-	}
-	
-	public static String getTypeName(Class<?> type) {
-		Node meta = type.getAnnotation(Node.class);
-		String name = meta != null ? meta.value() : "";
-		name = name.isEmpty() ? type.getName() : name;
-		return name;
-	}
 	
 }
