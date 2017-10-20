@@ -16,10 +16,14 @@ import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Array;
 
-import net.mgsx.game.blueprint.Graph.CopyStrategy;
 import net.mgsx.game.blueprint.annotations.Inlet;
 import net.mgsx.game.blueprint.annotations.Node;
 import net.mgsx.game.blueprint.annotations.Outlet;
+import net.mgsx.game.blueprint.model.Graph;
+import net.mgsx.game.blueprint.model.GraphNode;
+import net.mgsx.game.blueprint.model.Link;
+import net.mgsx.game.blueprint.model.Portlet;
+import net.mgsx.game.blueprint.model.Graph.CopyStrategy;
 import net.mgsx.game.blueprint.ui.GraphView;
 import net.mgsx.game.core.GameApplication;
 import net.mgsx.game.core.annotations.Editable;

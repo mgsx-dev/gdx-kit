@@ -1,4 +1,4 @@
-package net.mgsx.game.blueprint;
+package net.mgsx.game.blueprint.model;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -14,8 +14,6 @@ public class Link {
 		this.dst = dst;
 	}
 
-	// TODO UI code ? or used for array ordering
-	
 	public Vector2 getSrcPosition() {
 		if(src.actor != null){
 			getCenter(src.actor, srcPosition);

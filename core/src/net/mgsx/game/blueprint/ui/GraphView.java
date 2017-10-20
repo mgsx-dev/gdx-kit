@@ -21,13 +21,13 @@ import com.badlogic.gdx.scenes.scene2d.utils.Layout;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 
-import net.mgsx.game.blueprint.Graph;
-import net.mgsx.game.blueprint.GraphNode;
-import net.mgsx.game.blueprint.Link;
-import net.mgsx.game.blueprint.Portlet;
 import net.mgsx.game.blueprint.annotations.Node;
 import net.mgsx.game.blueprint.events.GraphEvent.LinkAddedEvent;
 import net.mgsx.game.blueprint.events.GraphEvent.NodeMovedEvent;
+import net.mgsx.game.blueprint.model.Graph;
+import net.mgsx.game.blueprint.model.GraphNode;
+import net.mgsx.game.blueprint.model.Link;
+import net.mgsx.game.blueprint.model.Portlet;
 import net.mgsx.game.core.helpers.ReflectionHelper;
 
 public class GraphView extends WidgetGroup
@@ -169,7 +169,6 @@ public class GraphView extends WidgetGroup
 						actor = actor.getParent();
 					}
 					getStage().cancelTouchFocusExcept(this, GraphView.this);
-					// dragPortlet.
 				}else{
 					
 				}

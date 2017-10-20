@@ -10,13 +10,12 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Array;
 
-import net.mgsx.game.blueprint.DynamicNode;
-import net.mgsx.game.blueprint.Graph;
-import net.mgsx.game.blueprint.GraphNode;
-import net.mgsx.game.blueprint.Link;
-import net.mgsx.game.blueprint.Portlet;
 import net.mgsx.game.blueprint.annotations.Node;
 import net.mgsx.game.blueprint.events.GraphEvent;
+import net.mgsx.game.blueprint.model.Graph;
+import net.mgsx.game.blueprint.model.GraphNode;
+import net.mgsx.game.blueprint.model.Link;
+import net.mgsx.game.blueprint.model.Portlet;
 import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.core.ui.EntityEditor;
 

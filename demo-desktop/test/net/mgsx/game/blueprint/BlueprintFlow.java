@@ -9,10 +9,11 @@ import com.badlogic.gdx.scenes.scene2d.actions.ColorAction;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
-import net.mgsx.game.blueprint.Graph.CopyStrategy;
 import net.mgsx.game.blueprint.annotations.Inlet;
 import net.mgsx.game.blueprint.annotations.Node;
 import net.mgsx.game.blueprint.annotations.Outlet;
+import net.mgsx.game.blueprint.model.Graph;
+import net.mgsx.game.blueprint.model.Graph.CopyStrategy;
 import net.mgsx.game.blueprint.ui.GraphView;
 import net.mgsx.game.core.GameApplication;
 import net.mgsx.game.core.annotations.Editable;
