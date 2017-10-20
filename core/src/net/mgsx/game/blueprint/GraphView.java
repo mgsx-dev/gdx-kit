@@ -29,12 +29,11 @@ public class GraphView extends WidgetGroup
 		DIRECT, ORTHO
 	}
 	
-	// TODO should maintain a map : LogicNode => NodeView and attach userobjet on NodeView
-	
 	public LinkLayout linkLayout = LinkLayout.ORTHO;
 	public Array<Class> types = new Array<Class>();
 	private Graph graph;
 	private ShapeRenderer renderer;
+	private Skin skin;
 	
 	private Portlet dragPortlet;
 	
@@ -43,11 +42,12 @@ public class GraphView extends WidgetGroup
 	public GraphView(final Graph graph, final Skin skin) {
 		super();
 		this.graph = graph;
+		this.skin = skin;
 		
 		setTouchable(Touchable.enabled);
 		
-		for(NodeView node : graph.nodes){
-			addActor(node);
+		for(GraphNode node : graph.nodes){
+			addNode(node);
 		}
 		
 		renderer = new ShapeRenderer();
@@ -82,7 +82,7 @@ public class GraphView extends WidgetGroup
 							Object object = ReflectionHelper.newInstance(map.get(selector.getSelected()));
 							selector.remove();
 							selector = null;
-							addActor(graph.addNode(object, pos.x, pos.y));
+							addNode(graph.addNode(object, pos.x, pos.y));
 						}
 					});
 				}
@@ -128,8 +128,11 @@ public class GraphView extends WidgetGroup
 			public void drag(InputEvent event, float x, float y, int pointer) 
 			{
 				if(dragNode != null){
-					dragNode.setX(dragNode.getX() + x - px);
-					dragNode.setY(dragNode.getY() + y - py);
+					float newX = dragNode.getX() + x - px;
+					float newY = dragNode.getY() + y - py;
+					dragNode.setX(newX);
+					dragNode.setY(newY);
+					dragNode.node.position.set(newX, newY); // TODO events !
 					invalidateHierarchy();
 					getStage().cancelTouchFocusExcept(this, GraphView.this);
 				}else if(dragPortlet != null){
@@ -203,6 +206,13 @@ public class GraphView extends WidgetGroup
 		});
 	}
 	
+	private void addNode(GraphNode node){
+		NodeView nodeView = new NodeView(graph, node, skin);
+		nodeView.setX(node.position.x);
+		nodeView.setY(node.position.y);
+		addActor(nodeView);
+	}
+	
 	Rectangle bounds = new Rectangle();
 	
 	@Override
@@ -254,8 +264,6 @@ public class GraphView extends WidgetGroup
 		renderer.begin(ShapeType.Line);
 		renderer.setColor(Color.GREEN);
 		for(Link link : graph.links){
-//			link.src.actor.getParent().localToParentCoordinates(a.set(link.getSrcPosition()));
-//			link.src.actor.getParent().localToParentCoordinates(b.set(link.getDstPosition()));
 			
 			link.src.actor.localToAscendantCoordinates(this, a.set(link.getSrcPosition()));
 			link.dst.actor.localToAscendantCoordinates(this, b.set(link.getDstPosition()));

@@ -9,7 +9,7 @@ import net.mgsx.game.core.ui.accessors.Accessor;
 
 public class Portlet {
 
-	public NodeView node;
+	public GraphNode node;
 	public Inlet inlet;
 	public Outlet outlet;
 	public Actor actor; // TODO should be a rectangle ... or use a userdata here ?
@@ -17,14 +17,14 @@ public class Portlet {
 	public Array<Link> inputLinks = new Array<Link>();
 	public Array<Link> outLinks = new Array<Link>();
 
-	public Portlet(NodeView node, Accessor accessor, Inlet inlet) 
+	public Portlet(GraphNode node, Accessor accessor, Inlet inlet) 
 	{
 		this.node = node;
 		this.accessor = accessor;
 		this.inlet = inlet;
 	}
 
-	public Portlet(NodeView node, Accessor accessor, Outlet outlet) {
+	public Portlet(GraphNode node, Accessor accessor, Outlet outlet) {
 		this.node = node;
 		this.accessor = accessor;
 		this.outlet = outlet;

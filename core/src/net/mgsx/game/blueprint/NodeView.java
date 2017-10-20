@@ -22,18 +22,18 @@ public class NodeView extends Table
 	private Table inletList;
 	private Table outletList;
 	private HorizontalGroup header;
-	public Object object;
+	public GraphNode node;
 	private Graph graph;
 
 	
-	public NodeView(Graph graph, Object object, Skin skin) {
+	public NodeView(Graph graph, GraphNode node, Skin skin) {
 		super(skin);
 		this.graph = graph;
-		this.object = object;
+		this.node = node;
 		
-		Node meta = object.getClass().getAnnotation(Node.class);
+		Node meta = node.object.getClass().getAnnotation(Node.class);
 		String name = meta != null ? meta.value() : "";
-		name = name.isEmpty() ? object.getClass().getName() : name;
+		name = name.isEmpty() ? node.object.getClass().getName() : name;
 		
 		setBackground("default-round");
 		
@@ -41,7 +41,7 @@ public class NodeView extends Table
 		
 		header = new HorizontalGroup();
 		add(header).colspan(2).expandX().center();
-		header.addActor(new Label(getTypeName(object.getClass()), skin));
+		header.addActor(new Label(getTypeName(node.object.getClass()), skin));
 		row();
 		inletList = new Table(skin);
 		outletList = new Table(skin);
@@ -51,6 +51,13 @@ public class NodeView extends Table
 		
 		setTouchable(Touchable.enabled);
 		
+		for(Portlet inlet : node.inlets){
+			addInlet(inlet);
+		}
+		
+		for(Portlet outlet : node.outlets){
+			addOutlet(outlet);
+		}
 		
 	}
 	

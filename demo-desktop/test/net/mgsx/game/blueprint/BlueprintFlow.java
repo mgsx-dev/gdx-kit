@@ -36,7 +36,7 @@ public class BlueprintFlow extends GameApplication {
 		StageScreen screen;
 		setScreen(screen = new StageScreen(skin));
 		
-		graph = new Graph(skin, CopyStrategy.FROM_DST);
+		graph = new Graph(CopyStrategy.FROM_DST);
 		
 		graph.addNode(new Initial(), 10, 50);
 		graph.addNode(new Shoot(), 300, 200);

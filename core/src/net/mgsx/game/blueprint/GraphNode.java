@@ -9,4 +9,7 @@ public class GraphNode {
 	public Array<Portlet> inlets = new Array<Portlet>();
 	public Array<Portlet> outlets = new Array<Portlet>();
 
+	public GraphNode(Object object) {
+		this.object = object;
+	}
 }

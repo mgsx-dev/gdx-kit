@@ -33,7 +33,7 @@ public class BlueprintTest extends GameApplication {
 		StageScreen screen;
 		setScreen(screen = new StageScreen(skin));
 		
-		graph = new Graph(skin, CopyStrategy.FROM_SRC);
+		graph = new Graph(CopyStrategy.FROM_SRC);
 		graph.addNode(new FloatAtom(), 10, 50);
 		graph.addNode(new Multiply(), 300, 200);
 		
@@ -52,9 +52,9 @@ public class BlueprintTest extends GameApplication {
 	
 	@Override
 	public void render() {
-		for(NodeView node : graph.dependencyTree()){
-			if(node instanceof Updatable){
-				((Updatable) node).update();
+		for(GraphNode node : graph.dependencyTree()){
+			if(node.object instanceof Updatable){
+				((Updatable) node.object).update();
 			}
 		}
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);

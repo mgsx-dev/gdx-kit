@@ -44,7 +44,7 @@ public class BlueprintPostProcessing extends GameApplication {
 	
 	private static Batch batch;
 
-	private Array<NodeView> screens =new Array<NodeView>();
+	private Array<GraphNode> screens =new Array<GraphNode>();
 	
 	private StageScreen screen;
 	
@@ -57,7 +57,7 @@ public class BlueprintPostProcessing extends GameApplication {
 		Skin skin = AssetHelper.loadAssetNow(assets, "uiskin.json", Skin.class);
 		setScreen(screen = new StageScreen(skin));
 		
-		graph = new Graph(skin, CopyStrategy.FROM_SRC);
+		graph = new Graph(CopyStrategy.FROM_SRC);
 		
 		graph.addNode(new SceneRenderingNode(), 10, 50);
 		graph.addNode(new BlurNode(), 300, 200);
@@ -85,7 +85,7 @@ public class BlueprintPostProcessing extends GameApplication {
 		
 		// we update only active graph parts (nodes participating in screen node)
 		screens.clear();
-		for(NodeView node : graph.nodes){
+		for(GraphNode node : graph.nodes){
 			if(node.object instanceof TextureFlow){
 				((TextureFlow)node.object).invalidate();
 			}
@@ -94,7 +94,7 @@ public class BlueprintPostProcessing extends GameApplication {
 			}
 		}
 		
-		for(NodeView node : graph.dependencyTree(screens)){
+		for(GraphNode node : graph.dependencyTree(screens)){
 			// TODO method resolve inlets
 			// OR ... change back to process node to avoid texture not existing
 			// OR ... texture are created at the node creation (FBO, loading ...etc)
@@ -123,9 +123,6 @@ public class BlueprintPostProcessing extends GameApplication {
 	// validation here is for texture cache only, not related to the graph
 	public static class TextureFlow {
 		
-		@Outlet
-		public Texture texture;
-		
 		private boolean valid = false;
 		public void invalidate(){
 			valid = false;
@@ -144,6 +141,9 @@ public class BlueprintPostProcessing extends GameApplication {
 	@Node("Scene rendering")
 	public static class SceneRenderingNode extends TextureFlow {
 		
+		@Outlet
+		public Texture texture;
+		
 		public SceneRenderingNode() {
 			texture = new Texture(Gdx.files.internal("perlin.png"));
 		}
@@ -154,6 +154,9 @@ public class BlueprintPostProcessing extends GameApplication {
 		
 		@Inlet
 		public Texture in;
+		
+		@Outlet
+		public Texture texture;
 		
 		@ShaderInfo(vs="shaders/blurx-vertex.glsl", fs="shaders/blurx-fragment.glsl", inject=false)
 		public static class TheShader extends ShaderProgramManaged{
@@ -206,6 +209,9 @@ public class BlueprintPostProcessing extends GameApplication {
 
 	@Node("Depth mixer")
 	public static class Compose extends TextureFlow {
+		
+		@Outlet
+		public Texture texture;
 		
 		@Inlet
 		public Texture inner;

@@ -1,6 +1,5 @@
 package net.mgsx.game.blueprint;
 
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.ObjectSet;
@@ -49,34 +48,30 @@ public class Graph
 		NONE, FROM_SRC, FROM_DST
 	}
 	
-	public CopyStrategy copyStrategy = CopyStrategy.NONE;
+	public CopyStrategy copyStrategy;
 	
-	public Array<NodeView> nodes = new Array<NodeView>();
+	public Array<GraphNode> nodes = new Array<GraphNode>();
 	public Array<Link> links = new Array<Link>();
-	private Skin skin;
-	private Array<NodeView> result = new Array<NodeView>();
-	private ObjectSet<NodeView> visited = new ObjectSet<NodeView>();
+	private transient Array<GraphNode> result = new Array<GraphNode>();
+	private transient ObjectSet<GraphNode> visited = new ObjectSet<GraphNode>();
 
-	
-	public Graph(Skin skin, CopyStrategy copyStrategy) {
-		this.skin = skin;
+	public Graph() {
+		this(CopyStrategy.NONE);
+	}
+	public Graph(CopyStrategy copyStrategy) {
 		this.copyStrategy = copyStrategy;
 	}
 	
-	public NodeView addNode(final Object object, float x, float y) 
+	public GraphNode addNode(final Object object, float x, float y) 
 	{
-		// TODO graph should handle logic nodes and graphview init from current graph and handle edition/sync in itself.
-		
-		// TODO GraphNode node = new GraphNode();
-		NodeView node = new NodeView(this, object, skin);
-		node.setX(x);
-		node.setY(y);
+		GraphNode node = new GraphNode(object);
+		node.position.set(x, y);
 		
 		for(Accessor accessor : AccessorScanner.scan(object, Inlet.class)){
-			node.addInlet(new Portlet(node, accessor, accessor.config(Inlet.class)));
+			node.inlets.add(new Portlet(node, accessor, accessor.config(Inlet.class)));
 		}
 		for(Accessor accessor : AccessorScanner.scan(object, Outlet.class)){
-			node.addOutlet(new Portlet(node, accessor, accessor.config(Outlet.class)));
+			node.outlets.add(new Portlet(node, accessor, accessor.config(Outlet.class)));
 		}
 		
 		Inlet inlet = object.getClass().getAnnotation(Inlet.class);
@@ -104,7 +99,7 @@ public class Graph
 				}
 				
 			};
-			node.addInlet(new Portlet(node, a, inlet));
+			node.inlets.add(new Portlet(node, a, inlet));
 		}
 		
 		final Outlet outlet = object.getClass().getAnnotation(Outlet.class);
@@ -132,7 +127,7 @@ public class Graph
 				}
 				
 			};
-			node.addOutlet(new Portlet(node, a, outlet));
+			node.outlets.add(new Portlet(node, a, outlet));
 		}
 		
 		
@@ -200,29 +195,29 @@ public class Graph
 		link.dst.inputLinks.removeValue(link, true);
 	}
 	
-	public Array<NodeView> dependencyTree(NodeView node){
+	public Array<GraphNode> dependencyTree(GraphNode node){
 		result.clear();
 		visited.clear();
 		scanDependencies(node);
 		return result;
 	}
 	
-	public Array<NodeView> dependencyTree(){
+	public Array<GraphNode> dependencyTree(){
 		result.clear();
 		visited.clear();
 		return dependencyTree(nodes);
 	}
 	
-	public Array<NodeView> dependencyTree(Array<NodeView> nodes){
+	public Array<GraphNode> dependencyTree(Array<GraphNode> nodes){
 		result.clear();
 		visited.clear();
-		for(NodeView node : nodes){
+		for(GraphNode node : nodes){
 			scanDependencies(node);
 		}
 		return result;
 	}
 	
-	private void scanDependencies(NodeView node)
+	private void scanDependencies(GraphNode node)
 	{
 		if(visited.add(node)){
 			for(Portlet portlet : node.inlets){
