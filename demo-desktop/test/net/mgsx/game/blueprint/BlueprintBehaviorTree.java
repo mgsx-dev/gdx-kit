@@ -8,6 +8,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ai.btree.BranchTask;
 import com.badlogic.gdx.ai.btree.Task;
 import com.badlogic.gdx.ai.btree.branch.Sequence;
+import com.badlogic.gdx.ai.utils.random.FloatDistribution;
+import com.badlogic.gdx.ai.utils.random.IntegerDistribution;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.badlogic.gdx.graphics.GL20;
@@ -20,10 +22,10 @@ import net.mgsx.game.blueprint.annotations.Inlet;
 import net.mgsx.game.blueprint.annotations.Outlet;
 import net.mgsx.game.blueprint.events.GraphListener;
 import net.mgsx.game.blueprint.model.Graph;
+import net.mgsx.game.blueprint.model.Graph.CopyStrategy;
 import net.mgsx.game.blueprint.model.GraphNode;
 import net.mgsx.game.blueprint.model.Link;
 import net.mgsx.game.blueprint.model.Portlet;
-import net.mgsx.game.blueprint.model.Graph.CopyStrategy;
 import net.mgsx.game.blueprint.ui.DynamicNode;
 import net.mgsx.game.blueprint.ui.GraphView;
 import net.mgsx.game.blueprint.ui.GraphView.LinkLayout;
@@ -34,6 +36,9 @@ import net.mgsx.game.core.helpers.AssetHelper;
 import net.mgsx.game.core.helpers.ReflectionHelper;
 import net.mgsx.game.core.meta.ClassRegistry;
 import net.mgsx.game.core.screen.StageScreen;
+import net.mgsx.game.core.ui.EntityEditor;
+import net.mgsx.game.plugins.btree.ui.FloatDistributionEditor;
+import net.mgsx.game.plugins.btree.ui.IntegerDistributionEditor;
 import net.mgsx.kit.config.ReflectionClassRegistry;
 
 /**
@@ -59,6 +64,10 @@ public class BlueprintBehaviorTree extends GameApplication {
 	public void create() 
 	{
 		super.create();
+		
+		EntityEditor.defaultTypeEditors.put(FloatDistribution.class, new FloatDistributionEditor());
+		EntityEditor.defaultTypeEditors.put(IntegerDistribution.class, new IntegerDistributionEditor());
+
 		
 		Skin skin = AssetHelper.loadAssetNow(assets, "uiskin.json", Skin.class);
 		StageScreen screen;
@@ -155,6 +164,7 @@ public class BlueprintBehaviorTree extends GameApplication {
 	
 	public abstract static class BTNode implements DynamicNode
 	{
+		@Editable
 		public Task task;
 		
 		private Array<Task> children = new Array<Task>();

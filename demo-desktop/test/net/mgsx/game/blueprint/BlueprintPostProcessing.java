@@ -20,10 +20,10 @@ import net.mgsx.game.blueprint.annotations.Inlet;
 import net.mgsx.game.blueprint.annotations.Node;
 import net.mgsx.game.blueprint.annotations.Outlet;
 import net.mgsx.game.blueprint.model.Graph;
+import net.mgsx.game.blueprint.model.Graph.CopyStrategy;
 import net.mgsx.game.blueprint.model.GraphNode;
 import net.mgsx.game.blueprint.model.Link;
 import net.mgsx.game.blueprint.model.Portlet;
-import net.mgsx.game.blueprint.model.Graph.CopyStrategy;
 import net.mgsx.game.blueprint.ui.GraphView;
 import net.mgsx.game.core.GameApplication;
 import net.mgsx.game.core.annotations.Editable;
@@ -166,9 +166,9 @@ public class BlueprintPostProcessing extends GameApplication {
 		@ShaderInfo(vs="shaders/blurx-vertex.glsl", fs="shaders/blurx-fragment.glsl", inject=false)
 		public static class TheShader extends ShaderProgramManaged{
 			@Uniform 
-			public Texture texture;
+			transient Texture texture;
 			@Uniform 
-			public Matrix4 projTrans;
+			transient Matrix4 projTrans;
 			@Uniform("dir")
 			public Vector2 dir = new Vector2(1,1);
 		}
@@ -176,7 +176,6 @@ public class BlueprintPostProcessing extends GameApplication {
 		private FrameBuffer fbo;
 		
 		@Editable
-		@Inlet // TODO shouldn't be an inlet just an editable ...
 		public TheShader theShader = new TheShader();
 		
 		@Override

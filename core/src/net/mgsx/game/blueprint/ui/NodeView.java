@@ -10,7 +10,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Array;
 
+import net.mgsx.game.blueprint.annotations.Inlet;
 import net.mgsx.game.blueprint.annotations.Node;
+import net.mgsx.game.blueprint.annotations.Outlet;
 import net.mgsx.game.blueprint.events.GraphEvent;
 import net.mgsx.game.blueprint.model.Graph;
 import net.mgsx.game.blueprint.model.GraphNode;
@@ -18,6 +20,8 @@ import net.mgsx.game.blueprint.model.Link;
 import net.mgsx.game.blueprint.model.Portlet;
 import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.core.ui.EntityEditor;
+import net.mgsx.game.core.ui.accessors.Accessor;
+import net.mgsx.game.core.ui.accessors.AccessorScanner;
 
 public class NodeView extends Table
 {
@@ -26,6 +30,7 @@ public class NodeView extends Table
 
 	private Table inletList;
 	private Table outletList;
+	private Table parameterList;
 	private HorizontalGroup header;
 	public GraphNode node;
 	private Graph graph;
@@ -39,12 +44,14 @@ public class NodeView extends Table
 		setBackground("default-round");
 		
 		header = new HorizontalGroup();
-		add(header).colspan(2).expandX().center();
+		add(header).colspan(3).expandX().center();
 		header.addActor(new Label(displayName(node.object), skin));
 		row();
 		inletList = new Table(skin);
+		parameterList = new Table(skin);
 		outletList = new Table(skin);
 		add(inletList).expand().fill();
+		add(parameterList).expand().fill();
 		add(outletList).expand().fill();
 		row();
 		
@@ -56,6 +63,16 @@ public class NodeView extends Table
 		
 		for(Portlet outlet : node.outlets){
 			addOutlet(outlet);
+		}
+		
+		for(Accessor param : AccessorScanner.scan(node.object, Editable.class)){
+			if(param.config(Inlet.class) == null && param.config(Outlet.class) == null){
+				parameterList.add(param.getName());
+				Table tmpTable = new Table(getSkin());
+				EntityEditor.createControl(tmpTable, node.object, param);
+				parameterList.add(tmpTable.getCells().first().getActor());
+				parameterList.row();
+			}
 		}
 		
 	}
