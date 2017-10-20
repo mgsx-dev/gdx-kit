@@ -10,13 +10,15 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Array;
 
+import net.mgsx.game.blueprint.annotations.Node;
+import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.core.ui.EntityEditor;
 
 public class NodeView extends Table
 {
-
 	public Array<Portlet> inlets = new Array<Portlet>();
 	public Array<Portlet> outlets = new Array<Portlet>();
+
 	private Table inletList;
 	private Table outletList;
 	private HorizontalGroup header;
@@ -62,9 +64,13 @@ public class NodeView extends Table
 		Table table = inletList;
 		table.add(bt);
 		table.add(portlet.getName()).expandX().fill();
-		Table tmpTable = new Table(getSkin());
-		EntityEditor.createControl(tmpTable, portlet.object, portlet.accessor);
-		table.add(tmpTable.getCells().first().getActor());
+		
+		if(portlet.accessor.config(Editable.class) != null)
+		{
+			Table tmpTable = new Table(getSkin());
+			EntityEditor.createControl(tmpTable, portlet.node.object, portlet.accessor);
+			table.add(tmpTable.getCells().first().getActor());
+		}
 		
 		inletList.row();
 		
@@ -76,9 +82,6 @@ public class NodeView extends Table
 			}
 		});
 
-//		if(portlet.field.getType() == float.class){
-//			inletList.addActor(new FloatWidget(new FieldAccessor(portlet.object, portlet.field), true, false, getSkin()));
-//		}
 		
 	}
 	public void addOutlet(final Portlet portlet){
@@ -90,9 +93,13 @@ public class NodeView extends Table
 		
 		Table table = outletList;
 		table.add(portlet.getName()).expandX().fill();
-		Table tmpTable = new Table(getSkin());
-		EntityEditor.createControl(tmpTable, portlet.object, portlet.accessor);
-		table.add(tmpTable.getCells().first().getActor());
+		
+		if(portlet.accessor.config(Editable.class) != null)
+		{
+			Table tmpTable = new Table(getSkin());
+			EntityEditor.createControl(tmpTable, portlet.node.object, portlet.accessor);
+			table.add(tmpTable.getCells().first().getActor());
+		}
 		table.add(bt);
 		
 		outletList.row();
@@ -105,11 +112,15 @@ public class NodeView extends Table
 			}
 		});
 		
-//		if(portlet.field.getType() == float.class){
-//			outletList.addActor(new FloatWidget(new FieldAccessor(portlet.object, portlet.field), true, false, getSkin()));
-//		}
 	}
 
+	public void addPortlet(final Portlet portlet){
+		
+		
+		
+		
+	}
+	
 	public static String getTypeName(Class<?> type) {
 		Node meta = type.getAnnotation(Node.class);
 		String name = meta != null ? meta.value() : "";

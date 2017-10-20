@@ -4,7 +4,6 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
 public class Link {
-	public static boolean inverted = false;
 	public Portlet src, dst;
 	public Vector2 srcPosition = new Vector2();
 	public Vector2 dstPosition = new Vector2();
@@ -15,6 +14,8 @@ public class Link {
 		this.dst = dst;
 	}
 
+	// TODO UI code ? or used for array ordering
+	
 	public Vector2 getSrcPosition() {
 		if(src.actor != null){
 			getCenter(src.actor, srcPosition);
@@ -39,20 +40,4 @@ public class Link {
 		return v.set((a.x+b.x)/2, (a.y+b.y)/2);
 	}
 
-	// TODO link don't have to be updated by default ... client code !
-	public void update() {
-		// TODO graph type dependent ...
-		
-		if(src.inlet != null && src.inlet.multiple()){
-			
-		}else{
-			
-		}
-		
-//		if(inverted)
-//			src.copyFrom(dst);
-//		else
-//			dst.copyFrom(src);
-	}
-	
 }

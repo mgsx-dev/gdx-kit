@@ -7,6 +7,10 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
+import net.mgsx.game.blueprint.Graph.CopyStrategy;
+import net.mgsx.game.blueprint.annotations.Inlet;
+import net.mgsx.game.blueprint.annotations.Node;
+import net.mgsx.game.blueprint.annotations.Outlet;
 import net.mgsx.game.core.GameApplication;
 import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.core.helpers.AssetHelper;
@@ -29,24 +33,30 @@ public class BlueprintTest extends GameApplication {
 		StageScreen screen;
 		setScreen(screen = new StageScreen(skin));
 		
-		graph = new Graph(skin);
+		graph = new Graph(skin, CopyStrategy.FROM_SRC);
 		graph.addNode(new FloatAtom(), 10, 50);
 		graph.addNode(new Multiply(), 300, 200);
-		// graph.addLink(graph.nodes.get(1), "size", graph.nodes.get(0), "amount");
 		
-		graph.addNodeType(FloatAtom.class, Multiply.class);
 		
 		GraphView view = new GraphView(graph, skin);
+		view.addNodeType(FloatAtom.class, Multiply.class);
 		
-		// view.setFillParent(true);
 		ScrollPane scroll;
 		screen.getStage().addActor(scroll = new ScrollPane(view));
 		scroll.setFillParent(true);
 	}
 	
+	private static interface Updatable{
+		public void update();
+	}
+	
 	@Override
 	public void render() {
-		graph.update();
+		for(NodeView node : graph.dependencyTree()){
+			if(node instanceof Updatable){
+				((Updatable) node).update();
+			}
+		}
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		super.render();
 	}

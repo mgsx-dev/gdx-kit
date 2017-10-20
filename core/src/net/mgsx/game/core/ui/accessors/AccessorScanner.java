@@ -1,5 +1,6 @@
 package net.mgsx.game.core.ui.accessors;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -89,6 +90,43 @@ public class AccessorScanner {
 		{
 			scanMethod(accessors, entity, method, annotationBasedOnly);
 			
+		}
+		return accessors;
+	}
+	
+	
+	public static Array<Accessor> scan(Object entity, Class<? extends Annotation> ... annotations)
+	{
+		Array<Accessor> accessors = new Array<Accessor>();
+		
+		// scan fields
+		for(Field field : entity.getClass().getFields())
+		{
+			boolean match = true;
+			for(Class<? extends Annotation> a : annotations){
+				if(field.getAnnotation(a) == null){
+					match = false;
+					break;
+				}
+			}
+			if(match){
+				scanField(accessors, entity, field, false);
+			}
+		}
+		
+		// scan getter/setter pattern
+		for(Method method : entity.getClass().getMethods())
+		{
+			boolean match = true;
+			for(Class<? extends Annotation> a : annotations){
+				if(method.getAnnotation(a) == null){
+					match = false;
+					break;
+				}
+			}
+			if(match){
+				scanMethod(accessors, entity, method, false);
+			}
 		}
 		return accessors;
 	}

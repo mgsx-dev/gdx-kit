@@ -29,10 +29,11 @@ public class GraphView extends WidgetGroup
 		DIRECT, ORTHO
 	}
 	
-	public LinkLayout linkLayout = LinkLayout.ORTHO;
+	// TODO should maintain a map : LogicNode => NodeView and attach userobjet on NodeView
 	
+	public LinkLayout linkLayout = LinkLayout.ORTHO;
+	public Array<Class> types = new Array<Class>();
 	private Graph graph;
-	private Skin skin;
 	private ShapeRenderer renderer;
 	
 	private Portlet dragPortlet;
@@ -42,7 +43,6 @@ public class GraphView extends WidgetGroup
 	public GraphView(final Graph graph, final Skin skin) {
 		super();
 		this.graph = graph;
-		this.skin = skin;
 		
 		setTouchable(Touchable.enabled);
 		
@@ -66,7 +66,7 @@ public class GraphView extends WidgetGroup
 					Array<String> items = new Array<String>();
 					items.add("");
 					final ObjectMap<String, Class> map = new ObjectMap<String, Class>();
-					for(Class type : graph.types){
+					for(Class type : types){
 						String key = NodeView.getTypeName(type);
 						map.put(key, type);
 						items.add(key);
@@ -143,9 +143,15 @@ public class GraphView extends WidgetGroup
 //							dragNode = (Node)actor;
 //							break;
 						}else if(actor.getUserObject() instanceof Portlet){
-							dropPortlet = (Portlet)actor.getUserObject();
-							dropPortlet.actor.setColor(Color.RED);
-							break;
+							
+							Portlet portlet = (Portlet)actor.getUserObject();
+							if(dragPortlet.outlet != null && portlet.inlet != null ||
+									dragPortlet.inlet != null && portlet.outlet != null){
+								dropPortlet = portlet;
+								dropPortlet.actor.setColor(Color.RED);
+								break;
+							}
+							
 						}
 						actor = actor.getParent();
 					}
@@ -176,7 +182,13 @@ public class GraphView extends WidgetGroup
 				if(dropPortlet != null) dropPortlet.actor.setColor(Color.WHITE);
 				if(dragPortlet != null && dropPortlet != null){
 					
-					graph.addLink(dragPortlet, dropPortlet);
+					if(dragPortlet.outlet != null && dropPortlet.inlet != null){
+						graph.addLink(dragPortlet, dropPortlet);
+					}else if(dragPortlet.inlet != null && dropPortlet.outlet != null){
+						graph.addLink(dropPortlet, dragPortlet);
+					}
+					
+					
 					
 				}
 				else if(dragPortlet != null){
@@ -259,8 +271,10 @@ public class GraphView extends WidgetGroup
 			stageToLocalCoordinates(b); //.add(getCullingArea().x, getY());
 			
 			// renderer.line(a, b);
-			
-			drawLink(renderer, a, b);
+			if(dragPortlet.outlet != null)
+				drawLink(renderer, a, b);
+			else
+				drawLink(renderer, b, a);
 		}
 		
 		renderer.end();
@@ -285,8 +299,17 @@ public class GraphView extends WidgetGroup
 			renderer.line(m.x, b.y, b.x, b.y);
 			break;
 		}
+		float arrowSize = 12;
+		renderer.line(b.x, b.y, b.x - arrowSize, b.y - arrowSize);
+		renderer.line(b.x, b.y, b.x - arrowSize, b.y + arrowSize);
 		
-		
+	}
+	
+	public void addNodeType(Class ...types) {
+		this.types.addAll(types);
+	}
+	public void addNodeType(Array<Class<?>> types) {
+		this.types.addAll(types);
 	}
 
 }

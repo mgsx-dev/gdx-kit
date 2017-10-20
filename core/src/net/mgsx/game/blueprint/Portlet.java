@@ -1,29 +1,38 @@
 package net.mgsx.game.blueprint;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.utils.Array;
 
+import net.mgsx.game.blueprint.annotations.Inlet;
+import net.mgsx.game.blueprint.annotations.Outlet;
 import net.mgsx.game.core.ui.accessors.Accessor;
 
 public class Portlet {
 
+	public NodeView node;
 	public Inlet inlet;
 	public Outlet outlet;
-	public Actor actor;
+	public Actor actor; // TODO should be a rectangle ... or use a userdata here ?
 	public Accessor accessor;
-	public Object object;
+	public Array<Link> inputLinks = new Array<Link>();
+	public Array<Link> outLinks = new Array<Link>();
 
-	public Portlet(Object object, Accessor accessor, Inlet inlet) 
+	public Portlet(NodeView node, Accessor accessor, Inlet inlet) 
 	{
+		this.node = node;
 		this.accessor = accessor;
 		this.inlet = inlet;
 	}
 
-	public Portlet(Object object, Accessor accessor, Outlet outlet) {
+	public Portlet(NodeView node, Accessor accessor, Outlet outlet) {
+		this.node = node;
 		this.accessor = accessor;
 		this.outlet = outlet;
 	}
 
 	public String getName() {
+		if(inlet != null && !inlet.value().isEmpty()) return inlet.value();
+		if(outlet != null && !outlet.value().isEmpty()) return outlet.value();
 		return accessor.getName();
 	}
 
