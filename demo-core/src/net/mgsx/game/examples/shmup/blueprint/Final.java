@@ -10,7 +10,7 @@ public class Final implements StateNode {
 
 	@Override
 	public void update(Engine engine, Entity entity, float deltaTime) {
-		
+		engine.removeEntity(entity);
 	}
 
 }

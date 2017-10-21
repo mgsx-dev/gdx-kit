@@ -14,7 +14,7 @@ import net.mgsx.game.blueprint.ui.GraphView;
 import net.mgsx.game.core.meta.ClassRegistry;
 import net.mgsx.game.core.ui.FieldEditor;
 import net.mgsx.game.core.ui.accessors.Accessor;
-import net.mgsx.game.examples.shmup.blueprint.StateNode;
+import net.mgsx.game.examples.shmup.blueprint.ShmupNode;
 
 public class ShmupBlueprintEditor implements FieldEditor
 {
@@ -31,7 +31,7 @@ public class ShmupBlueprintEditor implements FieldEditor
 				Graph graph = accessor.get(Graph.class);
 				graph.copyStrategy = CopyStrategy.FROM_DST;
 				GraphView view = new GraphView(graph, skin);
-				view.addNodeType(ClassRegistry.instance.getSubTypesOf(StateNode.class));
+				view.addNodeType(ClassRegistry.instance.getSubTypesOf(ShmupNode.class));
 				
 				ScrollPane scroll = new ScrollPane(view);
 				scroll.setFillParent(true);

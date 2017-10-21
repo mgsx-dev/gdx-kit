@@ -13,7 +13,9 @@ public class Init implements StateNode
 	@Override
 	public void update(Engine engine, Entity entity, float deltaTime) {
 		Enemy enemy = Enemy.components.get(entity);
-		enemy.replace(this, next);
+		if(next != null){
+			enemy.replace(this, next);
+		}
 	}
 
 }

@@ -25,7 +25,9 @@ public class Enemy implements Component, Poolable
 	public void replace(StateNode origin, StateNode target){
 		int i = current.indexOf(origin, true);
 		current.removeIndex(i);
-		current.insert(i, target);
+		if(target != null){
+			current.insert(i, target);
+		}
 	}
 
 	@Override
