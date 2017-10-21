@@ -60,4 +60,13 @@ public class StageScreen extends ScreenAdapter implements ScreenTransitionListen
 		return getStage().screenToStageCoordinates(new Vector2(Gdx.input.getX(), Gdx.input.getY()));
 	}
 	
+	@Override
+	public void dispose() {
+		if(stage != null){
+			stage.dispose();
+			stage = null;
+		}
+		super.dispose();
+	}
+	
 }
