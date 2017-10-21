@@ -9,10 +9,12 @@ import net.mgsx.game.blueprint.model.Graph;
 import net.mgsx.game.blueprint.model.Graph.CopyStrategy;
 import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.core.annotations.EditableComponent;
+import net.mgsx.game.core.annotations.Storable;
 import net.mgsx.game.examples.shmup.blueprint.StateNode;
 import net.mgsx.game.examples.shmup.editors.ShmupBlueprintEditor;
 
-@EditableComponent
+@Storable("shmup.fsm")
+@EditableComponent(autoClone=true)
 public class Enemy implements Component, Poolable
 {
 	public final static ComponentMapper<Enemy> components = ComponentMapper.getFor(Enemy.class);
@@ -20,7 +22,7 @@ public class Enemy implements Component, Poolable
 	@Editable(editor=ShmupBlueprintEditor.class)
 	public Graph fsm = new Graph(CopyStrategy.FROM_SRC);
 	
-	public Array<StateNode> current = new Array<StateNode>();
+	public transient Array<StateNode> current = new Array<StateNode>();
 	
 	public void replace(StateNode origin, StateNode target){
 		int i = current.indexOf(origin, true);

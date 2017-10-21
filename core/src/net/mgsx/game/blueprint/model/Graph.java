@@ -2,6 +2,9 @@ package net.mgsx.game.blueprint.model;
 
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.Json;
+import com.badlogic.gdx.utils.Json.Serializable;
+import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.ObjectSet;
 
 import net.mgsx.game.blueprint.annotations.Inlet;
@@ -40,7 +43,7 @@ import net.mgsx.game.core.ui.accessors.AccessorScanner;
  * @author mgsx
  *
  */
-public class Graph 
+public class Graph implements Serializable
 {
 	/**
 	 * could be renamed as UpdateOutlet/UpdateInlet
@@ -75,14 +78,22 @@ public class Graph
 		GraphNode node = new GraphNode(object);
 		node.position.set(x, y);
 		
-		for(Accessor accessor : AccessorScanner.scan(object, Inlet.class)){
+		createPortlets(node);
+		
+		nodes.add(node);
+		return node;
+	}
+	
+	private void createPortlets(final GraphNode node)
+	{
+		for(Accessor accessor : AccessorScanner.scan(node.object, Inlet.class)){
 			node.inlets.add(new Portlet(node, accessor, accessor.config(Inlet.class)));
 		}
-		for(Accessor accessor : AccessorScanner.scan(object, Outlet.class)){
+		for(Accessor accessor : AccessorScanner.scan(node.object, Outlet.class)){
 			node.outlets.add(new Portlet(node, accessor, accessor.config(Outlet.class)));
 		}
 		
-		Inlet inlet = object.getClass().getAnnotation(Inlet.class);
+		Inlet inlet = node.object.getClass().getAnnotation(Inlet.class);
 		if(inlet != null){
 			Accessor a = new AccessorBase() {
 				
@@ -93,7 +104,7 @@ public class Graph
 				
 				@Override
 				public Class getType() {
-					return object.getClass();
+					return node.object.getClass();
 				}
 				
 				@Override
@@ -103,14 +114,14 @@ public class Graph
 				
 				@Override
 				public Object get() {
-					return object;
+					return node.object;
 				}
 				
 			};
 			node.inlets.add(new Portlet(node, a, inlet));
 		}
 		
-		final Outlet outlet = object.getClass().getAnnotation(Outlet.class);
+		final Outlet outlet = node.object.getClass().getAnnotation(Outlet.class);
 		if(outlet != null){
 			Accessor a = new AccessorBase() {
 				
@@ -121,7 +132,7 @@ public class Graph
 				
 				@Override
 				public Class getType() {
-					return object.getClass();
+					return node.object.getClass();
 				}
 				
 				@Override
@@ -131,16 +142,12 @@ public class Graph
 				
 				@Override
 				public Object get() {
-					return object;
+					return node.object;
 				}
 				
 			};
 			node.outlets.add(new Portlet(node, a, outlet));
 		}
-		
-		
-		nodes.add(node);
-		return node;
 	}
 
 	private Portlet getInlet(NodeView node, String name) {
@@ -254,6 +261,75 @@ public class Graph
 			}
 		}
 		return r;
+	}
+	@Override
+	public void write(Json json) 
+	{
+		json.writeField(this, "copyStrategy");
+		
+		// export nodes
+		json.writeField(this, "nodes");
+		
+		// export links
+		json.writeArrayStart("links");
+		for(Link link : links){
+			
+			json.writeObjectStart();
+			
+			json.writeValue("src", nodes.indexOf(link.src.node, true));
+			json.writeValue("outlet", link.src.getName());
+			
+			json.writeValue("dst", nodes.indexOf(link.dst.node, true));
+			json.writeValue("inlet", link.dst.getName());
+			
+			json.writeObjectEnd();
+		}
+		json.writeArrayEnd();
+		
+		// json.writeObjectEnd();
+		
+	}
+	@Override
+	public void read(Json json, JsonValue jsonData) 
+	{
+		json.readField(this, "copyStrategy", jsonData);
+		
+		// import nodes
+		json.readField(this, "nodes", jsonData);
+		for(GraphNode node : nodes){
+			createPortlets(node);
+		}
+		
+		// import links
+		for(JsonValue linkData : jsonData.get("links").iterator()){
+			int src = linkData.get("src").asInt();
+			int dst = linkData.get("dst").asInt();
+			String inlet = linkData.get("inlet").asString();
+			String outlet = linkData.get("outlet").asString();
+
+			GraphNode srcNode = nodes.get(src);
+			GraphNode dstNode = nodes.get(dst);
+			
+			Portlet srcOutlet = null, dstInlet = null;
+			
+			for(Portlet portlet : srcNode.outlets){
+				if(portlet.getName().equals(outlet)){
+					srcOutlet = portlet;
+					break;
+				}
+			}
+			for(Portlet portlet : dstNode.inlets){
+				if(portlet.getName().equals(inlet)){
+					dstInlet = portlet;
+					break;
+				}
+			}
+			
+			if(dstInlet != null && srcOutlet != null){
+				addLink(srcOutlet, dstInlet);
+			}
+			
+		}
 	}
 	
 }

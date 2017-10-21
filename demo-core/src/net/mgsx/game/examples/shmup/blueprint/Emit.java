@@ -16,7 +16,7 @@ import net.mgsx.game.plugins.core.components.Transform2DComponent;
 @Inlet
 public class Emit implements StateNode {
 
-	@Outlet public StateNode over;
+	@Outlet public transient StateNode over;
 	
 	@Editable(editor=ShmupBlueprintEditor.class)
 	public Graph fsm = new Graph(CopyStrategy.FROM_SRC);

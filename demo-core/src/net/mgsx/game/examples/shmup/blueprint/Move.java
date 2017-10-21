@@ -13,7 +13,7 @@ import net.mgsx.game.plugins.core.components.Transform2DComponent;
 @Inlet
 public class Move implements StateNode
 {
-	@Outlet public TransitionNode next;
+	@Outlet public transient TransitionNode next;
 	
 	@Editable
 	public Vector2 velocity = new Vector2();
