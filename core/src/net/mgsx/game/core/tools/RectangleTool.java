@@ -13,6 +13,10 @@ abstract public class RectangleTool extends Tool
 	protected Vector2 startPoint, endPoint;
 	protected int buttonFilter = Input.Buttons.LEFT;
 	
+	public RectangleTool() {
+		super();
+	}
+	
 	public RectangleTool(String name, EditorScreen editor) {
 		super(name, editor);
 	}
