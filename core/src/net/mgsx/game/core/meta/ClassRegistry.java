@@ -14,8 +14,8 @@ abstract public class ClassRegistry {
 		}
 		
 		@Override
-		public Array<Class> getSubTypesOf(Class type) {
-			return new Array<Class>();
+		public <T> Array<Class<? extends T>> getSubTypesOf(Class<T> type) {
+			return new Array<Class<? extends T>>();
 		}
 		@Override
 		public Array<Class<?>> getClasses() {
@@ -26,7 +26,7 @@ abstract public class ClassRegistry {
 	public static ClassRegistry instance = none;
 	
 	
-	abstract public Array<Class> getSubTypesOf(Class type);
+	abstract public <T> Array<Class<? extends T>> getSubTypesOf(Class<T> type);
 	abstract public Array<Class<?>> getTypesAnnotatedWith(Class<? extends Annotation> annotation);
 	abstract public Array<Class<?>> getClasses();
 }

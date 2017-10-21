@@ -330,7 +330,7 @@ public class GraphView extends WidgetGroup
 	public void addNodeType(Class<?> ...types) {
 		for(final Class<?> type : types) addType(type);
 	}
-	public void addNodeType(Array<Class<?>> types) {
+	public <T> void addNodeType(Array<Class<? extends T>> types) {
 		for(final Class<?> type : types) addType(type);
 	}
 	

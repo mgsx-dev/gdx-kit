@@ -46,7 +46,14 @@ public class Graph
 	 * could be renamed as UpdateOutlet/UpdateInlet
 	 */
 	public static enum CopyStrategy {
-		NONE, FROM_SRC, FROM_DST
+		/** Linked fields are not touched (client code handle it manually) */
+		NONE, 
+		
+		/** source outlet references destination inlet (Dependency graph) */
+		FROM_SRC, 
+		
+		/** destination inlet references source outlet (Flow graph) */
+		FROM_DST
 	}
 	
 	public CopyStrategy copyStrategy;
@@ -238,6 +245,15 @@ public class Graph
 			}
 			result.add(node);
 		}
+	}
+	public <T> Array<T> find(Class<T> type) {
+		Array<T> r = new Array<T>();
+		for(GraphNode node : nodes){
+			if(type.isAssignableFrom(node.object.getClass())){
+				r.add((T)node.object);
+			}
+		}
+		return r;
 	}
 	
 }
