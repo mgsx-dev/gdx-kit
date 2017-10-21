@@ -69,8 +69,6 @@ public class ShaderTransition implements ScreenTransition
 			dst.render(deltaTime);
 			
 			FrameBuffer.unbind();
-			Gdx.gl.glClearColor(0, 0, 0, 0);
-			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 			viewport.update(width, height, true);
 			batch.setProjectionMatrix(viewport.getCamera().combined);
 			batch.disableBlending();
