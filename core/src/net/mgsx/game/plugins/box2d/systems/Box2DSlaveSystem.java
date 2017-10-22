@@ -19,7 +19,7 @@ public class Box2DSlaveSystem extends IteratingSystem {
 	private Vector2 delta = new Vector2();
 	
 	public Box2DSlaveSystem() {
-		super(Family.all(Box2DBodyModel.class, Transform2DComponent.class, SlavePhysics.class).get(), GamePipeline.AFTER_LOGIC);
+		super(Family.all(Box2DBodyModel.class, Transform2DComponent.class, SlavePhysics.class).get(), GamePipeline.BEFORE_PHYSICS);
 	}
 
 	@Override
@@ -33,7 +33,7 @@ public class Box2DSlaveSystem extends IteratingSystem {
 				float a1 = t.angle * MathUtils.degreesToRadians;
 				float a2 = physic.body.getAngle();
 				float delta = a2 - a1; // TODO not good !
-				physic.body.setAngularVelocity(delta);
+				physic.body.setAngularVelocity(delta / ts);
 			}
 		}
 	}
