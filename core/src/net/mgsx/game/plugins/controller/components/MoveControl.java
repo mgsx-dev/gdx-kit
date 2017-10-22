@@ -10,7 +10,7 @@ import net.mgsx.game.core.annotations.EnumType;
 import net.mgsx.game.core.annotations.Storable;
 
 @Storable("control.move")
-@EditableComponent
+@EditableComponent(autoClone=true)
 public class MoveControl implements Component
 {
 	public final static ComponentMapper<MoveControl> components = ComponentMapper.getFor(MoveControl.class);
