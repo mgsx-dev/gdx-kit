@@ -8,6 +8,7 @@ import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.Filter;
 import com.badlogic.gdx.physics.box2d.Fixture;
+import com.badlogic.gdx.physics.box2d.Manifold;
 
 import net.mgsx.game.core.GamePipeline;
 import net.mgsx.game.core.annotations.Inject;
@@ -16,12 +17,14 @@ import net.mgsx.game.examples.shmup.component.Enemy;
 import net.mgsx.game.examples.shmup.utils.ShmupCollision;
 import net.mgsx.game.plugins.box2d.components.Box2DBodyModel;
 import net.mgsx.game.plugins.box2d.listeners.Box2DAdapter;
+import net.mgsx.game.plugins.box2d.systems.Box2DWorldSystem;
 import net.mgsx.game.plugins.camera.model.POVModel;
 import net.mgsx.game.plugins.core.components.Transform2DComponent;
 
 public class ShmupEnemySystem extends IteratingSystem
 {
 	@Inject public POVModel pov;
+	@Inject Box2DWorldSystem world;
 	
 	public ShmupEnemySystem() {
 		super(Family.all(Transform2DComponent.class, Enemy.class).get(), GamePipeline.LOGIC);
@@ -30,6 +33,7 @@ public class ShmupEnemySystem extends IteratingSystem
 	@Override
 	public void addedToEngine(Engine engine) {
 		super.addedToEngine(engine);
+		
 		engine.addEntityListener(Family.all(Enemy.class, Box2DBodyModel.class).get(), new EntityListener() {
 			@Override
 			public void entityRemoved(Entity entity) {
@@ -68,6 +72,22 @@ public class ShmupEnemySystem extends IteratingSystem
 					});
 				}
 				
+			}
+		});
+		
+		
+		engine.getSystem(Box2DWorldSystem.class).addListener(new Box2DAdapter(){
+			@Override
+			public void beginContact(Contact contact, Fixture self, Fixture other) {
+				
+			}
+			@Override
+			public void preSolve(Contact contact, Fixture self, Fixture other, Manifold oldManifold) {
+				if(self.getFilterData().categoryBits == ShmupCollision.enemyBullet){
+					// avoid collision causing object moving
+					contact.setEnabled(false);
+					getEngine().removeEntity((Entity) self.getBody().getUserData());
+				}
 			}
 		});
 	}

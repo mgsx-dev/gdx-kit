@@ -52,7 +52,7 @@ public class ShmupPlayerSystem extends IteratingSystem
 
 	
 	public ShmupPlayerSystem() {
-		super(Family.all(Transform2DComponent.class, Player.class, Box2DBodyModel.class).get(), GamePipeline.AFTER_LOGIC);
+		super(Family.all(Transform2DComponent.class, Player.class, Box2DBodyModel.class).get(), GamePipeline.LOGIC);
 	}
 	
 	@Override
@@ -109,8 +109,7 @@ public class ShmupPlayerSystem extends IteratingSystem
 		pp.body.setAngularVelocity(0);
 		//pp.body.setTransform(t.position, 0);
 		
-		// t.position.set(pp.body.getPosition());
-		
+		t.position.set(pp.body.getPosition());
 		// TODO inject POV instead ...
 		Camera camera = pov.camera;
 		
@@ -155,7 +154,7 @@ public class ShmupPlayerSystem extends IteratingSystem
 				CircleShape shape = new CircleShape();
 				shape.setRadius(.5f);
 				fdef.filter.categoryBits = ShmupCollision.playerBullet;
-				fdef.filter.maskBits = ShmupCollision.playerBulletMask | ShmupCollision.enemy;
+				fdef.filter.maskBits = ShmupCollision.playerBulletMask;
 				fdef.shape = shape;
 				physics.fixtures.add(fixMod);
 				
