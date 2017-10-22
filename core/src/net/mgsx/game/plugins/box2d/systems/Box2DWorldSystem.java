@@ -9,6 +9,7 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.Joint;
+import com.badlogic.gdx.utils.Array;
 
 import net.mgsx.game.core.GamePipeline;
 import net.mgsx.game.core.annotations.Editable;
@@ -16,6 +17,7 @@ import net.mgsx.game.core.annotations.EditableSystem;
 import net.mgsx.game.core.annotations.Storable;
 import net.mgsx.game.plugins.box2d.components.Box2DBodyModel;
 import net.mgsx.game.plugins.box2d.components.Box2DFixtureModel;
+import net.mgsx.game.plugins.box2d.listeners.Box2DListener;
 
 //TODO should own the world ?
 
@@ -38,6 +40,7 @@ public class Box2DWorldSystem extends EntitySystem {
 	@Editable
 	public int positionIterations = 3;
 
+	private transient Array<Box2DListener> globalListeners = new Array<Box2DListener>();
 	
 	private final Box2DWorldContext worldContext;
 	
@@ -51,7 +54,7 @@ public class Box2DWorldSystem extends EntitySystem {
 	{
 		super.addedToEngine(engine);
 		
-		worldContext.world.setContactListener(new Box2DWorldContactListener());
+		worldContext.world.setContactListener(new Box2DWorldContactListener(globalListeners));
 	}
 	
 	public Box2DWorldContext getWorldContext() {
@@ -110,5 +113,12 @@ public class Box2DWorldSystem extends EntitySystem {
 
 	public Fixture addFixture(Box2DBodyModel model, Box2DFixtureModel fix) {
 		return fix.fixture = model.body.createFixture(fix.def);
+	}
+
+	public void addListener(Box2DListener listener) {
+		globalListeners.add(listener);
+	}
+	public void removeListener(Box2DListener listener) {
+		globalListeners.removeValue(listener, true);
 	}
 }
