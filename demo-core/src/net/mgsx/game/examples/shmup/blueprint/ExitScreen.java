@@ -32,10 +32,6 @@ public class ExitScreen extends TransitionNode
 		Vector3 a = camera.unproject(new Vector3(0, 0, z));
 		Vector3 b = camera.unproject(new Vector3(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), z));
 		
-		float tmp = a.y;
-//		a.y = b.y;
-//		b.y = tmp;
-//		
 		if((dir == Direction.LEFT || dir == Direction.ANY) && transform.position.x < a.x){
 			return true;
 		}

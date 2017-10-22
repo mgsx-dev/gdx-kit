@@ -22,6 +22,10 @@ public class Enemy implements Component, Poolable
 	@Editable(editor=ShmupBlueprintEditor.class)
 	public Graph fsm = new Graph(CopyStrategy.FROM_SRC);
 	
+	public float life = 10;
+	
+	// TODO emitter position (relative) for emit logic
+	
 	public transient Array<StateNode> current = new Array<StateNode>();
 	
 	public void replace(StateNode origin, StateNode target){

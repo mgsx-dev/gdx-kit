@@ -18,6 +18,11 @@ public class Emit implements StateNode {
 
 	@Outlet public transient StateNode over;
 	
+	// TODO should be a KIT group which may contains a FSM ... or other behavior model
+	// because it could have sprite as well or models ... and box2D collisions .... !
+	
+	// TODO another emit (bullet emit could be programatic though)
+	
 	@Editable(editor=ShmupBlueprintEditor.class)
 	public Graph fsm = new Graph(CopyStrategy.FROM_SRC);
 	
