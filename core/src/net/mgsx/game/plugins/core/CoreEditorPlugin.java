@@ -40,8 +40,9 @@ import net.mgsx.game.plugins.core.tools.SwitchModeTool;
 import net.mgsx.game.plugins.core.tools.ToggleHelpTool;
 import net.mgsx.game.plugins.core.tools.UnproxyTool;
 import net.mgsx.game.plugins.core.tools.ZoomTool;
+import net.mgsx.game.plugins.graphics.GraphicsEditorPlugin;
 
-@PluginDef(dependencies={CorePlugin.class, CameraEditorPlugin.class})
+@PluginDef(dependencies={CorePlugin.class, CameraEditorPlugin.class, GraphicsEditorPlugin.class})
 public class CoreEditorPlugin extends EditorPlugin
 {
 	public static Class interpolationRegistry = Interpolation.class;
