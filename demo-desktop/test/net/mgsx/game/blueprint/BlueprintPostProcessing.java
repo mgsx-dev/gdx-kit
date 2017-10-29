@@ -10,6 +10,8 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
@@ -64,9 +66,9 @@ public class BlueprintPostProcessing extends GameApplication {
 		
 		graph = new Graph(CopyStrategy.FROM_SRC);
 		
-		graph.addNode(new SceneRenderingNode(), 10, 50);
+		graph.addNode(new SceneNode(), 10, 50);
 		graph.addNode(new BlurNode(), 300, 200);
-		graph.addNode(new ScreenNode(), 100, 400);
+		graph.addNode(new ScreenAANode(), 100, 400);
 		graph.addNode(new Compose(), 100, 100);
 		
 		
@@ -143,14 +145,80 @@ public class BlueprintPostProcessing extends GameApplication {
 		
 	}
 	
-	@Node("Scene rendering")
-	public static class SceneRenderingNode extends TextureFlow {
+	public static class GeometryFlow {
+		
+		protected void update() {
+		}
+		
+	}
+	
+	@Node("Texure")
+	public static class TextureNode extends TextureFlow {
 		
 		@Outlet
 		public Texture texture;
 		
-		public SceneRenderingNode() {
+		public TextureNode() {
 			texture = new Texture(Gdx.files.internal("perlin.png"));
+		}
+	}
+	
+	@Outlet
+	@Node("Scene")
+	public static class SceneNode extends GeometryFlow {
+		
+		private ShapeRenderer renderer;
+		
+		public SceneNode() {
+			renderer = new ShapeRenderer();
+		}
+		
+		@Override
+		protected void update() {
+			renderer.setProjectionMatrix(new Matrix4().idt().scl(0.5f).mul(batch.getProjectionMatrix()));
+			renderer.begin(ShapeType.Filled);
+			renderer.circle(300, 600, 100, 16);
+			renderer.end();
+		}
+	}
+	
+	@Node("Scene Rendering")
+	public static class SceneRenderNode extends TextureFlow {
+		
+		@Outlet
+		public Texture texture;
+		
+		@Inlet
+		public GeometryFlow geo;
+		
+		@Editable
+		public int size = 1;
+		
+		private FrameBuffer fbo;
+		
+		public SceneRenderNode() {
+		}
+		
+		@Override
+		protected void update() {
+			
+			int w = Gdx.graphics.getWidth() * size;
+			int h = Gdx.graphics.getHeight() * size;
+			
+			if(fbo == null || fbo.getWidth() != w || fbo.getHeight() != h){
+				if(fbo != null) fbo.dispose();
+				fbo = new FrameBuffer(Format.RGBA8888, w, h, true);
+				texture = fbo.getColorBufferTexture();
+			}
+			
+			fbo.begin();
+			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+			
+			if(geo != null){
+				geo.update();
+			}
+			
+			fbo.end();
 		}
 	}
 	
@@ -251,7 +319,48 @@ public class BlueprintPostProcessing extends GameApplication {
 		}
 	}
 
-	
+	@Node("ScreenAA")
+	public static class ScreenAANode extends ScreenNode {
+		
+		@ShaderInfo(vs="shaders/aa.vs", fs="shaders/aa.fs", inject=false)
+		public static class TheShader extends ShaderProgramManaged{
+			@Uniform 
+			transient Texture texture;
+			@Uniform 
+			transient Matrix4 projTrans;
+			
+			@Uniform("size")
+			public Vector2 dir = new Vector2(1,1);
+		}
+		
+		@Editable
+		public TheShader theShader = new TheShader();
+		
+		@Editable public float aa = 1;
+		
+		@Override
+		public void update()
+		{
+			if(in == null) return;
+			
+			theShader.texture = in;
+			theShader.projTrans = batch.getProjectionMatrix();
+			theShader.dir.set(aa / in.getWidth(), aa / in.getHeight());
+			// theShader.dir.set(v);
+			
+			theShader.begin();
+			
+			// sprite draw
+			ShaderProgram oldShader = batch.getShader();
+			batch.setShader(theShader.program());
+			batch.begin();
+			batch.draw(in, 0, 0);
+			batch.end();
+			batch.setShader(oldShader);
+			
+			theShader.end();
+		}
+	}
 
 	
 }
