@@ -1,0 +1,449 @@
+{
+entities: [
+	{
+		id: 0
+		box2d: {
+			id: Rectangle
+			def: {
+				position: {
+					x: -10.579611
+					y: -0.025082588
+				}
+			}
+			fixtures: [
+				{
+					def: {
+						shape: {
+							type: Polygon
+							vertex: [
+								{
+									x: 2
+									y: -11.141932
+								}
+								{
+									x: 2
+									y: 11.141932
+								}
+								{
+									x: -2
+									y: 11.141932
+								}
+								{
+									x: -2
+									y: -11.141932
+								}
+							]
+						}
+						density: 1
+						filter: {}
+					}
+				}
+				{
+					def: {
+						shape: {
+							type: Polygon
+							vertex: [
+								{
+									x: 29
+									y: 10.858068
+								}
+								{
+									x: 29
+									y: 13.858068
+								}
+								{
+									x: -1
+									y: 13.858068
+								}
+								{
+									x: -1
+									y: 10.858068
+								}
+							]
+						}
+						density: 1
+						filter: {}
+					}
+				}
+				{
+					def: {
+						shape: {
+							type: Polygon
+							vertex: [
+								{
+									x: 30
+									y: -11.141932
+								}
+								{
+									x: 30
+									y: 11.858068
+								}
+								{
+									x: 26
+									y: 11.858068
+								}
+								{
+									x: 26
+									y: -11.141932
+								}
+							]
+						}
+						density: 1
+						filter: {}
+					}
+				}
+				{
+					def: {
+						shape: {
+							type: Polygon
+							vertex: [
+								{
+									x: 27
+									y: -12.141932
+								}
+								{
+									x: 27
+									y: -10.141932
+								}
+								{
+									x: 1
+									y: -10.141932
+								}
+								{
+									x: 1
+									y: -12.141932
+								}
+							]
+						}
+						density: 1
+						filter: {}
+					}
+				}
+			]
+		}
+	}
+	{
+		id: 1
+		box2d: {
+			id: Rectangle
+			def: {
+				type: DynamicBody
+				position: {
+					x: -3.8810868
+					y: -2.2829025
+				}
+				fixedRotation: true
+				gravityScale: 0
+			}
+			fixtures: [
+				{
+					def: {
+						shape: {
+							type: Polygon
+							vertex: [
+								{
+									x: 1.5
+									y: -0.5
+								}
+								{
+									x: 1.5
+									y: 0.5
+								}
+								{
+									x: -1.5
+									y: 0.5
+								}
+								{
+									x: -1.5
+									y: -0.5
+								}
+							]
+						}
+						density: 1
+						filter: {}
+					}
+				}
+			]
+		}
+		control.move: {
+			speed: 7.241539
+		}
+		2d: {
+			position: {
+				x: -6.2285376
+				y: 4.0699553
+			}
+			angle: 1.1321314E-4
+			rotation: false
+		}
+		shmup.player: {}
+	}
+	{
+		id: 2
+		2d: {
+			position: {
+				x: 3
+				y: 4
+			}
+		}
+		shmup.fsm: {
+			fsm: {
+				copyStrategy: FROM_DST
+				nodes: [
+					{
+						object: {
+							class: net.mgsx.game.examples.shmup.blueprint.Init
+						}
+						position: {
+							x: 722
+							y: 658
+						}
+					}
+					{
+						object: {
+							class: net.mgsx.game.examples.shmup.blueprint.Move
+						}
+						position: {
+							x: 943.99994
+							y: 691
+						}
+					}
+				]
+				links: [
+					{
+						src: 0
+						outlet: next
+						dst: 1
+						inlet: in
+					}
+				]
+			}
+		}
+	}
+	{
+		id: 3
+		2d: {
+			position: {
+				x: 6.438163
+				y: 4.9996214
+			}
+		}
+		box2d: {
+			id: Rectangle
+			def: {
+				type: KinematicBody
+				position: {
+					x: 6.438163
+					y: 4.9996214
+				}
+			}
+			fixtures: [
+				{
+					def: {
+						shape: {
+							type: Polygon
+							vertex: [
+								{
+									x: 2.2867594
+									y: -1.6574743
+								}
+								{
+									x: 2.2867594
+									y: 1.3349845
+								}
+								{
+									x: -2
+									y: 1.3349845
+								}
+								{
+									x: -2
+									y: -1.6574743
+								}
+							]
+						}
+						density: 1
+						filter: {}
+					}
+				}
+			]
+		}
+		shmup.fsm: {
+			fsm: {
+				copyStrategy: FROM_DST
+				nodes: [
+					{
+						object: {
+							class: net.mgsx.game.examples.shmup.blueprint.Init
+						}
+						position: {
+							x: 348.00018
+							y: 575
+						}
+					}
+					{
+						object: {
+							class: net.mgsx.game.examples.shmup.blueprint.EmitBullet
+							count: -1
+							delay: 0.17762691
+							angle: 180.27744
+							speed: 0.5600218
+							player: true
+						}
+						position: {
+							x: 766
+							y: 378
+						}
+					}
+					{
+						object: {
+							class: net.mgsx.game.examples.shmup.blueprint.Move
+							velocity: {
+								y: 0.7986861
+							}
+						}
+						position: {
+							x: 1037.9998
+							y: 577
+						}
+					}
+					{
+						object: {
+							class: net.mgsx.game.examples.shmup.blueprint.ExitScreen
+							dir: TOP
+						}
+						position: {
+							x: 1250
+							y: 348
+						}
+					}
+					{
+						object: {
+							class: net.mgsx.game.examples.shmup.blueprint.Move
+							velocity: {
+								y: -0.6717526
+							}
+						}
+						position: {
+							x: 882
+							y: 211.00003
+						}
+					}
+					{
+						object: {
+							class: net.mgsx.game.examples.shmup.blueprint.ExitScreen
+							dir: BOTTOM
+						}
+						position: {
+							x: 516
+							y: 199
+						}
+					}
+				]
+				links: [
+					{
+						src: 2
+						outlet: next
+						dst: 3
+						inlet: in
+					}
+					{
+						src: 3
+						outlet: next
+						dst: 4
+						inlet: in
+					}
+					{
+						src: 4
+						outlet: next
+						dst: 5
+						inlet: in
+					}
+					{
+						src: 5
+						outlet: next
+						dst: 1
+						inlet: in
+					}
+					{
+						src: 0
+						outlet: next
+						dst: 2
+						inlet: in
+					}
+				]
+			}
+		}
+	}
+	{
+		id: 4
+		2d: {
+			position: {
+				x: 16.144054
+				y: 1.0001999
+			}
+		}
+	}
+	{
+		id: 5
+		2d: {
+			position: {
+				x: 16.067131
+				y: -2.1541538
+			}
+		}
+	}
+	{
+		id: 6
+		2d: {
+			position: {
+				x: 16.01577
+				y: -5.411063
+			}
+		}
+	}
+	{
+		id: 7
+		2d: {
+			position: {
+				x: 16.054527
+				y: -8.129244
+			}
+		}
+	}
+]
+systems: [
+	{
+		type: core.bindings
+		enabled: true
+		bindings: []
+	}
+	{
+		type: box2d.world
+		enabled: true
+		runSimulation: true
+		gravity: {
+			y: -9.807
+		}
+		timeStep: 0.3314929
+		velocityIterations: 8
+		positionIterations: 3
+	}
+	{
+		type: core.clearScreen
+		enabled: true
+		color: {
+			r: 0.2
+			g: 0.2
+			b: 0.2
+			a: 1
+		}
+		clearColor: true
+		clearDepth: true
+	}
+]
+views: [
+	box2d.world
+	net.mgsx.game.examples.shmup.system.ShmupPlayerBulletSystem
+	net.mgsx.game.examples.shmup.system.ShmupPlayerSystem
+]
+}
