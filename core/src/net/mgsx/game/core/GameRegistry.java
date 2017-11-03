@@ -171,6 +171,10 @@ public class GameRegistry {
 		models.put(type, object);
 	}
 	
+	public <T> T getModel(Class<T> type){
+		return (T)models.get(type);
+	}
+	
 	void collect(GameScreen screen)
 	{
 		// scan all systems in order to inject assets
