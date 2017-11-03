@@ -85,7 +85,7 @@ public class ExamplesEditorDesktopLauncher {
 						editConfig.plugins.add(new AshleyEditorPlugin());
 						
 						// instanciate selected plugin
-						EditorPlugin pluginInstance = ReflectionHelper.newInstance(plugin);
+						EditorPlugin pluginInstance = (EditorPlugin)ReflectionHelper.newInstance(plugin);
 						editConfig.plugins.add(pluginInstance);
 						// boot file from classpath if exists
 						FileHandle file = FileHelper.classpath(plugin, "example.json");

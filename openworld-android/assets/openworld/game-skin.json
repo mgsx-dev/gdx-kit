@@ -1,6 +1,6 @@
 {
 com.badlogic.gdx.graphics.g2d.BitmapFont: { 
-	default-font: { file: ../openworld/game_font.fnt } 
+	default-font: { file: game_font.fnt } 
 },
 com.badlogic.gdx.graphics.Color: {
 	green: { a: 1, b: 0, g: 1, r: 0 },
