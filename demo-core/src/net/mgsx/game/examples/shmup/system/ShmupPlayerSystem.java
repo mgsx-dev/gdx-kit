@@ -8,6 +8,9 @@ import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
@@ -18,18 +21,24 @@ import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 
 import net.mgsx.game.core.GamePipeline;
+import net.mgsx.game.core.annotations.Asset;
 import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.core.annotations.EditableSystem;
 import net.mgsx.game.core.annotations.Inject;
+import net.mgsx.game.examples.shmup.component.Enemy;
 import net.mgsx.game.examples.shmup.component.Player;
 import net.mgsx.game.examples.shmup.component.PlayerBullet;
 import net.mgsx.game.examples.shmup.utils.ShmupCollision;
 import net.mgsx.game.plugins.box2d.components.Box2DBodyModel;
 import net.mgsx.game.plugins.box2d.components.Box2DFixtureModel;
 import net.mgsx.game.plugins.box2d.listeners.Box2DAdapter;
+import net.mgsx.game.plugins.box2d.listeners.Box2DEntityListener;
+import net.mgsx.game.plugins.box2d.listeners.Box2DListener;
 import net.mgsx.game.plugins.camera.model.POVModel;
 import net.mgsx.game.plugins.core.components.SlavePhysics;
 import net.mgsx.game.plugins.core.components.Transform2DComponent;
+import net.mgsx.game.plugins.g2d.components.SpriteModel;
+import net.mgsx.game.plugins.g3d.components.G3DModel;
 
 @EditableSystem
 public class ShmupPlayerSystem extends IteratingSystem
@@ -38,17 +47,25 @@ public class ShmupPlayerSystem extends IteratingSystem
 	@Editable public float shootCooldown = .1f;
 	@Editable public float bulletSpeed = 4f;
 
-//	private final Box2DListener bulletListener = new Box2DEntityListener(){
-//		@Override
-//		protected void beginContact(Contact contact, Fixture self, Fixture other, Entity otherEntity) {
-//			Enemy enemy = Enemy.components.get(otherEntity);
-//			if(enemy != null){
-//				// TODO remove some energy ... etc
-//				System.out.println("player shot on enemy");
-//			}
-//			getEngine().removeEntity((Entity)self.getBody().getUserData());
-//		}
-//	};
+	@Asset("particles/sugar.png")
+	public Texture shotTexture;
+	
+	private final Box2DListener bulletListener = new Box2DEntityListener(){
+		@Override
+		protected void beginContact(Contact contact, Fixture self, Fixture other, Entity otherEntity) {
+			Enemy enemy = Enemy.components.get(otherEntity);
+			if(enemy != null){
+				// TODO remove some energy ... etc
+				System.out.println("player shot on enemy");
+			}
+			G3DModel model = G3DModel.components.get(otherEntity);
+			if(model != null){
+				Color c = model.modelInstance.materials.first().get(ColorAttribute.class, ColorAttribute.Diffuse).color;
+				c.set(c.r >= 1 ? Color.BLACK : Color.WHITE);
+			}
+			getEngine().removeEntity((Entity)self.getBody().getUserData());
+		}
+	};
 
 	
 	public ShmupPlayerSystem() {
@@ -158,9 +175,15 @@ public class ShmupPlayerSystem extends IteratingSystem
 				fdef.shape = shape;
 				physics.fixtures.add(fixMod);
 				
-				// physics.setListener(bulletListener);
+				physics.setListener(bulletListener);
 				
-				getEngine().addEntity(e.add(pbt).add(physics).add(getEngine().createComponent(PlayerBullet.class)));
+				SpriteModel sprite = getEngine().createComponent(SpriteModel.class);
+				sprite.sprite.setTexture(shotTexture);
+				//sprite.sprite.setSize(100, 100);
+				sprite.sprite.setRegion(0f, 0f, 1f, 1f);
+				sprite.sprite.setSize(1, 1);
+				// sprite.sprite.setPosition(pbt.position.x, pbt.position.y);
+				getEngine().addEntity(e.add(pbt).add(physics).add(sprite).add(getEngine().createComponent(PlayerBullet.class)));
 			}
 			
 		}else{

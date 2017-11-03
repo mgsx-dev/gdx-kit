@@ -1,0 +1,383 @@
+{
+entities: [
+	{
+		id: 0
+		box2d: {
+			id: Rectangle
+			def: {
+				position: {
+					x: -26
+					y: -17
+				}
+			}
+			fixtures: [
+				{
+					def: {
+						shape: {
+							type: Polygon
+							vertex: [
+								{
+									x: 2
+									y: -11.141932
+								}
+								{
+									x: 2
+									y: 11.141932
+								}
+								{
+									x: -2
+									y: 11.141932
+								}
+								{
+									x: -2
+									y: -11.141932
+								}
+							]
+						}
+						density: 1
+						filter: {}
+					}
+				}
+				{
+					def: {
+						shape: {
+							type: Polygon
+							vertex: [
+								{
+									x: 29
+									y: 10.858068
+								}
+								{
+									x: 29
+									y: 13.858068
+								}
+								{
+									x: -1
+									y: 13.858068
+								}
+								{
+									x: -1
+									y: 10.858068
+								}
+							]
+						}
+						density: 1
+						filter: {}
+					}
+				}
+				{
+					def: {
+						shape: {
+							type: Polygon
+							vertex: [
+								{
+									x: 30
+									y: -11.141932
+								}
+								{
+									x: 30
+									y: 11.858068
+								}
+								{
+									x: 26
+									y: 11.858068
+								}
+								{
+									x: 26
+									y: -11.141932
+								}
+							]
+						}
+						density: 1
+						filter: {}
+					}
+				}
+				{
+					def: {
+						shape: {
+							type: Polygon
+							vertex: [
+								{
+									x: 27
+									y: -12.141932
+								}
+								{
+									x: 27
+									y: -10.141932
+								}
+								{
+									x: 1
+									y: -10.141932
+								}
+								{
+									x: 1
+									y: -12.141932
+								}
+							]
+						}
+						density: 1
+						filter: {}
+					}
+				}
+			]
+		}
+	}
+	{
+		id: 1
+		box2d: {
+			id: Rectangle
+			def: {
+				type: DynamicBody
+				position: {
+					x: -7.045591
+					y: -2.626932
+				}
+				fixedRotation: true
+				gravityScale: 0
+			}
+			fixtures: [
+				{
+					def: {
+						shape: {
+							type: Polygon
+							vertex: [
+								{
+									x: 1.5
+									y: -0.5
+								}
+								{
+									x: 1.5
+									y: 0.5
+								}
+								{
+									x: -1.5
+									y: 0.5
+								}
+								{
+									x: -1.5
+									y: -0.5
+								}
+							]
+						}
+						density: 1
+						filter: {}
+					}
+				}
+			]
+		}
+		control.move: {
+			speed: 7.241539
+		}
+		2d: {
+			position: {
+				x: -4.022487
+				y: 1.1143032
+			}
+			rotation: false
+			origin: {
+				x: 1.5273142
+				y: 1.7137038
+			}
+		}
+		shmup.player: {}
+		sprite: {
+			sprite: {
+				u: 0
+				v: 0
+				u2: 1
+				v2: 1
+				x: -5.5498013
+				y: -0.5994005
+				width: 3.6001124
+				height: 3.8061113
+				sx: 1
+				sy: 1
+				rotation: 0
+				texture: "/home/germain/git/gdx-experiments/blender-sprite-sheat/sheets/frame6.png"
+				color: {
+					r: 1
+					g: 1
+					b: 1
+					a: 0.99607843
+				}
+			}
+		}
+	}
+	{
+		id: 2
+		camera: {
+			camera: {
+				fieldOfView: 61.064075
+				position: {
+					x: 0.39007616
+					z: 17.68788
+				}
+				direction: {
+					z: -1
+				}
+				up: {
+					y: 1
+				}
+				near: 1
+				far: 3000
+				viewportWidth: 1855
+				viewportHeight: 1056
+			}
+		}
+		active: {}
+	}
+	{
+		id: 3
+		g3d: {
+			modelInstance: shmup/ship.g3dj
+		}
+		g3d.light.dir: {
+			light: {
+				color: {
+					r: 0.7589834
+					g: 0.6636868
+					b: 0.41985744
+					a: 1
+				}
+				direction: {
+					x: 2.226183
+					y: -2.261631
+					z: -3.5227919
+				}
+			}
+			shadow: false
+		}
+		2d: {
+			position: {
+				x: 0.05989253
+				y: -0.024380252
+			}
+			angle: 6.291721
+		}
+		box2d: {
+			id: Chain
+			def: {
+				position: {
+					x: 0.05989253
+					y: -0.024380252
+				}
+			}
+			fixtures: [
+				{
+					def: {
+						shape: {
+							type: Chain
+							loop: false
+							vertex: [
+								{
+									x: -5.6023407
+								}
+								{
+									x: -5.4765134
+									y: 0.3782159
+								}
+								{
+									x: -1.2486999
+									y: 0.57954025
+								}
+								{
+									x: -0.7202232
+									y: 1.3093414
+								}
+								{
+									x: 4.614875
+									y: 1.3722553
+								}
+								{
+									x: 4.665206
+									y: 2.869606
+								}
+								{
+									x: 8.326796
+									y: 2.957685
+								}
+								{
+									x: 8.402292
+									y: -0.2760887
+								}
+							]
+						}
+						density: 1
+						filter: {}
+					}
+				}
+			]
+		}
+	}
+]
+systems: [
+	{
+		type: core.bindings
+		enabled: true
+		bindings: []
+	}
+	{
+		type: box2d.world
+		enabled: true
+		runSimulation: true
+		gravity: {
+			y: -9.807
+		}
+		timeStep: 0.3314929
+		velocityIterations: 8
+		positionIterations: 3
+	}
+	{
+		type: core.clearScreen
+		enabled: true
+		color: {
+			r: 0.7845133
+			g: 0.6683124
+			b: 0.3942237
+			a: 1
+		}
+		clearColor: true
+		clearDepth: true
+	}
+	{
+		type: g3d.rendering
+		enabled: true
+		shadowQuality: 10
+		shadowSize: {
+			x: 50
+			y: 50
+		}
+		shadowNear: 0.1
+		shadowFar: 100
+		fog: {}
+		ambient: {
+			r: 0.4
+			g: 0.4
+			b: 0.4
+			a: 1
+		}
+	}
+	{
+		type: g2d.render
+		enabled: true
+		culling: false
+	}
+]
+views: [
+	net.mgsx.game.examples.shmup.system.ShmupRenderSystem
+	box2d.world
+	net.mgsx.game.examples.shmup.system.ShmupPlayerBulletSystem
+	net.mgsx.game.examples.shmup.system.ShmupPlayerSystem
+	core.clearScreen
+]
+assets: [
+	{
+		type: com.badlogic.gdx.graphics.Texture
+		name: "/home/germain/git/gdx-experiments/blender-sprite-sheat/sheets/frame6.png"
+	}
+	{
+		type: com.badlogic.gdx.graphics.g3d.Model
+		name: shmup/ship.g3dj
+	}
+]
+}
