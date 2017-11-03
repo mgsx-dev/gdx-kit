@@ -21,7 +21,7 @@ public class SpriteModel implements Component, Duplicable, Serializable
 	
 	public static ComponentMapper<SpriteModel> components = ComponentMapper.getFor(SpriteModel.class);
 	
-	@Editable public Sprite sprite;
+	@Editable public Sprite sprite = new Sprite();
 
 	@Override
 	public Component duplicate(Engine engine) {

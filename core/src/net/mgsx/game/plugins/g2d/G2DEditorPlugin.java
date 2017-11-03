@@ -6,6 +6,7 @@ import net.mgsx.game.core.EditorScreen;
 import net.mgsx.game.core.annotations.PluginDef;
 import net.mgsx.game.core.plugins.EditorPlugin;
 import net.mgsx.game.plugins.editor.KitEditorPlugin;
+import net.mgsx.game.plugins.g2d.tools.AddSpriteAnimationTool;
 import net.mgsx.game.plugins.g2d.tools.AddSpriteTool;
 import net.mgsx.game.plugins.g2d.tools.SpriteModelReloader;
 import net.mgsx.game.plugins.g2d.tools.SpriteSelector;
@@ -18,6 +19,7 @@ public class G2DEditorPlugin extends EditorPlugin
 	{
 		// tools
 		editor.addTool(new AddSpriteTool(editor));
+		editor.addTool(new AddSpriteAnimationTool(editor));
 		editor.addSelector(new SpriteSelector(editor));
 		editor.assets.addReloadListener(Texture.class, new SpriteModelReloader(editor.entityEngine));
 		
