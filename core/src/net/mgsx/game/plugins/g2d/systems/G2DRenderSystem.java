@@ -3,6 +3,8 @@ package net.mgsx.game.plugins.g2d.systems;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import net.mgsx.game.core.GamePipeline;
@@ -22,6 +24,7 @@ public class G2DRenderSystem extends IteratingSystem {
 	private SpriteBatch batch = new SpriteBatch();
 
 	@Editable public boolean culling = false;
+	@Editable public boolean depthTest = false;
 	
 	public G2DRenderSystem(GameScreen engine) {
 		super(Family.all(SpriteModel.class).exclude(Hidden.class, BehindComponent.class).get(), GamePipeline.RENDER + 1); // TODO transparent ?
@@ -32,6 +35,11 @@ public class G2DRenderSystem extends IteratingSystem {
 	public void update(float deltaTime) {
 		batch.setProjectionMatrix(engine.camera.combined);
 		batch.begin();
+		if(depthTest){
+			Gdx.gl.glEnable(GL20.GL_DEPTH_TEST);
+		}else{
+			Gdx.gl.glDisable(GL20.GL_DEPTH_TEST);
+		}
 		super.update(deltaTime);
 		batch.end();
 	}
