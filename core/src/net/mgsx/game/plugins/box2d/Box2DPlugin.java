@@ -100,6 +100,7 @@ public class Box2DPlugin implements Plugin
 					physics.body.setUserData(entity); // dont know yet
 					for(Box2DFixtureModel fixture : physics.fixtures){
 						fixture.fixture = physics.body.createFixture(fixture.def);
+						fixture.fixture.setUserData(fixture.userData);
 					}
 					
 					physics.body.setUserData(entity);

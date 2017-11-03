@@ -14,6 +14,7 @@ public class Box2DFixtureModel implements Serializable
 	public String id;
 	public FixtureDef def;
 	public Fixture fixture;
+	public Object userData;
 	public Box2DFixtureModel(){}
 	public Box2DFixtureModel(String id, FixtureDef def, Fixture fixture) {
 		this.id = id;
@@ -38,5 +39,9 @@ public class Box2DFixtureModel implements Serializable
 	public void read(Json json, JsonValue jsonData) {
 		def = json.readValue("def", FixtureDef.class, jsonData);
 		// def.shape = json.readValue("shape", Shape.class, jsonData);
+	}
+	public void setUserData(Object object) {
+		this.userData = object;
+		if(fixture != null) fixture.setUserData(userData);
 	}
 }

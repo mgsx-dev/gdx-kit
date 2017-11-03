@@ -88,7 +88,7 @@ public class Box2DBodyModel implements Component, Duplicable, Poolable, Disposab
 	}
 	public void setListener(Box2DListener listener) {
 		for(Box2DFixtureModel fix : fixtures){
-			fix.fixture.setUserData(listener);
+			fix.setUserData(listener);
 		}
 	}
 
