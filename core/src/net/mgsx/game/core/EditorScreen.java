@@ -59,6 +59,7 @@ import net.mgsx.game.core.ui.accessors.VoidAccessor;
 import net.mgsx.game.core.ui.events.AccessorHelpEvent;
 import net.mgsx.game.core.ui.events.EditorListener;
 import net.mgsx.game.core.ui.widgets.TabPane;
+import net.mgsx.game.plugins.camera.model.POVModel;
 import net.mgsx.game.plugins.core.tools.UndoTool;
 import net.mgsx.game.plugins.editor.systems.EditorSystem;
 import net.mgsx.game.plugins.editor.systems.SelectionSystem;
@@ -405,6 +406,14 @@ public class EditorScreen extends ScreenDelegate implements EditorContext // TOD
 		if(selection.validate())
 		{
 			updateSelection();
+		}
+		
+		// TODO how to do this cleanly
+		if(getEditorCamera().isActive()){
+			POVModel pov = registry.getModel(POVModel.class);
+			pov.camera.position.set(getEditorCamera().camera().position);
+			pov.camera.direction.set(getEditorCamera().camera().direction);
+			pov.camera.combined.set(getEditorCamera().camera().combined);
 		}
 		
 		current.render(deltaTime);
