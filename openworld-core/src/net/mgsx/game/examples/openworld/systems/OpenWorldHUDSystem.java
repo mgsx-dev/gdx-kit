@@ -23,6 +23,8 @@ import net.mgsx.game.services.gapi.GAPI;
 @EditableSystem
 public class OpenWorldHUDSystem extends HUDSystem implements PostInitializationListener
 {
+	public static boolean DISPLAY_MAP_ONLY = false;
+	
 	@Asset("openworld/game-skin.json")
 	public Skin skin;
 	
@@ -40,11 +42,14 @@ public class OpenWorldHUDSystem extends HUDSystem implements PostInitializationL
 		hudMain = new OpenWorldHUD(skin, getEngine());
 		hudMain.setFillParent(true);
 		hudMain.setVisible(false);
-		getStage().addActor(hudMain);
-		
+		if(!DISPLAY_MAP_ONLY){
+			getStage().addActor(hudMain);
+		}
 		root = new Table(skin);
 		root.setFillParent(true);
-		getStage().addActor(root);
+		if(!DISPLAY_MAP_ONLY){
+			getStage().addActor(root);
+		}
 	}
 	
 	@Override
