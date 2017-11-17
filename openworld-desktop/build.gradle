@@ -4,7 +4,7 @@ sourceCompatibility = 1.6
 sourceSets.main.java.srcDirs = [ "src/" ]
 sourceSets.test.java.srcDirs = [ "test/" ]
 
-project.ext.mainClassName = "net.mgsx.examples.platformer.OpenWorldEditorLauncher"
+project.ext.mainClassName = "net.mgsx.examples.platformer.OpenWorldLauncher"
 project.ext.assetsDir = new File("../openworld-android/assets");
 
 task run(dependsOn: classes, type: JavaExec) {
@@ -19,7 +19,23 @@ task dist(type: Jar) {
     from files(sourceSets.main.output.classesDir)
     from files(sourceSets.main.output.resourcesDir)
     from {configurations.compile.collect {zipTree(it)}}
-    from files(project.assetsDir);
+    from files(project.assetsDir){
+    	exclude "client_secrets.json"
+    	exclude "config.properties"
+    	exclude "kit-autosave.json"
+    	exclude "pd"
+    }
+    
+    // Some exclusions to reduce size (gdxpd natives, c++ sources and some unused kit code)
+    exclude "gdx-pd*.*"
+    exclude "libgdx-pd*.*"
+    exclude "pthread*.dll"
+    exclude "libopenal*.*"
+    exclude "OpenAL*.*"
+    exclude 'net/mgsx/game/plugins/box2d'
+	exclude '**/*.i'
+	exclude '**/*.h'
+	exclude '**/*.cpp'
  
     manifest {
         attributes 'Main-Class': project.mainClassName
@@ -27,6 +43,16 @@ task dist(type: Jar) {
 }
 
 dist.dependsOn classes
+
+task distZip(type: Zip, dependsOn: dist){
+	from("build/libs/"){
+		include '*.jar'
+		fileMode 0755
+	}
+	from('extra')
+   	archiveName "openworld-${version}.zip"
+   	destinationDir(file("build/distributions"))
+}
 
 eclipse {
     project {

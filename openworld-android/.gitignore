@@ -8,3 +8,4 @@ client_secrets.json
 /assets/pd/rjlib
 /assets/**/*.wav
 
+/assets/config.properties
