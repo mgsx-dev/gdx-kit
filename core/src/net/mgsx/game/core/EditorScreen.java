@@ -106,6 +106,7 @@ public class EditorScreen extends ScreenDelegate implements EditorContext // TOD
 	/** tools displayed as button when selection change (contextual tools) */
 	private Array<Tool> mainTools = new Array<Tool>();
 	
+	private Array<Tool> allTools = new Array<Tool>();
 	
 	private Array<Tool> autoTools = new Array<Tool>();
 	
@@ -139,6 +140,15 @@ public class EditorScreen extends ScreenDelegate implements EditorContext // TOD
 		this.registry = config.registry;
 		editorCamera = new EditorCamera();
 		init();
+	}
+	
+	public <T extends Tool> T getTool(Class<T> toolType){
+		for(Tool tool : allTools){
+			if(tool.getClass() == toolType){
+				return (T)tool;
+			}
+		}
+		return null;
 	}
 	
 	public void addListener(EditorListener listener)
@@ -757,10 +767,12 @@ public class EditorScreen extends ScreenDelegate implements EditorContext // TOD
 	public void addTool(Tool tool) {
 		mainToolGroup.tools.add(tool);
 		mainTools.add(tool);
+		allTools.add(tool);
 	}
 	public void addSuperTool(Tool tool) {
 		mainToolGroup.tools.add(tool);
 		superGlobal.add(createToolButton(tool, true));
+		allTools.add(tool);
 	}
 	
 	public Button createToolButton(final Tool tool, boolean enabled) 
