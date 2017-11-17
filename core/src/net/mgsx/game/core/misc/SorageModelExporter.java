@@ -2,10 +2,12 @@ package net.mgsx.game.core.misc;
 
 import com.badlogic.ashley.core.Component;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 
 import net.mgsx.game.core.GameRegistry;
 import net.mgsx.game.core.annotations.Storable;
-import net.mgsx.game.plugins.DefaultEditorPlugin;
+import net.mgsx.game.core.helpers.ReflectionHelper;
+import net.mgsx.game.core.plugins.Plugin;
 
 public class SorageModelExporter 
 {
@@ -23,8 +25,11 @@ public class SorageModelExporter
 	}
 	
 	public static void main(String[] args) {
+		if(args.length <= 0) throw new GdxRuntimeException("expected at least one plugin class name");
 		GameRegistry registry = new GameRegistry();
-		registry.registerPlugin(DefaultEditorPlugin.class);
+		for(String arg : args){
+			registry.registerPlugin(ReflectionHelper.newInstance(arg, Plugin.class));
+		}
 		generate(registry);
 	}
 }

@@ -30,7 +30,7 @@ public class GameRegistry {
 
 	private final ObjectMap<Class, Object> models = new ObjectMap<Class, Object>();
 	
-	public void registerPlugin(Class plugin) 
+	private void registerPlugin(Class plugin) 
 	{
 		scan(plugin);
 	}
