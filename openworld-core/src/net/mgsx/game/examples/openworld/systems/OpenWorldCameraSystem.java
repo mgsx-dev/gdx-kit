@@ -32,6 +32,8 @@ import net.mgsx.game.plugins.camera.components.CameraComponent;
 @EditableSystem
 public class OpenWorldCameraSystem extends EntitySystem
 {
+	public static int ROTATE_MOUSE_BUTTON = Input.Buttons.RIGHT;
+	
 	private static final float capsuleHeight = 1.7f;
 	private static final float capsuleRadius = .4f;
 	
@@ -190,7 +192,7 @@ public class OpenWorldCameraSystem extends EntitySystem
 			}
 			else if(Gdx.app.getType() == ApplicationType.Desktop)
 			{
-				boolean buttonPressed = Gdx.input.isButtonPressed(Input.Buttons.RIGHT);
+				boolean buttonPressed = Gdx.input.isButtonPressed(ROTATE_MOUSE_BUTTON);
 				if(!buttonWasPressed && buttonPressed){
 					buttonWasPressed = true;
 					prevX = Gdx.input.getX();
