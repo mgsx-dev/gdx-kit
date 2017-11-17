@@ -161,4 +161,11 @@ public class EditorCamera
 	public void reset() {
 		createCamera();
 	}
+
+	public void disable() {
+		active = false;
+	}
+	public void enable() {
+		active = true;
+	}
 }
