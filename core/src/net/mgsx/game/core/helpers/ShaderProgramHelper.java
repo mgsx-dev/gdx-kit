@@ -10,7 +10,8 @@ public class ShaderProgramHelper {
 	public static boolean verbose = true;
 	public static boolean enableCrossCompilation = true;
 	
-	public static String shaderVersion = "#version 100";
+	/** version 120 is necessary for MacOSX */
+	public static String shaderVersion = "#version 120";
 	
 	private static String prependVert;
 	private static String prependFrag;
