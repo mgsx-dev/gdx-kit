@@ -13,8 +13,11 @@ Controls :
 - SPACE : toggle 2D map
 - Mouse Drag with LEFT Button : rotates the camera
 
-Run Puredata and open both network.pd and openworld.pd patches.
-You should see things happening in the openworld.pd patch...
+Run Puredata and open openworld.pd patch file.
+You should see things happening in number boxes...
+
+Default java game configuration can be changed in the config.properties file.
+Java application must be restared to have changes applied.
 
 All files in this distribution are Copyrighted by MGSX (http://www.mgsx.net)
 and cannot be used or distributed without authorization.
