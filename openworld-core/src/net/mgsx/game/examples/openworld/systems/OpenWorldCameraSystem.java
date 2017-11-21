@@ -322,7 +322,11 @@ public class OpenWorldCameraSystem extends EntitySystem
 		// Apply to logic point of view !
 		openWorldManager.viewPoint.set(camera.position.x, camera.position.z);
 		
-		// update
+		// update viewport to avoid undesirable stretch
+		camera.viewportWidth = (float)Gdx.graphics.getWidth() / (float)Gdx.graphics.getHeight();
+		camera.viewportHeight = 1f;
+		
+		// finally update matrices
 		camera.update();
 	}
 	
