@@ -27,13 +27,13 @@ public class StaticMeshPool
 		if(pool.getFree() > 0){
 			mesh = pool.obtain();
 			if(mesh.getMaxVertices() < maxVertices || mesh.getMaxIndices() < maxIndices){
-				Gdx.app.log("Memory", "mesh too small, disposing");
+				Gdx.app.debug("Memory", "mesh too small, disposing");
 				mesh.dispose();
 				mesh = null;
 			}
 		}
 		if(mesh == null){
-			Gdx.app.log("Memory", "allocate new mesh");
+			Gdx.app.debug("Memory", "allocate new mesh");
 			mesh = new Mesh(true, maxVertices, maxIndices, vertexAttributes);
 		}
 		return mesh;

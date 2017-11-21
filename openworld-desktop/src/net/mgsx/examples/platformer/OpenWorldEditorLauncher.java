@@ -1,5 +1,7 @@
 package net.mgsx.examples.platformer;
 
+import com.badlogic.gdx.Application;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 
 import net.mgsx.game.core.EditorApplication;
@@ -45,6 +47,8 @@ public class OpenWorldEditorLauncher {
 		final EditorApplication editor = new EditorApplication(editConfig){
 			@Override
 			public void create() {
+				Gdx.app.setLogLevel(Application.LOG_DEBUG);
+				
 				// Wrap with local service and disable cloud storage
 				GAPI.service = new LocalGameStorage(GAPI.service, false);
 				GAPI.service.init("OpenWorld");

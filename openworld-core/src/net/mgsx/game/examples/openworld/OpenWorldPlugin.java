@@ -1,6 +1,5 @@
 package net.mgsx.game.examples.openworld;
 
-import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.glutils.GLVersion.Type;
 
@@ -57,8 +56,8 @@ public class OpenWorldPlugin implements Plugin, DefaultPlugin
 	public void initialize(GameScreen editor)
 	{
 		// query hardware capabilities in order to configure systems dynamically.
-		Gdx.app.setLogLevel(Application.LOG_DEBUG);
-		Gdx.app.debug("OW", Gdx.graphics.getGLVersion().getDebugVersionString());
+		
+		Gdx.app.log("OW", Gdx.graphics.getGLVersion().getDebugVersionString());
 		
 		boolean highQuality = false;
 		if(Gdx.graphics.getGLVersion().getType() == Type.OpenGL){

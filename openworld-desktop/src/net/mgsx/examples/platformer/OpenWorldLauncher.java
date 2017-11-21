@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.util.Properties;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
@@ -67,8 +68,10 @@ public class OpenWorldLauncher {
 			@Override
 			public void create() {
 				
-				super.create();
+				Gdx.app.setLogLevel(Application.LOG_INFO);
 				
+				super.create();
+
 				// TODO ...
 				GAPI.service = new LocalGameStorage(GAPI.service, false);
 				GAPI.service.init("OpenWorld");
