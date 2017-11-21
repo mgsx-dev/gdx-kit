@@ -20,7 +20,7 @@ import net.mgsx.game.examples.openworld.model.OpenWorldRuntimeSettings;
 import net.mgsx.game.examples.openworld.systems.OpenWorldCameraSystem;
 import net.mgsx.game.examples.openworld.systems.OpenWorldHUDSystem;
 import net.mgsx.game.services.gapi.GAPI;
-import net.mgsx.game.services.gapi.LocalGameStorage;
+import net.mgsx.game.services.gapi.GAPIServiceStub;
 import net.mgsx.kit.config.ReflectionClassRegistry;
 import net.mgsx.kit.launcher.DesktopApplication;
 import net.mgsx.pd.Pd;
@@ -92,9 +92,7 @@ public class OpenWorldLauncher {
 				
 				super.create();
 
-				// TODO ...
-				GAPI.service = new LocalGameStorage(GAPI.service, false);
-				GAPI.service.init("OpenWorld");
+				GAPI.service = new GAPIServiceStub();
 				
 				OpenWorldModel.load();
 				
