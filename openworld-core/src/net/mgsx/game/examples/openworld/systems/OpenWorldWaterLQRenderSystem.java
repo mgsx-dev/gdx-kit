@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer20;
 import com.badlogic.gdx.math.Vector3;
 
 import net.mgsx.game.core.GamePipeline;
+import net.mgsx.game.core.PostInitializationListener;
 import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.core.annotations.EditableSystem;
 import net.mgsx.game.core.annotations.Inject;
@@ -16,11 +17,12 @@ import net.mgsx.game.core.annotations.Storable;
 import net.mgsx.game.core.helpers.shaders.ShaderInfo;
 import net.mgsx.game.core.helpers.shaders.ShaderProgramManaged;
 import net.mgsx.game.core.helpers.shaders.Uniform;
+import net.mgsx.game.examples.openworld.model.OpenWorldRuntimeSettings;
 import net.mgsx.game.plugins.camera.model.POVModel;
 
 @Storable(value="ow.water.lq")
 @EditableSystem
-public class OpenWorldWaterLQRenderSystem extends EntitySystem
+public class OpenWorldWaterLQRenderSystem extends EntitySystem implements PostInitializationListener
 {
 	@Inject OpenWorldSkySystem sky;
 	@Inject OpenWorldEnvSystem env;
@@ -45,6 +47,16 @@ public class OpenWorldWaterLQRenderSystem extends EntitySystem
 	
 	public OpenWorldWaterLQRenderSystem() {
 		super(GamePipeline.RENDER);
+	}
+	
+	@Override
+	public void onPostInitialization() 
+	{
+		if(OpenWorldRuntimeSettings.highQuality){
+			setProcessing(false);
+		}else{
+			setProcessing(true);
+		}
 	}
 	
 	@Override

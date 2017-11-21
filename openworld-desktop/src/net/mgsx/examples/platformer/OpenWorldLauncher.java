@@ -16,6 +16,7 @@ import net.mgsx.game.core.GameScreen;
 import net.mgsx.game.core.meta.ClassRegistry;
 import net.mgsx.game.examples.openworld.OpenWorldPlugin;
 import net.mgsx.game.examples.openworld.model.OpenWorldModel;
+import net.mgsx.game.examples.openworld.model.OpenWorldRuntimeSettings;
 import net.mgsx.game.examples.openworld.systems.OpenWorldCameraSystem;
 import net.mgsx.game.examples.openworld.systems.OpenWorldHUDSystem;
 import net.mgsx.game.services.gapi.GAPI;
@@ -58,7 +59,18 @@ public class OpenWorldLauncher {
 		
 		PdConfiguration.remoteEnabled = true;
 		
-		
+		String gpuQuality = props.getProperty("gpu.quality", "auto");
+		if("auto".equals(gpuQuality)){
+			OpenWorldRuntimeSettings.autoQuality = true;
+		}else if("high".equals(gpuQuality)){
+			OpenWorldRuntimeSettings.autoQuality = false;
+			OpenWorldRuntimeSettings.highQuality = true;
+		}else if("low".equals(gpuQuality)){
+			OpenWorldRuntimeSettings.autoQuality = false;
+			OpenWorldRuntimeSettings.highQuality = false;
+		}else{
+			System.err.println("ignored unknown gpu.quality setting : [" + gpuQuality + "], auto mode will be used");
+		}
 		
 		LwjglApplicationConfiguration.disableAudio = true;
 

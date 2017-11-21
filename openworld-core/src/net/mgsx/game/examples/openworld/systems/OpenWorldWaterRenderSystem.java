@@ -19,6 +19,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 
 import net.mgsx.game.core.GamePipeline;
+import net.mgsx.game.core.PostInitializationListener;
 import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.core.annotations.EditableSystem;
 import net.mgsx.game.core.annotations.Inject;
@@ -30,11 +31,12 @@ import net.mgsx.game.core.helpers.shaders.Uniform;
 import net.mgsx.game.examples.openworld.components.LandMeshComponent;
 import net.mgsx.game.examples.openworld.components.ObjectMeshComponent;
 import net.mgsx.game.examples.openworld.components.TreesComponent;
+import net.mgsx.game.examples.openworld.model.OpenWorldRuntimeSettings;
 import net.mgsx.game.plugins.camera.model.POVModel;
 
 @Storable(value="ow.water")
 @EditableSystem
-public class OpenWorldWaterRenderSystem extends EntitySystem
+public class OpenWorldWaterRenderSystem extends EntitySystem implements PostInitializationListener
 {
 	@Inject OpenWorldLandRenderSystem landerRendering;
 	@Inject OpenWorldEnvSystem environment;
@@ -71,7 +73,17 @@ public class OpenWorldWaterRenderSystem extends EntitySystem
 
 	public OpenWorldWaterRenderSystem() {
 		super(GamePipeline.RENDER_TRANSPARENT);
-		loadShader();
+	}
+	
+	@Override
+	public void onPostInitialization() 
+	{
+		if(OpenWorldRuntimeSettings.highQuality){
+			loadShader();
+			setProcessing(true);
+		}else{
+			setProcessing(false);
+		}
 	}
 	
 	@Editable
@@ -216,4 +228,5 @@ public class OpenWorldWaterRenderSystem extends EntitySystem
 		}
 		Gdx.gl.glDisable(GL20.GL_DEPTH_TEST);
 	}
+	
 }

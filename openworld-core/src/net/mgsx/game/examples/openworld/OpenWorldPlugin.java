@@ -59,13 +59,18 @@ public class OpenWorldPlugin implements Plugin, DefaultPlugin
 		
 		Gdx.app.log("OW", Gdx.graphics.getGLVersion().getDebugVersionString());
 		
-		boolean highQuality = false;
-		if(Gdx.graphics.getGLVersion().getType() == Type.OpenGL){
-			if(Gdx.graphics.getGLVersion().isVersionEqualToOrHigher(4, 0)){
-				highQuality = true;
+		if(OpenWorldRuntimeSettings.autoQuality){
+			boolean highQuality = false;
+			// TODO not really true, maybe openGL 3 could be ok
+			if(Gdx.graphics.getGLVersion().getType() == Type.OpenGL){
+				if(Gdx.graphics.getGLVersion().isVersionEqualToOrHigher(4, 0)){
+					highQuality = true;
+				}
 			}
+			OpenWorldRuntimeSettings.highQuality = highQuality;
 		}
-		OpenWorldRuntimeSettings.highQuality = highQuality;
+		Gdx.app.log("OW", "GPU quality used is " + (OpenWorldRuntimeSettings.highQuality ? "high" : "low"));
+		
 		editor.entityEngine.addSystem(new OpenWorldAudioSystem());
 
 		editor.entityEngine.addSystem(new OpenWorldPlayerSensorSystem());
@@ -91,11 +96,8 @@ public class OpenWorldPlugin implements Plugin, DefaultPlugin
 		editor.entityEngine.addSystem(new OpenWorldSkySystem());
 		editor.entityEngine.addSystem(new OpenWorldEnvSystem());
 		
+		editor.entityEngine.addSystem(new OpenWorldWaterRenderSystem());
 		editor.entityEngine.addSystem(new OpenWorldWaterLQRenderSystem());
-		if(highQuality){
-			editor.entityEngine.addSystem(new OpenWorldWaterRenderSystem());
-			editor.entityEngine.getSystem(OpenWorldWaterLQRenderSystem.class).setProcessing(false);
-		}
 		
 		editor.entityEngine.addSystem(new OpenWorldLensFlareSystem());
 		editor.entityEngine.addSystem(new OpenWorldTreeSystem());
