@@ -90,7 +90,7 @@ public class SpawnGenerator {
 		}
 	}
 	
-	public void generate(Array<OpenWorldElement> result, float x, float y) 
+	public void generate(Array<OpenWorldElement> result, float x, float y, float environmentOffset) 
 	{
 		// update ranking based on context (location and environnement)
 		float altitude = generatorSystem.getAltitude(x, y);
@@ -98,8 +98,9 @@ public class SpawnGenerator {
 		// determinate environment : with offset
 		boolean aquatic = altitude < envSystem.waterLevel;
 		
-		boolean deepWater = altitude < envSystem.waterLevel - 4f;
-		boolean highLands = altitude > envSystem.waterLevel + 1f;
+		// deep water needs 3 times offset to survive (1 for bottom limit, 1 for top limit and 1 for env range)
+		boolean deepWater = altitude < (envSystem.waterLevel - environmentOffset * 3);
+		boolean highLands = altitude > (envSystem.waterLevel + 1); // XXX special offset for lands
 		
 		// make available list and compute ranking
 		available.clear();

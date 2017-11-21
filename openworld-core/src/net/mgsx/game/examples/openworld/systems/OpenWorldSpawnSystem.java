@@ -139,7 +139,7 @@ public class OpenWorldSpawnSystem extends EntitySystem implements PostInitializa
 		float centerX = worldX + spawnGridScale * (MathUtils.random() * .5f + .5f);
 		float centerY = worldY + spawnGridScale * (MathUtils.random() * .5f + .5f);
 		
-		spawnGenerator.generate(chunk.elements, centerX, centerY);
+		spawnGenerator.generate(chunk.elements, centerX, centerY, 0);
 		
 		for(OpenWorldElement element : chunk.elements){
 			

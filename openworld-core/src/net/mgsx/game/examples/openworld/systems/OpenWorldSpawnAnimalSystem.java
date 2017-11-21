@@ -55,6 +55,7 @@ public class OpenWorldSpawnAnimalSystem extends IteratingSystem implements PostI
 	
 	@Editable public transient boolean splineDebug =false;
 
+	@Editable public float environmentOffset = 3f; // TODO find a good value
 	
 	@Inject OpenWorldCameraSystem cameraSystem;
 	@Inject UserObjectSystem userObject;
@@ -207,7 +208,7 @@ public class OpenWorldSpawnAnimalSystem extends IteratingSystem implements PostI
 		float centerX = worldX + spawnGridScale * (MathUtils.random() * .5f + .5f);
 		float centerY = worldY + spawnGridScale * (MathUtils.random() * .5f + .5f);
 		
-		spawnGenerator.generate(chunk.elements, centerX, centerY);
+		spawnGenerator.generate(chunk.elements, centerX, centerY, environmentOffset);
 		
 		for(OpenWorldElement element : chunk.elements){
 			
@@ -355,18 +356,20 @@ public class OpenWorldSpawnAnimalSystem extends IteratingSystem implements PostI
 			float groundMin = 0;
 			float groundMax = airMaxAltitude;
 			
+			// TODO why there is some birds in water ... ???
+			
 			if(altitude < envSystem.waterLevel){
 				if(!animal.element.waterAbility){
-					altitudeMin = envSystem.waterLevel + 4; // XXX flying offset
+					altitudeMin = envSystem.waterLevel + environmentOffset;
 				}
 				if(!animal.element.airAbility){
-					altitudeMax = envSystem.waterLevel;
+					altitudeMax = envSystem.waterLevel - environmentOffset;
 				}
 			}else{
 				if(!animal.element.airAbility){
 					groundMin = groundMax = 0;
 				}else{
-					groundMin = 4;
+					groundMin = environmentOffset;
 				}
 			}
 			
@@ -465,6 +468,9 @@ public class OpenWorldSpawnAnimalSystem extends IteratingSystem implements PostI
 			
 			// compute appropriate status based on ability.
 			// and detect environment changes.
+			
+			// TODO apply env offset as well to see if it is appropritate ...
+			
 			boolean isAppropriate = animal.chunk.zone.contains(target.x, target.z);
 			boolean isAquatic = altitudeAhead < envSystem.waterLevel;
 			if(animal.environment == Environment.LAND){
@@ -505,6 +511,14 @@ public class OpenWorldSpawnAnimalSystem extends IteratingSystem implements PostI
 				}
 			}
 			
+			// XXX quick fish fix :
+			if(animal.element.waterAbility){
+				if(altitudeAhead > envSystem.waterLevel - environmentOffset){
+					isAppropriate = false;
+				}
+			}
+			
+			// TODO direction bias is for azymuth but we need a vertical direction bias (entering water and not aquatic bird !)
 			
 			// if not appropritate then bias direction
 			if(!isAppropriate){
@@ -517,12 +531,19 @@ public class OpenWorldSpawnAnimalSystem extends IteratingSystem implements PostI
 				animal.directionBias = 0;
 			}
 			
+			float pitchRange = .3f;
+			
 			// generate a random direction  :
 			// - around direction and bias (XZ plan)
 			// - around direction (Pitch)
 			direction.rotate(Vector3.Y, (animal.directionBias * 2 + MathUtils.random()) * 10);
-			direction.y += MathUtils.random(-.3f, .3f);
+			direction.y += MathUtils.random(-pitchRange, pitchRange);
 			direction.nor();
+			
+			if(animal.element.waterAbility){
+				direction.y = 0.0f;
+				direction.nor();
+			}
 			
 			// compute final target : current position + 3 meters
 			target.set(animal.element.position).mulAdd(direction, segmentDistance);
@@ -536,12 +557,13 @@ public class OpenWorldSpawnAnimalSystem extends IteratingSystem implements PostI
 				target.y = targetAltitude;
 			}
 			else if(animal.environment == Environment.WATER){
-				if(target.y < targetAltitude) target.y = targetAltitude;
-				else if(target.y > envSystem.waterLevel) target.y = envSystem.waterLevel;
+				if(target.y < targetAltitude + environmentOffset) target.y = targetAltitude + environmentOffset;
+				else if(target.y > envSystem.waterLevel - environmentOffset) target.y = envSystem.waterLevel - environmentOffset;
 			}
 			else{
-				if(target.y < targetAltitude) target.y = targetAltitude;
+				if(target.y < targetAltitude + environmentOffset) target.y = targetAltitude + environmentOffset;
 				else if(target.y > airMaxAltitude) target.y = airMaxAltitude; // TODO hard limit for flying animals
+				if(target.y < envSystem.waterLevel + environmentOffset) target.y = envSystem.waterLevel + environmentOffset;
 			}
 			
 			// append point

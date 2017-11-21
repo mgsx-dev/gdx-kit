@@ -82,8 +82,8 @@ public class OpenWorldLauncher {
 		
 		
 		SpawnGenerator.ENABLE_AIR = true;
-		SpawnGenerator.ENABLE_AQUA = false;
-		SpawnGenerator.ENABLE_LAND = false;
+		SpawnGenerator.ENABLE_AQUA = true;
+		SpawnGenerator.ENABLE_LAND = true;
 		
 		
 		LwjglApplicationConfiguration.disableAudio = true;

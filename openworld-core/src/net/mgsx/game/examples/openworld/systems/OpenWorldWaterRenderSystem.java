@@ -172,6 +172,9 @@ public class OpenWorldWaterRenderSystem extends EntitySystem implements PostInit
 					omc.getMeshToRender().render(reflectionShader, GL20.GL_TRIANGLES);
 				}
 			}
+			// TODO find a way to render all other 3D models (animals) using a model batch
+			// and the reflection shader with bones calculations ...
+			
 			reflectionShader.end();
 			
 			// unbind FBO
