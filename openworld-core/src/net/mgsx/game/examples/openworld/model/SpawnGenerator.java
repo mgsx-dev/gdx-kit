@@ -14,6 +14,11 @@ public class SpawnGenerator {
 	public static final int LAYER_ITEM = 0;
 	public static final int LAYER_ANIMAL = 1;
 	
+	public static boolean ENABLE_AIR  = true;
+	public static boolean ENABLE_AQUA = true;
+	public static boolean ENABLE_LAND = true;
+	
+	
 	private static class SpawnCache
 	{
 		FreemindNode def;
@@ -143,6 +148,11 @@ public class SpawnGenerator {
 				left = index;
 			}
 		}
+		
+		// apply filter
+		if(item.landAbility && !ENABLE_LAND) return;
+		if(item.airAbility && !ENABLE_AIR) return;
+		if(item.waterAbility && !ENABLE_AQUA) return;
 		
 		// clustering
 		int count = MathUtils.random(item.clusterMin, item.clusterMax);

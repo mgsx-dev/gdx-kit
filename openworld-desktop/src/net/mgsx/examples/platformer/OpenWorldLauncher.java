@@ -17,6 +17,7 @@ import net.mgsx.game.core.meta.ClassRegistry;
 import net.mgsx.game.examples.openworld.OpenWorldPlugin;
 import net.mgsx.game.examples.openworld.model.OpenWorldModel;
 import net.mgsx.game.examples.openworld.model.OpenWorldRuntimeSettings;
+import net.mgsx.game.examples.openworld.model.SpawnGenerator;
 import net.mgsx.game.examples.openworld.systems.OpenWorldCameraSystem;
 import net.mgsx.game.examples.openworld.systems.OpenWorldHUDSystem;
 import net.mgsx.game.services.gapi.GAPI;
@@ -78,6 +79,11 @@ public class OpenWorldLauncher {
 		OpenWorldCameraSystem.KEY_RIGHT 	= convertKey(props.getProperty("keys.right"), 		Input.Keys.D);
 
 		OpenWorldHUDSystem.TOGGLE_KEY 		= convertKey(props.getProperty("keys.map"), 		Input.Keys.SPACE);
+		
+		
+		SpawnGenerator.ENABLE_AIR = true;
+		SpawnGenerator.ENABLE_AQUA = false;
+		SpawnGenerator.ENABLE_LAND = false;
 		
 		
 		LwjglApplicationConfiguration.disableAudio = true;
