@@ -6,22 +6,22 @@ entities: [
 			camera: {
 				fieldOfView: 67.54826
 				position: {
-					x: -449.82803
-					y: -1.7800224
-					z: 4135.4517
+					x: -2186.9556
+					y: -0.064474106
+					z: 2546.1548
 				}
 				direction: {
-					x: 0.058176775
-					y: 0.21873291
-					z: -0.9719981
+					x: 0.84386206
+					y: -0.017138135
+					z: 0.53340256
 				}
 				up: {
 					y: 1
 				}
 				near: 0.22249761
 				far: 193.73502
-				viewportWidth: 1855
-				viewportHeight: 1056
+				viewportWidth: 1.7566288
+				viewportHeight: 1
 			}
 		}
 		active: {}
@@ -56,46 +56,19 @@ entities: [
 		}
 	}
 	{
-		id: 1
-		active: {}
-		ow.camera: {}
-		camera: {
-			camera: {
-				fieldOfView: 67
-				position: {
-					x: 131.97958
-					y: -2.440534
-					z: 818.54065
-				}
-				direction: {
-					x: 0.78787345
-					y: 0.30106172
-					z: -0.53700054
-				}
-				up: {
-					y: 1
-				}
-				near: 1
-				far: 3000
-				viewportWidth: 1855
-				viewportHeight: 1056
-			}
-		}
-	}
-	{
 		id: 2
 		g3d.light.dir: {
 			light: {
 				color: {
-					r: 0.8451446
+					r: 0.9606951
 					g: 1
 					b: 1
-					a: 0.36494565
+					a: 0.41484204
 				}
 				direction: {
-					x: 0.7031928
-					y: -0.7040021
-					z: 0.099503726
+					x: -0.28829625
+					y: -0.9523573
+					z: 0.09950373
 				}
 			}
 			shadow: false
@@ -134,31 +107,20 @@ systems: [
 		type: ow.camera
 		enabled: true
 		speed: 6.673634
-		offset: 1.5
+		offset: 1.7
 		clipToWater: false
 		clipToGround: false
-		flyingMode: true
+		flyingMode: false
 		useCollider: true
 		smoothing: 5.5434685
-	}
-	{
-		type: box2d.world
-		enabled: true
-		runSimulation: true
-		gravity: {
-			y: -9.807
-		}
-		timeStep: 0.033333335
-		velocityIterations: 8
-		positionIterations: 3
 	}
 	{
 		type: ow.manager
 		enabled: true
 		logicSize: 12
 		viewPoint: {
-			x: -449.82803
-			y: 4135.4517
+			x: -2186.9556
+			y: 2546.1548
 		}
 	}
 	{
@@ -171,13 +133,13 @@ systems: [
 			a: 0.20860124
 		}
 		sunDirection: {
-			x: 0.7031928
-			y: -0.7040021
-			z: 0.099503726
+			x: -0.28829625
+			y: -0.9523573
+			z: 0.09950373
 		}
 		waterLevelRate: -0.034863565
-		timeOfDay: 0.67695713
-		temperature: 32.75989
+		timeOfDay: 0.4623909
+		temperature: 40.418114
 		nightColor: {
 			r: 0.35890388
 			g: 0.09683616
@@ -203,8 +165,8 @@ systems: [
 		}
 		fogExponent: 39.88976
 		autoSun: true
-		autoTime: true
-		time: 159189.47
+		autoTime: false
+		time: 159359.34
 		waterColor: {
 			r: 0.07466493
 			g: 0.16609122
@@ -245,16 +207,16 @@ systems: [
 		shadowNear: 0.1
 		shadowFar: 100
 		fog: {
-			r: 0.8451446
+			r: 0.9606951
 			g: 1
 			b: 1
-			a: 0.36494565
+			a: 0.41484204
 		}
 		ambient: {
-			r: 0.8451446
+			r: 0.9606951
 			g: 1
 			b: 1
-			a: 0.36494565
+			a: 0.41484204
 		}
 	}
 	{
@@ -273,8 +235,8 @@ systems: [
 		enabled: true
 		debugFaces: false
 		cubeMapSize: 512
-		realtime: true
-		cloudDarkness: 0.88113767
+		realtime: false
+		cloudDarkness: 2.3976762
 		parallax: 1
 		cloudDirection: {
 			x: -0.5000002
@@ -317,6 +279,7 @@ systems: [
 		type: g2d.render
 		enabled: true
 		culling: false
+		depthTest: false
 	}
 	{
 		type: ow.water
@@ -382,5 +345,11 @@ views: [
 	ow.camera
 	ow.sky
 	ow.rain
+	net.mgsx.game.examples.openworld.systems.OpenWorldGameSystem
+	net.mgsx.game.plugins.spline.systems.SplineDebugRender
+	ow.generator
+	ow.manager
+	ow.map
+	ow.lands
 ]
 }
