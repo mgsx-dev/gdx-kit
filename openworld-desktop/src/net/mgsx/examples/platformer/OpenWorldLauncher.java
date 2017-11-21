@@ -72,6 +72,14 @@ public class OpenWorldLauncher {
 			System.err.println("ignored unknown gpu.quality setting : [" + gpuQuality + "], auto mode will be used");
 		}
 		
+		OpenWorldCameraSystem.KEY_FORWARD 	= convertKey(props.getProperty("keys.forward"), 	Input.Keys.Z);
+		OpenWorldCameraSystem.KEY_BACKWARD 	= convertKey(props.getProperty("keys.backward"), 	Input.Keys.S);
+		OpenWorldCameraSystem.KEY_LEFT 		= convertKey(props.getProperty("keys.left"), 		Input.Keys.Q);
+		OpenWorldCameraSystem.KEY_RIGHT 	= convertKey(props.getProperty("keys.right"), 		Input.Keys.D);
+
+		OpenWorldHUDSystem.TOGGLE_KEY 		= convertKey(props.getProperty("keys.map"), 		Input.Keys.SPACE);
+		
+		
 		LwjglApplicationConfiguration.disableAudio = true;
 
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
@@ -106,5 +114,17 @@ public class OpenWorldLauncher {
 		};
 		
 		new DesktopApplication(game, config);
+	}
+	
+	private static final int convertKey(String stringValue, int defaultValue){
+		int key = defaultValue;
+		if(stringValue != null){
+			key = Input.Keys.valueOf(stringValue);
+			if(key < 0){
+				System.err.println("ignored unknown key [" + stringValue + "] default key will be used.");
+				key = defaultValue;
+			}
+		}
+		return key;
 	}
 }

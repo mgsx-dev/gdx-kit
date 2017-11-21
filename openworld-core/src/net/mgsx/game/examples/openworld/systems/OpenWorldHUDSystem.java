@@ -24,6 +24,7 @@ import net.mgsx.game.services.gapi.GAPI;
 public class OpenWorldHUDSystem extends HUDSystem implements PostInitializationListener
 {
 	public static boolean DISPLAY_MAP_ONLY = false;
+	public static int TOGGLE_KEY = Input.Keys.SPACE;
 	
 	@Asset("openworld/game-skin.json")
 	public Skin skin;
@@ -55,7 +56,7 @@ public class OpenWorldHUDSystem extends HUDSystem implements PostInitializationL
 	@Override
 	public void update(float deltaTime) {
 		// XXX workaround for click bug listener but could be the desktop version of android properties button ?
-		if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE)){
+		if(Gdx.input.isKeyJustPressed(TOGGLE_KEY)){
 			if(hudMain.isVisible()){
 				hudMain.setVisible(false);
 				mapSystem.setProcessing(false);

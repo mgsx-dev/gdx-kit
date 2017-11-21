@@ -34,6 +34,13 @@ public class OpenWorldCameraSystem extends EntitySystem
 {
 	public static int ROTATE_MOUSE_BUTTON = Input.Buttons.RIGHT;
 	
+	public static int KEY_FORWARD = Input.Keys.Z;
+	public static int KEY_BACKWARD = Input.Keys.S;
+	public static int KEY_LEFT = Input.Keys.Q;
+	public static int KEY_RIGHT = Input.Keys.D;
+	public static int KEY_UPWARD = Input.Keys.E;
+	public static int KEY_DOWNWARD = Input.Keys.X;
+	
 	private static final float capsuleHeight = 1.7f;
 	private static final float capsuleRadius = .4f;
 	
@@ -151,19 +158,19 @@ public class OpenWorldCameraSystem extends EntitySystem
 			
 			if(Gdx.app.getType() == ApplicationType.Desktop)
 			{
-				if(Gdx.input.isKeyPressed(Input.Keys.Z)) {
+				if(Gdx.input.isKeyPressed(KEY_FORWARD)) {
 					moveFront = 1;
-				} else if(Gdx.input.isKeyPressed(Input.Keys.S)) {
+				} else if(Gdx.input.isKeyPressed(KEY_BACKWARD)) {
 					moveFront = -1;
 				}
-				if(Gdx.input.isKeyPressed(Input.Keys.D)) {
+				if(Gdx.input.isKeyPressed(KEY_RIGHT)) {
 					moveSide = 1;
-				} else if(Gdx.input.isKeyPressed(Input.Keys.Q)) {
+				} else if(Gdx.input.isKeyPressed(KEY_LEFT)) {
 					moveSide = -1;
 				}
-				if(Gdx.input.isKeyPressed(Input.Keys.E)) {
+				if(Gdx.input.isKeyPressed(KEY_UPWARD)) {
 					moveTop = 1;
-				} else if(Gdx.input.isKeyPressed(Input.Keys.X)) {
+				} else if(Gdx.input.isKeyPressed(KEY_DOWNWARD)) {
 					moveTop = -1;
 				}
 			}
