@@ -19,6 +19,7 @@ import net.mgsx.game.examples.openworld.ui.SavedGameView;
 import net.mgsx.game.examples.openworld.ui.ScenarioView;
 import net.mgsx.game.plugins.core.systems.HUDSystem;
 import net.mgsx.game.services.gapi.GAPI;
+import net.mgsx.pd.Pd;
 
 @EditableSystem
 public class OpenWorldHUDSystem extends HUDSystem implements PostInitializationListener
@@ -64,6 +65,7 @@ public class OpenWorldHUDSystem extends HUDSystem implements PostInitializationL
 				hudMain.setVisible(true);
 				mapSystem.setProcessing(true);
 			}
+			Pd.audio.sendFloat("map", mapSystem.checkProcessing() ? 1 : 0);
 		}
 		
 		super.update(deltaTime);
