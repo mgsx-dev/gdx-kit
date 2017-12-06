@@ -170,7 +170,7 @@ public class OpenWorldAudioSystem extends EntitySystem implements PostInitializa
 		if(gameSystem.flying){
 			state = "flying";
 		}
-		Pd.audio.sendList("move", state, cameraSystem.currentMove / deltaTime);
+		Pd.audio.sendMessage("move", state, cameraSystem.currentMove / deltaTime);
 		
 		if(sendAnimals){
 			animalsInRange = 0;
