@@ -31,6 +31,10 @@ public class OpenWorldAudioSystem extends EntitySystem implements PostInitializa
 {
 	private static final int MAX_SPATIALS = 3;
 	
+	private static final int ENVIRONMENT_SAMPLES = 6;
+
+	private static float ENVIRONMENT_DISTANCE = 10;
+
 	private static final boolean sendCameraOcclusion = false;
 	private static final boolean sendAnimals = false;
 	private static final boolean sendMeteo = false;
@@ -50,7 +54,7 @@ public class OpenWorldAudioSystem extends EntitySystem implements PostInitializa
 	public transient int animalsInRange;
 	
 	@Editable(readonly=true, realtime=true) 
-	public transient float occF, occB, occL, occR, occT, flora, altitudeDelta;
+	public transient float occF, occB, occL, occR, occT;
 	
 	
 	@Editable public float animalsRange = 30f;
@@ -149,11 +153,8 @@ public class OpenWorldAudioSystem extends EntitySystem implements PostInitializa
 		Camera camera = cameraSystem.getCamera();
 		if(camera == null) return;
 		
-		flora = generator.getFlora(camera.position.x, camera.position.z);
-		Pd.audio.sendFloat("flora", flora);
-		
 		float altitude = generator.getAltitude(camera.position.x, camera.position.z);
-		altitudeDelta = altitude - env.waterLevel;
+		float altitudeDelta = altitude - env.waterLevel;
 		Pd.audio.sendFloat("altitude", altitudeDelta);
 		
 		String state = "idle";
@@ -194,8 +195,24 @@ public class OpenWorldAudioSystem extends EntitySystem implements PostInitializa
 					);
 		}
 		
-		// TODO sample around player to get environment.
+		// sample around player to get environment.
+		float floraFactor = 0;
+		float waterFactor = 0;
+		for(int i=0 ; i<ENVIRONMENT_SAMPLES ; i++){
+			float angle = MathUtils.PI2 * (float)i / (float)ENVIRONMENT_SAMPLES;
+			float px = camera.position.x + MathUtils.cos(angle) * ENVIRONMENT_DISTANCE;
+			float py = camera.position.z + MathUtils.sin(angle) * ENVIRONMENT_DISTANCE;
+			floraFactor += generator.getFlora(px, py) > 0 ? 1 : 0;
+			waterFactor += (generator.getAltitude(px, py) - env.waterLevel) < 0 ? 1 : 0;
+		}
+		floraFactor += generator.getFlora(camera.position.x, camera.position.y) > 0 ? 1 : 0;
+		waterFactor += (generator.getAltitude(camera.position.x, camera.position.y) - env.waterLevel) < 0 ? 1 : 0;
 		
+		waterFactor /= (1f + ENVIRONMENT_SAMPLES);
+		floraFactor /= (1f + ENVIRONMENT_SAMPLES);
+		
+		Pd.audio.sendFloat("forest", floraFactor);
+		Pd.audio.sendFloat("water", waterFactor);
 		
 		// sending camera information
 		
