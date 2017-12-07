@@ -213,11 +213,13 @@ public class OpenWorldAudioSystem extends EntitySystem implements PostInitializa
 			float angle = MathUtils.PI2 * (float)i / (float)ENVIRONMENT_SAMPLES;
 			float px = camera.position.x + MathUtils.cos(angle) * ENVIRONMENT_DISTANCE;
 			float py = camera.position.z + MathUtils.sin(angle) * ENVIRONMENT_DISTANCE;
-			floraFactor += generator.getFlora(px, py) > 0 ? 1 : 0;
-			waterFactor += (generator.getAltitude(px, py) - env.waterLevel) < 0 ? 1 : 0;
+			boolean isWater = (generator.getAltitude(px, py) - env.waterLevel) < 0;
+			floraFactor += !isWater && generator.getFlora(px, py) > 0 ? 1 : 0;
+			waterFactor += isWater ? 1 : 0;
 		}
-		floraFactor += generator.getFlora(camera.position.x, camera.position.y) > 0 ? 1 : 0;
-		waterFactor += (generator.getAltitude(camera.position.x, camera.position.y) - env.waterLevel) < 0 ? 1 : 0;
+		boolean isWater = (generator.getAltitude(camera.position.x, camera.position.y) - env.waterLevel) < 0;
+		floraFactor += !isWater && generator.getFlora(camera.position.x, camera.position.y) > 0 ? 1 : 0;
+		waterFactor += isWater ? 1 : 0;
 		
 		waterFactor /= (1f + ENVIRONMENT_SAMPLES);
 		floraFactor /= (1f + ENVIRONMENT_SAMPLES);
