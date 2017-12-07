@@ -72,6 +72,8 @@ public class OpenWorldAudioSystem extends EntitySystem implements PostInitializa
 	private Vector3 occlusionDelta = new Vector3();
 	private Vector3 povUp = new Vector3();
 	private Vector3 povTan = new Vector3();
+	private Vector3 cameraPrevPos = new Vector3();
+	private boolean firstFrame = true;
 	
 	public OpenWorldAudioSystem() {
 		super(GamePipeline.AFTER_LOGIC);
@@ -157,20 +159,29 @@ public class OpenWorldAudioSystem extends EntitySystem implements PostInitializa
 		float altitudeDelta = altitude - env.waterLevel;
 		Pd.audio.sendFloat("altitude", altitudeDelta);
 		
-		String state = "idle";
-		if(gameSystem.diving){
-			state = "diving";
+		
+		if(firstFrame){
+			firstFrame = false;
+		}else{
+			String state = "idle";
+			if(gameSystem.diving){
+				state = "diving";
+			}
+			if(gameSystem.walking){
+				state = "walking";
+			}
+			if(gameSystem.swimming){
+				state = "swimming";
+			}
+			if(gameSystem.flying){
+				state = "flying";
+			}
+			
+			float cameraSpeed = cameraPrevPos.dst(camera.position) / deltaTime;
+		
+			Pd.audio.sendList("move", state, cameraSpeed);
 		}
-		if(gameSystem.walking){
-			state = "walking";
-		}
-		if(gameSystem.swimming){
-			state = "swimming";
-		}
-		if(gameSystem.flying){
-			state = "flying";
-		}
-		Pd.audio.sendList("move", state, cameraSystem.currentMove / deltaTime);
+		cameraPrevPos.set(camera.position);
 		
 		if(sendAnimals){
 			animalsInRange = 0;
