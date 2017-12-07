@@ -13,9 +13,6 @@ Controls :
 - SPACE : toggle 2D map
 - Mouse Drag with LEFT Button : rotates the camera
 
-Run Puredata and open openworld.pd patch file.
-You should see things happening in number boxes...
-
 Default java game configuration can be changed in the config.properties file.
 Java application must be restared to have changes applied.
 
