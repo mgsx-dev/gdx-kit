@@ -39,6 +39,7 @@ import net.mgsx.game.examples.openworld.model.OpenWorldRuntimeSettings;
 import net.mgsx.game.plugins.camera.model.POVModel;
 import net.mgsx.game.plugins.core.components.HeightFieldComponent;
 import net.mgsx.game.plugins.g3d.components.G3DModel;
+import net.mgsx.game.plugins.graphics.model.FBOModel;
 
 @Storable("ow.lands")
 @SuppressWarnings("deprecation")
@@ -48,6 +49,7 @@ public class OpenWorldLandRenderSystem extends IteratingSystem
 	@Inject OpenWorldEnvSystem environment;
 	@Inject OpenWorldSkySystem sky;
 	@Inject POVModel pov;
+	@Inject FBOModel fboModel;
 	
 	private ShaderProgram shader;
 	private ShaderProgram shaderHigh, shaderHighShadows, shaderHighNoShadows, objectsShader, depthShader;
@@ -269,6 +271,9 @@ public class OpenWorldLandRenderSystem extends IteratingSystem
 			
 			
 			shadowLight.end();
+			
+			// restore FBO
+			fboModel.bind();
 			
 			// XXX restore back face culling changed by depth shader !
 			Gdx.gl.glCullFace(GL20.GL_BACK);
