@@ -33,11 +33,13 @@ import net.mgsx.game.examples.openworld.components.ObjectMeshComponent;
 import net.mgsx.game.examples.openworld.components.TreesComponent;
 import net.mgsx.game.examples.openworld.model.OpenWorldRuntimeSettings;
 import net.mgsx.game.plugins.camera.model.POVModel;
+import net.mgsx.game.plugins.graphics.model.FBOModel;
 
 @Storable(value="ow.water")
 @EditableSystem
 public class OpenWorldWaterRenderSystem extends EntitySystem implements PostInitializationListener
 {
+	@Inject FBOModel fboModel;
 	@Inject OpenWorldLandRenderSystem landerRendering;
 	@Inject OpenWorldEnvSystem environment;
 	@Inject OpenWorldSkySystem sky;
@@ -179,6 +181,9 @@ public class OpenWorldWaterRenderSystem extends EntitySystem implements PostInit
 			
 			// unbind FBO
 			mirrorBuffer.end();
+			
+			// FBO stack restore
+			fboModel.bind();
 			
 			pov.camera.combined.set(backup);
 			
