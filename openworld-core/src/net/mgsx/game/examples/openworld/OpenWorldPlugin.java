@@ -11,6 +11,7 @@ import net.mgsx.game.examples.openworld.components.ObjectMeshComponent;
 import net.mgsx.game.examples.openworld.components.OpenWorldCamera;
 import net.mgsx.game.examples.openworld.components.TreesComponent;
 import net.mgsx.game.examples.openworld.model.OpenWorldRuntimeSettings;
+import net.mgsx.game.examples.openworld.systems.GFXSystem;
 import net.mgsx.game.examples.openworld.systems.OpenLifeAnimalSystem;
 import net.mgsx.game.examples.openworld.systems.OpenWorldAudioSystem;
 import net.mgsx.game.examples.openworld.systems.OpenWorldCameraPathSystem;
@@ -87,6 +88,7 @@ public class OpenWorldPlugin implements Plugin, DefaultPlugin
 		
 		editor.entityEngine.addSystem(new OpenWorldPhysicSystem());
 
+		editor.entityEngine.addSystem(new GFXSystem());
 		
 		
 		// TODO non edit part
