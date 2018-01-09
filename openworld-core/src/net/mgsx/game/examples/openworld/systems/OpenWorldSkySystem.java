@@ -27,6 +27,7 @@ import net.mgsx.game.core.annotations.Inject;
 import net.mgsx.game.core.annotations.Storable;
 import net.mgsx.game.core.helpers.ShaderProgramHelper;
 import net.mgsx.game.plugins.camera.model.POVModel;
+import net.mgsx.game.plugins.graphics.model.FBOModel;
 
 @Storable(value="ow.sky")
 @EditableSystem
@@ -36,6 +37,7 @@ public class OpenWorldSkySystem extends EntitySystem implements PostInitializati
 	@Inject OpenWorldEnvSystem environment;
 	@Inject WeatherSystem weather;
 	@Inject POVModel pov;
+	@Inject FBOModel fboModel;
 	
 	@Editable public boolean debugFaces = false;
 	
@@ -174,6 +176,8 @@ public class OpenWorldSkySystem extends EntitySystem implements PostInitializati
 			fboCubeMap.end();
 			
 			cubeMapDirty = false;
+			
+			fboModel.bind();
 		}
 		
 		bgShader.begin();
