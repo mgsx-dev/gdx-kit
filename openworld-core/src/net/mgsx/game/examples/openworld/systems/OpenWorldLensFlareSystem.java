@@ -53,7 +53,9 @@ public class OpenWorldLensFlareSystem extends EntitySystem
 	@Override
 	public void update(float deltaTime) 
 	{
-		
+		Gdx.gl.glEnable(GL20.GL_CULL_FACE);
+		Gdx.gl.glCullFace(GL20.GL_FRONT);
+		Gdx.gl.glDepthMask(false);
 		int num = 4;
 		for(int i=0 ; i<num ; i++){
 			
@@ -78,7 +80,10 @@ public class OpenWorldLensFlareSystem extends EntitySystem
 			renderer.rect(-w, -h, 2*w, 2*h);
 			renderer.end();
 		}
+		Gdx.gl.glDisable(GL20.GL_CULL_FACE);
 		Gdx.gl.glDisable(GL20.GL_BLEND);
+		Gdx.gl.glCullFace(GL20.GL_BACK);
+		Gdx.gl.glDepthMask(true);
 	}
 	
 }
