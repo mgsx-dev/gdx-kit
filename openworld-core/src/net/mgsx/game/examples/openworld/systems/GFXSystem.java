@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
 
 import net.mgsx.game.core.GamePipeline;
@@ -20,6 +21,7 @@ import net.mgsx.game.core.helpers.shaders.ShaderInfo;
 import net.mgsx.game.core.helpers.shaders.ShaderProgramManaged;
 import net.mgsx.game.core.helpers.shaders.Uniform;
 import net.mgsx.game.core.helpers.systems.TransactionSystem;
+import net.mgsx.game.examples.openworld.utils.MotionBlur;
 import net.mgsx.game.plugins.graphics.model.FBOModel;
 
 @Storable("ow.gfx")
@@ -49,6 +51,14 @@ public class GFXSystem extends TransactionSystem
 	@Editable public int downsample = 1;
 	
 	@Editable public boolean edgeFX = true;
+	
+	@Editable public float motionBlurFactor = 1;
+	@Editable public float motionBlurSpread = 1;
+	@Editable public float motionBlurRecovery = .1f;
+	
+	@Inject OpenWorldCameraTrauma cameraTrauma;
+	
+	private float motionBlurFalloff;
 	
 	private boolean filter = true;
 	
@@ -81,6 +91,14 @@ public class GFXSystem extends TransactionSystem
 			fbo.getColorBufferTexture().setFilter(tf, tf);
 		}
 		
+		if(motionBlurFalloff < cameraTrauma.trauma){
+			motionBlurFalloff = cameraTrauma.trauma;
+		}
+		motionBlurFalloff = MathUtils.lerp(motionBlurFalloff, 0, deltaTime * motionBlurRecovery);
+		
+		MotionBlur.single.factor = Math.min(motionBlurFactor, motionBlurFalloff + 0.6f); // TODO min blur
+		MotionBlur.single.spread = motionBlurSpread;
+		
 		if(edgeFX){
 			fboModel.push(fbo);
 			return true;
@@ -94,6 +112,8 @@ public class GFXSystem extends TransactionSystem
 	protected void updateAfter(float deltaTime) 
 	{
 		fboModel.pop();
+		
+		MotionBlur.single.begin(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		
 		Gdx.gl.glClearColor(0, 0, 0, 0);
 		Gdx.gl.glClear(GL20.GL_DEPTH_BUFFER_BIT | GL20.GL_COLOR_BUFFER_BIT);
@@ -118,6 +138,8 @@ public class GFXSystem extends TransactionSystem
 		// edgeShader.end();
 		
 		batch.end();
+		
+		MotionBlur.single.end(null);
 	}
 	
 	
