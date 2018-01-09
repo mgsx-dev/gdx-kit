@@ -1,5 +1,6 @@
 package net.mgsx.game.plugins.graphics.model;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.utils.Array;
 
@@ -19,15 +20,15 @@ public class FBOModel
 		}
 	}
 
-	public void unbind() {
-		if(fboStack.size > 0){
-			fboStack.peek().end();
-	    }
-	}
-
+	/**
+	 * restore last FBO context (fbo and viewport)
+	 */
 	public void bind() {
 		if(fboStack.size > 0){
         	fboStack.peek().begin();
+        }else{
+        	FrameBuffer.unbind();
+        	Gdx.gl20.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         }
 	}
 }

@@ -214,8 +214,6 @@ public class G3DRendererSystem extends IteratingSystem
 		
 		if(shadow)
 		{
-			fboModel.unbind();
-			
 			shadowLight.begin(camera.position, camera.direction);
 	        shadowBatch.begin(shadowLight.getCamera());
 	
