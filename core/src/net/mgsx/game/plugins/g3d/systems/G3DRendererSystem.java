@@ -16,7 +16,6 @@ import com.badlogic.gdx.graphics.g3d.environment.DirectionalShadowLight;
 import com.badlogic.gdx.graphics.g3d.utils.AnimationController;
 import com.badlogic.gdx.graphics.g3d.utils.DepthShaderProvider;
 import com.badlogic.gdx.graphics.g3d.utils.ShaderProvider;
-import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
@@ -26,6 +25,7 @@ import net.mgsx.game.core.GamePipeline;
 import net.mgsx.game.core.GameScreen;
 import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.core.annotations.EditableSystem;
+import net.mgsx.game.core.annotations.Inject;
 import net.mgsx.game.core.annotations.Storable;
 import net.mgsx.game.core.components.Hidden;
 import net.mgsx.game.core.helpers.GLHelper;
@@ -34,6 +34,7 @@ import net.mgsx.game.plugins.g3d.components.DirectionalLightComponent;
 import net.mgsx.game.plugins.g3d.components.G3DModel;
 import net.mgsx.game.plugins.g3d.components.PointLightComponent;
 import net.mgsx.game.plugins.g3d.components.ShadowCasting;
+import net.mgsx.game.plugins.graphics.model.FBOModel;
 
 // TODO separate shadow to another system, the only common thing is environement object
 
@@ -47,9 +48,9 @@ public class G3DRendererSystem extends IteratingSystem
 	private ImmutableArray<Entity> pointLights;
 	private ImmutableArray<Entity> shadowCasts;
 	
-	final public Array<FrameBuffer> fboStack = new Array<FrameBuffer>();
-	
 	private DirectionalShadowLight shadowLight; // unique shadow map for now
+	
+	@Inject FBOModel fboModel;
 	
 	@Editable public int shadowQuality = 10;
 	@Editable public Vector2 shadowSize = new Vector2(50, 50);
@@ -213,10 +214,8 @@ public class G3DRendererSystem extends IteratingSystem
 		
 		if(shadow)
 		{
-			 if(fboStack.size > 0){
-	        	fboStack.peek().end();
-	        }
-			 
+			fboModel.unbind();
+			
 			shadowLight.begin(camera.position, camera.direction);
 	        shadowBatch.begin(shadowLight.getCamera());
 	
@@ -233,9 +232,7 @@ public class G3DRendererSystem extends IteratingSystem
 	        environment.shadowMap = shadowLight;
 	        
 	        // restore FBO
-	        if(fboStack.size > 0){
-	        	fboStack.peek().begin();
-	        }
+	        fboModel.bind();
 		}
 		else
 		{

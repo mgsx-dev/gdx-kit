@@ -1,6 +1,5 @@
 package net.mgsx.game.examples.platformer.rendering;
 
-import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.ashley.core.Family;
@@ -30,6 +29,7 @@ import net.mgsx.game.core.GameScreen;
 import net.mgsx.game.core.annotations.Asset;
 import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.core.annotations.EditableSystem;
+import net.mgsx.game.core.annotations.Inject;
 import net.mgsx.game.core.annotations.Storable;
 import net.mgsx.game.core.components.Hidden;
 import net.mgsx.game.core.helpers.shaders.ShaderInfo;
@@ -37,7 +37,7 @@ import net.mgsx.game.core.helpers.shaders.ShaderProgramManaged;
 import net.mgsx.game.core.helpers.shaders.Uniform;
 import net.mgsx.game.examples.platformer.sensors.WaterZone;
 import net.mgsx.game.plugins.g3d.components.G3DModel;
-import net.mgsx.game.plugins.g3d.systems.G3DRendererSystem;
+import net.mgsx.game.plugins.graphics.model.FBOModel;
 
 // TODO refactor things up here ... FBO ... shaders ...
 @Storable("example.platformer.post-processing")
@@ -47,6 +47,8 @@ public class PlatformerPostProcessing extends EntitySystem
 	private FrameBuffer fbo, fbo2, blurA, blurB;
 	private Sprite screenSprite;
 	private SpriteBatch batch;
+	
+	@Inject FBOModel fboModel;
 	
 	@ShaderInfo(vs="shaders/blurx-vertex.glsl", fs="shaders/blurx-fragment.glsl", inject=false)
 	public static class BlurShader extends ShaderProgramManaged 
@@ -73,7 +75,6 @@ public class PlatformerPostProcessing extends EntitySystem
 	Renderable renderable = new Renderable();
 	Shader flatShader;
 	private GameScreen engine;
-	private G3DRendererSystem renderSystem;
 	
 	private boolean shadersLoaded = false;
 	
@@ -85,14 +86,6 @@ public class PlatformerPostProcessing extends EntitySystem
 	public FrameBuffer getMainTarget(){
 		return fbo;
 	}
-	
-	@Override
-	public void addedToEngine(Engine engine) {
-		super.addedToEngine(engine);
-		renderSystem = engine.getSystem(G3DRendererSystem.class);
-	//	loadShaders();
-	}
-	
 	
 	private Family waterEntity = Family.all(G3DModel.class, WaterZone.class).exclude(Hidden.class).get();
 	private Family nonwaterEntity = Family.all(G3DModel.class).exclude(WaterZone.class).exclude(Hidden.class).get();
@@ -130,9 +123,7 @@ public class PlatformerPostProcessing extends EntitySystem
 		
 		if(!settings.enabled) return;
 		
-		fbo.end();
-		
-		renderSystem.fboStack.pop();
+		fboModel.pop();
 		
 		// TODO find a way to see FBO (FBO stack ? push/pop/bind ... etc ...
 		if(!settings.debugDepth)

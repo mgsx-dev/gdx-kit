@@ -20,7 +20,7 @@ import net.mgsx.game.core.helpers.shaders.ShaderInfo;
 import net.mgsx.game.core.helpers.shaders.ShaderProgramManaged;
 import net.mgsx.game.core.helpers.shaders.Uniform;
 import net.mgsx.game.core.helpers.systems.TransactionSystem;
-import net.mgsx.game.plugins.g3d.systems.G3DRendererSystem;
+import net.mgsx.game.plugins.graphics.model.FBOModel;
 
 @Storable("ow.gfx")
 @EditableSystem
@@ -39,7 +39,7 @@ public class GFXSystem extends TransactionSystem
 		super(GamePipeline.AFTER_CULLING, new AfterSystem(GamePipeline.HUD - 1) {});
 	}
 
-	@Inject G3DRendererSystem renderSystem;
+	@Inject FBOModel fboModel;
 
 	private FrameBuffer fbo;
 	private Batch batch = new SpriteBatch();
@@ -82,9 +82,7 @@ public class GFXSystem extends TransactionSystem
 		}
 		
 		if(edgeFX){
-			renderSystem.fboStack.add(fbo);
-			fbo.begin();
-			
+			fboModel.push(fbo);
 			return true;
 		}
 		else{
@@ -95,12 +93,7 @@ public class GFXSystem extends TransactionSystem
 	@Override
 	protected void updateAfter(float deltaTime) 
 	{
-		// fbo.end();
-		FrameBuffer.unbind();
-		renderSystem.fboStack.pop();
-		
-		if(renderSystem.fboStack.size > 0)
-			renderSystem.fboStack.peek().begin();
+		fboModel.pop();
 		
 		Gdx.gl.glClearColor(0, 0, 0, 0);
 		Gdx.gl.glClear(GL20.GL_DEPTH_BUFFER_BIT | GL20.GL_COLOR_BUFFER_BIT);

@@ -19,12 +19,12 @@ import net.mgsx.game.core.helpers.FilesShader;
 import net.mgsx.game.core.helpers.ShaderProgramHelper;
 import net.mgsx.game.core.helpers.systems.TransactionSystem;
 import net.mgsx.game.plugins.g3d.systems.G3DRendererSystem;
+import net.mgsx.game.plugins.graphics.model.FBOModel;
 
 @EditableSystem
 public class EmissiveSystem extends TransactionSystem
 {
-	@Inject
-	public G3DRendererSystem renderSystem; 
+	@Inject FBOModel fboModel;
 	
 	public ShaderProgram shader;
 	
@@ -108,10 +108,9 @@ public class EmissiveSystem extends TransactionSystem
 		blurB = ensureBuffer(blurB);
 		
 		// bind buffer
-		back.begin();
+		fboModel.push(back);
 		Gdx.gl.glClearColor(.1f, .1f, .1f, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
-		renderSystem.fboStack.add(back);
 		
 		// renderSystem.ambient.se
 		
@@ -121,8 +120,7 @@ public class EmissiveSystem extends TransactionSystem
 	@Override
 	protected void updateAfter(float deltaTime) {
 		// swap buffers and apply effects
-		renderSystem.fboStack.pop();
-		back.end();
+		fboModel.pop();
 		
 		batch.disableBlending();
 		
