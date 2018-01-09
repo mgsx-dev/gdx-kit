@@ -16,6 +16,7 @@ import net.mgsx.game.examples.openworld.systems.OpenLifeAnimalSystem;
 import net.mgsx.game.examples.openworld.systems.OpenWorldAudioSystem;
 import net.mgsx.game.examples.openworld.systems.OpenWorldCameraPathSystem;
 import net.mgsx.game.examples.openworld.systems.OpenWorldCameraSystem;
+import net.mgsx.game.examples.openworld.systems.OpenWorldCameraTrauma;
 import net.mgsx.game.examples.openworld.systems.OpenWorldEnvSystem;
 import net.mgsx.game.examples.openworld.systems.OpenWorldFaunaSystem;
 import net.mgsx.game.examples.openworld.systems.OpenWorldGameSystem;
@@ -95,6 +96,9 @@ public class OpenWorldPlugin implements Plugin, DefaultPlugin
 		editor.entityEngine.addSystem(new OpenWorldLandRenderSystem());
 		editor.entityEngine.addSystem(new OpenWorldCameraPathSystem());
 		editor.entityEngine.addSystem(new OpenWorldCameraSystem());
+		editor.entityEngine.addSystem(new OpenWorldCameraTrauma());
+		
+		
 		editor.entityEngine.addSystem(new OpenWorldSkySystem());
 		editor.entityEngine.addSystem(new OpenWorldEnvSystem());
 		

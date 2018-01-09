@@ -3,6 +3,7 @@ package net.mgsx.game.plugins.procedural.model;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.RandomXS128;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 
 public class ClassicalPerlinNoise 
 {
@@ -85,5 +86,32 @@ public class ClassicalPerlinNoise
 		result.x = MathUtils.cos(angleRad);
 		result.y = MathUtils.sin(angleRad);
 		return result;
+	}
+	
+	public Vector3 get(Vector3 v, float x){
+		v.x = get(seed + 0, x);
+		v.y = get(seed + 1, x);
+		v.z = get(seed + 2, x);
+		return v;
+	}
+	
+	private float get(long seed, float x){
+		float rx = x % 1f;
+		int ix;
+		if(rx < 0f){
+			rx += 1f;
+			ix = (int)x-1;
+		}else{
+			ix = (int)x;
+		}
+		float v0 = value(seed + ix);
+		float v1 = value(seed + ix+1);
+		return MathUtils.lerp(v0, v1, rx);
+	}
+	
+	private float value(long seed) 
+	{
+		random.setSeed(seed);
+		return random.nextFloat() * 2 - 1;
 	}
 }
