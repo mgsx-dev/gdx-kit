@@ -16,7 +16,14 @@ public class CircuitTemplates {
 			float alpha = 360f * i / (float)segments;
 			float alpha2 = alpha * 2;
 			float range2 = 10 * (MathUtils.sin(alpha/2)+1)/2;
-			circuit.dots.add(new Vector2(range * MathUtils.cosDeg(alpha), range * MathUtils.sinDeg(alpha)).add(new Vector2(range2 * MathUtils.cosDeg(alpha2), range2 * MathUtils.sinDeg(alpha2))));
+			float r = 400; // MathUtils.lerp(300, 400, (MathUtils.cosDeg(14*alpha) +1)/2);
+			circuit.dots.add(new Vector2(
+					r * MathUtils.cosDeg(1*alpha), 
+					r * MathUtils.sinDeg(1f * alpha))
+					
+					.add(MathUtils.random(250), MathUtils.random(250))
+					
+					); //.add(new Vector2(range2 * MathUtils.cosDeg(alpha2), range2 * MathUtils.sinDeg(alpha2))));
 		}
 		
 //		circuit.dots.add(new Vector2(0, 0));

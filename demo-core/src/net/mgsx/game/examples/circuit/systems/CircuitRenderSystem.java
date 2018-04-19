@@ -6,9 +6,11 @@ import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.loader.G3dModelLoader;
+import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.CatmullRomSpline;
@@ -20,6 +22,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.JsonReader;
 
 import net.mgsx.game.core.GamePipeline;
+import net.mgsx.game.core.Kit;
 import net.mgsx.game.core.annotations.Inject;
 import net.mgsx.game.examples.circuit.model.CircuitCar;
 import net.mgsx.game.examples.circuit.model.CircuitModel;
@@ -52,6 +55,9 @@ public class CircuitRenderSystem extends EntitySystem
 	private float playerU, playerV, cameraU, cameraV;
 	private float playerSpeed;
 	private Entity playerEntity;
+	private boolean inGameCamera = false;
+	private CameraInputController cameraControl;
+	private PerspectiveCamera outCamera;
 	
 	public CircuitRenderSystem() {
 		super(GamePipeline.RENDER);
@@ -63,12 +69,29 @@ public class CircuitRenderSystem extends EntitySystem
 		
 		renderer = new ShapeRenderer();
 		
+		outCamera = new PerspectiveCamera();
+		cameraControl = new CameraInputController(outCamera);
+		Kit.inputs.addProcessor(cameraControl);
 	}
 
 	@Override
 	public void update(float deltaTime) {
 		
+		if(Gdx.input.isKeyJustPressed(Input.Keys.P)){
+			inGameCamera = !inGameCamera;
+		}
+		
+		if(Gdx.input.isKeyJustPressed(Input.Keys.F5)){
+			wireframeVertcies = null;
+			circuit.dots.clear();
+			circuit.cars.clear();
+			circuit.tracks.clear();
+			circuit.invalidate();
+		}
+		
+		
 		float camSpeed = 10; // XXX 10
+		float carSpeed = .03f;
 		
 		if(Gdx.input.isKeyPressed(Input.Keys.RIGHT)){
 			playerV = Math.max(playerV - deltaTime * 1f, -1);
@@ -101,7 +124,10 @@ public class CircuitRenderSystem extends EntitySystem
 				wireframeVertcies = new Vector3[dotCount];
 				for(int i=0 ; i<dotCount ; i++){
 					Vector2 p = circuit.dots.get(i);
-					wireframeVertcies[i] = new Vector3(p, 1150 * (MathUtils.sinDeg(2 * 360f * (float)i/(float)dotCount) + 1) /2); // XXX MathUtils.random(10));
+					// wireframeVertcies[i] = new Vector3(p, 1150 * (MathUtils.sinDeg(2 * 360f * (float)i/(float)dotCount) + 1) /2); // XXX MathUtils.random(10));
+				
+				
+					wireframeVertcies[i] = new Vector3(p, 150 * (MathUtils.sinDeg(4 * 360f * (float)i/(float)dotCount) + 1) /2);
 				}
 				
 				if(dotCount >= 4){
@@ -235,11 +261,10 @@ public class CircuitRenderSystem extends EntitySystem
 					renderer.setColor(Color.PURPLE);
 					renderer.line(new Vector3(v0).mulAdd(normal, (playerV ) * rw*len), new Vector3(v0).mulAdd(normal, (playerV ) *rw*len).mulAdd(binormal, 1));
 					
-					boolean followCam = true;
-					if(followCam){
+					if(inGameCamera){
 						
 						if(Gdx.input.isKeyPressed(Input.Keys.A))
-							playerSpeed = MathUtils.lerp(playerSpeed, .2f, deltaTime * 1.3f);
+							playerSpeed = MathUtils.lerp(playerSpeed, carSpeed, deltaTime * 1.3f);
 						else
 							playerSpeed = MathUtils.lerp(playerSpeed, 0f, deltaTime * 3);
 						
@@ -254,6 +279,16 @@ public class CircuitRenderSystem extends EntitySystem
 						catmullrom.valueAt(pov.camera.position, cameraU).mulAdd(binormal, 1).mulAdd(normal, cameraV* rw*len);
 						pov.camera.direction.set(tangent);
 						pov.camera.up.set(binormal);
+						pov.camera.update();
+					}
+					else
+					{
+						outCamera.up.set(Vector3.Z);
+						outCamera.update();
+						cameraControl.update();
+						// pov.camera.position.set(outCamera.position);
+						pov.camera.direction.set(outCamera.direction);
+						pov.camera.up.set(outCamera.up);
 						pov.camera.update();
 					}
 					
