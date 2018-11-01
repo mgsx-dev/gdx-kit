@@ -3,6 +3,121 @@ layout: page
 title: "Overview"
 ---
 
+<style>
+pre{
+    font-size: 16px;
+    font-family: "Courier";
+    color: #77FF77;
+}
+</style>
+
+<div class="row">
+    <div class="col-md-3">
+        <div class="alert alter-success">
+            <h3>Plug in your existing code without any effort</h3>
+            out of the box ApplicationListener, Game, Screen, Stage wrappers
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="alert alter-success">
+            <h3>Lightweight dependencies </h3>
+            Don't have to be included in your game :
+            Separated module per gdx dependencies / extension,
+            Lightweight module for definitions (annotations)
+        </div>
+    </div>
+     <div class="col-md-3">
+        <div class="alert alter-success">
+            <h3>Easy to configure</h3>
+            @Editable makes your field alive, persistable.
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="alert alter-success">
+            <h3>Micro code generation</h3>
+            generate code for java (object instance) or JSON
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="alert alter-success">
+            <h3>Example</h3>
+            here is commits to enable kit on an existing project (game made during a game jam : TODO choose a game)
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="alert alter-success">
+            <h3>Example</h3>
+            in desktop test folder
+            <pre>
+class MyKitLauncher {
+
+}
+            </pre>
+        </div>
+    </div>
+    <div class="col-md-5">
+        <div class="alert alter-success">
+             <h3>Example</h3>
+            in desktop test folder
+            <pre>
+class MyGame {
+    @Editable
+    private float speed = 1;
+}
+            </pre>
+        </div>
+    </div>
+   <div class="col-md-12">
+        <div class="alert alter-success">
+             <h3>Example</h3>
+            in desktop test folder
+            <pre>
+class MyGameDesktopLauncher {
+    main{
+        new LWJGLApplicaion(config, Kit.forGame(new MyGame()));
+    }
+}
+            </pre>
+        </div>
+    </div>
+    <div class="col-md-12">
+        <div class="alert alter-success">
+             <h3>Easy to extends</h3>
+            your own Kit module. Here, replace default Vector2 editor
+            <pre>
+class MyKitModule extends KitModule {
+    @Override
+    public void initialize(Kit kit){
+        kit.register(Vecor2.class, MyVector2Editor.class);
+    }
+}
+
+class MyVector2Editor extends KitEditor {
+    @Override
+    public Actor create(final Kit kit, final Accessor accessor){
+        Editable config = accessor.get(Editable.class);
+        Slider slider = new Slider(kit.skin, accessor.get(float.class), 0, 100, false);
+        slider.addListener(
+            ... accessor.set(slider.getValue());
+        );
+        return slider;
+    }
+}
+            </pre>
+        </div>
+    </div>
+</div>
+
+|Modules           | DESCRIPTION |  DEPENDENCIES||
+| kit-api|       all annotations and static definitions (lightweight)| none |
+| - package kit.annotations |   @Editable, @storage, ...etc |
+| kit-gdx       |base implementation for and with libGDX | libgdx (core) ||
+| - <span style="color: red;">package kit.core</span>    |core framework class and java specific support |ok||
+| - package kit.gdx     |all basic libgdx support and core ui implementation||
+| - package kit.ui     | all ui specific (base widtgets + graph + tree + file choose, etc) |||
+| kit-box2d |||
+| kit-ashley| all ECS stuff (more like KIT v0.1) | ashley 1.7.3+ |
+
 # Concepts
 
 Among other, following concepts are part of KIT :
