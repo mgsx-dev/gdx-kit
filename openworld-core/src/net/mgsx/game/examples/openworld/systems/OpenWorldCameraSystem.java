@@ -116,6 +116,8 @@ public class OpenWorldCameraSystem extends EntitySystem
 	public void setPosition(Vector3 position) {
 		// no need to raycast here because it's recovery from previous saved position.
 		playerColliderPosition.set(position);
+		
+		ensureCollider();
 		playerCollider.setWorldTransform(playerColliderTransform.setToTranslation(playerColliderPosition));
 		playerCollider.setLinearVelocity(Vector3.Zero);
 	}
@@ -125,6 +127,15 @@ public class OpenWorldCameraSystem extends EntitySystem
 		super.addedToEngine(engine);
 		activeCameras = getEngine().getEntitiesFor(Family.all(OpenWorldCamera.class, CameraComponent.class, ActiveCamera.class).get());
 		resultCallback = new ClosestRayResultCallback(Vector3.Zero, Vector3.Z);
+	}
+	
+	private void ensureCollider(){
+		if(playerCollider == null){
+			playerCollider = (btRigidBody)new BulletBuilder()
+					.beginDynamic(playerColliderTransform, 100) // 100 kg
+					.capsule(capsuleRadius, capsuleHeight)
+					.commit(bulletWorld.collisionWorld);
+		}
 	}
 	
 	@Override
@@ -141,10 +152,7 @@ public class OpenWorldCameraSystem extends EntitySystem
 			playerColliderPosition.set(camera.position);
 			playerColliderPosition.y -= offset - capsuleHeight/2;
 			playerColliderTransform.setToTranslation(playerColliderPosition);
-			playerCollider = (btRigidBody)new BulletBuilder()
-					.beginDynamic(playerColliderTransform, 100) // 100 kg
-					.capsule(capsuleRadius, capsuleHeight)
-					.commit(bulletWorld.collisionWorld);
+			ensureCollider();
 		}
 		
 		playerTargetVelocity.setZero();
