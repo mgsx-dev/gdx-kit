@@ -2,6 +2,7 @@ package net.mgsx.examples.platformer;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.InputStream;
 import java.util.Properties;
 
 import com.badlogic.gdx.Application;
@@ -19,9 +20,11 @@ import net.mgsx.game.examples.openworld.model.OpenWorldModel;
 import net.mgsx.game.examples.openworld.model.OpenWorldRuntimeSettings;
 import net.mgsx.game.examples.openworld.model.SpawnGenerator;
 import net.mgsx.game.examples.openworld.systems.OpenWorldCameraSystem;
+import net.mgsx.game.examples.openworld.systems.OpenWorldGameSystem;
 import net.mgsx.game.examples.openworld.systems.OpenWorldHUDSystem;
 import net.mgsx.game.services.gapi.GAPI;
 import net.mgsx.game.services.gapi.GAPIServiceStub;
+import net.mgsx.game.services.gapi.SavedGame;
 import net.mgsx.kit.config.ReflectionClassRegistry;
 import net.mgsx.kit.launcher.DesktopApplication;
 import net.mgsx.pd.Pd;
@@ -98,7 +101,12 @@ public class OpenWorldLauncher {
 				
 				super.create();
 
-				GAPI.service = new GAPIServiceStub();
+				GAPI.service = new GAPIServiceStub(){
+					@Override
+					public InputStream loadGame(SavedGame game) {
+						return Gdx.files.internal(game.name).read();
+					}
+				};
 				
 				OpenWorldModel.load();
 				
@@ -111,6 +119,14 @@ public class OpenWorldLauncher {
 				screen.load(Gdx.files.internal("openworld/openworld-scene5.json"));
 				
 				assets.finishLoading();
+				
+				final SavedGame savedGame = new SavedGame() {
+					{
+						name = "openworld/openworld-scene5-context.json";
+					}
+				};
+				screen.entityEngine.getSystem(OpenWorldGameSystem.class).loadRequest(savedGame);
+				
 				
 				setScreen(screen);
 				

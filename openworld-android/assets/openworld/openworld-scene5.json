@@ -6,14 +6,14 @@ entities: [
 			camera: {
 				fieldOfView: 67.54826
 				position: {
-					x: -2186.9556
-					y: -0.064474106
-					z: 2546.1548
+					x: -1166.7668
+					y: 1.7618573
+					z: 2282.3923
 				}
 				direction: {
-					x: 0.84386206
-					y: -0.017138135
-					z: 0.53340256
+					x: 0.29588044
+					y: -0.28791574
+					z: -0.91069645
 				}
 				up: {
 					y: 1
@@ -56,7 +56,7 @@ entities: [
 		}
 	}
 	{
-		id: 2
+		id: 1
 		g3d.light.dir: {
 			light: {
 				color: {
@@ -128,8 +128,8 @@ systems: [
 		enabled: true
 		logicSize: 12
 		viewPoint: {
-			x: -2186.9556
-			y: 2546.1548
+			x: -1166.7668
+			y: 2282.3923
 		}
 	}
 	{
@@ -175,7 +175,7 @@ systems: [
 		fogExponent: 39.88976
 		autoSun: true
 		autoTime: false
-		time: 159359.34
+		time: 160040.1
 		waterColor: {
 			r: 0.07466493
 			g: 0.16609122
@@ -383,16 +383,6 @@ systems: [
 ]
 views: [
 	net.mgsx.game.examples.openworld.systems.OpenWorldAudioSystem
-	ow.env
-	net.mgsx.game.examples.openworld.systems.WeatherSystem
 	ow.camera
-	ow.sky
-	ow.rain
-	net.mgsx.game.examples.openworld.systems.OpenWorldGameSystem
-	net.mgsx.game.plugins.spline.systems.SplineDebugRender
-	ow.generator
-	ow.manager
-	ow.map
-	ow.lands
 ]
 }
