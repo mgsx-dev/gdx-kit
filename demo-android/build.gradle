@@ -1,6 +1,6 @@
 android {
-    buildToolsVersion "23.0.1"
-    compileSdkVersion 20
+    buildToolsVersion "25.0.2"
+    compileSdkVersion 26
     sourceSets {
         main {
             manifest.srcFile 'AndroidManifest.xml'
@@ -18,9 +18,9 @@ android {
         exclude 'META-INF/robovm/ios/robovm.xml'
     }
     defaultConfig {
-        applicationId "net.mgsx.pd"
+        applicationId "net.mgsx.kit"
         minSdkVersion 8
-        targetSdkVersion 20
+        targetSdkVersion 26
     }
 }
 

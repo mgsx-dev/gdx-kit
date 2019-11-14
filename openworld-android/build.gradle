@@ -3,13 +3,13 @@ plugins {
 }
 apply plugin: 'com.android.application'
 eclipseAar {
-	androidTarget = 'android-20'
+	androidTarget = 'android-25'
 	aarDependenciesDir = 'aarDependencies'
 }
 
 android {
-    buildToolsVersion "23.0.1"
-    compileSdkVersion 20
+    buildToolsVersion "25.0.2"
+    compileSdkVersion 26
     sourceSets {
         main {
             manifest.srcFile 'AndroidManifest.xml'
