@@ -3,7 +3,7 @@ Requirements :
 - Puredata vanilla 0.47.1
 
 Run application either by double click on the jar file or in a terminal
-$ java -jar openworld-desktop-0.0.4-SNAPSHOT.jar
+$ java -jar openworld-desktop-0.0.5-SNAPSHOT.jar
 
 Controls :
 - Z : move forward
