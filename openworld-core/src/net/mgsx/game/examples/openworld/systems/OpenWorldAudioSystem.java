@@ -1,5 +1,7 @@
 package net.mgsx.game.examples.openworld.systems;
 
+import java.util.Comparator;
+
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntityListener;
@@ -11,6 +13,9 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.ObjectMap;
+import com.badlogic.gdx.utils.ObjectMap.Entry;
+import com.badlogic.gdx.utils.Pool;
 
 import net.mgsx.game.core.GamePipeline;
 import net.mgsx.game.core.PostInitializationListener;
@@ -20,6 +25,8 @@ import net.mgsx.game.core.annotations.Inject;
 import net.mgsx.game.examples.openworld.components.ObjectMeshComponent;
 import net.mgsx.game.examples.openworld.components.SpatialComponent;
 import net.mgsx.game.examples.openworld.components.SpawnAnimalComponent;
+import net.mgsx.game.examples.openworld.components.SpawnAnimalComponent.Environment;
+import net.mgsx.game.examples.openworld.components.SpawnAnimalComponent.State;
 import net.mgsx.game.examples.openworld.model.GameAction;
 import net.mgsx.game.examples.openworld.model.OpenWorldGameEventListener;
 import net.mgsx.game.plugins.bullet.components.BulletComponent;
@@ -30,6 +37,8 @@ import net.mgsx.pd.Pd;
 public class OpenWorldAudioSystem extends EntitySystem implements PostInitializationListener
 {
 	private static final int MAX_SPATIALS = 3;
+	
+	private static final int MAX_ANIMALS_PER_CHANNEL = 3;
 	
 	private static final int ENVIRONMENT_SAMPLES = 6;
 
@@ -66,6 +75,31 @@ public class OpenWorldAudioSystem extends EntitySystem implements PostInitializa
 	
 	private Array<SpatialComponent> spatials = new Array<SpatialComponent>();
 	
+	private static class SpatialInfo{
+		public static final Comparator<SpatialInfo> comparator = new Comparator<SpatialInfo>() {
+			@Override
+			public int compare(SpatialInfo o1, SpatialInfo o2) {
+				return Float.compare(o1.distance, o2.distance);
+			}
+		};
+
+		public final Vector3 position = new Vector3();
+		
+		/** distance from camera (used to sort/filter) */
+		public float distance;
+
+		public State state;
+	}
+	
+	private final Pool<SpatialInfo> spatialInfoPool = new Pool<SpatialInfo>(){
+		@Override
+		protected SpatialInfo newObject() {
+			return new SpatialInfo();
+		}
+	};
+	
+	private final ObjectMap<Environment, Array<SpatialInfo>> spatialChannels = new ObjectMap<Environment, Array<SpatialInfo>>();
+	
 	private ImmutableArray<Entity> animals, objects;
 	
 	private Vector3 occlusionTarget = new Vector3();
@@ -77,6 +111,11 @@ public class OpenWorldAudioSystem extends EntitySystem implements PostInitializa
 	
 	public OpenWorldAudioSystem() {
 		super(GamePipeline.AFTER_LOGIC);
+		
+		// initialize spatial channels
+		for(Environment env : Environment.values()){
+			spatialChannels.put(env, new Array<SpatialInfo>());
+		}
 	}
 	
 	@Override
@@ -193,6 +232,37 @@ public class OpenWorldAudioSystem extends EntitySystem implements PostInitializa
 				}
 			}
 			Pd.audio.sendFloat("animals", animalsInRange);
+		}
+		
+		// collect animals
+		for(Entity entity : animals){
+			SpawnAnimalComponent animal = SpawnAnimalComponent.components.get(entity);
+			if(animal.active && animal.environment != null && animal.state != null){
+				float dst = animal.element.position.dst(camera.position);
+
+				SpatialInfo info = spatialInfoPool.obtain();
+				info.distance = dst;
+				info.position.set(animal.element.position);
+				info.state = animal.state;
+				
+				spatialChannels.get(animal.environment).add(info);
+			}
+		}
+		// sort/filter, send animals and cleanup
+		for(Entry<Environment, Array<SpatialInfo>> e : spatialChannels){
+			Array<SpatialInfo> list = e.value;
+			list.sort(SpatialInfo.comparator);
+			for(int i=0 ; i<MAX_ANIMALS_PER_CHANNEL && i<list.size ; i++){
+				SpatialInfo info = list.get(i);
+				float occlusion = occlusionQuery(camera.position, occlusionTarget.set(info.position).add(0, 1, 0)) ? 0f : 1f;
+				
+				Pd.audio.sendList("animal", e.key.toString(), i, info.state.toString(),
+						info.position.x, info.position.y, info.position.z,
+						occlusion);
+				
+				spatialInfoPool.free(info);
+			}
+			list.clear();
 		}
 		
 		if(sendCameraOcclusion){
