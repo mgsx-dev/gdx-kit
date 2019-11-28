@@ -31,7 +31,6 @@ import net.mgsx.game.blueprint.ui.GraphView;
 import net.mgsx.game.blueprint.ui.GraphView.LinkLayout;
 import net.mgsx.game.blueprint.ui.GraphView.NodeFactory;
 import net.mgsx.game.core.GameApplication;
-import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.core.helpers.AssetHelper;
 import net.mgsx.game.core.helpers.ReflectionHelper;
 import net.mgsx.game.core.meta.ClassRegistry;
@@ -164,7 +163,7 @@ public class BlueprintBehaviorTree extends GameApplication {
 	
 	public abstract static class BTNode implements DynamicNode
 	{
-		@Editable
+		// @Editable
 		public Task task;
 		
 		private Array<Task> children = new Array<Task>();
@@ -202,11 +201,13 @@ public class BlueprintBehaviorTree extends GameApplication {
 			return task.getClass().getSimpleName();
 		}
 		
+		/* XXX
 		@Outlet
 		@Editable
 		public void debug(){
 			print(task, "-");
 		}
+		*/
 		
 		private static void print(Task task, String prefix){
 			System.out.println(prefix + " " + task.toString());
@@ -217,7 +218,7 @@ public class BlueprintBehaviorTree extends GameApplication {
 	}
 	
 	
-	@Inlet("parent")
+	@Inlet("-")
 	public static class BTNodeLeaf extends BTNode
 	{
 		public BTNodeLeaf(Class<? extends Task> type) {
@@ -226,8 +227,8 @@ public class BlueprintBehaviorTree extends GameApplication {
 		
 	}
 	
-	@Outlet("children")
-	@Inlet("parent")
+	@Outlet("-")
+	@Inlet("-")
 	public static class BTNodeBranch extends BTNode
 	{
 		public BTNodeBranch(Class<? extends Task> type) {

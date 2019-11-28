@@ -4,16 +4,22 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 
 import net.mgsx.game.blueprint.annotations.Inlet;
 import net.mgsx.game.blueprint.annotations.Node;
 import net.mgsx.game.blueprint.annotations.Outlet;
 import net.mgsx.game.blueprint.model.Graph;
-import net.mgsx.game.blueprint.model.GraphNode;
 import net.mgsx.game.blueprint.model.Graph.CopyStrategy;
+import net.mgsx.game.blueprint.model.GraphNode;
+import net.mgsx.game.blueprint.model.Portlet;
 import net.mgsx.game.blueprint.ui.GraphView;
+import net.mgsx.game.blueprint.ui.GraphView.GraphViewConfig;
+import net.mgsx.game.blueprint.ui.NodeView;
 import net.mgsx.game.core.GameApplication;
 import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.core.helpers.AssetHelper;
@@ -41,8 +47,55 @@ public class BlueprintTest extends GameApplication {
 		graph.addNode(new Multiply(), 300, 200);
 		
 		
-		GraphView view = new GraphView(graph, skin);
+		
+		GraphViewConfig config = new GraphViewConfig();
+		GraphView view = new GraphView(graph, skin, config){
+			@Override
+			protected NodeView createNodeView(GraphNode node) {
+				return new NodeView(config, graph, node, skin){
+					@Override
+					protected Actor createPortlet(Portlet portlet) {
+						TextButton bt = new TextButton(portlet.accessor.getType().getSimpleName().substring(0, 1), getSkin());
+						return bt;
+					}
+					@Override
+					protected void addPortletActor(Table table, Portlet portlet, Actor portletActor) {
+						
+						Table t = new Table(getSkin());
+						
+						// Actor editor = createEditor(portlet);
+						// if(editor != null) table.add(editor);
+						
+						if(portlet.outlet != null){
+							t.add(portlet.getName());
+							t.row();
+							t.add(portletActor).width(32);
+						}else{
+							t.add(portletActor).width(32);
+							t.row();
+							t.add(portlet.getName());
+						}
+						
+						
+						table.add(t);
+					}
+					@Override
+					protected void layoutNode() {
+						add(inletList).colspan(2).expand().left().row();
+						add(header);
+						add(parameterList).expandX().left().row();
+						add(outletList).colspan(2).expand().left().row();
+					}
+					
+				};
+				
+			}
+			
+			
+		};
 		view.addNodeType(FloatAtom.class, Multiply.class);
+		
+		
 		
 		ScrollPane scroll;
 		screen.getStage().addActor(scroll = new ScrollPane(view));

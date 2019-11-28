@@ -1,5 +1,6 @@
 package net.mgsx.game.blueprint.model;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.Array;
 
@@ -16,6 +17,7 @@ public class Portlet {
 	public Accessor accessor;
 	public Array<Link> inputLinks = new Array<Link>();
 	public Array<Link> outLinks = new Array<Link>();
+	public Color color = new Color(Color.WHITE);
 
 	public Portlet(GraphNode node, Accessor accessor, Inlet inlet) 
 	{

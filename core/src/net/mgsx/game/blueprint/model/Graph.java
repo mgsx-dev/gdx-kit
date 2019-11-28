@@ -49,13 +49,16 @@ public class Graph implements Serializable
 	 * could be renamed as UpdateOutlet/UpdateInlet
 	 */
 	public static enum CopyStrategy {
-		/** Linked fields are not touched (client code handle it manually) */
+		/** Linked fields are not touched (client code handle it manually).
+		 * Portlets can have many connections. */
 		NONE, 
 		
-		/** source outlet references destination inlet (Dependency graph) */
+		/** source outlet references destination inlet (Dependency graph).
+		 * Inlets can only have one connection. */
 		FROM_SRC, 
 		
-		/** destination inlet references source outlet (Flow graph) */
+		/** destination inlet references source outlet (Flow graph).
+		 * Outlets can only have one connection. */
 		FROM_DST
 	}
 	
@@ -262,6 +265,17 @@ public class Graph implements Serializable
 		}
 		return r;
 	}
+	
+	public Array<GraphNode> findNode(Class type) {
+		Array<GraphNode> r = new Array<GraphNode>();
+		for(GraphNode node : nodes){
+			if(type.isAssignableFrom(node.object.getClass())){
+				r.add(node);
+			}
+		}
+		return r;
+	}
+	
 	@Override
 	public void write(Json json) 
 	{

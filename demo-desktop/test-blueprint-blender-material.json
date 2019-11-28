@@ -1,0 +1,95 @@
+{
+nodes: [
+	{
+		type: Separate XYZ
+		x: 271.99988
+		y: 290
+		properties: {}
+	}
+	{
+		type: Value
+		x: 596.00006
+		y: 82.00004
+		properties: {
+			value: {
+				class: java.lang.Float
+				value: 1.5
+			}
+		}
+	}
+	{
+		type: Texture Coordinates
+		x: 34.99997
+		y: 263
+		properties: {}
+	}
+	{
+		type: Principled BSDF
+		x: 928.00024
+		y: 290.00003
+		properties: {}
+	}
+	{
+		type: Gray Scale
+		x: 468.99988
+		y: 344
+		properties: {}
+	}
+	{
+		type: Material Output
+		x: 1211
+		y: 263
+		properties: {}
+	}
+	{
+		type: sampler
+		x: 591
+		y: 262.9999
+		properties: {}
+	}
+]
+links: [
+	{
+		src: 1
+		dst: 3
+		out: out
+		in: shininess
+	}
+	{
+		src: 0
+		dst: 4
+		out: x
+		in: value
+	}
+	{
+		src: 4
+		dst: 3
+		out: color
+		in: diffuseColor
+	}
+	{
+		src: 3
+		dst: 5
+		out: bsdf
+		in: surface
+	}
+	{
+		src: 2
+		dst: 0
+		out: generated
+		in: vector
+	}
+	{
+		src: 6
+		dst: 3
+		out: texture
+		in: diffuseMap
+	}
+	{
+		src: 2
+		dst: 6
+		out: uv
+		in: uv
+	}
+]
+}

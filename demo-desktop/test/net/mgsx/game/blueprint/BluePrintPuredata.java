@@ -5,7 +5,7 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.scenes.scene2d.actions.ColorAction;
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 import net.mgsx.game.blueprint.annotations.Inlet;
@@ -19,13 +19,13 @@ import net.mgsx.game.core.GameApplication;
 import net.mgsx.game.core.annotations.Editable;
 import net.mgsx.game.core.helpers.AssetHelper;
 import net.mgsx.game.core.screen.StageScreen;
+import net.mgsx.game.core.storage.SaveConfiguration.Message;
 
-public class BlueprintFlow extends GameApplication {
-
+public class BluePrintPuredata extends GameApplication {
 	public static void main(String[] args) 
 	{
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-		new LwjglApplication(new BlueprintFlow(), config);
+		new LwjglApplication(new BluePrintPuredata(), config);
 	}
 	private Graph graph;
 
@@ -40,17 +40,20 @@ public class BlueprintFlow extends GameApplication {
 		
 		graph = new Graph(CopyStrategy.FROM_DST);
 		
-		graph.addNode(new Initial(), 10, 50);
-		graph.addNode(new Shoot(), 300, 200);
+		graph.addNode(new ParamNode(), 10, 50);
 		
 		
 		GraphViewConfig config = new GraphViewConfig();
-		config.setTypeColor(Color.ORANGE, FlowEvent.class);
+		config.setTypeColor(Color.ORANGE, AudioFlow.class);
+		config.setTypeColor(Color.GOLD, AudioNode.class);
+		config.setTypeColor(Color.BLUE, Message.class);
 		config.setTypeColor(Color.CYAN, float.class);
+		config.setTypeColor(Color.CYAN, MessageNode.class);
 		
 		GraphView view = new GraphView(graph, skin, config);
-		view.addNodeType(Initial.class, Shoot.class, Flee.class, GameScreen.class, ColorNode.class, ParamNode.class);
+		view.addNodeType(AudioMathMulNode.class, ParamNode.class);
 		
+		ScrollPane scroll;
 		screen.getStage().addActor(view);
 		view.setFillParent(true);
 	}
@@ -61,14 +64,26 @@ public class BlueprintFlow extends GameApplication {
 		super.render();
 	}
 	
-	public static class FlowEvent {
+	public static class AudioFlow {
 		
-		
+	}
+	public static class MessageFlow {
 		
 	}
 	
+	public static class PuredataNode{
+		
+	}
+	public static class AudioNode{
+		
+	}
+	public static class MessageNode{
+		
+	}
+	
+	
 	@Node("Param")
-	public static class ParamNode {
+	public static class ParamNode extends MessageNode {
 		
 		@Editable
 		@Outlet
@@ -80,68 +95,22 @@ public class BlueprintFlow extends GameApplication {
 		}
 	}
 	
-	@Node("Init")
-	public static class Initial {
+	
+	@Node("*~")
+	public static class AudioMathMulNode extends AudioNode {
 		
+		@Editable
+		@Inlet
+		public float value;
+		
+		@Inlet
+		public AudioFlow in;
 		@Outlet
-		public FlowEvent exit;
+		public AudioFlow out;
 		
 		@Outlet
 		public void debug(){
-			System.out.println(exit);
+			System.out.println(value);
 		}
 	}
-	
-	@Inlet("enter")
-	@Node("ColorAction")
-	public static class ColorNode extends FlowEvent {
-		
-		@Outlet
-		public FlowEvent exit;
-		
-		@Editable
-		@Inlet
-		public ColorAction action;
-		
-		public ColorNode() {
-			action = new ColorAction();
-			action.setColor(new Color()); // avoid NPE
-		}
-		
-	}
-	
-	@Inlet
-	@Node("shoot")
-	public static class Shoot extends FlowEvent {
-		
-		@Outlet
-		public FlowEvent onDead, onComplete;
-		
-		
-	}
-	
-	
-	@Inlet
-	@Node("flee")
-	public static class Flee extends FlowEvent {
-		
-		@Editable
-		@Inlet
-		public float distance = 1;
-		
-		@Outlet
-		public FlowEvent onComplete;
-		
-	}
-	
-	@Inlet
-	@Node("GameScreen")
-	public static class GameScreen extends FlowEvent {
-		
-		@Outlet
-		public FlowEvent onGameOver, onAbort, onSuccess;
-		
-	}
-
-	
 }
