@@ -49,7 +49,7 @@ public class BluePrintGLSL extends GameApplication {
 		GraphView view = new GraphView(graph, skin, config);
 		
 		view.addNodeType(VertexAttributeNode.class, EnvNode.class, MaterialNode.class, TextureSamplerNode.class,
-				MeshNode.class);
+				MeshNode.class, MetallicNode.class);
 		
 		screen.getStage().addActor(view);
 		view.setFillParent(true);
@@ -62,6 +62,8 @@ public class BluePrintGLSL extends GameApplication {
 	}
 	
 	public static Texture defaultTexture; // TODO init
+	
+	public static interface TextureFlow{}
 	
 	@Node("vertex")
 	public static class VertexAttributeNode
@@ -122,7 +124,15 @@ public class BluePrintGLSL extends GameApplication {
 		@Inlet public MeshFlow mesh;
 	}
 	
+	@Node("metallic")
+	public static class MetallicNode extends TextureSamplerNode {
+		
+	}
 	
+	@Node("MRT")
+	public static class MRTNode extends TextureSamplerNode implements TextureFlow {
+		@Outlet public TextureFlow color;
+	}
 	
 	
 }

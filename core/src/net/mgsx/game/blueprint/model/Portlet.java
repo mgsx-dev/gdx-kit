@@ -18,18 +18,28 @@ public class Portlet {
 	public Array<Link> inputLinks = new Array<Link>();
 	public Array<Link> outLinks = new Array<Link>();
 	public Color color = new Color(Color.WHITE);
+	final public boolean isInlet;
 
+	public Portlet(GraphNode node, Accessor accessor, boolean isInlet) 
+	{
+		this.node = node;
+		this.accessor = accessor;
+		this.isInlet = isInlet;
+	}
+	
 	public Portlet(GraphNode node, Accessor accessor, Inlet inlet) 
 	{
 		this.node = node;
 		this.accessor = accessor;
 		this.inlet = inlet;
+		this.isInlet = true;
 	}
 
 	public Portlet(GraphNode node, Accessor accessor, Outlet outlet) {
 		this.node = node;
 		this.accessor = accessor;
 		this.outlet = outlet;
+		this.isInlet = false;
 	}
 
 	public String getName() {

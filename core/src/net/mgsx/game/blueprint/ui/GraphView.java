@@ -198,11 +198,11 @@ public class GraphView extends WidgetGroup
 						}else if(actor.getUserObject() instanceof Portlet){
 							
 							Portlet portlet = (Portlet)actor.getUserObject();
-							if(dragPortlet.outlet != null && portlet.inlet != null ||
-									dragPortlet.inlet != null && portlet.outlet != null){
+							if(!dragPortlet.isInlet && portlet.isInlet ||
+									dragPortlet.isInlet && !portlet.isInlet){
 								dropPortlet = portlet;
-								boolean outInCompatible = dragPortlet.inlet != null && dropPortlet.accessor.getType().isAssignableFrom(dragPortlet.accessor.getType());
-								boolean inOutCompatible = dragPortlet.outlet != null && dragPortlet.accessor.getType().isAssignableFrom(dropPortlet.accessor.getType());
+								boolean outInCompatible = dragPortlet.isInlet && dropPortlet.accessor.getType().isAssignableFrom(dragPortlet.accessor.getType());
+								boolean inOutCompatible = !dragPortlet.isInlet && dragPortlet.accessor.getType().isAssignableFrom(dropPortlet.accessor.getType());
 								
 								dragValid = outInCompatible || inOutCompatible;
 								if(dragValid){
@@ -250,9 +250,9 @@ public class GraphView extends WidgetGroup
 					if(dragValid){
 						
 						Link link = null;
-						if(dragPortlet.outlet != null && dropPortlet.inlet != null){
+						if(!dragPortlet.isInlet && dropPortlet.isInlet){
 							link = graph.addLink(dragPortlet, dropPortlet);
-						}else if(dragPortlet.inlet != null && dropPortlet.outlet != null){
+						}else if(dragPortlet.isInlet && !dropPortlet.isInlet){
 							link = graph.addLink(dropPortlet, dragPortlet);
 						}
 						if(link != null){
